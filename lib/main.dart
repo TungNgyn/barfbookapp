@@ -16,18 +16,22 @@ class MainApp extends StatelessWidget {
       child: MaterialApp(
         home: ScreenHome(),
         title: "Barfbook",
+        darkTheme: ThemeData(
+          useMaterial3: true,
+          brightness: Brightness.dark,
+        ),
         theme: ThemeData(
           useMaterial3: true,
           colorScheme: ColorScheme.fromSeed(seedColor: Color(0xFF679267)),
         ),
-        darkTheme: ThemeData.dark(),
-        // themeMode: ThemeMode.system,
-        themeMode: ThemeMode.light,
+        themeMode: ThemeMode.system,
         debugShowCheckedModeBanner: false,
       ),
     );
   }
 }
+
+// Dark Mode
 
 // State
 class StartState extends ChangeNotifier {
@@ -91,7 +95,9 @@ class _ScreenHomeState extends State<ScreenHome> {
     }
 
     return Scaffold(
-      body: Navigator(),
+      body: Center(
+        child: seite,
+      ),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: navigationIndex,
         onTap: _onNavigationTap,
@@ -181,11 +187,10 @@ class BigCard extends StatelessWidget {
     return Card(
       color: theme.colorScheme.primary,
       child: Padding(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.all(20.0),
         child: Text(
           rezept.asLowerCase,
           style: style,
-          semanticsLabel: rezept.asPascalCase,
         ),
       ),
     );

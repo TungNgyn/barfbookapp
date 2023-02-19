@@ -1,3 +1,2 @@
-# barfbookapp
-
-A new Flutter project.
+# Barfbook
+Das Barf-Kochbuch für unterwegs.
