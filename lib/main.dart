@@ -1,6 +1,7 @@
 import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'globals.dart' as globals;
 
 void main() {
   runApp(const MainApp());
@@ -31,8 +32,6 @@ class MainApp extends StatelessWidget {
   }
 }
 
-// Dark Mode
-
 // State
 class StartState extends ChangeNotifier {
   var rezept = WordPair.random();
@@ -62,44 +61,53 @@ class ScreenHome extends StatefulWidget {
 
 class _ScreenHomeState extends State<ScreenHome> {
   // Navigation
-  var navigationIndex = 0;
+  var appBarTitel;
 
   @override
   Widget build(BuildContext context) {
     Widget seite;
-    switch (navigationIndex) {
+    switch (globals.navigationIndex) {
       case 0:
         seite = ScreenEntdecken();
         print("ScreenEntdecken");
+        appBarTitel = 'Entdecken';
         break;
       case 1:
-        seite = Placeholder();
-        print("ScreenRezepte");
+        seite = ScreenSuche();
+        print("ScreenSuche");
+        appBarTitel = 'Suche';
         break;
       case 2:
         seite = ScreenBarfbook();
         print("ScreenBarfbook");
+        appBarTitel = 'Barfbook';
         break;
       case 3:
         seite = ScreenProfil();
         print("ScreenProfil");
+        appBarTitel = 'Profil';
         break;
       default:
-        throw UnimplementedError('Kein Widget für $navigationIndex');
+        throw UnimplementedError('Kein Widget für ${globals.navigationIndex}');
     }
 
     void _onNavigationTap(int index) {
       setState(() {
-        navigationIndex = index;
+        globals.navigationIndex = index;
       });
     }
 
     return Scaffold(
+      appBar: AppBar(
+        title: Center(
+            child: Text(appBarTitel,
+                style: TextStyle(fontWeight: FontWeight.bold))),
+      ),
       body: Center(
         child: seite,
       ),
       bottomNavigationBar: BottomNavigationBar(
-        currentIndex: navigationIndex,
+        currentIndex: globals.navigationIndex,
         onTap: _onNavigationTap,
         type: BottomNavigationBarType.fixed,
         items: const <BottomNavigationBarItem>[
@@ -108,8 +116,8 @@ class _ScreenHomeState extends State<ScreenHome> {
             label: 'Entdecken',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.favorite),
-            label: 'Rezepte',
+            icon: Icon(Icons.search),
+            label: 'Suche',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.menu_book),
@@ -197,19 +205,159 @@ class BigCard extends StatelessWidget {
   }
 }
 
-// Screen Favoriten
-class ScreenRezepte extends StatelessWidget {
+// Screen Suche
+class ScreenSuche extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    var startState = context.watch<StartState>();
+
+    return Scaffold(
+      body: Column(
+        children: [
+          Text('A random idea:'),
+          Text(startState.rezept.asPascalCase),
+        ],
+      ),
+    );
+  }
+}
+
+// Screen Barfbook
+class ScreenBarfbook extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var startState = context.watch<StartState>();
 
     if (startState.favoriten.isEmpty) {
-      return Center(
-        child: Text('Du hast noch nichts favorisiert.'),
+      return ListView(
+        children: [
+          Column(
+            children: [
+              Text(
+                "Meine Rezepte:",
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              SizedBox(height: 10),
+              KeinErstelltesRezept(),
+              SizedBox(height: 20),
+              Text("Meine Favoriten:",
+                  style: TextStyle(fontWeight: FontWeight.bold)),
+              SizedBox(height: 10),
+              KeinGespeichertesRezept(),
+            ],
+          ),
+        ],
       );
     }
 
+    return Column(
+      children: [
+        FavoritenListe(startState: startState),
+      ],
+    );
+  }
+}
+
+class KeinGespeichertesRezept extends StatelessWidget {
+  const KeinGespeichertesRezept({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    var theme = Theme.of(context);
+    var style = theme.textTheme.displayMedium!.copyWith(
+      color: theme.colorScheme.onPrimary,
+    );
+
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Card(
+          child: Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Row(children: [
+              Image.asset(
+                'assets/images/rezept.png',
+                width: 200,
+              ),
+              Column(
+                children: [
+                  Text('Du hast noch keine Rezepte gespeichert.'),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  ElevatedButton(
+                      onPressed: () {
+                        globals.navigationIndex;
+                      },
+                      child: Text("Lieblingsrezept finden")),
+                ],
+              ),
+            ]),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class KeinErstelltesRezept extends StatelessWidget {
+  const KeinErstelltesRezept({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Card(
+              child: Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Row(
+              children: [
+                Image.asset(
+                  'assets/images/barfbook.png',
+                  width: 200,
+                ),
+                Column(
+                  children: [
+                    Text("Du hast noch kein eigenes Rezept erstellt."),
+                    Text("Fang jetzt damit an!"),
+                    SizedBox(height: 10),
+                    TextButton(
+                      onPressed: () => print("allo"),
+                      child: Icon(
+                        Icons.add_circle_outline,
+                        size: 50,
+                      ),
+                    )
+                  ],
+                ),
+              ],
+            ),
+          )),
+        ],
+      ),
+    );
+  }
+}
+
+class FavoritenListe extends StatelessWidget {
+  const FavoritenListe({
+    super.key,
+    required this.startState,
+  });
+
+  final StartState startState;
+
+  @override
+  Widget build(BuildContext context) {
     return ListView(
+      scrollDirection: Axis.vertical,
+      shrinkWrap: true,
       children: [
         Padding(
           padding: const EdgeInsets.all(20),
@@ -222,23 +370,6 @@ class ScreenRezepte extends StatelessWidget {
             title: Text(pair.asLowerCase),
           ),
       ],
-    );
-  }
-}
-
-// Screen Barfbook
-class ScreenBarfbook extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    var startState = context.watch<StartState>();
-
-    return Scaffold(
-      body: Column(
-        children: [
-          Text('A random idea:'),
-          Text(startState.rezept.asPascalCase),
-        ],
-      ),
     );
   }
 }
