@@ -1,7 +1,7 @@
 import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'globals.dart' as globals;
 
 void main() {
   runApp(const MainApp());
@@ -25,7 +25,7 @@ class MainApp extends StatelessWidget {
           useMaterial3: true,
           colorScheme: ColorScheme.fromSeed(seedColor: Color(0xFF679267)),
         ),
-        themeMode: ThemeMode.system,
+        themeMode: ThemeMode.dark,
         debugShowCheckedModeBanner: false,
       ),
     );
@@ -62,11 +62,12 @@ class ScreenHome extends StatefulWidget {
 class _ScreenHomeState extends State<ScreenHome> {
   // Navigation
   var appBarTitel;
+  var navigationIndex = 0;
 
   @override
   Widget build(BuildContext context) {
     Widget seite;
-    switch (globals.navigationIndex) {
+    switch (navigationIndex) {
       case 0:
         seite = ScreenEntdecken();
         print("ScreenEntdecken");
@@ -88,26 +89,28 @@ class _ScreenHomeState extends State<ScreenHome> {
         appBarTitel = 'Profil';
         break;
       default:
-        throw UnimplementedError('Kein Widget für ${globals.navigationIndex}');
+        throw UnimplementedError('Kein Widget für ${navigationIndex}');
     }
 
     void _onNavigationTap(int index) {
       setState(() {
-        globals.navigationIndex = index;
+        navigationIndex = index;
       });
     }
 
     return Scaffold(
-      appBar: AppBar(
-        title: Center(
-            child: Text(appBarTitel,
-                style: TextStyle(fontWeight: FontWeight.bold))),
-      ),
+      // appBar: AppBar(
+      //   scrolledUnderElevation: 2,
+      //   shadowColor: Theme.of(context).colorScheme.shadow,
+      //   title: Center(
+      //       child: Text(appBarTitel,
+      //           style: TextStyle(fontWeight: FontWeight.bold))),
+      // ),
       body: Center(
         child: seite,
       ),
       bottomNavigationBar: BottomNavigationBar(
-        currentIndex: globals.navigationIndex,
+        currentIndex: navigationIndex,
         onTap: _onNavigationTap,
         type: BottomNavigationBarType.fixed,
         items: const <BottomNavigationBarItem>[
@@ -212,16 +215,55 @@ class ScreenSuche extends StatelessWidget {
     var startState = context.watch<StartState>();
 
     return Scaffold(
+        body: NestedScrollView(
+      headerSliverBuilder: (_, __) => [
+        SliverAppBar(
+          pinned: true,
+          expandedHeight: 110,
+          toolbarHeight: 85,
+          flexibleSpace: SafeArea(
+            child: FlexibleSpaceBar(
+              title: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                    width: 250,
+                    child: TextField(
+                      decoration: InputDecoration(
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(50),
+                              borderSide: BorderSide.none),
+                          filled: true,
+                          hintText: "Suche",
+                          hintStyle: TextStyle(fontSize: 15)),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ],
       body: Column(
         children: [
-          Text('A random idea:'),
-          Text(startState.rezept.asPascalCase),
+          Card(
+            child: Text("alol"),
+          )
         ],
       ),
-    );
+    ));
   }
 }
 
+// TextField(
+//             decoration: InputDecoration(
+//                 filled: true,
+//                 border: OutlineInputBorder(
+//                     borderRadius: BorderRadius.circular(30),
+//                     borderSide: BorderSide.none),
+//                 hintText: "Suche",
+//                 hintStyle: TextStyle(fontSize: 18)),
+//           ),
 // Screen Barfbook
 class ScreenBarfbook extends StatelessWidget {
   @override
@@ -229,24 +271,35 @@ class ScreenBarfbook extends StatelessWidget {
     var startState = context.watch<StartState>();
 
     if (startState.favoriten.isEmpty) {
-      return ListView(
-        children: [
-          Column(
-            children: [
-              Text(
-                "Meine Rezepte:",
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
-              SizedBox(height: 10),
-              KeinErstelltesRezept(),
-              SizedBox(height: 20),
-              Text("Meine Favoriten:",
-                  style: TextStyle(fontWeight: FontWeight.bold)),
-              SizedBox(height: 10),
-              KeinGespeichertesRezept(),
-            ],
+      return NestedScrollView(
+        headerSliverBuilder: (_, __) => [
+          SliverAppBar(
+            pinned: true,
+            expandedHeight: 100,
+            flexibleSpace: const FlexibleSpaceBar(
+              title: Text("Barfbook"),
+            ),
           ),
         ],
+        body: ListView(
+          children: [
+            Column(
+              children: [
+                Text(
+                  "Meine Rezepte:",
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                SizedBox(height: 10),
+                KeinErstelltesRezept(),
+                SizedBox(height: 20),
+                Text("Meine Favoriten:",
+                    style: TextStyle(fontWeight: FontWeight.bold)),
+                SizedBox(height: 10),
+                KeinGespeichertesRezept(),
+              ],
+            ),
+          ],
+        ),
       );
     }
 
@@ -275,11 +328,14 @@ class KeinGespeichertesRezept extends StatelessWidget {
       children: [
         Card(
           child: Padding(
-            padding: const EdgeInsets.all(20.0),
-            child: Row(children: [
-              Image.asset(
-                'assets/images/rezept.png',
-                width: 200,
+            padding: const EdgeInsets.all(15.0),
+            child: Column(children: [
+              Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: Image.asset(
+                  'assets/images/rezept.png',
+                  width: MediaQuery.of(context).size.width * 0.2,
+                ),
               ),
               Column(
                 children: [
@@ -289,7 +345,8 @@ class KeinGespeichertesRezept extends StatelessWidget {
                   ),
                   ElevatedButton(
                       onPressed: () {
-                        globals.navigationIndex;
+                        Navigator.of(context).pushReplacement(MaterialPageRoute(
+                            builder: (context) => new ScreenHome()));
                       },
                       child: Text("Lieblingsrezept finden")),
                 ],
@@ -315,12 +372,15 @@ class KeinErstelltesRezept extends StatelessWidget {
         children: [
           Card(
               child: Padding(
-            padding: const EdgeInsets.all(20.0),
-            child: Row(
+            padding: const EdgeInsets.all(15.0),
+            child: Column(
               children: [
-                Image.asset(
-                  'assets/images/barfbook.png',
-                  width: 200,
+                Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: Image.asset(
+                    'assets/images/barfbook.png',
+                    width: MediaQuery.of(context).size.width * 0.2,
+                  ),
                 ),
                 Column(
                   children: [
