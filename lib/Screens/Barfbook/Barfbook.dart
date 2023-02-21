@@ -1,4 +1,6 @@
 // Screen Barfbook
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:namer_app/Screens/Barfbook/Erstellung.dart';
@@ -13,7 +15,6 @@ class ScreenBarfbook extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var startState = context.watch<StartState>();
-
     return NestedScrollView(
       headerSliverBuilder: (_, __) => [
         SliverAppBar(
@@ -46,17 +47,46 @@ class ScreenBarfbook extends StatelessWidget {
         children: [
           Column(
             children: [
-              Text(
-                "Meine Rezepte:",
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
-              SizedBox(height: 10),
-              ErstellteRezepte(),
-              SizedBox(height: 20),
-              Text("Meine Favoriten:",
-                  style: TextStyle(fontWeight: FontWeight.bold)),
-              SizedBox(height: 10),
-              GespeicherteRezepte(),
+              SizedBox(height: 50),
+              Theme(
+                  data: Theme.of(context)
+                      .copyWith(dividerColor: Colors.transparent),
+                  child: ExpansionTile(
+                      title: Center(
+                          child: Text(startState.erstellteRezepte.isEmpty
+                              ? "Meine Rezepte"
+                              : startState.erstellteRezepte.length == 1
+                                  ? "Mein Rezept"
+                                  : "Meine ${startState.erstellteRezepte.length} Rezepte")),
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(20.0),
+                          child: ErstellteRezepte(),
+                        ),
+                        startState.erstellteRezepte.isEmpty
+                            ? SizedBox()
+                            : ButtonRezeptErstellen(),
+                      ])),
+              SizedBox(height: 30),
+              Theme(
+                  data: Theme.of(context)
+                      .copyWith(dividerColor: Colors.transparent),
+                  child: ExpansionTile(
+                      title: Center(
+                          child: Text(startState.favoriten.isEmpty
+                              ? "Meine Favoriten"
+                              : startState.favoriten.length == 1
+                                  ? "Mein Favorit"
+                                  : "Meine ${startState.favoriten.length} Favoriten")),
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(20.0),
+                          child: GespeicherteRezepte(),
+                        ),
+                        startState.favoriten.isEmpty
+                            ? SizedBox()
+                            : ButtonRezeptFinden(),
+                      ])),
             ],
           ),
         ],
@@ -117,14 +147,7 @@ class KeineFavoritenRezepte extends StatelessWidget {
                   SizedBox(
                     height: 10,
                   ),
-                  ElevatedButton(
-                      // style: ElevatedButton.styleFrom(
-                      //     primary: theme.colorScheme.secondary),
-                      onPressed: () {
-                        Navigator.of(context).pushReplacement(MaterialPageRoute(
-                            builder: (context) => new ScreenHome()));
-                      },
-                      child: Text("Lieblingsrezept finden")),
+                  ButtonRezeptFinden(),
                 ],
               ),
             ]),
@@ -132,6 +155,24 @@ class KeineFavoritenRezepte extends StatelessWidget {
         ),
       ],
     );
+  }
+}
+
+class ButtonRezeptFinden extends StatelessWidget {
+  const ButtonRezeptFinden({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return ElevatedButton(
+        // style: ElevatedButton.styleFrom(
+        //     primary: theme.colorScheme.secondary),
+        onPressed: () {
+          Navigator.of(context).pushReplacement(
+              MaterialPageRoute(builder: (context) => new ScreenHome()));
+        },
+        child: Text("Lieblingsrezepte finden"));
   }
 }
 
@@ -184,28 +225,39 @@ class KeineErstelltenRezepte extends StatelessWidget {
                     Text("Du hast noch kein eigenes Rezept erstellt."),
                     Text("Fang jetzt damit an!"),
                     SizedBox(height: 10),
-                    TextButton(
-                      onPressed: () async {
-                        // startState.toggleErstellt();
-                        showModalBottomSheet<void>(
-                            enableDrag: false,
-                            isScrollControlled: true,
-                            context: context,
-                            builder: (BuildContext context) {
-                              return ScreenErstellung();
-                            });
-                      },
-                      child: Icon(
-                        Icons.add_circle_outline,
-                        size: 50,
-                      ),
-                    )
+                    ButtonRezeptErstellen()
                   ],
                 ),
               ],
             ),
           )),
         ],
+      ),
+    );
+  }
+}
+
+class ButtonRezeptErstellen extends StatelessWidget {
+  const ButtonRezeptErstellen({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return TextButton(
+      onPressed: () async {
+        showModalBottomSheet<void>(
+            isDismissible: false,
+            enableDrag: false,
+            isScrollControlled: true,
+            context: context,
+            builder: (BuildContext context) {
+              return ScreenErstellung();
+            });
+      },
+      child: Icon(
+        Icons.add_circle_outline,
+        size: 50,
       ),
     );
   }

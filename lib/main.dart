@@ -68,11 +68,11 @@ class StartState extends ChangeNotifier {
     notifyListeners();
   }
 
-  void toggleErstellt() {
-    if (erstellteRezepte.contains(WordPair.random())) {
-      erstellteRezepte.remove(WordPair.random());
+  void toggleErstellt(String teil1, String teil2) {
+    if (erstellteRezepte.contains(WordPair(teil1, teil2))) {
+      erstellteRezepte.remove(WordPair(teil1, teil2));
     } else {
-      erstellteRezepte.add(WordPair.random());
+      erstellteRezepte.add(WordPair(teil1, teil2));
     }
     notifyListeners();
   }
