@@ -17,32 +17,23 @@ class ScreenBarfbook extends StatelessWidget {
     var startState = context.watch<StartState>();
     return NestedScrollView(
       headerSliverBuilder: (_, __) => [
-        SliverPersistentHeader(
-          delegate: BarfbookAppBar(expandedHeight: 200),
-          pinned: true,
-        ),
-
-        // SliverAppBar(
-        //     pinned: true,
-        //     backgroundColor: Colors.amber,
-        //     expandedHeight: 100,
-        //     flexibleSpace: LayoutBuilder(
-        //         builder: (BuildContext context, BoxConstraints constraints) {
-        //       appBarConstraints = constraints.biggest.height;
-        //       double opacityVar = appBarConstraints >= 151
-        //           ? 1
-        //           : appBarConstraints <= 108
-        //               ? 1
-        //               : (1 - 100 / appBarConstraints);
-        //       return FlexibleSpaceBar(
-        //         title: Opacity(
-        //             opacity: opacityVar,
-        //             child: Text(
-        //               "Barfbook",
-        //             )),
-        //         centerTitle: appBarConstraints <= 108 ? true : false,
-        //       );
-        //     })),
+        SliverAppBar(
+            pinned: true,
+            expandedHeight: 100,
+            flexibleSpace: LayoutBuilder(
+                builder: (BuildContext context, BoxConstraints constraints) {
+              appBarConstraints = constraints.biggest.height;
+              double opacityVar = appBarConstraints.floor() == 159
+                  ? 1
+                  : (((appBarConstraints - 137).abs()) * 0.045);
+              opacityVar <= 0 ? opacityVar = 0 : opacityVar;
+              return FlexibleSpaceBar(
+                  title: Opacity(
+                      opacity: opacityVar,
+                      child: Text("Barfbook",
+                          style: Theme.of(context).textTheme.titleLarge)),
+                  centerTitle: appBarConstraints.floor() <= 137 ? true : false);
+            })),
       ],
       body: ListView(
         children: [
@@ -94,59 +85,6 @@ class ScreenBarfbook extends StatelessWidget {
       ),
     );
   }
-}
-
-class BarfbookAppBar extends SliverPersistentHeaderDelegate {
-  final double expandedHeight;
-
-  BarfbookAppBar({required this.expandedHeight});
-
-  @override
-  Widget build(
-      BuildContext context, double shrinkOffset, bool overlapsContent) {
-    return Stack(
-      clipBehavior: Clip.none,
-      fit: StackFit.expand,
-      children: [
-        Container(
-          color: Colors.blue,
-          child: Center(
-            child: Opacity(
-              opacity: shrinkOffset / expandedHeight,
-              child: Text(
-                "Barfbook",
-                style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
-              ),
-            ),
-          ),
-        ),
-        Positioned(
-          top: expandedHeight / 2 - shrinkOffset,
-          left: MediaQuery.of(context).size.width / 4,
-          child: Opacity(
-            opacity: (1 - shrinkOffset / expandedHeight),
-            child: Card(
-              elevation: 10,
-              child: SizedBox(
-                height: expandedHeight,
-                width: MediaQuery.of(context).size.width / 2,
-                child: FlutterLogo(),
-              ),
-            ),
-          ),
-        )
-      ],
-    );
-  }
-
-  @override
-  double get maxExtent => expandedHeight;
-
-  @override
-  double get minExtent => kToolbarHeight;
-
-  @override
-  bool shouldRebuild(SliverPersistentHeaderDelegate oldDelegate) => true;
 }
 
 class GespeicherteRezepte extends StatelessWidget {
