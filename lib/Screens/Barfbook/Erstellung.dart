@@ -44,7 +44,7 @@ class ScreenErstellung extends StatelessWidget {
             ),
           ),
           SizedBox(height: 20),
-          Container(
+          SizedBox(
             width: 350,
             child: TextField(
               onChanged: (textfeld1text) {
@@ -55,7 +55,7 @@ class ScreenErstellung extends StatelessWidget {
             ),
           ),
           SizedBox(height: 20),
-          Container(
+          SizedBox(
             width: 350,
             child: TextField(
                 onChanged: (textfeld2text) {

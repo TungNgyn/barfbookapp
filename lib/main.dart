@@ -1,15 +1,30 @@
 import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
+import 'package:json_theme/json_theme.dart';
 
+import 'package:flutter/services.dart';
+import 'dart:convert';
 import 'Screens/Home.dart';
 
-void main() {
-  runApp(const MainApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  var helligkeit = SchedulerBinding.instance.window.platformBrightness;
+  bool darkModus = helligkeit == Brightness.dark;
+
+  final themeStr = darkModus == true
+      ? await rootBundle.loadString('assets/themes/appainter_theme_dark.json')
+      : await rootBundle.loadString('assets/themes/appainter_theme_light.json');
+  final themeJson = jsonDecode(themeStr);
+  final theme = ThemeDecoder.decodeThemeData(themeJson);
+
+  runApp(MainApp(theme: theme));
 }
 
 class MainApp extends StatelessWidget {
-  const MainApp({super.key});
+  final ThemeData? theme;
+  const MainApp({super.key, required this.theme});
 
   @override
   Widget build(BuildContext context) {
@@ -18,29 +33,7 @@ class MainApp extends StatelessWidget {
       child: MaterialApp(
         home: ScreenHome(),
         title: "Barfbook",
-        darkTheme: ThemeData(
-          useMaterial3: true,
-          colorScheme: ColorScheme.fromSwatch(
-              primarySwatch: MaterialColor(0xFF4F7942, {
-                50: Color.fromRGBO(4, 57, 39, .1),
-                100: Color.fromRGBO(4, 57, 39, .2),
-                200: Color.fromRGBO(4, 57, 39, .3),
-                300: Color.fromRGBO(4, 57, 39, .4),
-                400: Color.fromRGBO(4, 57, 39, .5),
-                500: Color.fromRGBO(4, 57, 39, .6),
-                600: Color.fromRGBO(4, 57, 39, .7),
-                700: Color.fromRGBO(4, 57, 39, .8),
-                800: Color.fromRGBO(4, 57, 39, .9),
-                900: Color.fromRGBO(4, 57, 39, 1),
-              }),
-              brightness: Brightness.dark),
-        ),
-        theme: ThemeData(
-          useMaterial3: true,
-          colorScheme: ColorScheme.fromSeed(
-              seedColor: Color(0xFF679267), brightness: Brightness.light),
-        ),
-        themeMode: ThemeMode.system,
+        theme: theme,
         debugShowCheckedModeBanner: false,
       ),
     );

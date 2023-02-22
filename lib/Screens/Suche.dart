@@ -1,7 +1,7 @@
 // Screen Suche
+import 'package:Barfbook/main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:namer_app/main.dart';
 import 'package:provider/provider.dart';
 
 class ScreenSuche extends StatelessWidget {

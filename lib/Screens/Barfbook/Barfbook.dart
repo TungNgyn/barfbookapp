@@ -1,13 +1,13 @@
-// Screen Barfbook
-import 'dart:ffi';
+import 'dart:math';
 
+import 'package:Barfbook/Screens/Barfbook/Bearbeitung.dart';
+import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:namer_app/Screens/Barfbook/Erstellung.dart';
 import 'package:provider/provider.dart';
 
 import '../../main.dart';
 import '../Home.dart';
+import 'Erstellung.dart';
 
 class ScreenBarfbook extends StatelessWidget {
   var appBarConstraints = 0.0;
@@ -17,31 +17,32 @@ class ScreenBarfbook extends StatelessWidget {
     var startState = context.watch<StartState>();
     return NestedScrollView(
       headerSliverBuilder: (_, __) => [
-        SliverAppBar(
-            pinned: true,
-            expandedHeight: 100,
-            flexibleSpace: LayoutBuilder(
-                builder: (BuildContext context, BoxConstraints constraints) {
-              appBarConstraints = constraints.biggest.height;
-              double opacityVar = appBarConstraints >= 151
-                  ? 1
-                  : appBarConstraints <= 108
-                      ? 1
-                      : (1 - 100 / appBarConstraints);
-              return FlexibleSpaceBar(
-                title: Opacity(
-                    opacity: opacityVar,
-                    child: Text(
-                      "Barfbook",
-                      style: TextStyle(
-                          color: MediaQuery.of(context).platformBrightness ==
-                                  Brightness.dark
-                              ? Colors.white
-                              : Colors.black),
-                    )),
-                centerTitle: appBarConstraints <= 108 ? true : false,
-              );
-            })),
+        SliverPersistentHeader(
+          delegate: BarfbookAppBar(expandedHeight: 200),
+          pinned: true,
+        ),
+
+        // SliverAppBar(
+        //     pinned: true,
+        //     backgroundColor: Colors.amber,
+        //     expandedHeight: 100,
+        //     flexibleSpace: LayoutBuilder(
+        //         builder: (BuildContext context, BoxConstraints constraints) {
+        //       appBarConstraints = constraints.biggest.height;
+        //       double opacityVar = appBarConstraints >= 151
+        //           ? 1
+        //           : appBarConstraints <= 108
+        //               ? 1
+        //               : (1 - 100 / appBarConstraints);
+        //       return FlexibleSpaceBar(
+        //         title: Opacity(
+        //             opacity: opacityVar,
+        //             child: Text(
+        //               "Barfbook",
+        //             )),
+        //         centerTitle: appBarConstraints <= 108 ? true : false,
+        //       );
+        //     })),
       ],
       body: ListView(
         children: [
@@ -95,6 +96,59 @@ class ScreenBarfbook extends StatelessWidget {
   }
 }
 
+class BarfbookAppBar extends SliverPersistentHeaderDelegate {
+  final double expandedHeight;
+
+  BarfbookAppBar({required this.expandedHeight});
+
+  @override
+  Widget build(
+      BuildContext context, double shrinkOffset, bool overlapsContent) {
+    return Stack(
+      clipBehavior: Clip.none,
+      fit: StackFit.expand,
+      children: [
+        Container(
+          color: Colors.blue,
+          child: Center(
+            child: Opacity(
+              opacity: shrinkOffset / expandedHeight,
+              child: Text(
+                "Barfbook",
+                style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+              ),
+            ),
+          ),
+        ),
+        Positioned(
+          top: expandedHeight / 2 - shrinkOffset,
+          left: MediaQuery.of(context).size.width / 4,
+          child: Opacity(
+            opacity: (1 - shrinkOffset / expandedHeight),
+            child: Card(
+              elevation: 10,
+              child: SizedBox(
+                height: expandedHeight,
+                width: MediaQuery.of(context).size.width / 2,
+                child: FlutterLogo(),
+              ),
+            ),
+          ),
+        )
+      ],
+    );
+  }
+
+  @override
+  double get maxExtent => expandedHeight;
+
+  @override
+  double get minExtent => kToolbarHeight;
+
+  @override
+  bool shouldRebuild(SliverPersistentHeaderDelegate oldDelegate) => true;
+}
+
 class GespeicherteRezepte extends StatelessWidget {
   const GespeicherteRezepte({
     super.key,
@@ -103,12 +157,8 @@ class GespeicherteRezepte extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var startState = context.watch<StartState>();
-    var theme = Theme.of(context);
-    var style = theme.textTheme.displayMedium!.copyWith(
-      color: theme.colorScheme.onPrimary,
-    );
 
-    if (!startState.favoriten.isEmpty) {
+    if (startState.favoriten.isNotEmpty) {
       return Column(
         children: [
           FavoritenListe(startState: startState),
@@ -170,7 +220,7 @@ class ButtonRezeptFinden extends StatelessWidget {
         //     primary: theme.colorScheme.secondary),
         onPressed: () {
           Navigator.of(context).pushReplacement(
-              MaterialPageRoute(builder: (context) => new ScreenHome()));
+              MaterialPageRoute(builder: (context) => ScreenHome()));
         },
         child: Text("Lieblingsrezepte finden"));
   }
@@ -184,7 +234,7 @@ class ErstellteRezepte extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var startState = context.watch<StartState>();
-    if (!startState.erstellteRezepte.isEmpty) {
+    if (startState.erstellteRezepte.isNotEmpty) {
       return Column(
         children: [
           ErstelltenListe(startState: startState),
@@ -203,36 +253,33 @@ class KeineErstelltenRezepte extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var startState = context.watch<StartState>();
-    return Container(
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Card(
-              child: Padding(
-            padding: const EdgeInsets.all(15.0),
-            child: Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: Image.asset(
-                    'assets/images/barfbook.png',
-                    width: MediaQuery.of(context).size.width * 0.2,
-                  ),
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Card(
+            child: Padding(
+          padding: const EdgeInsets.all(15.0),
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: Image.asset(
+                  'assets/images/barfbook.png',
+                  width: MediaQuery.of(context).size.width * 0.2,
                 ),
-                Column(
-                  children: [
-                    Text("Du hast noch kein eigenes Rezept erstellt."),
-                    Text("Fang jetzt damit an!"),
-                    SizedBox(height: 10),
-                    ButtonRezeptErstellen()
-                  ],
-                ),
-              ],
-            ),
-          )),
-        ],
-      ),
+              ),
+              Column(
+                children: [
+                  Text("Du hast noch kein eigenes Rezept erstellt."),
+                  Text("Fang jetzt damit an!"),
+                  SizedBox(height: 10),
+                  ButtonRezeptErstellen()
+                ],
+              ),
+            ],
+          ),
+        )),
+      ],
     );
   }
 }
@@ -297,12 +344,22 @@ class ErstelltenListe extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    WordPair pair;
+
     return ListView(
       scrollDirection: Axis.vertical,
       shrinkWrap: true,
       children: [
-        for (var pair in startState.erstellteRezepte)
+        for (pair in startState.erstellteRezepte)
           ListTile(
+            onTap: () {
+              showDialog(
+                  barrierDismissible: false,
+                  context: context,
+                  builder: (BuildContext context) {
+                    return ScreenRezeptBearbeitung(pair: pair);
+                  });
+            },
             leading: Icon(Icons.library_books),
             title: Text(pair.asLowerCase),
           ),
