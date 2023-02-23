@@ -16,38 +16,43 @@ class ScreenBarfbook extends StatelessWidget {
   Widget build(BuildContext context) {
     var startState = context.watch<StartState>();
     return NestedScrollView(
-      headerSliverBuilder: (_, __) => [
-        SliverAppBar(
-            pinned: true,
-            expandedHeight: 100,
-            flexibleSpace: LayoutBuilder(
-                builder: (BuildContext context, BoxConstraints constraints) {
-              appBarConstraints = constraints.biggest.height;
-              double opacityVar = appBarConstraints.floor() == 159
-                  ? 1
-                  : (((appBarConstraints - 137).abs()) * 0.045);
-              opacityVar <= 0
-                  ? opacityVar = 0
-                  : opacityVar >= 1
-                      ? opacityVar = 1
-                      : opacityVar;
-              return FlexibleSpaceBar(
-                  title: Opacity(
-                      opacity: opacityVar,
-                      child: Text("Barfbook",
-                          style: Theme.of(context).textTheme.titleLarge)),
-                  centerTitle: appBarConstraints.floor() <= 137 ? true : false);
-            })),
+      headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) => [
+        SliverOverlapAbsorber(
+          handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+          sliver: SliverAppBar(
+              pinned: true,
+              expandedHeight: 100,
+              flexibleSpace: LayoutBuilder(
+                  builder: (BuildContext context, BoxConstraints constraints) {
+                appBarConstraints = constraints.biggest.height;
+                double opacityVar = appBarConstraints.floor() == 159
+                    ? 1
+                    : (((appBarConstraints - 137).abs()) * 0.045);
+                opacityVar <= 0
+                    ? opacityVar = 0
+                    : opacityVar >= 1
+                        ? opacityVar = 1
+                        : opacityVar;
+                return FlexibleSpaceBar(
+                    title: Opacity(
+                        opacity: opacityVar,
+                        child: Text("Barfbook",
+                            style: Theme.of(context).textTheme.titleLarge)),
+                    centerTitle:
+                        appBarConstraints.floor() <= 137 ? true : false);
+              })),
+        ),
       ],
       body: ListView(
         children: [
           Column(
             children: [
-              SizedBox(height: 50),
+              SizedBox(height: 70),
               Theme(
                   data: Theme.of(context)
                       .copyWith(dividerColor: Colors.transparent),
                   child: ExpansionTile(
+                      initiallyExpanded: true,
                       title: Center(
                           child: Text(startState.erstellteRezepte.isEmpty
                               ? "Meine Rezepte"
@@ -68,6 +73,7 @@ class ScreenBarfbook extends StatelessWidget {
                   data: Theme.of(context)
                       .copyWith(dividerColor: Colors.transparent),
                   child: ExpansionTile(
+                      initiallyExpanded: true,
                       title: Center(
                           child: Text(startState.favoriten.isEmpty
                               ? "Meine Favoriten"
@@ -263,7 +269,7 @@ class FavoritenListe extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListView(
-      scrollDirection: Axis.vertical,
+      physics: ScrollPhysics(),
       shrinkWrap: true,
       children: [
         for (var pair in startState.favoriten)
@@ -289,7 +295,7 @@ class ErstelltenListe extends StatelessWidget {
     WordPair pair;
 
     return ListView(
-      scrollDirection: Axis.vertical,
+      physics: ScrollPhysics(),
       shrinkWrap: true,
       children: [
         for (pair in startState.erstellteRezepte)
@@ -302,7 +308,14 @@ class ErstelltenListe extends StatelessWidget {
                     return ScreenRezeptBearbeitung(pair: pair);
                   });
             },
-            leading: Icon(Icons.library_books),
+            leading: Container(
+                padding: EdgeInsets.only(right: 12.0),
+                decoration: BoxDecoration(
+                    border: Border(
+                        right: BorderSide(
+                            width: 1.0,
+                            color: Theme.of(context).colorScheme.onSecondary))),
+                child: Icon(Icons.library_books)),
             title: Text(pair.asLowerCase),
           ),
       ],

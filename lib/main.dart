@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
 import 'package:json_theme/json_theme.dart';
+import 'package:get/get.dart';
 
 import 'package:flutter/services.dart';
 import 'dart:convert';
@@ -30,7 +31,7 @@ class MainApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
       create: (context) => StartState(),
-      child: MaterialApp(
+      child: GetMaterialApp(
         home: ScreenHome(),
         title: "Barfbook",
         theme: theme,

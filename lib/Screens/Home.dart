@@ -1,10 +1,10 @@
 import 'package:Barfbook/Screens/Lexikon/Lexikon.dart';
 import 'package:Barfbook/Screens/Mehr/Mehr.dart';
 import 'package:flutter/material.dart';
+import 'package:animations/animations.dart';
 
 import 'Barfbook/Barfbook.dart';
 import 'Entdecken.dart';
-import 'Lexikon/Suche.dart';
 
 class ScreenHome extends StatefulWidget {
   @override
@@ -24,10 +24,10 @@ class _ScreenHomeState extends State<ScreenHome> {
         seite = ScreenEntdecken();
         break;
       case 1:
-        seite = ScreenLexikon();
+        seite = ScreenBarfbook();
         break;
       case 2:
-        seite = ScreenBarfbook();
+        seite = ScreenLexikon();
         break;
       case 3:
         seite = ScreenMehr();
@@ -43,14 +43,18 @@ class _ScreenHomeState extends State<ScreenHome> {
     }
 
     return Scaffold(
-      // appBar: AppBar(
-      //   scrolledUnderElevation: 2,
-      //   shadowColor: Theme.of(context).colorScheme.shadow,
-      //   title: Center(
-      //       child: Text(appBarTitel,
-      //           style: TextStyle(fontWeight: FontWeight.bold))),
-      // ),
-      body: Center(
+      body: PageTransitionSwitcher(
+        transitionBuilder: (
+          Widget child,
+          Animation<double> animation,
+          Animation<double> secondaryAnimation,
+        ) {
+          return FadeThroughTransition(
+            animation: animation,
+            secondaryAnimation: secondaryAnimation,
+            child: child,
+          );
+        },
         child: seite,
       ),
       bottomNavigationBar: BottomNavigationBar(
@@ -64,12 +68,12 @@ class _ScreenHomeState extends State<ScreenHome> {
             label: 'Entdecken',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.search),
-            label: 'Suche',
-          ),
-          BottomNavigationBarItem(
             icon: Icon(Icons.menu_book),
             label: 'Barfbook',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.library_books),
+            label: 'Lexikon',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.more_horiz),
