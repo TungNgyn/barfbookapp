@@ -26,7 +26,11 @@ class ScreenBarfbook extends StatelessWidget {
               double opacityVar = appBarConstraints.floor() == 159
                   ? 1
                   : (((appBarConstraints - 137).abs()) * 0.045);
-              opacityVar <= 0 ? opacityVar = 0 : opacityVar;
+              opacityVar <= 0
+                  ? opacityVar = 0
+                  : opacityVar >= 1
+                      ? opacityVar = 1
+                      : opacityVar;
               return FlexibleSpaceBar(
                   title: Opacity(
                       opacity: opacityVar,

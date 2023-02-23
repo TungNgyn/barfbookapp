@@ -1,9 +1,10 @@
+import 'package:Barfbook/Screens/Lexikon/Lexikon.dart';
+import 'package:Barfbook/Screens/Mehr/Mehr.dart';
 import 'package:flutter/material.dart';
 
 import 'Barfbook/Barfbook.dart';
 import 'Entdecken.dart';
-import 'Profil.dart';
-import 'Suche.dart';
+import 'Lexikon/Suche.dart';
 
 class ScreenHome extends StatefulWidget {
   @override
@@ -21,23 +22,15 @@ class _ScreenHomeState extends State<ScreenHome> {
     switch (navigationIndex) {
       case 0:
         seite = ScreenEntdecken();
-        print("ScreenEntdecken");
-        appBarTitel = 'Entdecken';
         break;
       case 1:
-        seite = ScreenSuche();
-        print("ScreenSuche");
-        appBarTitel = 'Suche';
+        seite = ScreenLexikon();
         break;
       case 2:
         seite = ScreenBarfbook();
-        print("ScreenBarfbook");
-        appBarTitel = 'Barfbook';
         break;
       case 3:
-        seite = ScreenProfil();
-        print("ScreenProfil");
-        appBarTitel = 'Profil';
+        seite = ScreenMehr();
         break;
       default:
         throw UnimplementedError('Kein Widget für ${navigationIndex}');
@@ -79,8 +72,8 @@ class _ScreenHomeState extends State<ScreenHome> {
             label: 'Barfbook',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.account_circle),
-            label: 'Profil',
+            icon: Icon(Icons.more_horiz),
+            label: 'Mehr',
           )
         ],
       ),

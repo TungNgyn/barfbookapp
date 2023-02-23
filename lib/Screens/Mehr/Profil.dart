@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 
-import '../main.dart';
+import '../../main.dart';
 
 class ScreenProfil extends StatelessWidget {
   @override
