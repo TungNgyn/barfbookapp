@@ -3,6 +3,14 @@ import 'package:animations/animations.dart';
 
 import 'DetailPage.dart';
 
+final Map<String, Map<String, dynamic>> articlesCards = {
+  "Ice Cream": {
+    "title": "Ice cream is made with carrageenan …",
+    "image":
+        "https://images.unsplash.com/photo-1516559828984-fb3b99548b21?ixlib=rb-1.2.1&auto=format&fit=crop&w=2100&q=80"
+  }
+};
+
 class ScreenLexikon extends StatefulWidget {
   @override
   _lexikonStartState createState() => _lexikonStartState();
@@ -46,21 +54,203 @@ class _lexikonStartState extends State<ScreenLexikon> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             SizedBox(height: 120),
-            Text(
-              "Alles zum Thema Barf.",
-              style: TextStyle(
-                  fontSize: 21,
-                  color: Theme.of(context).colorScheme.onSecondary),
-            ),
-            SizedBox(
-              height: 20,
-            ),
-            WhatIsBarfCard(),
-            WhatIsBarfCard(),
+            Container(
+              padding: EdgeInsets.only(right: 24, left: 24, bottom: 36),
+              child: SingleChildScrollView(
+                  child: Column(
+                children: [
+                  Padding(
+                    padding: EdgeInsets.only(left: 8, top: 32),
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        "Alles zum Thema Barf.",
+                        style: TextStyle(
+                            fontSize: 21, fontWeight: FontWeight.w600),
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(top: 16),
+                    child: CardHorizontal(),
+                  ),
+                  SizedBox(
+                    height: 8,
+                  ),
+                  Row(
+                    children: [
+                      CardSmall(
+                        cta: "View article",
+                        title: articlesCards["Ice Cream"]!['title'],
+                        img: articlesCards["Ice Cream"]!['image'],
+                      ),
+                      CardSmall()
+                    ],
+                  )
+                ],
+              )),
+            )
           ],
         ),
       ),
     );
+  }
+}
+
+class CardHorizontal extends StatelessWidget {
+  CardHorizontal(
+      {this.title = "Placeholder Title",
+      this.cta = "",
+      this.img = "https://via.placeholder.com/200"});
+
+  final String cta;
+  final String img;
+  final String title;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+        height: 130,
+        child: OpenContainer(
+            openBuilder: (context, closedContainer) {
+              return DetailPage(
+                titleIcon: WhatIsBarf().titleIcon,
+                titleText: WhatIsBarf().titleText,
+                textContent: WhatIsBarf().textContent,
+              );
+            },
+            openColor: Theme.of(context).cardColor,
+            closedShape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(0))),
+            closedElevation: 0,
+            closedColor: Theme.of(context).cardColor,
+            closedBuilder: (context, openContainer) {
+              return GestureDetector(
+                child: Card(
+                  elevation: 3,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(4.0))),
+                  child: Row(
+                    children: [
+                      Flexible(
+                        flex: 1,
+                        child: Container(
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.only(
+                                    topLeft: Radius.circular(4.0),
+                                    bottomLeft: Radius.circular(4.0)),
+                                image: DecorationImage(
+                                  image: NetworkImage(img),
+                                  fit: BoxFit.cover,
+                                ))),
+                      ),
+                      Flexible(
+                          flex: 1,
+                          child: Padding(
+                            padding: const EdgeInsets.all(16.0),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(title, style: TextStyle(fontSize: 12)),
+                                Text(cta,
+                                    style: TextStyle(
+                                        fontSize: 11,
+                                        fontWeight: FontWeight.w600))
+                              ],
+                            ),
+                          ))
+                    ],
+                  ),
+                ),
+              );
+            }));
+  }
+}
+
+class CardSmall extends StatelessWidget {
+  CardSmall(
+      {this.title = "Placeholder Title",
+      this.cta = "",
+      this.img = "https://via.placeholder.com/200"});
+
+  final String cta;
+  final String img;
+  final String title;
+
+  @override
+  Widget build(BuildContext context) {
+    return Flexible(
+        child: Container(
+            height: 235,
+            child: OpenContainer(
+                openBuilder: (context, closedContainer) {
+                  return DetailPage(
+                    titleIcon: WhatIsBarf().titleIcon,
+                    titleText: WhatIsBarf().titleText,
+                    textContent: WhatIsBarf().textContent,
+                  );
+                },
+                openColor: Theme.of(context).cardColor,
+                closedShape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(0))),
+                closedElevation: 0,
+                closedColor: Theme.of(context).cardColor,
+                closedBuilder: (context, openContainer) {
+                  return GestureDetector(
+                    onTap: () {
+                      openContainer();
+                    },
+                    child: Card(
+                        elevation: 3,
+                        shape: RoundedRectangleBorder(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(4.0))),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Flexible(
+                                flex: 11,
+                                child: Container(
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.only(
+                                            topLeft: Radius.circular(4.0),
+                                            topRight: Radius.circular(4.0)),
+                                        image: DecorationImage(
+                                          image: NetworkImage(img),
+                                          fit: BoxFit.cover,
+                                        )))),
+                            Flexible(
+                                flex: 9,
+                                child: Padding(
+                                  padding: const EdgeInsets.only(
+                                      top: 16.0,
+                                      bottom: 16.0,
+                                      left: 16.0,
+                                      right: 16.0),
+                                  child: Column(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(title,
+                                          style: TextStyle(fontSize: 12)),
+                                      Padding(
+                                        padding:
+                                            const EdgeInsets.only(top: 8.0),
+                                        child: Text(cta,
+                                            style: TextStyle(
+                                                fontSize: 11,
+                                                fontWeight: FontWeight.w600)),
+                                      )
+                                    ],
+                                  ),
+                                ))
+                          ],
+                        )),
+                  );
+                })));
   }
 }
 
