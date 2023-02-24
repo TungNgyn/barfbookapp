@@ -1,12 +1,7 @@
-import 'package:Barfbook/Screens/Lexikon/faq/whatisbarf.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:get/get_connect/http/src/utils/utils.dart';
-import 'package:provider/provider.dart';
-import 'package:settings_ui/settings_ui.dart';
 import 'package:animations/animations.dart';
 
-import '../../main.dart';
+import 'DetailPage.dart';
 
 class ScreenLexikon extends StatefulWidget {
   @override
@@ -60,75 +55,92 @@ class _lexikonStartState extends State<ScreenLexikon> {
             SizedBox(
               height: 20,
             ),
-            // ConstrainedBox(
-            //   constraints: BoxConstraints.tightFor(width: 400, height: 200),
-            //   child: ElevatedButton(
-            //     onPressed: () {},
-            //     child: Text("Was ist Barf?",
-            //         style: TextStyle(
-            //             color: Theme.of(context).colorScheme.primary,
-            //             fontSize: 30,
-            //             fontWeight: FontWeight.bold)),
-            //   ),
-            // )
-            OpenContainer(
-              openBuilder: (context, closedContainer) {
-                return whatsis();
-              },
-              openColor: Theme.of(context).cardColor,
-              closedShape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(0))),
-              closedElevation: 0,
-              closedColor: Theme.of(context).cardColor,
-              closedBuilder: (context, openContainer) {
-                return GestureDetector(
-                  onTap: () {
-                    openContainer();
-                  },
-                  child: Card(
-                      elevation: 5,
-                      color: Colors.grey,
-                      child: Container(
-                          height: 200,
-                          padding: const EdgeInsets.only(
-                              left: 16.0, right: 16.0, bottom: 22.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.only(top: 16.0),
-                                child: Text("Was ist Barf?",
-                                    style: TextStyle(
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .onPrimaryContainer,
-                                        fontSize: 30,
-                                        fontWeight: FontWeight.bold)),
-                              ),
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    "Alle Antworten zu deinen Fragen",
-                                    style: TextStyle(
-                                        fontSize: 21,
-                                        fontWeight: FontWeight.bold,
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .onSecondaryContainer),
-                                  )
-                                ],
-                              )
-                            ],
-                          ))),
-                );
-              },
-            ),
+            WhatIsBarfCard(),
+            WhatIsBarfCard(),
           ],
         ),
       ),
     );
   }
+}
+
+class WhatIsBarfCard extends StatelessWidget {
+  const WhatIsBarfCard({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return OpenContainer(
+      openBuilder: (context, closedContainer) {
+        return DetailPage(
+          titleIcon: WhatIsBarf().titleIcon,
+          titleText: WhatIsBarf().titleText,
+          textContent: WhatIsBarf().textContent,
+        );
+      },
+      openColor: Theme.of(context).cardColor,
+      closedShape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(0))),
+      closedElevation: 0,
+      closedColor: Theme.of(context).cardColor,
+      closedBuilder: (context, openContainer) {
+        return GestureDetector(
+          onTap: () {
+            openContainer();
+          },
+          child: Card(
+              elevation: 5,
+              color: Colors.grey,
+              child: Container(
+                  height: 200,
+                  padding: const EdgeInsets.only(
+                      left: 16.0, right: 16.0, bottom: 22.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(top: 16.0),
+                        child: Text(WhatIsBarf().titleText,
+                            style: TextStyle(
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .onPrimaryContainer,
+                                fontSize: 30,
+                                fontWeight: FontWeight.bold)),
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            WhatIsBarf().subTitleText,
+                            style: TextStyle(
+                                fontSize: 21,
+                                fontWeight: FontWeight.bold,
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .onSecondaryContainer),
+                          )
+                        ],
+                      )
+                    ],
+                  ))),
+        );
+      },
+    );
+  }
+}
+
+class WhatIsBarf {
+  Icon titleIcon = Icon(
+    Icons.question_mark,
+    color: Colors.white,
+    size: 40.0,
+  );
+  String titleText = 'Was ist Barf?';
+  String subTitleText = 'Alle Antworten zu deinen Fragen.';
+  String textContent =
+      'BARF bzw. Barfen steht für die Rohfütterung von verschiedenen Tieren. Der Begriff stammt ursprünglich aus den USA und war zunächst ein Kurzwort für „born again raw feeders“, also „wiedergeborene Rohfütterer“. Hierbei wurde auch auf den ideologischen Aspekt dieser Fütterungsform eingegangen. Eine weitere Bedeutung ist „bones and raw food" - Knochen und rohes Futter, was die Hauptkomponenten beim Barfen umschreibt. In Deutschland hat sich die Langform „biologisch artgerechte Rohfütterung“ durchgesetzt.'
+      'BARF bzw. Barfen steht für die Rohfütterung von verschiedenen Tieren. Der Begriff stammt ursprünglich aus den USA und war zunächst ein Kurzwort für „born again raw feeders“, also „wiedergeborene Rohfütterer“. Hierbei wurde auch auf den ideologischen Aspekt dieser Fütterungsform eingegangen. Eine weitere Bedeutung ist „bones and raw food" - Knochen und rohes Futter, was die Hauptkomponenten beim Barfen umschreibt. In Deutschland hat sich die Langform „biologisch artgerechte Rohfütterung“ durchgesetzt.';
 }
