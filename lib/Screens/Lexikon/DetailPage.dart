@@ -33,9 +33,6 @@ class DetailPage extends StatelessWidget {
       ],
       body: Column(
         children: [
-          SizedBox(
-            height: MediaQuery.of(context).size.height * 0.15,
-          ),
           bottomContent(context: context, textContent: textContent),
         ],
       ),
@@ -63,9 +60,13 @@ class topContent extends StatelessWidget {
                   image: AssetImage(
                       "assets/images/lexicon/whatis/barfbanner.webp")))),
       // Opacity
-      Container(
-        decoration: BoxDecoration(color: Color.fromRGBO(58, 66, 86, .8)),
-      ), //Back Arrow
+      // Opacity(
+      //   opacity: 0.7,
+      //   child: Container(
+      //     decoration:
+      //         BoxDecoration(color: Theme.of(context).colorScheme.background),
+      //   ),
+      // )
     ]);
   }
 }
@@ -80,13 +81,17 @@ class bottomContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(left: 25.0, right: 25.0),
-      child: SingleChildScrollView(
-        scrollDirection: Axis.vertical,
-        child: Text(
-          textContent,
-          style: TextStyle(fontSize: 21),
+    return Container(
+      height: MediaQuery.of(context).size.height,
+      child: Padding(
+        padding: const EdgeInsets.only(
+            left: 25.0, right: 25.0, bottom: 25, top: 130),
+        child: SingleChildScrollView(
+          scrollDirection: Axis.vertical,
+          child: Text(
+            textContent,
+            style: TextStyle(fontSize: 21),
+          ),
         ),
       ),
     );
