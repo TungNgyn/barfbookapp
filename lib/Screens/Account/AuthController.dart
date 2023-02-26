@@ -1,4 +1,5 @@
 import 'package:Barfbook/Screens/Home.dart';
+import 'package:Barfbook/firebase_options.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -6,7 +7,9 @@ import 'package:firebase_core/firebase_core.dart';
 import 'Login.dart';
 
 AuthController authController = AuthController.instance;
-final Future<FirebaseApp> firebaseInitialization = Firebase.initializeApp();
+final Future<FirebaseApp> firebaseInitialization = Firebase.initializeApp(
+  options: DefaultFirebaseOptions.currentPlatform,
+);
 var authHandler = AuthController();
 final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
 

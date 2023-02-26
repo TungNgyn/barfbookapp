@@ -102,7 +102,11 @@ class _LogInState extends State<ScreenLogIn> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text("Als Gast fortfahren"),
+                  GestureDetector(
+                      onTap: () {
+                        firebaseAuth.signInAnonymously();
+                      },
+                      child: Text("Als Gast fortfahren")),
                   VerticalDivider(
                     width: 10,
                     thickness: 0.5,

@@ -104,9 +104,12 @@ class _settingsStartState extends State<ScreenMehr>
                           padding: EdgeInsets.all(8.0),
                           child: FlutterLogo(size: 100),
                         )),
-                    Text(firebaseAuth.currentUser!.email == null
-                        ? ""
-                        : firebaseAuth.currentUser!.email.toString())
+                    Text(
+                      firebaseAuth.currentUser!.email == null
+                          ? "Gast"
+                          : firebaseAuth.currentUser!.email.toString(),
+                      style: TextStyle(color: Colors.white),
+                    )
                   ],
                 )),
             Expanded(
