@@ -19,6 +19,7 @@ dependencies:
   get: ^4.6.5
   animations: ^2.0.7
   supabase_flutter: ^1.4.1
+  image_picker: ^0.8.6+3
 
 dev_dependencies:
   flutter_test:

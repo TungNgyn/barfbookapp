@@ -1,8 +1,13 @@
-import 'package:Barfbook/Supabase/AuthController.dart';
+import 'package:Barfbook/Screens/Account/Login.dart';
+import 'package:Barfbook/util/Supabase/DB.dart';
+import 'package:Barfbook/Screens/Account/avatar.dart';
+import 'package:Barfbook/util/Supabase/AuthController.dart';
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'package:settings_ui/settings_ui.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../main.dart';
 
@@ -68,6 +73,31 @@ class _settingsStartState extends State<ScreenMehr>
     }
   }
 
+  String? _avatarUrl;
+  Future<void> _onUpload(String imageUrl) async {
+    try {
+      final userId = supabase.auth.currentUser!.id;
+      await supabase.from('profiles').upsert({
+        'id': userId,
+        'avatar_url': imageUrl,
+      });
+      if (mounted) {
+        Get.snackbar("message", 'Updated your profile image!');
+      }
+    } on PostgrestException catch (error) {
+      Get.snackbar("message", error.message);
+    } catch (error) {
+      Get.snackbar("message", 'Unexpected error has occurred');
+    }
+    if (!mounted) {
+      return;
+    }
+
+    setState(() {
+      _avatarUrl = imageUrl;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -102,13 +132,13 @@ class _settingsStartState extends State<ScreenMehr>
                         elevation: 10,
                         child: Padding(
                           padding: EdgeInsets.all(8.0),
-                          child: FlutterLogo(size: 100),
+                          child: Avatar(
+                              imageUrl:
+                                  "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Default_pfp.svg/1200px-Default_pfp.svg.png",
+                              onUpload: _onUpload),
                         )),
                     Text(
-                      "allo",
-                      // firebaseAuth.currentUser!.email == null
-                      //     ? "Gast"
-                      //     : firebaseAuth.currentUser!.email.toString(),
+                      "${user?.email}",
                       style: TextStyle(color: Colors.white),
                     )
                   ],
@@ -203,7 +233,12 @@ class SectionProfile extends StatelessWidget {
       title: Text("Profil"),
       tiles: [
         SettingsTile(title: Text("Anmelden")),
-        SettingsTile(title: Text("Abonnement abschließen"))
+        SettingsTile(title: Text("Abonnement abschließen")),
+        SettingsTile(
+          title: Text("Abmelden"),
+          onPressed: (context) =>
+              {authController.signOut(), Get.to(() => ScreenLogin())},
+        )
       ],
     );
   }

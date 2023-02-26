@@ -1,5 +1,5 @@
-import 'package:Barfbook/Screens/Account/Loading.dart';
-import 'package:Barfbook/Screens/Account/SignIn.dart';
+import 'package:Barfbook/Screens/Account/Splash.dart';
+import 'package:Barfbook/Screens/Account/Login.dart';
 import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -11,18 +11,12 @@ import 'package:flutter/services.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'dart:convert';
 import 'Screens/Account/SignUp.dart';
-import 'Supabase/AuthController.dart';
+import 'util/Supabase/AuthController.dart';
 import 'Screens/Home.dart';
 
 void main() async {
-  runApp(ScreenLoading());
+  runApp(ScreenSplash());
   WidgetsFlutterBinding.ensureInitialized();
-
-  await Supabase.initialize(
-    url: 'https://wokqzyqvqztmyzhhuqqh.supabase.co',
-    anonKey:
-        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indva3F6eXF2cXp0bXl6aGh1cXFoIiwicm9sZSI6ImFub24iLCJpYXQiOjE2Nzc0MTAwNjUsImV4cCI6MTk5Mjk4NjA2NX0.Lw1KOvMQsD7mx_NbiXvZ2uxGTX61j_oSS93v_DqTyG0',
-  );
 
   var helligkeit = SchedulerBinding.instance.window.platformBrightness;
   bool darkModus = helligkeit == Brightness.dark;
@@ -33,6 +27,11 @@ void main() async {
   final themeJson = jsonDecode(themeStr);
   final theme = ThemeDecoder.decodeThemeData(themeJson);
 
+  await Supabase.initialize(
+    url: 'https://wokqzyqvqztmyzhhuqqh.supabase.co',
+    anonKey:
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indva3F6eXF2cXp0bXl6aGh1cXFoIiwicm9sZSI6ImFub24iLCJpYXQiOjE2Nzc0MTAwNjUsImV4cCI6MTk5Mjk4NjA2NX0.Lw1KOvMQsD7mx_NbiXvZ2uxGTX61j_oSS93v_DqTyG0',
+  );
   runApp(MainApp(theme: theme));
 }
 
@@ -45,7 +44,7 @@ class MainApp extends StatelessWidget {
     return ChangeNotifierProvider(
       create: (context) => StartState(),
       child: GetMaterialApp(
-        home: ScreenHome(),
+        home: user == null ? ScreenLogin() : ScreenHome(),
         title: "Barfbook",
         theme: theme,
         debugShowCheckedModeBanner: false,

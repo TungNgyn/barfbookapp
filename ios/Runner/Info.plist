@@ -47,5 +47,23 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	  <key>CFBundleURLTypes</key>
+  <array>
+    <dict>
+      <key>CFBundleTypeRole</key>
+      <string>Editor</string>
+      <key>CFBundleURLSchemes</key>
+      <array>
+        <string>https://wokqzyqvqztmyzhhuqqh.supabase.co</string>
+      </array>
+    </dict>
+  </array>
+
+  <key>NSPhotoLibraryUsageDescription</key>
+  <string>Image of recipes or avatars.</string>
+  <key>NSCameraUsageDescription</key>
+  <string>Image of recipes or avatars.</string>
+  <key>NSMicrophoneUsageDescription</key>
+  <string>Image of recipes or avatars.</string>
 </dict>
 </plist>

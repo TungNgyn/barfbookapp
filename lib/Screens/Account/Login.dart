@@ -1,20 +1,61 @@
+import 'dart:async';
+
+import 'package:Barfbook/Screens/Home.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
-import 'package:get/get_connect/http/src/utils/utils.dart';
-import '../../Supabase/AuthController.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+import '../../util/Supabase/AuthController.dart';
+import 'SignUp.dart';
 
-class ScreenLogIn extends StatefulWidget {
+class ScreenLogin extends StatefulWidget {
   @override
-  _LogInState createState() => _LogInState();
+  _LoginState createState() => _LoginState();
 }
 
-class _LogInState extends State<ScreenLogIn> {
-  final _emailController = TextEditingController();
-  final _passwordController = TextEditingController();
+class _LoginState extends State<ScreenLogin> {
+  bool _isLoading = false;
+  bool _redirecting = false;
+  late final _emailController;
+  late final _passwordController;
+  late final StreamSubscription<AuthState> _authStateSubscription;
 
   String get email => _emailController.text.trim();
   String get password => _passwordController.text.trim();
+
+  Future<void> _signIn() async {
+    setState(() {
+      _isLoading = true;
+    });
+    authController.loginWithEmail(email, password);
+    setState(() {
+      _isLoading = false;
+    });
+  }
+
+  @override
+  void initState() {
+    _emailController = TextEditingController();
+    _passwordController = TextEditingController();
+    _authStateSubscription = supabase.auth.onAuthStateChange.listen((data) {
+      if (_redirecting) return;
+      final session = data.session;
+      if (session != null) {
+        _redirecting = true;
+        Get.to(() => ScreenHome());
+      }
+    });
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    _authStateSubscription.cancel();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -87,10 +128,9 @@ class _LogInState extends State<ScreenLogIn> {
                     child: Center(
                         child: ElevatedButton(
                             onPressed: () {
-                              authController.signInWithEmail(email, password);
-                              print(user!.id);
+                              _isLoading ? null : _signIn();
                             },
-                            child: Text("Anmelden"))),
+                            child: Text(_isLoading ? 'Laden..' : 'Anmelden'))),
                   )
                 ],
               ),
@@ -100,13 +140,17 @@ class _LogInState extends State<ScreenLogIn> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   GestureDetector(
-                      onTap: () {}, child: Text("Als Gast fortfahren")),
+                      onTap: () {
+                        authController.loginWithGuest();
+                        Get.to(() => ScreenHome());
+                      },
+                      child: Text("Als Gast fortfahren")),
                   VerticalDivider(
                     width: 10,
                     thickness: 0.5,
                   ),
                   GestureDetector(
-                    onTap: () => print("Sign Up Tapped"),
+                    onTap: () => Get.to(() => ScreenSignUp()),
                     child: Text("Registrieren"),
                   ),
                 ],

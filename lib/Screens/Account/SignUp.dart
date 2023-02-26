@@ -1,8 +1,13 @@
+import 'dart:async';
+
+import 'package:Barfbook/Screens/Account/Login.dart';
+import 'package:Barfbook/util/Supabase/AuthController.dart';
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
 import 'package:get/get_connect/http/src/utils/utils.dart';
-import '../../Supabase/AuthController.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+import '../Home.dart';
 
 class ScreenSignUp extends StatefulWidget {
   @override
@@ -10,13 +15,49 @@ class ScreenSignUp extends StatefulWidget {
 }
 
 class _SignUpState extends State<ScreenSignUp> {
-  final _emailController = TextEditingController();
-  final _passwordController = TextEditingController();
-  final _usernameController = TextEditingController();
+  bool _isLoading = false;
+  bool _redirecting = false;
+  late final _emailController;
+  late final _usernameController;
+  late final _passwordController;
+  late final StreamSubscription<AuthState> _authStateSubscription;
 
-  String get username => _usernameController.text.trim();
   String get email => _emailController.text.trim();
+  String get username => _usernameController.text.trim();
   String get password => _passwordController.text.trim();
+
+  Future<void> _signIn() async {
+    setState(() {
+      _isLoading = true;
+    });
+    authController.signUp(email, username, password);
+    setState(() {
+      _isLoading = false;
+    });
+  }
+
+  @override
+  void initState() {
+    _emailController = TextEditingController();
+    _passwordController = TextEditingController();
+    _authStateSubscription = supabase.auth.onAuthStateChange.listen((data) {
+      if (_redirecting) return;
+      final session = data.session;
+      if (session != null) {
+        _redirecting = true;
+        Get.to(() => ScreenHome());
+      }
+    });
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    _authStateSubscription.cancel();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -91,8 +132,18 @@ class _SignUpState extends State<ScreenSignUp> {
                     child: Center(
                         child: ElevatedButton(
                             onPressed: () {
-                              // authController.signUp(email, username, password);
-                              print("user = ${user!.email}");
+                              RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+                                          .hasMatch(email) ==
+                                      true
+                                  ? password.length >= 8
+                                      ? {
+                                          authController.signUp(
+                                              email, username, password),
+                                          Get.to(() => ScreenHome())
+                                        }
+                                      : print("Passwort zu kurz")
+                                  : print("Falsches Email-Format");
+                              print("${user!.email}");
                             },
                             child: Text("Registrieren"))),
                   )
@@ -110,8 +161,8 @@ class _SignUpState extends State<ScreenSignUp> {
                     thickness: 0.5,
                   ),
                   GestureDetector(
-                    onTap: () => print(user),
-                    child: Text("Registrieren"),
+                    onTap: () => Get.to(() => ScreenLogin()),
+                    child: Text("Anmelden"),
                   ),
                 ],
               ),
@@ -138,13 +189,5 @@ class _SignUpState extends State<ScreenSignUp> {
       ),
       obscureText: obSecure,
     );
-  }
-
-  @override
-  void dispose() {
-    _usernameController.dispose();
-    _emailController.dispose();
-    _passwordController.dispose();
-    super.dispose();
   }
 }
