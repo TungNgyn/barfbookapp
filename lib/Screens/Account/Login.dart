@@ -23,8 +23,17 @@ class _LogInState extends State<ScreenLogIn> {
   Widget build(BuildContext context) {
     final _media = MediaQuery.of(context).size;
     return Scaffold(
-      body: SingleChildScrollView(
-        child: Column(
+      body: Stack(children: [
+        Opacity(
+          opacity: 0.5,
+          child: Container(
+            decoration: BoxDecoration(
+                image: DecorationImage(
+                    image: AssetImage("assets/images/barfbookapp.png"),
+                    fit: BoxFit.fill)),
+          ),
+        ),
+        Column(
           children: [
             Padding(
               padding:
@@ -70,24 +79,34 @@ class _LogInState extends State<ScreenLogIn> {
                       child: Column(
                         children: [
                           inputText("Benutzername", _emailController, false),
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Divider(height: 5, color: Colors.black),
-                          ),
+                          Divider(height: 5, color: Colors.black),
                           inputText("Passwort", _passwordController, true),
                         ],
                       ),
                     ),
                   ),
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 20.0),
+                    child: Center(
+                        child: ElevatedButton(
+                            onPressed: () {
+                              authHandler.handleSignUp(email, password);
+                              print(_emailController.text);
+                            },
+                            child: Text("Anmelden"))),
+                  )
                 ],
               ),
             ),
-            Container(
-              width: _media.width,
+            IntrinsicHeight(
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text("Als Gast fortfahren"),
+                  VerticalDivider(
+                    width: 10,
+                    thickness: 0.5,
+                  ),
                   GestureDetector(
                     onTap: () => print("Sign Up Tapped"),
                     child: Text("Registrieren"),
@@ -97,7 +116,7 @@ class _LogInState extends State<ScreenLogIn> {
             ),
           ],
         ),
-      ),
+      ]),
     );
   }
 

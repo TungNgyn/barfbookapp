@@ -1,3 +1,4 @@
+import 'package:Barfbook/Screens/Account/AuthController.dart';
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -102,7 +103,10 @@ class _settingsStartState extends State<ScreenMehr>
                         child: Padding(
                           padding: EdgeInsets.all(8.0),
                           child: FlutterLogo(size: 100),
-                        ))
+                        )),
+                    Text(firebaseAuth.currentUser!.email == null
+                        ? ""
+                        : firebaseAuth.currentUser!.email.toString())
                   ],
                 )),
             Expanded(

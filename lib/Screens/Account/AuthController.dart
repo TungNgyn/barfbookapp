@@ -7,7 +7,8 @@ import 'Login.dart';
 
 AuthController authController = AuthController.instance;
 final Future<FirebaseApp> firebaseInitialization = Firebase.initializeApp();
-FirebaseAuth firebaseAuth = FirebaseAuth.instance;
+var authHandler = AuthController();
+final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
 
 class AuthController extends GetxController {
   static AuthController instance = Get.find();
@@ -32,21 +33,19 @@ class AuthController extends GetxController {
     }
   }
 
-  void register(String email, password) async {
-    try {
-      await firebaseAuth.createUserWithEmailAndPassword(
-          email: email, password: password);
-    } catch (firebaseAuthException) {
-      print(firebaseAuthException);
-    }
+  Future<User> handleLogIn(String email, String password) async {
+    UserCredential result = await firebaseAuth.signInWithEmailAndPassword(
+        email: email, password: password);
+    final User user = result.user!;
+
+    return user;
   }
 
-  void login(String email, String password) async {
-    try {
-      await firebaseAuth.signInWithEmailAndPassword(
-          email: email, password: password);
-    } catch (firebaseAuthException) {
-      print(firebaseAuthException);
-    }
+  Future<User> handleSignUp(email, password) async {
+    UserCredential result = await firebaseAuth.createUserWithEmailAndPassword(
+        email: email, password: password);
+    final User user = result.user!;
+
+    return user;
   }
 }

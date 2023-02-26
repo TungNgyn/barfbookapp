@@ -1,3 +1,4 @@
+import 'package:Barfbook/Screens/Account/Login.dart';
 import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -7,10 +8,16 @@ import 'package:get/get.dart';
 
 import 'package:flutter/services.dart';
 import 'dart:convert';
+import 'Screens/Account/AuthController.dart';
 import 'Screens/Home.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  await firebaseInitialization.then((value) => {
+        Get.put(AuthController()),
+      });
+
   var helligkeit = SchedulerBinding.instance.window.platformBrightness;
   bool darkModus = helligkeit == Brightness.dark;
 
@@ -32,7 +39,7 @@ class MainApp extends StatelessWidget {
     return ChangeNotifierProvider(
       create: (context) => StartState(),
       child: GetMaterialApp(
-        home: ScreenHome(),
+        home: ScreenLogIn(),
         title: "Barfbook",
         theme: theme,
         debugShowCheckedModeBanner: false,
