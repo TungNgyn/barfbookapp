@@ -1,21 +1,20 @@
 import 'package:flutter/material.dart';
 
-import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
 import 'package:get/get_connect/http/src/utils/utils.dart';
-import '../../firebase_options.dart';
-import 'AuthController.dart';
+import '../../Supabase/AuthController.dart';
 
-class ScreenLogIn extends StatefulWidget {
+class ScreenSignUp extends StatefulWidget {
   @override
-  _LogInState createState() => _LogInState();
+  _SignUpState createState() => _SignUpState();
 }
 
-class _LogInState extends State<ScreenLogIn> {
+class _SignUpState extends State<ScreenSignUp> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  final _usernameController = TextEditingController();
 
+  String get username => _usernameController.text.trim();
   String get email => _emailController.text.trim();
   String get password => _passwordController.text.trim();
 
@@ -58,12 +57,12 @@ class _LogInState extends State<ScreenLogIn> {
                   ),
                   SizedBox(height: 30),
                   Text(
-                    'Anmeldung',
+                    'Registrierung',
                     style: TextStyle(fontWeight: FontWeight.w200, fontSize: 33),
                   ),
                   SizedBox(height: 50),
                   Container(
-                    height: _media.height / 4.5,
+                    height: _media.height / 3.5,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(20),
                       boxShadow: [
@@ -78,7 +77,9 @@ class _LogInState extends State<ScreenLogIn> {
                       padding: const EdgeInsets.all(30.0),
                       child: Column(
                         children: [
-                          inputText("Benutzername", _emailController, false),
+                          inputText("Benutzername", _usernameController, false),
+                          Divider(height: 5, color: Colors.black),
+                          inputText("Email", _emailController, false),
                           Divider(height: 5, color: Colors.black),
                           inputText("Passwort", _passwordController, true),
                         ],
@@ -90,10 +91,10 @@ class _LogInState extends State<ScreenLogIn> {
                     child: Center(
                         child: ElevatedButton(
                             onPressed: () {
-                              authHandler.handleSignUp(email, password);
-                              print(_emailController.text);
+                              // authController.signUp(email, username, password);
+                              print("user = ${user!.email}");
                             },
-                            child: Text("Anmelden"))),
+                            child: Text("Registrieren"))),
                   )
                 ],
               ),
@@ -103,16 +104,13 @@ class _LogInState extends State<ScreenLogIn> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   GestureDetector(
-                      onTap: () {
-                        firebaseAuth.signInAnonymously();
-                      },
-                      child: Text("Als Gast fortfahren")),
+                      onTap: () {}, child: Text("Als Gast fortfahren")),
                   VerticalDivider(
                     width: 10,
                     thickness: 0.5,
                   ),
                   GestureDetector(
-                    onTap: () => print("Sign Up Tapped"),
+                    onTap: () => print(user),
                     child: Text("Registrieren"),
                   ),
                 ],
@@ -140,5 +138,13 @@ class _LogInState extends State<ScreenLogIn> {
       ),
       obscureText: obSecure,
     );
+  }
+
+  @override
+  void dispose() {
+    _usernameController.dispose();
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
   }
 }
