@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "946526640203",
+    "project_id": "barfbook-70fc0",
+    "storage_bucket": "barfbook-70fc0.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:946526640203:android:bc5ce2e6e35700828f95ce",
+        "android_client_info": {
+          "package_name": "com.example.barfbookapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "946526640203-8mjnjtd9s4fblsr0ke8vnsljqfbd98pc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDqZByw8ysVQHgqWHogxbBH81OCHLiz6vU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "946526640203-8mjnjtd9s4fblsr0ke8vnsljqfbd98pc.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
