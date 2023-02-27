@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 
 import '../../main.dart';
 
-class ScreenProfil extends StatelessWidget {
+class ScreenProfile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var startState = context.watch<StartState>();

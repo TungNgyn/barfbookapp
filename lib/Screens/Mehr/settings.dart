@@ -1,23 +1,19 @@
 import 'package:Barfbook/Screens/Account/Login.dart';
-import 'package:Barfbook/util/Supabase/DB.dart';
-import 'package:Barfbook/Screens/Account/avatar.dart';
+import 'package:Barfbook/main.dart';
 import 'package:Barfbook/util/Supabase/AuthController.dart';
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:provider/provider.dart';
 import 'package:settings_ui/settings_ui.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-import '../../main.dart';
-
-class ScreenMehr extends StatefulWidget {
+class ScreenSettings extends StatefulWidget {
   @override
   _settingsStartState createState() => _settingsStartState();
 }
 
-class SectionEinstellung extends StatelessWidget {
-  SectionEinstellung({
+class SectionSettings extends StatelessWidget {
+  SectionSettings({
     super.key,
   });
 
@@ -38,9 +34,8 @@ class SectionEinstellung extends StatelessWidget {
   }
 }
 
-class _settingsStartState extends State<ScreenMehr>
+class _settingsStartState extends State<ScreenSettings>
     with SingleTickerProviderStateMixin {
-  bool darkModus = false;
   late AnimationController _controller;
 
   @override
@@ -130,17 +125,11 @@ class _settingsStartState extends State<ScreenMehr>
                     Material(
                         borderRadius: BorderRadius.all(Radius.circular(50)),
                         elevation: 10,
-                        child: Padding(
-                          padding: EdgeInsets.all(8.0),
-                          child: Avatar(
-                              imageUrl:
-                                  "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Default_pfp.svg/1200px-Default_pfp.svg.png",
-                              onUpload: _onUpload),
+                        child: Image.asset(
+                          "assets/images/defaultAvatar.png",
+                          height: 100,
                         )),
-                    Text(
-                      "${user?.email}",
-                      style: TextStyle(color: Colors.white),
-                    )
+                    Text("${session?.user.email}")
                   ],
                 )),
             Expanded(
@@ -158,10 +147,12 @@ class _settingsStartState extends State<ScreenMehr>
                         children: [
                           Text("Dunkelmodus"),
                           Switch(
-                            value: darkModus,
+                            value: Get.isDarkMode,
                             onChanged: (value) {
                               setState(() {
-                                darkModus = value;
+                                Get.changeTheme(Get.isDarkMode
+                                    ? ThemeData.light()
+                                    : ThemeData.dark());
                               });
                             },
                           ),

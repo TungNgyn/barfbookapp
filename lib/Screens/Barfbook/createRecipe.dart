@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 
 import '../../main.dart';
 
-class ScreenErstellung extends StatelessWidget {
+class ScreenCreateRecipe extends StatelessWidget {
   late String teil1;
   late String teil2;
 

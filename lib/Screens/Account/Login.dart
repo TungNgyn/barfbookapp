@@ -1,7 +1,6 @@
 import 'dart:async';
 
-import 'package:Barfbook/Screens/Home.dart';
-import 'package:flutter/foundation.dart';
+import 'package:Barfbook/Screens/home.dart';
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
@@ -142,7 +141,7 @@ class _LoginState extends State<ScreenLogin> {
                   GestureDetector(
                       onTap: () {
                         authController.loginWithGuest();
-                        Get.to(() => ScreenHome());
+                        Get.offAll(() => ScreenHome());
                       },
                       child: Text("Als Gast fortfahren")),
                   VerticalDivider(
@@ -150,7 +149,7 @@ class _LoginState extends State<ScreenLogin> {
                     thickness: 0.5,
                   ),
                   GestureDetector(
-                    onTap: () => Get.to(() => ScreenSignUp()),
+                    onTap: () => Get.offAll(() => ScreenSignUp()),
                     child: Text("Registrieren"),
                   ),
                 ],

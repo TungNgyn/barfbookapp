@@ -1,10 +1,10 @@
-import 'package:Barfbook/Screens/Lexikon/Lexikon.dart';
-import 'package:Barfbook/Screens/Mehr/Mehr.dart';
+import 'package:Barfbook/Screens/Lexikon/lexicon.dart';
+import 'package:Barfbook/Screens/Mehr/settings.dart';
+import 'package:Barfbook/Screens/explore.dart';
 import 'package:flutter/material.dart';
 import 'package:animations/animations.dart';
 
 import 'Barfbook/Barfbook.dart';
-import 'Entdecken.dart';
 
 class ScreenHome extends StatefulWidget {
   @override
@@ -21,16 +21,16 @@ class _ScreenHomeState extends State<ScreenHome> {
     Widget seite;
     switch (navigationIndex) {
       case 0:
-        seite = ScreenEntdecken();
+        seite = ScreenExplore();
         break;
       case 1:
         seite = ScreenBarfbook();
         break;
       case 2:
-        seite = ScreenLexikon();
+        seite = ScreenLexicon();
         break;
       case 3:
-        seite = ScreenMehr();
+        seite = ScreenSettings();
         break;
       default:
         throw UnimplementedError('Kein Widget für ${navigationIndex}');

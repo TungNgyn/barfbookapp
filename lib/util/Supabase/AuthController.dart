@@ -1,4 +1,7 @@
+import 'dart:ui';
+
 import 'package:english_words/english_words.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -32,12 +35,15 @@ class AuthController {
     try {
       await supabase.auth.signInWithPassword(email: email, password: password);
     } on AuthException catch (error) {
-      // context.showErrorSnackBar(message: error.message);
+      // Get.snackbar("message: ", error.message.tr);
+      // Get.updateLocale(Locale('de'));
       Get.snackbar("Etwas ist schief gelaufen",
-          "Deine Email oder dein Passwort ist nicht korrekt. Bitte versuche es nochmal.");
+          "Deine Email oder dein Passwort ist nicht korrekt. Bitte versuche es nochmal.",
+          backgroundColor: Colors.grey.withOpacity(0.5));
     } catch (error) {
       Get.snackbar("Etwas ist schief gelaufen",
-          'Unerwarteter Fehler aufgetreten. Bitte kontaktiere den Support.');
+          'Unerwarteter Fehler aufgetreten. Bitte kontaktiere den Support.',
+          backgroundColor: Colors.grey.withOpacity(0.5));
     }
     ;
   }

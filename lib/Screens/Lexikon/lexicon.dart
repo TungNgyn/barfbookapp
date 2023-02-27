@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:animations/animations.dart';
 
-import 'BarfCalculator.dart';
-import 'DetailPage.dart';
+import 'detailPage.dart';
 
-class ScreenLexikon extends StatefulWidget {
+class ScreenLexicon extends StatefulWidget {
   @override
   _lexikonStartState createState() => _lexikonStartState();
 }
 
-class _lexikonStartState extends State<ScreenLexikon> {
+class _lexikonStartState extends State<ScreenLexicon> {
   var appBarConstraints = 0.0;
   @override
   Widget build(BuildContext context) {
@@ -298,7 +297,7 @@ final Map<String, Map<String, dynamic>> articlesCards = {
     ),
     "title": "Barf Rechner",
     "subtitle": "Rationierung leicht gemacht",
-    "textContent": ScreenBarfCalculator(),
+    "textContent": "ScreenBarfCalculator()",
     "image":
         "https://images.unsplash.com/photo-1482686115713-0fbcaced6e28?fit=crop&w=1947&q=80"
   },

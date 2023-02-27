@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 
-class ScreenSuche extends StatelessWidget {
+class ScreenSearch extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var startState = context.watch<StartState>();

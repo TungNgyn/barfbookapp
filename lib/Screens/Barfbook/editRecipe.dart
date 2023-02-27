@@ -3,10 +3,10 @@ import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class ScreenRezeptBearbeitung extends StatelessWidget {
+class ScreenEditRecipe extends StatelessWidget {
   WordPair pair;
 
-  ScreenRezeptBearbeitung({super.key, required this.pair});
+  ScreenEditRecipe({super.key, required this.pair});
 
   @override
   Widget build(BuildContext context) {

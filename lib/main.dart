@@ -10,34 +10,32 @@ import 'package:get/get.dart';
 import 'package:flutter/services.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'dart:convert';
-import 'Screens/Account/SignUp.dart';
 import 'util/Supabase/AuthController.dart';
-import 'Screens/Home.dart';
+import 'Screens/home.dart';
+
+late final themeStr;
+late final themeJson;
+late final theme;
 
 void main() async {
-  runApp(ScreenSplash());
+  // runApp(GetMaterialApp(home: ScreenSplash()));
   WidgetsFlutterBinding.ensureInitialized();
-
-  var helligkeit = SchedulerBinding.instance.window.platformBrightness;
-  bool darkModus = helligkeit == Brightness.dark;
-
-  final themeStr = darkModus == true
-      ? await rootBundle.loadString('assets/themes/appainter_theme_dark.json')
-      : await rootBundle.loadString('assets/themes/appainter_theme_light.json');
-  final themeJson = jsonDecode(themeStr);
-  final theme = ThemeDecoder.decodeThemeData(themeJson);
 
   await Supabase.initialize(
     url: 'https://wokqzyqvqztmyzhhuqqh.supabase.co',
     anonKey:
         'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indva3F6eXF2cXp0bXl6aGh1cXFoIiwicm9sZSI6ImFub24iLCJpYXQiOjE2Nzc0MTAwNjUsImV4cCI6MTk5Mjk4NjA2NX0.Lw1KOvMQsD7mx_NbiXvZ2uxGTX61j_oSS93v_DqTyG0',
   );
-  runApp(MainApp(theme: theme));
+
+  themeStr = await rootBundle.loadString('assets/themes/theme.json');
+  themeJson = jsonDecode(themeStr);
+  theme = ThemeDecoder.decodeThemeData(themeJson);
+
+  runApp(MainApp());
 }
 
 class MainApp extends StatelessWidget {
-  final ThemeData? theme;
-  const MainApp({super.key, required this.theme});
+  const MainApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +44,10 @@ class MainApp extends StatelessWidget {
       child: GetMaterialApp(
         home: user == null ? ScreenLogin() : ScreenHome(),
         title: "Barfbook",
-        theme: theme,
+        theme: ThemeData(
+            primarySwatch: Colors.amber, brightness: Brightness.light),
+        darkTheme: ThemeData(brightness: Brightness.dark),
+        themeMode: ThemeMode.system,
         debugShowCheckedModeBanner: false,
       ),
     );
@@ -83,3 +84,6 @@ class StartState extends ChangeNotifier {
     notifyListeners();
   }
 }
+
+// ThemeModes
+

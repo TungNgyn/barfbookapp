@@ -5,9 +5,8 @@ import 'package:Barfbook/util/Supabase/AuthController.dart';
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
-import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import '../Home.dart';
+import '../home.dart';
 
 class ScreenSignUp extends StatefulWidget {
   @override
@@ -39,6 +38,7 @@ class _SignUpState extends State<ScreenSignUp> {
   @override
   void initState() {
     _emailController = TextEditingController();
+    _usernameController = TextEditingController();
     _passwordController = TextEditingController();
     _authStateSubscription = supabase.auth.onAuthStateChange.listen((data) {
       if (_redirecting) return;
@@ -54,6 +54,7 @@ class _SignUpState extends State<ScreenSignUp> {
   @override
   void dispose() {
     _emailController.dispose();
+    _usernameController.dispose();
     _passwordController.dispose();
     _authStateSubscription.cancel();
     super.dispose();
@@ -139,7 +140,7 @@ class _SignUpState extends State<ScreenSignUp> {
                                       ? {
                                           authController.signUp(
                                               email, username, password),
-                                          Get.to(() => ScreenHome())
+                                          Get.offAll(() => ScreenHome())
                                         }
                                       : print("Passwort zu kurz")
                                   : print("Falsches Email-Format");
@@ -155,7 +156,11 @@ class _SignUpState extends State<ScreenSignUp> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   GestureDetector(
-                      onTap: () {}, child: Text("Als Gast fortfahren")),
+                      onTap: () {
+                        authController.loginWithGuest();
+                        Get.offAll(() => ScreenHome());
+                      },
+                      child: Text("Als Gast fortfahren")),
                   VerticalDivider(
                     width: 10,
                     thickness: 0.5,

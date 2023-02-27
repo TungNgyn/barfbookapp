@@ -27,8 +27,8 @@ class _AvatarState extends State<Avatar> {
       children: [
         if (widget.imageUrl == null || widget.imageUrl!.isEmpty)
           Container(
-            width: 150,
-            height: 150,
+            width: 100,
+            height: 100,
             color: Colors.grey,
             child: const Center(
               child: Text('No Image'),
@@ -37,8 +37,8 @@ class _AvatarState extends State<Avatar> {
         else
           Image.network(
             widget.imageUrl!,
-            width: 150,
-            height: 150,
+            width: 100,
+            height: 100,
             fit: BoxFit.cover,
           ),
         ElevatedButton(

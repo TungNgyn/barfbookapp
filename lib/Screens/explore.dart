@@ -1,11 +1,12 @@
 import 'package:english_words/english_words.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 
 import '../main.dart';
 
-class ScreenEntdecken extends StatelessWidget {
+class ScreenExplore extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var startState = context.watch<StartState>();

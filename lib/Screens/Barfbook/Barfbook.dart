@@ -1,13 +1,13 @@
 import 'dart:math';
 
-import 'package:Barfbook/Screens/Barfbook/Bearbeitung.dart';
+import 'package:Barfbook/Screens/Barfbook/editRecipe.dart';
 import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../main.dart';
-import '../Home.dart';
-import 'Erstellung.dart';
+import '../home.dart';
+import 'createRecipe.dart';
 
 class ScreenBarfbook extends StatelessWidget {
   var appBarConstraints = 0.0;
@@ -247,7 +247,7 @@ class ButtonRezeptErstellen extends StatelessWidget {
             isScrollControlled: true,
             context: context,
             builder: (BuildContext context) {
-              return ScreenErstellung();
+              return ScreenCreateRecipe();
             });
       },
       child: Icon(
@@ -305,7 +305,7 @@ class ErstelltenListe extends StatelessWidget {
                   barrierDismissible: false,
                   context: context,
                   builder: (BuildContext context) {
-                    return ScreenRezeptBearbeitung(pair: pair);
+                    return ScreenEditRecipe(pair: pair);
                   });
             },
             leading: Container(
