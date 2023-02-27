@@ -13,10 +13,6 @@ import 'dart:convert';
 import 'util/Supabase/AuthController.dart';
 import 'Screens/home.dart';
 
-late final themeStr;
-late final themeJson;
-late final theme;
-
 void main() async {
   // runApp(GetMaterialApp(home: ScreenSplash()));
   WidgetsFlutterBinding.ensureInitialized();
@@ -27,16 +23,21 @@ void main() async {
         'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indva3F6eXF2cXp0bXl6aGh1cXFoIiwicm9sZSI6ImFub24iLCJpYXQiOjE2Nzc0MTAwNjUsImV4cCI6MTk5Mjk4NjA2NX0.Lw1KOvMQsD7mx_NbiXvZ2uxGTX61j_oSS93v_DqTyG0',
   );
 
-  themeStr = await rootBundle.loadString('assets/themes/theme.json');
-  themeJson = jsonDecode(themeStr);
-  theme = ThemeDecoder.decodeThemeData(themeJson);
+  var themeStr = await rootBundle.loadString('assets/themes/theme.json');
+  var themeJson = jsonDecode(themeStr);
+  final theme = ThemeDecoder.decodeThemeData(themeJson)!;
 
-  runApp(MainApp(theme: theme));
+  themeStr = await rootBundle.loadString('assets/themes/darkTheme.json');
+  themeJson = jsonDecode(themeStr);
+  final darkTheme = ThemeDecoder.decodeThemeData(themeJson)!;
+
+  runApp(MainApp(theme: theme, darkTheme: darkTheme));
 }
 
 class MainApp extends StatelessWidget {
   final ThemeData theme;
-  const MainApp({super.key, required this.theme});
+  final ThemeData darkTheme;
+  const MainApp({super.key, required this.theme, required this.darkTheme});
 
   @override
   Widget build(BuildContext context) {
@@ -46,6 +47,7 @@ class MainApp extends StatelessWidget {
         home: user == null ? ScreenLogin() : ScreenHome(),
         title: "Barfbook",
         theme: theme,
+        darkTheme: darkTheme,
         debugShowCheckedModeBanner: false,
       ),
     );
