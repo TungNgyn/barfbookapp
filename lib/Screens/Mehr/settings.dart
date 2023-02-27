@@ -1,6 +1,7 @@
 import 'package:Barfbook/Screens/Account/Login.dart';
 import 'package:Barfbook/main.dart';
 import 'package:Barfbook/util/Supabase/AuthController.dart';
+import 'package:Barfbook/util/custom_theme.dart';
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -151,8 +152,8 @@ class _settingsStartState extends State<ScreenSettings>
                             onChanged: (value) {
                               setState(() {
                                 Get.changeTheme(Get.isDarkMode
-                                    ? ThemeData.light()
-                                    : ThemeData.dark());
+                                    ? CustomTheme.lightTheme
+                                    : CustomTheme.darkTheme);
                               });
                             },
                           ),
