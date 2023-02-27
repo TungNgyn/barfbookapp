@@ -66,7 +66,7 @@ class _SignUpState extends State<ScreenSignUp> {
     return Scaffold(
       body: Stack(children: [
         Opacity(
-          opacity: 0.5,
+          opacity: 0.4,
           child: Container(
             decoration: BoxDecoration(
                 image: DecorationImage(

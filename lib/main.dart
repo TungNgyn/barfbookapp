@@ -1,6 +1,5 @@
 import 'package:Barfbook/Screens/Account/Splash.dart';
 import 'package:Barfbook/Screens/Account/Login.dart';
-import 'package:Barfbook/util/custom_theme.dart';
 import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -14,6 +13,10 @@ import 'dart:convert';
 import 'util/Supabase/AuthController.dart';
 import 'Screens/home.dart';
 
+late final themeStr;
+late final themeJson;
+late final theme;
+
 void main() async {
   // runApp(GetMaterialApp(home: ScreenSplash()));
   WidgetsFlutterBinding.ensureInitialized();
@@ -24,11 +27,16 @@ void main() async {
         'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indva3F6eXF2cXp0bXl6aGh1cXFoIiwicm9sZSI6ImFub24iLCJpYXQiOjE2Nzc0MTAwNjUsImV4cCI6MTk5Mjk4NjA2NX0.Lw1KOvMQsD7mx_NbiXvZ2uxGTX61j_oSS93v_DqTyG0',
   );
 
-  runApp(MainApp());
+  themeStr = await rootBundle.loadString('assets/themes/theme.json');
+  themeJson = jsonDecode(themeStr);
+  theme = ThemeDecoder.decodeThemeData(themeJson);
+
+  runApp(MainApp(theme: theme));
 }
 
 class MainApp extends StatelessWidget {
-  const MainApp({super.key});
+  final ThemeData theme;
+  const MainApp({super.key, required this.theme});
 
   @override
   Widget build(BuildContext context) {
@@ -37,9 +45,7 @@ class MainApp extends StatelessWidget {
       child: GetMaterialApp(
         home: user == null ? ScreenLogin() : ScreenHome(),
         title: "Barfbook",
-        theme: CustomTheme.lightTheme,
-        darkTheme: CustomTheme.darkTheme,
-        themeMode: ThemeMode.system,
+        theme: theme,
         debugShowCheckedModeBanner: false,
       ),
     );

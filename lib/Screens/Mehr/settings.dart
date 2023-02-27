@@ -150,11 +150,11 @@ class _settingsStartState extends State<ScreenSettings>
                           Switch(
                             value: Get.isDarkMode,
                             onChanged: (value) {
-                              setState(() {
-                                Get.changeTheme(Get.isDarkMode
-                                    ? CustomTheme.lightTheme
-                                    : CustomTheme.darkTheme);
-                              });
+                              // setState(() {
+                              //   Get.changeTheme(Get.isDarkMode
+                              //       ? CustomTheme.lightTheme
+                              //       : CustomTheme.darkTheme);
+                              // });
                             },
                           ),
                         ],
