@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:Barfbook/Screens/Account/Login.dart';
 import 'package:Barfbook/util/Supabase/AuthController.dart';
+import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
@@ -144,7 +145,7 @@ class _SignUpState extends State<ScreenSignUp> {
                 children: [
                   GestureDetector(
                       onTap: () {
-                        authController.loginWithGuest();
+                        _isLoading ? null : _loginGuest();
                         Get.offAll(() => ScreenHome());
                       },
                       child: Text("Als Gast fortfahren")),
@@ -195,6 +196,29 @@ class _SignUpState extends State<ScreenSignUp> {
       user = response.user;
     } catch (error) {
       print(error);
+      Get.snackbar("Etwas ist schief gelaufen",
+          'Unerwarteter Fehler aufgetreten. Bitte kontaktiere den Support.',
+          backgroundColor: Colors.grey.withOpacity(0.5));
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
+
+  Future<void> _loginGuest() async {
+    setState(() {
+      _isLoading = true;
+    });
+    try {
+      final AuthResponse response = await supabase.auth.signUp(
+          email: "${WordPair.random()}@${WordPair.random()}.com",
+          password: "${WordPair.random()}",
+          data: {'name': 'Gast'});
+
+      session = response.session;
+      user = response.user;
+    } catch (error) {
       Get.snackbar("Etwas ist schief gelaufen",
           'Unerwarteter Fehler aufgetreten. Bitte kontaktiere den Support.',
           backgroundColor: Colors.grey.withOpacity(0.5));

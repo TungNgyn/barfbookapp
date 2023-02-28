@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:Barfbook/Screens/home.dart';
+import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
@@ -22,56 +23,6 @@ class _LoginState extends State<ScreenLogin> {
 
   String get email => _emailController.text.trim();
   String get password => _passwordController.text.trim();
-
-  Future<void> _signIn() async {
-    setState(() {
-      _isLoading = true;
-    });
-    try {
-      final AuthResponse response = await supabase.auth
-          .signInWithPassword(email: email, password: password);
-
-      session = response.session;
-      user = response.user;
-    } on AuthException catch (error) {
-      // Get.snackbar("message: ", error.message.tr);
-      // Get.updateLocale(Locale('de'));
-      Get.snackbar("Etwas ist schief gelaufen",
-          "Deine Email oder dein Passwort ist nicht korrekt. Bitte versuche es nochmal.",
-          backgroundColor: Colors.grey.withOpacity(0.5));
-    } catch (error) {
-      Get.snackbar("Etwas ist schief gelaufen",
-          'Unerwarteter Fehler aufgetreten. Bitte kontaktiere den Support.',
-          backgroundColor: Colors.grey.withOpacity(0.5));
-    } finally {
-      setState(() {
-        _isLoading = false;
-      });
-    }
-  }
-
-  @override
-  void initState() {
-    _emailController = TextEditingController();
-    _passwordController = TextEditingController();
-    _authStateSubscription = supabase.auth.onAuthStateChange.listen((data) {
-      if (_redirecting) return;
-      final session = data.session;
-      if (session != null) {
-        _redirecting = true;
-        Get.to(() => ScreenHome());
-      }
-    });
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    _emailController.dispose();
-    _passwordController.dispose();
-    _authStateSubscription.cancel();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -145,7 +96,7 @@ class _LoginState extends State<ScreenLogin> {
                     child: Center(
                         child: ElevatedButton(
                             onPressed: () {
-                              _isLoading ? null : _signIn();
+                              _isLoading ? null : _login();
                             },
                             child: Text(_isLoading ? 'Laden..' : 'Anmelden'))),
                   )
@@ -158,7 +109,7 @@ class _LoginState extends State<ScreenLogin> {
                 children: [
                   GestureDetector(
                       onTap: () {
-                        authController.loginWithGuest();
+                        _isLoading ? null : _loginGuest();
                         Get.offAll(() => ScreenHome());
                       },
                       child: Text("Als Gast fortfahren")),
@@ -195,5 +146,76 @@ class _LoginState extends State<ScreenLogin> {
       ),
       obscureText: obSecure,
     );
+  }
+
+  Future<void> _login() async {
+    setState(() {
+      _isLoading = true;
+    });
+    try {
+      final AuthResponse response = await supabase.auth
+          .signInWithPassword(email: email, password: password);
+
+      session = response.session;
+      user = response.user;
+    } on AuthException catch (error) {
+      Get.snackbar("Etwas ist schief gelaufen",
+          "Deine Email oder dein Passwort ist nicht korrekt. Bitte versuche es nochmal.",
+          backgroundColor: Colors.grey.withOpacity(0.5));
+    } catch (error) {
+      Get.snackbar("Etwas ist schief gelaufen",
+          'Unerwarteter Fehler aufgetreten. Bitte kontaktiere den Support.',
+          backgroundColor: Colors.grey.withOpacity(0.5));
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
+
+  Future<void> _loginGuest() async {
+    setState(() {
+      _isLoading = true;
+    });
+    try {
+      final AuthResponse response = await supabase.auth.signUp(
+          email: "${WordPair.random()}@${WordPair.random()}.com",
+          password: "${WordPair.random()}",
+          data: {'name': 'Gast'});
+
+      session = response.session;
+      user = response.user;
+    } catch (error) {
+      Get.snackbar("Etwas ist schief gelaufen",
+          'Unerwarteter Fehler aufgetreten. Bitte kontaktiere den Support.',
+          backgroundColor: Colors.grey.withOpacity(0.5));
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
+
+  @override
+  void initState() {
+    _emailController = TextEditingController();
+    _passwordController = TextEditingController();
+    _authStateSubscription = supabase.auth.onAuthStateChange.listen((data) {
+      if (_redirecting) return;
+      final session = data.session;
+      if (session != null) {
+        _redirecting = true;
+        Get.to(() => ScreenHome());
+      }
+    });
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    _authStateSubscription.cancel();
+    super.dispose();
   }
 }

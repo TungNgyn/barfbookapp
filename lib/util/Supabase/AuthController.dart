@@ -22,15 +22,6 @@ class AuthController {
     user = response.user;
   }
 
-  Future<User?> loginWithGuest() async {
-    final AuthResponse response = await supabase.auth.signInWithPassword(
-      email: "${WordPair.random()}@${WordPair.random()}.com",
-      password: "${WordPair.random()}",
-    );
-    session = response.session;
-    user = response.user;
-  }
-
   Future<User?> signOut() async {
     await supabase.auth.signOut();
     session = null;

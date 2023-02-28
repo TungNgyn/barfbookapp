@@ -132,7 +132,8 @@ class _settingsStartState extends State<ScreenSettings>
                           "assets/images/defaultAvatar.png",
                           height: 100,
                         )),
-                    Text("${user?.email}")
+                    Text(
+                        "${supabase.from("profile").select("name").filter("id", "eq", user?.id)}")
                   ],
                 )),
             Expanded(
