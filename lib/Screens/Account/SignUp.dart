@@ -146,7 +146,6 @@ class _SignUpState extends State<ScreenSignUp> {
                   GestureDetector(
                       onTap: () {
                         _isLoading ? null : _loginGuest();
-                        Get.offAll(() => ScreenHome());
                       },
                       child: Text("Als Gast fortfahren")),
                   VerticalDivider(

@@ -6,6 +6,7 @@ import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:settings_ui/settings_ui.dart';
+import 'package:supabase/src/supabase_stream_builder.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class ScreenSettings extends StatefulWidget {
@@ -49,6 +50,7 @@ class _settingsStartState extends State<ScreenSettings>
       ..addStatusListener((status) {
         setState(() {});
       });
+    _getProfile();
     super.initState();
   }
 
@@ -132,8 +134,7 @@ class _settingsStartState extends State<ScreenSettings>
                           "assets/images/defaultAvatar.png",
                           height: 100,
                         )),
-                    Text(
-                        "${supabase.from("profile").select("name").filter("id", "eq", user?.id)}")
+                    Text("${data.values.reduce((value, element) => null)}")
                   ],
                 )),
             Expanded(
@@ -280,7 +281,12 @@ class SectionProfile extends StatelessWidget {
       title: Text("Profil"),
       tiles: [
         SettingsTile(title: Text("Anmelden")),
-        SettingsTile(title: Text("Abonnement abschließen")),
+        SettingsTile(
+          title: Text("Abonnement abschließen"),
+          onPressed: (context) {
+            print(data.values);
+          },
+        ),
         SettingsTile(
           title: Text("Abmelden"),
           onPressed: (context) =>
@@ -288,6 +294,22 @@ class SectionProfile extends StatelessWidget {
         )
       ],
     );
+  }
+}
+
+late Map data;
+
+Future<void> _getProfile() async {
+  try {
+    data = await supabase
+        .from('profile')
+        .select('name')
+        .eq('id', user?.id)
+        .limit(1)
+        .single();
+  } catch (error) {
+    // handle error
+    print(error);
   }
 }
 

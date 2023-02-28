@@ -43,7 +43,7 @@ class _ScreenSplashState extends State<ScreenSplash> {
 
   @override
   Widget build(BuildContext context) {
-    // authController.signOut();
+    authController.signOut();
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: Container(
