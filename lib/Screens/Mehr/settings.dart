@@ -132,7 +132,7 @@ class _settingsStartState extends State<ScreenSettings>
                           "assets/images/defaultAvatar.png",
                           height: 100,
                         )),
-                    Text("${session?.user.email}")
+                    Text("${user?.email}")
                   ],
                 )),
             Expanded(

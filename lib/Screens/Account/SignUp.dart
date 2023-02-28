@@ -25,16 +25,6 @@ class _SignUpState extends State<ScreenSignUp> {
   String get username => _usernameController.text.trim();
   String get password => _passwordController.text.trim();
 
-  Future<void> _signIn() async {
-    setState(() {
-      _isLoading = true;
-    });
-    authController.signUp(email, username, password);
-    setState(() {
-      _isLoading = false;
-    });
-  }
-
   @override
   void initState() {
     _emailController = TextEditingController();
@@ -64,6 +54,7 @@ class _SignUpState extends State<ScreenSignUp> {
   Widget build(BuildContext context) {
     final _media = MediaQuery.of(context).size;
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: Stack(children: [
         Opacity(
           opacity: 0.4,
@@ -133,18 +124,14 @@ class _SignUpState extends State<ScreenSignUp> {
                     child: Center(
                         child: ElevatedButton(
                             onPressed: () {
-                              RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
-                                          .hasMatch(email) ==
-                                      true
+                              GetUtils.isEmail(email)
                                   ? password.length >= 8
-                                      ? {
-                                          authController.signUp(
-                                              email, username, password),
-                                          Get.offAll(() => ScreenHome())
-                                        }
-                                      : print("Passwort zu kurz")
-                                  : print("Falsches Email-Format");
-                              print("${user!.email}");
+                                      ? _signUp()
+                                      : Get.snackbar(
+                                          "Etwas ist schief gelaufen",
+                                          "Dein Passwort ist zu kurz!")
+                                  : Get.snackbar("Etwas ist schief gelaufen",
+                                      "Deine Email hat ein falsches Format!");
                             },
                             child: Text("Registrieren"))),
                   )
@@ -194,5 +181,27 @@ class _SignUpState extends State<ScreenSignUp> {
       ),
       obscureText: obSecure,
     );
+  }
+
+  Future<void> _signUp() async {
+    setState(() {
+      _isLoading = true;
+    });
+    try {
+      final AuthResponse response = await supabase.auth
+          .signUp(email: email, password: password, data: {'name': username});
+
+      session = response.session;
+      user = response.user;
+    } catch (error) {
+      print(error);
+      Get.snackbar("Etwas ist schief gelaufen",
+          'Unerwarteter Fehler aufgetreten. Bitte kontaktiere den Support.',
+          backgroundColor: Colors.grey.withOpacity(0.5));
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
   }
 }

@@ -27,10 +27,27 @@ class _LoginState extends State<ScreenLogin> {
     setState(() {
       _isLoading = true;
     });
-    authController.loginWithEmail(email, password);
-    setState(() {
-      _isLoading = false;
-    });
+    try {
+      final AuthResponse response = await supabase.auth
+          .signInWithPassword(email: email, password: password);
+
+      session = response.session;
+      user = response.user;
+    } on AuthException catch (error) {
+      // Get.snackbar("message: ", error.message.tr);
+      // Get.updateLocale(Locale('de'));
+      Get.snackbar("Etwas ist schief gelaufen",
+          "Deine Email oder dein Passwort ist nicht korrekt. Bitte versuche es nochmal.",
+          backgroundColor: Colors.grey.withOpacity(0.5));
+    } catch (error) {
+      Get.snackbar("Etwas ist schief gelaufen",
+          'Unerwarteter Fehler aufgetreten. Bitte kontaktiere den Support.',
+          backgroundColor: Colors.grey.withOpacity(0.5));
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
   }
 
   @override
@@ -60,6 +77,7 @@ class _LoginState extends State<ScreenLogin> {
   Widget build(BuildContext context) {
     final _media = MediaQuery.of(context).size;
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: Stack(children: [
         Opacity(
           opacity: 0.4,
@@ -67,7 +85,7 @@ class _LoginState extends State<ScreenLogin> {
             decoration: BoxDecoration(
                 image: DecorationImage(
                     image: AssetImage("assets/images/barfbookapp.png"),
-                    fit: BoxFit.fill)),
+                    fit: BoxFit.cover)),
           ),
         ),
         Column(

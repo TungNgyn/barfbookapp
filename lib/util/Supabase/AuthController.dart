@@ -31,23 +31,6 @@ class AuthController {
     user = response.user;
   }
 
-  Future<User?> loginWithEmail(String email, String password) async {
-    try {
-      await supabase.auth.signInWithPassword(email: email, password: password);
-    } on AuthException catch (error) {
-      // Get.snackbar("message: ", error.message.tr);
-      // Get.updateLocale(Locale('de'));
-      Get.snackbar("Etwas ist schief gelaufen",
-          "Deine Email oder dein Passwort ist nicht korrekt. Bitte versuche es nochmal.",
-          backgroundColor: Colors.grey.withOpacity(0.5));
-    } catch (error) {
-      Get.snackbar("Etwas ist schief gelaufen",
-          'Unerwarteter Fehler aufgetreten. Bitte kontaktiere den Support.',
-          backgroundColor: Colors.grey.withOpacity(0.5));
-    }
-    ;
-  }
-
   Future<User?> signOut() async {
     await supabase.auth.signOut();
     session = null;
