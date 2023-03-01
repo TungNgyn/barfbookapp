@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:Barfbook/Screens/home.dart';
+import 'package:Barfbook/util/constants.dart';
 import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
 
@@ -157,6 +158,7 @@ class _LoginState extends State<ScreenLogin> {
 
       session = response.session;
       user = response.user;
+      getProfile();
     } on AuthException catch (error) {
       Get.snackbar("Etwas ist schief gelaufen",
           "Deine Email oder dein Passwort ist nicht korrekt. Bitte versuche es nochmal.",
@@ -179,15 +181,17 @@ class _LoginState extends State<ScreenLogin> {
     try {
       final AuthResponse response = await supabase.auth.signUp(
           email: "${WordPair.random()}@${WordPair.random()}.com",
-          password: "${WordPair.random()}",
+          password: "12345678",
           data: {'name': 'Gast'});
 
       session = response.session;
       user = response.user;
+      getProfile();
     } catch (error) {
       Get.snackbar("Etwas ist schief gelaufen",
           'Unerwarteter Fehler aufgetreten. Bitte kontaktiere den Support.',
           backgroundColor: Colors.grey.withOpacity(0.5));
+      print(error);
     } finally {
       setState(() {
         _isLoading = false;

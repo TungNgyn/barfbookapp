@@ -1,4 +1,5 @@
 import 'package:Barfbook/Screens/Account/Login.dart';
+import 'package:Barfbook/Screens/Mehr/profile.dart';
 import 'package:Barfbook/main.dart';
 import 'package:Barfbook/util/Supabase/AuthController.dart';
 import 'package:Barfbook/util/custom_theme.dart';
@@ -50,7 +51,6 @@ class _settingsStartState extends State<ScreenSettings>
       ..addStatusListener((status) {
         setState(() {});
       });
-    _getProfile();
     super.initState();
   }
 
@@ -134,7 +134,7 @@ class _settingsStartState extends State<ScreenSettings>
                           "assets/images/defaultAvatar.png",
                           height: 100,
                         )),
-                    Text("${data.values.reduce((value, element) => null)}")
+                    // Text("${userdata.values.reduce((value, element) => null)}")
                   ],
                 )),
             Expanded(
@@ -280,11 +280,16 @@ class SectionProfile extends StatelessWidget {
     return SettingsSection(
       title: Text("Profil"),
       tiles: [
-        SettingsTile(title: Text("Anmelden")),
+        SettingsTile(
+          title: Text("Profil"),
+          onPressed: (context) {
+            Get.to(() => ScreenProfile());
+          },
+        ),
         SettingsTile(
           title: Text("Abonnement abschließen"),
           onPressed: (context) {
-            print(data.values);
+            // print(userdata.values);
           },
         ),
         SettingsTile(
@@ -294,22 +299,6 @@ class SectionProfile extends StatelessWidget {
         )
       ],
     );
-  }
-}
-
-late Map data;
-
-Future<void> _getProfile() async {
-  try {
-    data = await supabase
-        .from('profile')
-        .select('name')
-        .eq('id', user?.id)
-        .limit(1)
-        .single();
-  } catch (error) {
-    // handle error
-    print(error);
   }
 }
 

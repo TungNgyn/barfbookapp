@@ -1,5 +1,6 @@
 import 'package:Barfbook/Screens/Account/Login.dart';
 import 'package:Barfbook/Screens/Account/Splash.dart';
+import 'package:Barfbook/util/constants.dart';
 import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -13,7 +14,31 @@ import 'util/Supabase/AuthController.dart';
 import 'Screens/home.dart';
 
 void main() async {
-  runApp(GetMaterialApp(home: ScreenSplash()));
+  // runApp(GetMaterialApp(home: ScreenSplash()));
+  runApp(GetMaterialApp(
+    home: Scaffold(
+      resizeToAvoidBottomInset: false,
+      body: Container(
+        decoration: BoxDecoration(
+            image: DecorationImage(
+                image: AssetImage("assets/images/splash/SteinSplash1.png"),
+                fit: BoxFit.cover)),
+      ),
+    ),
+  ));
+
+  Supabase != null
+      ? {
+          await Supabase.initialize(
+            url: 'https://wokqzyqvqztmyzhhuqqh.supabase.co',
+            anonKey:
+                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indva3F6eXF2cXp0bXl6aGh1cXFoIiwicm9sZSI6ImFub24iLCJpYXQiOjE2Nzc0MTAwNjUsImV4cCI6MTk5Mjk4NjA2NX0.Lw1KOvMQsD7mx_NbiXvZ2uxGTX61j_oSS93v_DqTyG0',
+          ),
+          getProfile(),
+          Get.offAll(() => ScreenLogin())
+        }
+      : {getProfile(), Get.offAll(() => ScreenHome())};
+
   WidgetsFlutterBinding.ensureInitialized();
 
   var themeStr = await rootBundle.loadString('assets/themes/theme.json');
