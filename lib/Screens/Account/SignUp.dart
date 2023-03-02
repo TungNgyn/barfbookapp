@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:Barfbook/Screens/Account/Login.dart';
 import 'package:Barfbook/util/Supabase/AuthController.dart';
-import 'package:Barfbook/util/constants.dart';
 import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
 
@@ -218,7 +217,6 @@ class _SignUpState extends State<ScreenSignUp> {
 
       session = response.session;
       user = response.user;
-      getProfile();
     } catch (error) {
       Get.snackbar("Etwas ist schief gelaufen",
           'Unerwarteter Fehler aufgetreten. Bitte kontaktiere den Support.',

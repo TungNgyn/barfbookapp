@@ -1,8 +1,3 @@
-import 'dart:ui';
-
-import 'package:english_words/english_words.dart';
-import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 final supabase = Supabase.instance.client;
@@ -10,6 +5,18 @@ final authController = AuthController();
 
 Session? session = supabase.auth.currentSession;
 User? user = supabase.auth.currentUser;
+late Map userdata;
+
+Future<void> getProfile() async {
+  try {
+    userdata = await supabase
+        .from('profile')
+        .select("name, email")
+        .match({'id': user?.id}).single();
+  } catch (error) {
+    print("ERROR = $error");
+  }
+}
 
 class AuthController {
   Future<User?> signUp(String email, String username, String password) async {

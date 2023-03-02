@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:Barfbook/Screens/home.dart';
-import 'package:Barfbook/util/constants.dart';
 import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
 
@@ -124,8 +123,13 @@ class _LoginState extends State<ScreenLogin> {
                 ],
               ),
             ),
+            // ElevatedButton(
+            //     onPressed: () {
+            //       _loginGoogle();
+            //     },
+            //     child: Text("allo"))
           ],
-        ),
+        )
       ]),
     );
   }
@@ -158,7 +162,6 @@ class _LoginState extends State<ScreenLogin> {
 
       session = response.session;
       user = response.user;
-      getProfile();
     } on AuthException catch (error) {
       Get.snackbar("Etwas ist schief gelaufen",
           "Deine Email oder dein Passwort ist nicht korrekt. Bitte versuche es nochmal.",
@@ -186,12 +189,33 @@ class _LoginState extends State<ScreenLogin> {
 
       session = response.session;
       user = response.user;
-      getProfile();
+      print(userdata);
     } catch (error) {
       Get.snackbar("Etwas ist schief gelaufen",
           'Unerwarteter Fehler aufgetreten. Bitte kontaktiere den Support.',
           backgroundColor: Colors.grey.withOpacity(0.5));
       print(error);
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
+
+  Future<void> _loginGoogle() async {
+    setState(() {
+      _isLoading = true;
+    });
+    try {
+      await supabase.auth.signInWithOAuth(Provider.google);
+    } on AuthException catch (error) {
+      Get.snackbar("Etwas ist schief gelaufen",
+          "Deine Email oder dein Passwort ist nicht korrekt. Bitte versuche es nochmal.",
+          backgroundColor: Colors.grey.withOpacity(0.5));
+    } catch (error) {
+      Get.snackbar("Etwas ist schief gelaufen",
+          'Unerwarteter Fehler aufgetreten. Bitte kontaktiere den Support.',
+          backgroundColor: Colors.grey.withOpacity(0.5));
     } finally {
       setState(() {
         _isLoading = false;

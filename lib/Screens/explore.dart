@@ -1,3 +1,4 @@
+import 'package:Barfbook/util/Supabase/AuthController.dart';
 import 'package:english_words/english_words.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +10,7 @@ import '../main.dart';
 class ScreenExplore extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    getProfile();
     var startState = context.watch<StartState>();
     var rezept = startState.rezept;
 
@@ -43,7 +45,7 @@ class ScreenExplore extends StatelessWidget {
                 child: Text('Next'),
               ),
             ],
-          ),
+          )
         ],
       ),
     );

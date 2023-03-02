@@ -134,7 +134,7 @@ class _settingsStartState extends State<ScreenSettings>
                           "assets/images/defaultAvatar.png",
                           height: 100,
                         )),
-                    // Text("${userdata.values.reduce((value, element) => null)}")
+                    Text("${userdata["name"]}")
                   ],
                 )),
             Expanded(
@@ -289,7 +289,12 @@ class SectionProfile extends StatelessWidget {
         SettingsTile(
           title: Text("Abonnement abschließen"),
           onPressed: (context) {
-            // print(userdata.values);
+            print(supabase
+                .from('profile')
+                .select('''name, email''')
+                .eq('id', user?.id)
+                .limit(1)
+                .single());
           },
         ),
         SettingsTile(

@@ -32,6 +32,7 @@ flutter:
   assets:
     - assets/images/lexicon/whatis/
     - assets/images/splash/
+    - assets/images/recipe/icons/
     - assets/images/
     - assets/themes/
     

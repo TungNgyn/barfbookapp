@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:Barfbook/Screens/Barfbook/editRecipe.dart';
 import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 
 import '../../main.dart';
@@ -240,15 +241,8 @@ class ButtonRezeptErstellen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextButton(
-      onPressed: () async {
-        showModalBottomSheet<void>(
-            isDismissible: false,
-            enableDrag: false,
-            isScrollControlled: true,
-            context: context,
-            builder: (BuildContext context) {
-              return ScreenCreateRecipe();
-            });
+      onPressed: () {
+        Get.to(() => ScreenCreateRecipe());
       },
       child: Icon(
         Icons.add_circle_outline,

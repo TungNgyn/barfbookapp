@@ -1,5 +1,5 @@
 import 'package:Barfbook/Screens/Mehr/settings.dart';
-import 'package:Barfbook/util/constants.dart';
+import 'package:Barfbook/util/Supabase/AuthController.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
@@ -64,18 +64,9 @@ class ScreenProfile extends StatelessWidget {
                             Text(
                               "0",
                               style: TextStyle(
-                                  color:
-                                      Theme.of(context).colorScheme.onPrimary,
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold),
+                                  fontSize: 18, fontWeight: FontWeight.bold),
                             ),
-                            Text("Rezepte",
-                                style: TextStyle(
-                                    fontSize: 14,
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .onPrimary
-                                        .withOpacity(0.8)))
+                            Text("Rezepte")
                           ],
                         ),
                         Column(
@@ -85,16 +76,10 @@ class ScreenProfile extends StatelessWidget {
                             Text(
                               "0",
                               style: TextStyle(
-                                  color:
-                                      Theme.of(context).colorScheme.onPrimary,
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold),
+                                  fontSize: 18, fontWeight: FontWeight.bold),
                             ),
                             Text(
                               "Pfoten",
-                              style: TextStyle(
-                                  color:
-                                      Theme.of(context).colorScheme.onPrimary),
                             )
                           ],
                         ),
@@ -105,16 +90,10 @@ class ScreenProfile extends StatelessWidget {
                             Text(
                               "0",
                               style: TextStyle(
-                                  color:
-                                      Theme.of(context).colorScheme.onPrimary,
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold),
+                                  fontSize: 18, fontWeight: FontWeight.bold),
                             ),
                             Text(
                               "Kommentare",
-                              style: TextStyle(
-                                  color:
-                                      Theme.of(context).colorScheme.onPrimary),
                             ),
                           ],
                         ),
@@ -124,7 +103,7 @@ class ScreenProfile extends StatelessWidget {
                   SizedBox(height: MediaQuery.of(context).size.height * 0.05),
                   Expanded(
                     child: Container(
-                      color: Theme.of(context).colorScheme.onPrimary,
+                      color: Theme.of(context).colorScheme.onSecondary,
                       child: Center(
                           child: Column(
                         children: [
