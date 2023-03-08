@@ -35,5 +35,12 @@ flutter:
     - assets/images/recipe/icons/
     - assets/images/
     - assets/themes/
+
+  fonts:
+    - family: LexendDeca
+      fonts:
+        - asset: assets/fonts/LexendDeca-Regular.ttf
+        - asset: assets/fonts/LexendDeca-Bold.ttf
+          weight: 700
     
 google_sign_in_web: ^0.9.1

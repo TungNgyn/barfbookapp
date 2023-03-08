@@ -1,4 +1,6 @@
+import 'package:Barfbook/util/Supabase/AuthController.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:get/get_connect/http/src/utils/utils.dart';
 
 class ScreenCreateRecipe extends StatefulWidget {
@@ -6,6 +8,37 @@ class ScreenCreateRecipe extends StatefulWidget {
 
   @override
   State<ScreenCreateRecipe> createState() => _newRecipeState();
+}
+
+late Map ingredientdata;
+
+Future<void> getIngredient() async {
+  var ingredients =
+      await supabase.from('ingredient').select("name, type, category");
+  var i = 1;
+  for (var ingredient in ingredients) {
+    i++;
+    try {
+      ingredientdata = await supabase
+          .from('ingredient')
+          .select("name, type, category")
+          .match({'id': i}).single();
+    } catch (error) {
+      print("ERROR = $error");
+    }
+  }
+}
+
+class Ingredient {
+  const Ingredient({required this.name, required this.icon});
+
+  final String name;
+  final Image icon;
+
+  @override
+  String toString() {
+    return name;
+  }
 }
 
 class _newRecipeState extends State<ScreenCreateRecipe> {
@@ -23,7 +56,7 @@ class _newRecipeState extends State<ScreenCreateRecipe> {
 
   @override
   Widget build(BuildContext context) {
-    var theme = Theme.of(context);
+    getIngredient();
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -56,201 +89,89 @@ class _newRecipeState extends State<ScreenCreateRecipe> {
                 },
                 decoration: InputDecoration(
                     border: OutlineInputBorder(), labelText: "Wort2")),
-            SizedBox(height: 20),
+            LayoutBuilder(builder: (context, constraints) {
+              return Autocomplete(
+                displayStringForOption: _displayStringForOption,
+                optionsBuilder: (TextEditingValue textEditingValue) {
+                  return textEditingValue.text.isEmpty
+                      ? const Iterable<Ingredient>.empty()
+                      : _ingredientOptions.where((Ingredient option) {
+                          return option.name
+                              .isCaseInsensitiveContains(textEditingValue.text);
+                        });
+                },
+                optionsViewBuilder: (context, onSelected, options) {
+                  return Align(
+                    alignment: Alignment.topLeft,
+                    child: Material(
+                      child: SizedBox(
+                        width: constraints.biggest.width,
+                        child: ListView.builder(
+                            padding: EdgeInsets.zero,
+                            itemBuilder: ((context, index) {
+                              final option = options.elementAt(index);
+
+                              return Card(
+                                child: ListTile(
+                                  leading: option.icon,
+                                  title: Text(
+                                    option.name,
+                                    style: TextStyle(fontSize: 24),
+                                  ),
+                                  onTap: () => onSelected(option),
+                                ),
+                              );
+                            }),
+                            itemCount: options.length),
+                      ),
+                    ),
+                  );
+                },
+                onSelected: (Ingredient selection) {
+                  debugPrint(
+                      'You just selected ${_displayStringForOption(selection)}');
+                },
+              );
+            }),
             ElevatedButton(
                 onPressed: () {
-                  print(teil1);
+                  debugPrint(supabase
+                      .from('ingredient')
+                      .select("name, type, category") as String?);
                 },
-                child: Text("klick")),
-            SizedBox(height: 20),
-            ExpansionTile(
-              initiallyExpanded: true,
-              title: Text("Hauptzutat"),
-              children: [
-                Wrap(
-                  alignment: WrapAlignment.spaceEvenly,
-                  direction: Axis.horizontal,
-                  spacing: 5,
-                  runSpacing: 5,
-                  children: [
-                    SizedBox(
-                      height: 40,
-                      child: ElevatedButton.icon(
-                          style: ButtonStyle(
-                              backgroundColor: MaterialStateProperty.all(beef
-                                  ? theme.colorScheme.secondary
-                                  : theme.colorScheme.secondaryContainer),
-                              foregroundColor: MaterialStateProperty.all(beef
-                                  ? theme.colorScheme.secondaryContainer
-                                  : theme.colorScheme.secondary)),
-                          onPressed: () {
-                            setState(() {
-                              beef ? beef = false : beef = true;
-                            });
-                          },
-                          icon: Image.asset(
-                              "assets/images/recipe/icons/beef.png"),
-                          label: Text("Rind")),
-                    ),
-                    SizedBox(
-                      height: 40,
-                      child: ElevatedButton.icon(
-                          style: ButtonStyle(
-                              backgroundColor: MaterialStateProperty.all(duck
-                                  ? theme.colorScheme.secondary
-                                  : theme.colorScheme.secondaryContainer),
-                              foregroundColor: MaterialStateProperty.all(duck
-                                  ? theme.colorScheme.secondaryContainer
-                                  : theme.colorScheme.secondary)),
-                          onPressed: () {
-                            setState(() {
-                              duck ? duck = false : duck = true;
-                            });
-                          },
-                          icon: Image.asset(
-                              "assets/images/recipe/icons/duck.png"),
-                          label: Text("Ente")),
-                    ),
-                    SizedBox(
-                      height: 40,
-                      child: ElevatedButton.icon(
-                          style: ButtonStyle(
-                              backgroundColor: MaterialStateProperty.all(goat
-                                  ? theme.colorScheme.secondary
-                                  : theme.colorScheme.secondaryContainer),
-                              foregroundColor: MaterialStateProperty.all(goat
-                                  ? theme.colorScheme.secondaryContainer
-                                  : theme.colorScheme.secondary)),
-                          onPressed: () {
-                            setState(() {
-                              goat ? goat = false : goat = true;
-                            });
-                          },
-                          icon: Image.asset(
-                              "assets/images/recipe/icons/goat.png"),
-                          label: Text("Ziege")),
-                    ),
-                    SizedBox(
-                      height: 40,
-                      child: ElevatedButton.icon(
-                          style: ButtonStyle(
-                              backgroundColor: MaterialStateProperty.all(goose
-                                  ? theme.colorScheme.secondary
-                                  : theme.colorScheme.secondaryContainer),
-                              foregroundColor: MaterialStateProperty.all(goose
-                                  ? theme.colorScheme.secondaryContainer
-                                  : theme.colorScheme.secondary)),
-                          onPressed: () {
-                            setState(() {
-                              goose ? goose = false : goose = true;
-                            });
-                          },
-                          icon: Image.asset(
-                              "assets/images/recipe/icons/goose.png"),
-                          label: Text("Gans")),
-                    ),
-                    SizedBox(
-                      height: 40,
-                      child: ElevatedButton.icon(
-                          style: ButtonStyle(
-                              backgroundColor: MaterialStateProperty.all(hen
-                                  ? theme.colorScheme.secondary
-                                  : theme.colorScheme.secondaryContainer),
-                              foregroundColor: MaterialStateProperty.all(hen
-                                  ? theme.colorScheme.secondaryContainer
-                                  : theme.colorScheme.secondary)),
-                          onPressed: () {
-                            setState(() {
-                              hen ? hen = false : hen = true;
-                            });
-                          },
-                          icon:
-                              Image.asset("assets/images/recipe/icons/hen.png"),
-                          label: Text("Huhn")),
-                    ),
-                    SizedBox(
-                      height: 40,
-                      child: ElevatedButton.icon(
-                          style: ButtonStyle(
-                              backgroundColor: MaterialStateProperty.all(horse
-                                  ? theme.colorScheme.secondary
-                                  : theme.colorScheme.secondaryContainer),
-                              foregroundColor: MaterialStateProperty.all(horse
-                                  ? theme.colorScheme.secondaryContainer
-                                  : theme.colorScheme.secondary)),
-                          onPressed: () {
-                            setState(() {
-                              horse ? horse = false : horse = true;
-                            });
-                          },
-                          icon: Image.asset(
-                              "assets/images/recipe/icons/horse.png"),
-                          label: Text("Pferd")),
-                    ),
-                    SizedBox(
-                      height: 40,
-                      child: ElevatedButton.icon(
-                          style: ButtonStyle(
-                              backgroundColor: MaterialStateProperty.all(lamb
-                                  ? theme.colorScheme.secondary
-                                  : theme.colorScheme.secondaryContainer),
-                              foregroundColor: MaterialStateProperty.all(lamb
-                                  ? theme.colorScheme.secondaryContainer
-                                  : theme.colorScheme.secondary)),
-                          onPressed: () {
-                            setState(() {
-                              lamb ? lamb = false : lamb = true;
-                            });
-                          },
-                          icon: Image.asset(
-                              "assets/images/recipe/icons/lamb.png"),
-                          label: Text("Lamm")),
-                    ),
-                    SizedBox(
-                      height: 40,
-                      child: ElevatedButton.icon(
-                          style: ButtonStyle(
-                              backgroundColor: MaterialStateProperty.all(rabbit
-                                  ? theme.colorScheme.secondary
-                                  : theme.colorScheme.secondaryContainer),
-                              foregroundColor: MaterialStateProperty.all(rabbit
-                                  ? theme.colorScheme.secondaryContainer
-                                  : theme.colorScheme.secondary)),
-                          onPressed: () {
-                            setState(() {
-                              rabbit ? rabbit = false : rabbit = true;
-                            });
-                          },
-                          icon: Image.asset(
-                              "assets/images/recipe/icons/rabbit.png"),
-                          label: Text("Hase")),
-                    ),
-                    SizedBox(
-                      height: 40,
-                      child: ElevatedButton.icon(
-                          style: ButtonStyle(
-                              backgroundColor: MaterialStateProperty.all(vegan
-                                  ? theme.colorScheme.secondary
-                                  : theme.colorScheme.secondaryContainer),
-                              foregroundColor: MaterialStateProperty.all(vegan
-                                  ? theme.colorScheme.secondaryContainer
-                                  : theme.colorScheme.secondary)),
-                          onPressed: () {
-                            setState(() {
-                              vegan ? vegan = false : vegan = true;
-                            });
-                          },
-                          icon: Image.asset(
-                              "assets/images/recipe/icons/vegan.png"),
-                          label: Text("Vegan")),
-                    ),
-                  ],
-                ),
-              ],
-            ),
+                child: Text("ALLL"))
           ],
         ),
       ),
     );
   }
+
+  List<Ingredient> _ingredientOptions = <Ingredient>[
+    Ingredient(
+        // name: ingredientdata["name"],
+        name: "all",
+        icon: Image.asset("assets/images/recipe/icons/beef.png")),
+    Ingredient(
+        name: "Ente", icon: Image.asset("assets/images/recipe/icons/duck.png")),
+    Ingredient(
+        name: "Huhn", icon: Image.asset("assets/images/recipe/icons/hen.png")),
+    Ingredient(
+        name: "Gans",
+        icon: Image.asset("assets/images/recipe/icons/goose.png")),
+    Ingredient(
+        name: "Ziege",
+        icon: Image.asset("assets/images/recipe/icons/goat.png")),
+    Ingredient(
+        name: "Pferd",
+        icon: Image.asset("assets/images/recipe/icons/horse.png")),
+    Ingredient(
+        name: "Lamm", icon: Image.asset("assets/images/recipe/icons/lamb.png")),
+    Ingredient(
+        name: "Hase",
+        icon: Image.asset("assets/images/recipe/icons/rabbit.png")),
+    Ingredient(
+        name: "Vegan",
+        icon: Image.asset("assets/images/recipe/icons/vegan.png"))
+  ];
+  static String _displayStringForOption(Ingredient option) => option.name;
 }
