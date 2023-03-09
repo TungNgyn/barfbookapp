@@ -1,4 +1,5 @@
 import 'package:Barfbook/Screens/Account/Login.dart';
+import 'package:Barfbook/Screens/Account/SignUp.dart';
 import 'package:Barfbook/Screens/Mehr/profile.dart';
 import 'package:Barfbook/main.dart';
 import 'package:Barfbook/util/Supabase/AuthController.dart';
@@ -139,7 +140,10 @@ class _settingsStartState extends State<ScreenSettings>
                 )),
             Expanded(
                 child: SettingsList(physics: ScrollPhysics(), sections: [
-              CustomSettingsSection(child: SectionProfile()),
+              CustomSettingsSection(
+                  child: userdata["name"] == "Gast"
+                      ? SectionProfileGast()
+                      : SectionProfile()),
               CustomSettingsSection(
                   child: SettingsSection(
                 title: Text("Einstellungen"),
@@ -288,20 +292,34 @@ class SectionProfile extends StatelessWidget {
         ),
         SettingsTile(
           title: Text("Abonnement abschließen"),
-          onPressed: (context) {
-            print(supabase
-                .from('profile')
-                .select('''name, email''')
-                .eq('id', user?.id)
-                .limit(1)
-                .single());
-          },
+          onPressed: (context) {},
         ),
         SettingsTile(
           title: Text("Abmelden"),
           onPressed: (context) =>
               {authController.signOut(), Get.to(() => ScreenLogin())},
         )
+      ],
+    );
+  }
+}
+
+class SectionProfileGast extends StatelessWidget {
+  const SectionProfileGast({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return SettingsSection(
+      title: Text("Profil"),
+      tiles: [
+        SettingsTile(
+            title: Text("Account erstellen"),
+            onPressed: (context) {
+              authController.signOut();
+              Get.to(() => ScreenSignUp());
+            })
       ],
     );
   }

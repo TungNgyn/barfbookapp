@@ -15,6 +15,7 @@ class ScreenBarfbook extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    getIngredient();
     var startState = context.watch<StartState>();
     return NestedScrollView(
       headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) => [

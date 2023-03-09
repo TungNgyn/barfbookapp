@@ -11,7 +11,7 @@ Future<void> getProfile() async {
   try {
     userdata = await supabase
         .from('profile')
-        .select("name, email")
+        .select("name, email, description")
         .match({'id': user?.id}).single();
   } catch (error) {
     print("ERROR = $error");

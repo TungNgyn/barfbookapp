@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:Barfbook/util/Supabase/AuthController.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -10,34 +12,65 @@ class ScreenCreateRecipe extends StatefulWidget {
   State<ScreenCreateRecipe> createState() => _newRecipeState();
 }
 
-late Map ingredientdata;
-
-Future<void> getIngredient() async {
-  var ingredients =
-      await supabase.from('ingredient').select("name, type, category");
-  var i = 1;
-  for (var ingredient in ingredients) {
-    i++;
-    try {
-      ingredientdata = await supabase
-          .from('ingredient')
-          .select("name, type, category")
-          .match({'id': i}).single();
-    } catch (error) {
-      print("ERROR = $error");
-    }
-  }
-}
+late List ingredientdata;
 
 class Ingredient {
-  const Ingredient({required this.name, required this.icon});
+  const Ingredient(
+      {required this.name,
+      required this.type,
+      required this.category,
+      required this.icon});
 
   final String name;
+  final String type;
+  final String category;
   final Image icon;
 
   @override
   String toString() {
     return name;
+  }
+}
+
+const enumType = {
+  1: "Rind",
+  2: "Geflügel",
+  3: "Pferd",
+  4: "Wild",
+  5: "Ziege",
+  6: "Kaninchen",
+  7: "Lamm",
+  8: "Fisch",
+  9: "Vegan"
+};
+
+const enumCategory = {
+  1: "Fleisch",
+  2: "Magen",
+  3: "Knochen",
+  4: "Innereien",
+  5: "Gemüse",
+  6: "Obst",
+};
+
+var enumIcon = {
+  1: Image.asset("assets/images/recipe/icons/beef.png"),
+  2: Image.asset("assets/images/recipe/icons/hen.png"),
+  3: Image.asset("assets/images/recipe/icons/horse.png"),
+  4: Image.asset("assets/images/recipe/icons/beef.png"), // to be change
+  5: Image.asset("assets/images/recipe/icons/goat.png"),
+  6: Image.asset("assets/images/recipe/icons/rabbit.png"),
+  7: Image.asset("assets/images/recipe/icons/lamb.png"),
+  8: Image.asset("assets/images/recipe/icons/beef.png"), // to be change
+  9: Image.asset("assets/images/recipe/icons/vegan.png")
+};
+
+Future<void> getIngredient() async {
+  try {
+    ingredientdata =
+        await supabase.from('ingredient').select('name, type, category, vegan');
+  } catch (error) {
+    print("ERROR = $error");
   }
 }
 
@@ -56,7 +89,6 @@ class _newRecipeState extends State<ScreenCreateRecipe> {
 
   @override
   Widget build(BuildContext context) {
-    getIngredient();
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -118,6 +150,13 @@ class _newRecipeState extends State<ScreenCreateRecipe> {
                                     option.name,
                                     style: TextStyle(fontSize: 24),
                                   ),
+                                  subtitle: Row(
+                                    children: [
+                                      Text(option.category),
+                                      Spacer(),
+                                      Text(option.type)
+                                    ],
+                                  ),
                                   onTap: () => onSelected(option),
                                 ),
                               );
@@ -135,9 +174,7 @@ class _newRecipeState extends State<ScreenCreateRecipe> {
             }),
             ElevatedButton(
                 onPressed: () {
-                  debugPrint(supabase
-                      .from('ingredient')
-                      .select("name, type, category") as String?);
+                  print(ingredientdata);
                 },
                 child: Text("ALLL"))
           ],
@@ -147,31 +184,13 @@ class _newRecipeState extends State<ScreenCreateRecipe> {
   }
 
   List<Ingredient> _ingredientOptions = <Ingredient>[
-    Ingredient(
-        // name: ingredientdata["name"],
-        name: "all",
-        icon: Image.asset("assets/images/recipe/icons/beef.png")),
-    Ingredient(
-        name: "Ente", icon: Image.asset("assets/images/recipe/icons/duck.png")),
-    Ingredient(
-        name: "Huhn", icon: Image.asset("assets/images/recipe/icons/hen.png")),
-    Ingredient(
-        name: "Gans",
-        icon: Image.asset("assets/images/recipe/icons/goose.png")),
-    Ingredient(
-        name: "Ziege",
-        icon: Image.asset("assets/images/recipe/icons/goat.png")),
-    Ingredient(
-        name: "Pferd",
-        icon: Image.asset("assets/images/recipe/icons/horse.png")),
-    Ingredient(
-        name: "Lamm", icon: Image.asset("assets/images/recipe/icons/lamb.png")),
-    Ingredient(
-        name: "Hase",
-        icon: Image.asset("assets/images/recipe/icons/rabbit.png")),
-    Ingredient(
-        name: "Vegan",
-        icon: Image.asset("assets/images/recipe/icons/vegan.png"))
+    for (var i = 0; i < ingredientdata.length; i++)
+      Ingredient(
+          name: "${ingredientdata[i]['name']}",
+          type: enumType[ingredientdata[i]['type']] as String,
+          category: enumCategory[ingredientdata[i]['category']] as String,
+          icon: enumIcon[ingredientdata[i]['type']] as Image)
   ];
+
   static String _displayStringForOption(Ingredient option) => option.name;
 }

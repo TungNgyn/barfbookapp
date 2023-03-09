@@ -188,8 +188,13 @@ class _SignUpState extends State<ScreenSignUp> {
       _isLoading = true;
     });
     try {
-      final AuthResponse response = await supabase.auth
-          .signUp(email: email, password: password, data: {'name': username});
+      final AuthResponse response = await supabase.auth.signUp(
+          email: email,
+          password: password,
+          data: {
+            'name': username,
+            'description': "Ich bin ein BARF-Enthusiast!"
+          });
 
       session = response.session;
       user = response.user;

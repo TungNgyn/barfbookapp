@@ -107,11 +107,16 @@ class ScreenProfile extends StatelessWidget {
                       child: Center(
                           child: Column(
                         children: [
-                          SizedBox(height: 50),
+                          SizedBox(height: 30),
                           Text(
                             "Über mich",
                             style: TextStyle(
-                                fontWeight: FontWeight.w600, fontSize: 17),
+                                fontWeight: FontWeight.w600, fontSize: 21),
+                          ),
+                          SizedBox(height: 20),
+                          Text(
+                            userdata['description'],
+                            style: TextStyle(fontSize: 18),
                           )
                         ],
                       )),
