@@ -9,8 +9,6 @@ import '../../main.dart';
 class ScreenProfile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    var startState = context.watch<StartState>();
-
     return Scaffold(
         extendBodyBehindAppBar: true,
         appBar: AppBar(

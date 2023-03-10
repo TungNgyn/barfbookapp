@@ -3,23 +3,21 @@ import 'package:Barfbook/Screens/Mehr/settings.dart';
 import 'package:Barfbook/Screens/explore.dart';
 import 'package:flutter/material.dart';
 import 'package:animations/animations.dart';
-import 'package:flutter_native_splash/flutter_native_splash.dart';
 
-import 'Barfbook/Barfbook.dart';
+import 'Screens/Barfbook/Barfbook.dart';
 
-class ScreenHome extends StatefulWidget {
+class Home extends StatefulWidget {
   @override
-  State<ScreenHome> createState() => _ScreenHomeState();
+  State<Home> createState() => _HomeState();
 }
 
-class _ScreenHomeState extends State<ScreenHome> {
+class _HomeState extends State<Home> {
   // Navigation
   var appBarTitel;
   var navigationIndex = 0;
 
   @override
   Widget build(BuildContext context) {
-    FlutterNativeSplash.remove();
     Widget seite;
     switch (navigationIndex) {
       case 0:

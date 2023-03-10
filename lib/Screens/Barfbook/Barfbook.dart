@@ -1,14 +1,13 @@
 import 'dart:math';
 
+import 'package:Barfbook/home.dart';
 import 'package:Barfbook/Screens/Barfbook/createSchedule.dart';
 import 'package:Barfbook/Screens/Barfbook/editRecipe.dart';
-import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 
 import '../../main.dart';
-import '../home.dart';
 import 'createRecipe.dart';
 
 class ScreenBarfbook extends StatelessWidget {
@@ -17,7 +16,6 @@ class ScreenBarfbook extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     getSchedule();
-    var startState = context.watch<StartState>();
     return NestedScrollView(
       headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) => [
         SliverOverlapAbsorber(
@@ -56,12 +54,7 @@ class ScreenBarfbook extends StatelessWidget {
                       .copyWith(dividerColor: Colors.transparent),
                   child: ExpansionTile(
                       initiallyExpanded: true,
-                      title: Center(
-                          child: Text(startState.erstellteRezepte.isEmpty
-                              ? "Meine Wochenpläne"
-                              : startState.erstellteRezepte.length == 1
-                                  ? "Mein Wochenplan"
-                                  : "Meine ${startState.erstellteRezepte.length} Wochenpläne")),
+                      title: Center(child: Text("Meine Wochenpläne")),
                       children: [
                         Padding(
                             padding: const EdgeInsets.all(20.0),
@@ -70,9 +63,7 @@ class ScreenBarfbook extends StatelessWidget {
                                   Get.to(() => ScreenCreateSchedule()),
                               child: Text("Wochenplan erstellen"),
                             )),
-                        startState.erstellteRezepte.isEmpty
-                            ? SizedBox()
-                            : ButtonRezeptErstellen(),
+                        ButtonRezeptErstellen(),
                       ])),
               SizedBox(height: 30),
               Theme(
@@ -80,20 +71,13 @@ class ScreenBarfbook extends StatelessWidget {
                       .copyWith(dividerColor: Colors.transparent),
                   child: ExpansionTile(
                       initiallyExpanded: true,
-                      title: Center(
-                          child: Text(startState.erstellteRezepte.isEmpty
-                              ? "Meine Rezepte"
-                              : startState.erstellteRezepte.length == 1
-                                  ? "Mein Rezept"
-                                  : "Meine ${startState.erstellteRezepte.length} Rezepte")),
+                      title: Center(child: Text("Meine Rezepte")),
                       children: [
                         Padding(
                           padding: const EdgeInsets.all(20.0),
                           child: ErstellteRezepte(),
                         ),
-                        startState.erstellteRezepte.isEmpty
-                            ? SizedBox()
-                            : ButtonRezeptErstellen(),
+                        ButtonRezeptErstellen(),
                       ])),
               SizedBox(height: 30),
               Theme(
@@ -101,20 +85,13 @@ class ScreenBarfbook extends StatelessWidget {
                       .copyWith(dividerColor: Colors.transparent),
                   child: ExpansionTile(
                       initiallyExpanded: true,
-                      title: Center(
-                          child: Text(startState.favoriten.isEmpty
-                              ? "Meine Favoriten"
-                              : startState.favoriten.length == 1
-                                  ? "Mein Favorit"
-                                  : "Meine ${startState.favoriten.length} Favoriten")),
+                      title: Center(child: Text("Meine Favoriten")),
                       children: [
                         Padding(
                           padding: const EdgeInsets.all(20.0),
                           child: GespeicherteRezepte(),
                         ),
-                        startState.favoriten.isEmpty
-                            ? SizedBox()
-                            : ButtonRezeptFinden(),
+                        ButtonRezeptFinden(),
                       ])),
             ],
           ),
@@ -131,17 +108,7 @@ class GespeicherteRezepte extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var startState = context.watch<StartState>();
-
-    if (startState.favoriten.isNotEmpty) {
-      return Column(
-        children: [
-          FavoritenListe(startState: startState),
-        ],
-      );
-    } else {
-      return KeineFavoritenRezepte();
-    }
+    return KeineFavoritenRezepte();
   }
 }
 
@@ -194,8 +161,8 @@ class ButtonRezeptFinden extends StatelessWidget {
         // style: ElevatedButton.styleFrom(
         //     primary: theme.colorScheme.secondary),
         onPressed: () {
-          Navigator.of(context).pushReplacement(
-              MaterialPageRoute(builder: (context) => ScreenHome()));
+          Navigator.of(context)
+              .pushReplacement(MaterialPageRoute(builder: (context) => Home()));
         },
         child: Text("Lieblingsrezepte finden"));
   }
@@ -208,16 +175,7 @@ class ErstellteRezepte extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var startState = context.watch<StartState>();
-    if (startState.erstellteRezepte.isNotEmpty) {
-      return Column(
-        children: [
-          ErstelltenListe(startState: startState),
-        ],
-      );
-    } else {
-      return KeineErstelltenRezepte();
-    }
+    return KeineErstelltenRezepte();
   }
 }
 
@@ -281,10 +239,7 @@ class ButtonRezeptErstellen extends StatelessWidget {
 class FavoritenListe extends StatelessWidget {
   const FavoritenListe({
     super.key,
-    required this.startState,
   });
-
-  final StartState startState;
 
   @override
   Widget build(BuildContext context) {
@@ -292,11 +247,9 @@ class FavoritenListe extends StatelessWidget {
       physics: ScrollPhysics(),
       shrinkWrap: true,
       children: [
-        for (var pair in startState.favoriten)
-          ListTile(
-            leading: Icon(Icons.favorite),
-            title: Text(pair.asLowerCase),
-          ),
+        ListTile(
+          leading: Icon(Icons.favorite),
+        ),
       ],
     );
   }
@@ -305,39 +258,33 @@ class FavoritenListe extends StatelessWidget {
 class ErstelltenListe extends StatelessWidget {
   const ErstelltenListe({
     super.key,
-    required this.startState,
   });
-
-  final StartState startState;
 
   @override
   Widget build(BuildContext context) {
-    WordPair pair;
-
     return ListView(
       physics: ScrollPhysics(),
       shrinkWrap: true,
       children: [
-        for (pair in startState.erstellteRezepte)
-          ListTile(
-            onTap: () {
-              showDialog(
-                  barrierDismissible: false,
-                  context: context,
-                  builder: (BuildContext context) {
-                    return ScreenEditRecipe(pair: pair);
-                  });
-            },
-            leading: Container(
-                padding: EdgeInsets.only(right: 12.0),
-                decoration: BoxDecoration(
-                    border: Border(
-                        right: BorderSide(
-                            width: 1.0,
-                            color: Theme.of(context).colorScheme.onSecondary))),
-                child: Icon(Icons.library_books)),
-            title: Text(pair.asLowerCase),
-          ),
+        ListTile(
+          onTap: () {
+            showDialog(
+                barrierDismissible: false,
+                context: context,
+                builder: (BuildContext context) {
+                  return ScreenEditRecipe();
+                });
+          },
+          leading: Container(
+              padding: EdgeInsets.only(right: 12.0),
+              decoration: BoxDecoration(
+                  border: Border(
+                      right: BorderSide(
+                          width: 1.0,
+                          color: Theme.of(context).colorScheme.onSecondary))),
+              child: Icon(Icons.library_books)),
+          title: Text("pair"),
+        ),
       ],
     );
   }

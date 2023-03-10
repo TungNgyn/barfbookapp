@@ -7,8 +7,6 @@ import 'package:provider/provider.dart';
 class ScreenSearch extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    var startState = context.watch<StartState>();
-
     return Scaffold(
         body: NestedScrollView(
       headerSliverBuilder: (_, __) => [

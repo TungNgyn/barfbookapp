@@ -1,22 +1,18 @@
 import 'package:Barfbook/main.dart';
-import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class ScreenEditRecipe extends StatelessWidget {
-  WordPair pair;
-
-  ScreenEditRecipe({super.key, required this.pair});
+  ScreenEditRecipe({super.key});
 
   @override
   Widget build(BuildContext context) {
-    var startState = context.watch<StartState>();
     late String teil1;
     late String teil2;
 
     return AlertDialog(
       scrollable: true,
-      title: Text("${pair} bearbeiten"),
+      title: Text("{pair} bearbeiten"),
       content: Padding(
         padding: const EdgeInsets.all(20.0),
         child: Column(
@@ -44,10 +40,7 @@ class ScreenEditRecipe extends StatelessWidget {
             SizedBox(height: 10),
             ElevatedButton(
                 onPressed: () {
-                  startState.erstellteRezepte.remove(pair);
-                  pair = WordPair(teil1, teil2);
                   Navigator.of(context).pop();
-                  startState.toggleErstellt(teil1, teil2);
                 },
                 child: Text("Bearbeiten"))
           ],

@@ -1,13 +1,12 @@
 import 'dart:async';
 
+import 'package:Barfbook/home.dart';
 import 'package:Barfbook/Screens/Account/Login.dart';
 import 'package:Barfbook/util/Supabase/AuthController.dart';
-import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import '../home.dart';
 
 class ScreenSignUp extends StatefulWidget {
   @override
@@ -36,7 +35,7 @@ class _SignUpState extends State<ScreenSignUp> {
       final session = data.session;
       if (session != null) {
         _redirecting = true;
-        Get.to(() => ScreenHome());
+        Get.off(() => Home());
       }
     });
     super.initState();
@@ -215,10 +214,8 @@ class _SignUpState extends State<ScreenSignUp> {
       _isLoading = true;
     });
     try {
-      final AuthResponse response = await supabase.auth.signUp(
-          email: "${WordPair.random()}@${WordPair.random()}.com",
-          password: "12345678",
-          data: {'name': 'Gast'});
+      final AuthResponse response = await supabase.auth
+          .signUp(email: ".com", password: "12345678", data: {'name': 'Gast'});
 
       session = response.session;
       user = response.user;

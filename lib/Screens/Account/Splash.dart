@@ -1,5 +1,5 @@
+import 'package:Barfbook/home.dart';
 import 'package:Barfbook/Screens/Account/Login.dart';
-import 'package:Barfbook/Screens/home.dart';
 import 'package:Barfbook/util/Supabase/AuthController.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -30,7 +30,7 @@ class _ScreenSplashState extends State<ScreenSplash> {
     final session = supabase.auth.currentSession;
 
     if (session != null) {
-      Get.offAll(() => ScreenHome());
+      Get.offAll(() => Home());
     } else {
       Get.offAll(() => ScreenLogin());
     }

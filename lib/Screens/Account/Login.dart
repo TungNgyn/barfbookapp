@@ -1,9 +1,7 @@
 import 'dart:async';
 
-import 'package:Barfbook/Screens/home.dart';
-import 'package:english_words/english_words.dart';
+import 'package:Barfbook/home.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_native_splash/flutter_native_splash.dart';
 
 import 'package:get/get.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -183,10 +181,8 @@ class _LoginState extends State<ScreenLogin> {
       _isLoading = true;
     });
     try {
-      final AuthResponse response = await supabase.auth.signUp(
-          email: "${WordPair.random()}@${WordPair.random()}.com",
-          password: "12345678",
-          data: {'name': 'Gast'});
+      final AuthResponse response = await supabase.auth
+          .signUp(password: "12345678", data: {'name': 'Gast'});
 
       session = response.session;
       user = response.user;
@@ -233,7 +229,7 @@ class _LoginState extends State<ScreenLogin> {
       final session = data.session;
       if (session != null) {
         _redirecting = true;
-        Get.to(() => ScreenHome());
+        Get.off(() => Home());
       }
     });
     super.initState();

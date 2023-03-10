@@ -1,67 +1,28 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class CustomTheme {
   CustomTheme._();
 
-  static final ThemeData lightTheme = ThemeData(
-    scaffoldBackgroundColor: Colors.teal,
-    appBarTheme: AppBarTheme(
-      color: Colors.teal,
-      iconTheme: IconThemeData(
-        color: Colors.white,
-      ),
-    ),
-    colorScheme: ColorScheme.light(
-      primary: Colors.white,
-      onPrimary: Colors.white,
-      secondary: Colors.red,
-    ),
-    cardTheme: CardTheme(
-      color: Colors.teal,
-    ),
-    iconTheme: IconThemeData(
-      color: Colors.white54,
-    ),
-    textTheme: TextTheme(
-      titleMedium: TextStyle(
-        color: Colors.white,
-        fontSize: 20.0,
-      ),
-      titleSmall: TextStyle(
-        color: Colors.white70,
-        fontSize: 18.0,
-      ),
-    ),
+  static final ThemeData classicLight = ThemeData(
+    brightness: Brightness.light,
+    useMaterial3: true,
+    scaffoldBackgroundColor: Color(0xfffcfdf7),
+    secondaryHeaderColor: Color(0xffe3f2fd),
+    shadowColor: Color(0xff000000),
+    splashColor: Color(0x66c8c8c8),
+    splashFactory: InkSplash.splashFactory,
+    textTheme: GoogleFonts.lexendTextTheme(),
   );
 
-  static final ThemeData darkTheme = ThemeData(
-    scaffoldBackgroundColor: Colors.black,
-    appBarTheme: AppBarTheme(
-      color: Colors.black,
-      iconTheme: IconThemeData(
-        color: Colors.white,
-      ),
-    ),
-    colorScheme: ColorScheme.light(
-      primary: Colors.black,
-      onPrimary: Colors.black,
-      secondary: Colors.red,
-    ),
-    cardTheme: CardTheme(
-      color: Colors.black,
-    ),
-    iconTheme: IconThemeData(
-      color: Colors.white54,
-    ),
-    textTheme: TextTheme(
-      titleMedium: TextStyle(
-        color: Colors.white,
-        fontSize: 20.0,
-      ),
-      titleSmall: TextStyle(
-        color: Colors.white70,
-        fontSize: 18.0,
-      ),
-    ),
+  static final ThemeData classicDark = ThemeData(
+    brightness: Brightness.dark,
+    useMaterial3: true,
+    scaffoldBackgroundColor: Color(0xff1a1c19),
+    secondaryHeaderColor: Color(0xff616161),
+    shadowColor: Color(0xff000000),
+    splashColor: Color(0x40cccccc),
+    splashFactory: InkSplash.splashFactory,
+    textTheme: GoogleFonts.lexendTextTheme(),
   );
 }
