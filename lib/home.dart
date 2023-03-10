@@ -3,8 +3,10 @@ import 'package:Barfbook/Screens/Mehr/settings.dart';
 import 'package:Barfbook/Screens/explore.dart';
 import 'package:flutter/material.dart';
 import 'package:animations/animations.dart';
+import 'package:get/get.dart';
 
 import 'Screens/Barfbook/Barfbook.dart';
+import 'controller.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -13,11 +15,12 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   // Navigation
-  var appBarTitel;
   var navigationIndex = 0;
 
   @override
   Widget build(BuildContext context) {
+    final Controller c = Get.put(Controller());
+
     Widget seite;
     switch (navigationIndex) {
       case 0:
