@@ -28,38 +28,33 @@ class ScreenProfile extends StatelessWidget {
             ),
           ),
           SafeArea(
-            child: Container(
-              width: MediaQuery.of(context).size.width,
-              child: Column(
-                children: [
-                  SizedBox(height: MediaQuery.of(context).size.height * 0.05),
-                  CircleAvatar(
-                    backgroundImage:
-                        AssetImage("assets/images/defaultAvatar.png"),
-                    radius: 65,
+            child: Column(
+              children: [
+                SizedBox(height: MediaQuery.of(context).size.height * 0.05),
+                CircleAvatar(
+                  backgroundImage:
+                      AssetImage("assets/images/defaultAvatar.png"),
+                  radius: 65,
+                ),
+                Padding(
+                  padding: EdgeInsets.only(top: 24),
+                  child: Text(
+                    "${userdata["name"]}",
+                    style: TextStyle(fontWeight: FontWeight.w600, fontSize: 21),
                   ),
-                  Padding(
-                    padding: EdgeInsets.only(top: 24),
-                    child: Text(
-                      "${userdata["name"]}",
-                      style:
-                          TextStyle(fontWeight: FontWeight.w600, fontSize: 21),
-                    ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(top: 8),
-                    child: Text("${userdata["email"]}"),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(top: 24, left: 42, right: 32),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      mainAxisSize: MainAxisSize.max,
-                      children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.center,
+                ),
+                Padding(
+                  padding: EdgeInsets.only(top: 8),
+                  child: Text("${userdata["email"]}"),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(top: 20),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width * 0.33,
+                        child: Column(
                           children: [
                             Text(
                               "0",
@@ -69,9 +64,10 @@ class ScreenProfile extends StatelessWidget {
                             Text("Rezepte")
                           ],
                         ),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.center,
+                      ),
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width * 0.33,
+                        child: Column(
                           children: [
                             Text(
                               "0",
@@ -83,9 +79,10 @@ class ScreenProfile extends StatelessWidget {
                             )
                           ],
                         ),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.center,
+                      ),
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width * 0.33,
+                        child: Column(
                           children: [
                             Text(
                               "0",
@@ -97,35 +94,33 @@ class ScreenProfile extends StatelessWidget {
                             ),
                           ],
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
-                  SizedBox(height: MediaQuery.of(context).size.height * 0.05),
-                  Expanded(
-                    child: Container(
-                      color: Theme.of(context).colorScheme.onSecondary,
-                      child: Center(
-                          child: Column(
-                        children: [
-                          SizedBox(height: 30),
-                          Text(
-                            "Über mich",
-                            style: TextStyle(
-                                fontWeight: FontWeight.w600, fontSize: 21),
-                          ),
-                          SizedBox(height: 20),
-                          Text(
-                            userdata['description'],
-                            style: TextStyle(fontSize: 18),
-                          )
-                        ],
-                      )),
-                    ),
-                  )
-                ],
-              ),
+                ),
+                SizedBox(height: MediaQuery.of(context).size.height * 0.05),
+                Container(
+                  color: Theme.of(context).colorScheme.onSecondary,
+                  child: Center(
+                      child: Column(
+                    children: [
+                      SizedBox(height: 30),
+                      Text(
+                        "Über mich",
+                        style: TextStyle(
+                            fontWeight: FontWeight.w600, fontSize: 21),
+                      ),
+                      SizedBox(height: 20),
+                      Text(
+                        userdata['description'],
+                        style: TextStyle(fontSize: 18),
+                      )
+                    ],
+                  )),
+                ),
+              ],
             ),
-          )
+          ),
         ]));
   }
 }

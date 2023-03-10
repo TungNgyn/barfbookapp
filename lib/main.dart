@@ -1,7 +1,8 @@
 import 'package:Barfbook/Screens/Account/Login.dart';
-import 'package:Barfbook/Screens/Account/Splash.dart';
+import 'package:Barfbook/Screens/home.dart';
 import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:provider/provider.dart';
 import 'package:json_theme/json_theme.dart';
 import 'package:get/get.dart';
@@ -9,8 +10,8 @@ import 'package:get/get.dart';
 import 'package:flutter/services.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'dart:convert';
+
 import 'util/Supabase/AuthController.dart';
-import 'Screens/home.dart';
 
 Future<void> main() async {
   // runApp(GetMaterialApp(home: ScreenSplash()));
@@ -32,18 +33,22 @@ Future<void> main() async {
         'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indva3F6eXF2cXp0bXl6aGh1cXFoIiwicm9sZSI6ImFub24iLCJpYXQiOjE2Nzc0MTAwNjUsImV4cCI6MTk5Mjk4NjA2NX0.Lw1KOvMQsD7mx_NbiXvZ2uxGTX61j_oSS93v_DqTyG0',
   );
 
-  WidgetsFlutterBinding.ensureInitialized();
+  WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+  FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
 
   var themeStr = await rootBundle.loadString('assets/themes/theme.json');
   var themeJson = jsonDecode(themeStr);
-  final theme = ThemeDecoder.decodeThemeData(themeJson)!;
+  theme = ThemeDecoder.decodeThemeData(themeJson)!;
 
   themeStr = await rootBundle.loadString('assets/themes/darkTheme.json');
   themeJson = jsonDecode(themeStr);
-  final darkTheme = ThemeDecoder.decodeThemeData(themeJson)!;
+  darkTheme = ThemeDecoder.decodeThemeData(themeJson)!;
 
   runApp(MainApp(theme: theme, darkTheme: darkTheme));
 }
+
+late final theme;
+late final darkTheme;
 
 class MainApp extends StatelessWidget {
   final ThemeData theme;
@@ -55,16 +60,11 @@ class MainApp extends StatelessWidget {
     return ChangeNotifierProvider(
       create: (context) => StartState(),
       child: GetMaterialApp(
-        // home: user == null ? ScreenLogin() : ScreenHome(),
+        home: user == null ? ScreenLogin() : ScreenHome(),
         title: "Barfbook",
         theme: theme,
         darkTheme: darkTheme,
         debugShowCheckedModeBanner: false,
-        routes: <String, WidgetBuilder>{
-          '/': (_) => ScreenSplash(),
-          'login': (_) => ScreenLogin(),
-          'home': (_) => ScreenHome()
-        },
       ),
     );
   }

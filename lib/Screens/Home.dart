@@ -3,6 +3,7 @@ import 'package:Barfbook/Screens/Mehr/settings.dart';
 import 'package:Barfbook/Screens/explore.dart';
 import 'package:flutter/material.dart';
 import 'package:animations/animations.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 
 import 'Barfbook/Barfbook.dart';
 
@@ -18,6 +19,7 @@ class _ScreenHomeState extends State<ScreenHome> {
 
   @override
   Widget build(BuildContext context) {
+    FlutterNativeSplash.remove();
     Widget seite;
     switch (navigationIndex) {
       case 0:

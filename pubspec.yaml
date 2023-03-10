@@ -20,6 +20,8 @@ dependencies:
   animations: ^2.0.7
   supabase_flutter: ^1.4.1
   image_picker: ^0.8.6+3
+  flutter_typeahead: ^4.3.7
+  flutter_native_splash: ^2.2.19
 
 dev_dependencies:
   flutter_test:
@@ -37,10 +39,8 @@ flutter:
     - assets/themes/
 
   fonts:
-    - family: LexendDeca
+    - family: Lexend
       fonts:
-        - asset: assets/fonts/LexendDeca-Regular.ttf
-        - asset: assets/fonts/LexendDeca-Bold.ttf
-          weight: 700
+        - asset: assets/fonts/Lexend-Regular.ttf
     
 google_sign_in_web: ^0.9.1

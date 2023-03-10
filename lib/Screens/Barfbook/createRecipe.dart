@@ -4,6 +4,7 @@ import 'package:Barfbook/util/Supabase/AuthController.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_connect/http/src/utils/utils.dart';
+import 'package:flutter_typeahead/flutter_typeahead.dart';
 
 class ScreenCreateRecipe extends StatefulWidget {
   const ScreenCreateRecipe({super.key});
@@ -65,15 +66,6 @@ var enumIcon = {
   9: Image.asset("assets/images/recipe/icons/vegan.png")
 };
 
-Future<void> getIngredient() async {
-  try {
-    ingredientdata =
-        await supabase.from('ingredient').select('name, type, category, vegan');
-  } catch (error) {
-    print("ERROR = $error");
-  }
-}
-
 class _newRecipeState extends State<ScreenCreateRecipe> {
   late String teil1;
   late String teil2;
@@ -86,6 +78,8 @@ class _newRecipeState extends State<ScreenCreateRecipe> {
   var lamb = false;
   var rabbit = false;
   var vegan = false;
+
+  final TextEditingController _ingredientController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -114,75 +108,123 @@ class _newRecipeState extends State<ScreenCreateRecipe> {
               decoration: InputDecoration(
                   border: OutlineInputBorder(), labelText: "Rezeptname"),
             ),
-            SizedBox(height: 20),
-            TextField(
-                onChanged: (textfeld2text) {
-                  teil2 = textfeld2text;
+            TypeAheadField(
+                textFieldConfiguration: TextFieldConfiguration(
+                    controller: _ingredientController,
+                    decoration: InputDecoration(
+                        border: OutlineInputBorder(),
+                        labelText: "Zutatensuche")),
+                suggestionsCallback: (pattern) async {
+                  return await supabase
+                      .from('ingredient')
+                      .select('name, type, category, vegan')
+                      .ilike('name', '%${pattern}%');
                 },
-                decoration: InputDecoration(
-                    border: OutlineInputBorder(), labelText: "Wort2")),
-            LayoutBuilder(builder: (context, constraints) {
-              return Autocomplete(
-                displayStringForOption: _displayStringForOption,
-                optionsBuilder: (TextEditingValue textEditingValue) {
-                  return textEditingValue.text.isEmpty
-                      ? const Iterable<Ingredient>.empty()
-                      : _ingredientOptions.where((Ingredient option) {
-                          return option.name
-                              .isCaseInsensitiveContains(textEditingValue.text);
-                        });
-                },
-                optionsViewBuilder: (context, onSelected, options) {
-                  return Align(
-                    alignment: Alignment.topLeft,
-                    child: Material(
-                      child: SizedBox(
-                        width: constraints.biggest.width,
-                        child: ListView.builder(
-                            padding: EdgeInsets.zero,
-                            itemBuilder: ((context, index) {
-                              final option = options.elementAt(index);
-
-                              return Card(
-                                child: ListTile(
-                                  leading: option.icon,
-                                  title: Text(
-                                    option.name,
-                                    style: TextStyle(fontSize: 24),
-                                  ),
-                                  subtitle: Row(
-                                    children: [
-                                      Text(option.category),
-                                      Spacer(),
-                                      Text(option.type)
-                                    ],
-                                  ),
-                                  onTap: () => onSelected(option),
-                                ),
-                              );
-                            }),
-                            itemCount: options.length),
-                      ),
+                itemBuilder: (context, suggestion) {
+                  return ListTile(
+                    title: Text(
+                      (suggestion as Map)['name'],
+                      style: TextStyle(fontSize: 24),
+                    ),
+                    subtitle: Row(
+                      children: [
+                        Text(enumCategory[suggestion['category']] as String),
+                        Spacer(),
+                        Text(enumType[suggestion['type']] as String)
+                      ],
                     ),
                   );
                 },
-                onSelected: (Ingredient selection) {
-                  debugPrint(
-                      'You just selected ${_displayStringForOption(selection)}');
+                onSuggestionSelected: (suggestion) {
+                  print(suggestion);
+                  _ingredientController.text = (suggestion as Map)['name'];
                 },
-              );
-            }),
+                noItemsFoundBuilder: (BuildContext context) {
+                  return Padding(
+                    padding: const EdgeInsets.all(20),
+                    child: Text(
+                      'Keine Zutat gefunden!',
+                      style: TextStyle(fontSize: 18),
+                    ),
+                  );
+                }),
+            // LayoutBuilder(builder: (context, constraints) {
+            //   return Autocomplete(
+            //     displayStringForOption: _displayStringForOption,
+            //     optionsBuilder: (TextEditingValue textEditingValue) {
+            //       return textEditingValue.text.isEmpty
+            //           ? const Iterable<Ingredient>.empty()
+            //           : _ingredientOptions.where((Ingredient option) {
+            //               return option.name
+            //                   .isCaseInsensitiveContains(textEditingValue.text);
+            //             });
+            //     },
+            //     optionsViewBuilder: (context, onSelected, options) {
+            //       return Align(
+            //         alignment: Alignment.topLeft,
+            //         child: Material(
+            //           child: SizedBox(
+            //             width: constraints.biggest.width,
+            // child: ListView.builder(
+            //     padding: EdgeInsets.zero,
+            //     itemBuilder: ((context, index) {
+            //       final option = options.elementAt(index);
+
+            // return Card(
+            //   child: ListTile(
+            //     leading: option.icon,
+            //     title: Text(
+            //       option.name,
+            //       style: TextStyle(fontSize: 24),
+            //     ),
+            //     subtitle: Row(
+            //       children: [
+            //         Text(option.category),
+            //         Spacer(),
+            //         Text(option.type)
+            //       ],
+            //     ),
+            //     onTap: () => onSelected(option),
+            //   ),
+            //                   );
+            //                 }),
+            //                 itemCount: options.length),
+            //           ),
+            //         ),
+            //       );
+            //     },
+            //     onSelected: (Ingredient selection) {
+            //       debugPrint(
+            //           'You just selected ${_displayStringForOption(selection)}');
+            //     },
+            //   );
+            // }),
+            SizedBox(
+                height: MediaQuery.of(context).size.height * 0.4,
+                width: MediaQuery.of(context).size.width,
+                child: Center(
+                    child: Card(
+                        child: FlutterLogo(
+                  size: 350,
+                )))),
             ElevatedButton(
                 onPressed: () {
-                  print(ingredientdata);
+                  recipeIngredient.add(selectedIngredient);
                 },
-                child: Text("ALLL"))
+                child: Text("Hinzufügen")),
+            ElevatedButton(
+                onPressed: () {
+                  print(recipeIngredient);
+                },
+                child: Text("show"))
           ],
         ),
       ),
     );
   }
 
+  late Ingredient selectedIngredient;
+  List<Ingredient> recipeIngredient = [];
   List<Ingredient> _ingredientOptions = <Ingredient>[
     for (var i = 0; i < ingredientdata.length; i++)
       Ingredient(
@@ -192,5 +234,8 @@ class _newRecipeState extends State<ScreenCreateRecipe> {
           icon: enumIcon[ingredientdata[i]['type']] as Image)
   ];
 
-  static String _displayStringForOption(Ingredient option) => option.name;
+  String _displayStringForOption(Ingredient option) {
+    selectedIngredient = option;
+    return option.name;
+  }
 }

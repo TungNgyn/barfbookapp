@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:Barfbook/Screens/Barfbook/createSchedule.dart';
 import 'package:Barfbook/Screens/Barfbook/editRecipe.dart';
 import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
@@ -15,7 +16,7 @@ class ScreenBarfbook extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    getIngredient();
+    getSchedule();
     var startState = context.watch<StartState>();
     return NestedScrollView(
       headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) => [
@@ -50,6 +51,30 @@ class ScreenBarfbook extends StatelessWidget {
           Column(
             children: [
               SizedBox(height: 70),
+              Theme(
+                  data: Theme.of(context)
+                      .copyWith(dividerColor: Colors.transparent),
+                  child: ExpansionTile(
+                      initiallyExpanded: true,
+                      title: Center(
+                          child: Text(startState.erstellteRezepte.isEmpty
+                              ? "Meine Wochenpläne"
+                              : startState.erstellteRezepte.length == 1
+                                  ? "Mein Wochenplan"
+                                  : "Meine ${startState.erstellteRezepte.length} Wochenpläne")),
+                      children: [
+                        Padding(
+                            padding: const EdgeInsets.all(20.0),
+                            child: ElevatedButton(
+                              onPressed: () =>
+                                  Get.to(() => ScreenCreateSchedule()),
+                              child: Text("Wochenplan erstellen"),
+                            )),
+                        startState.erstellteRezepte.isEmpty
+                            ? SizedBox()
+                            : ButtonRezeptErstellen(),
+                      ])),
+              SizedBox(height: 30),
               Theme(
                   data: Theme.of(context)
                       .copyWith(dividerColor: Colors.transparent),
