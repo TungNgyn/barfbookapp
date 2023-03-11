@@ -35,27 +35,6 @@ class Ingredient {
   }
 }
 
-const enumType = {
-  1: "Rind",
-  2: "Geflügel",
-  3: "Pferd",
-  4: "Wild",
-  5: "Ziege",
-  6: "Kaninchen",
-  7: "Lamm",
-  8: "Fisch",
-  9: "Vegan"
-};
-
-const enumCategory = {
-  1: "Fleisch",
-  2: "Magen",
-  3: "Knochen",
-  4: "Innereien",
-  5: "Gemüse",
-  6: "Obst",
-};
-
 var enumIcon = {
   1: Image.asset("assets/images/recipe/icons/beef.png"),
   2: Image.asset("assets/images/recipe/icons/hen.png"),
@@ -106,7 +85,7 @@ class _newRecipeState extends State<ScreenCreateRecipe> {
                   suggestionsCallback: (pattern) async {
                     return await supabase
                         .from('ingredient')
-                        .select('name, type, category, vegan')
+                        .select('name, type, category')
                         .ilike('name', '%${pattern}%');
                   },
                   itemBuilder: (context, suggestion) {
@@ -117,19 +96,18 @@ class _newRecipeState extends State<ScreenCreateRecipe> {
                       ),
                       subtitle: Row(
                         children: [
-                          Text(enumCategory[suggestion['category']] as String),
+                          Text(suggestion['category']),
                           Spacer(),
-                          Text(enumType[suggestion['type']] as String)
+                          Text(suggestion['type'])
                         ],
                       ),
                     );
                   },
                   onSuggestionSelected: (suggestion) {
                     selectedIngredient = Ingredient(
-                        name: (suggestion as Map)['name'] as String,
-                        type: enumType[suggestion['type']] as String,
-                        category:
-                            enumCategory[suggestion['category']] as String,
+                        name: (suggestion as Map)['name'],
+                        type: suggestion['type'],
+                        category: suggestion['category'],
                         icon:
                             Image.asset("assets/images/recipe/icons/beef.png"));
                     _ingredientController.text = (suggestion)['name'];
@@ -204,7 +182,10 @@ class _newRecipeState extends State<ScreenCreateRecipe> {
                   )))),
               ElevatedButton(
                   onPressed: () {
-                    recipeIngredient.add(selectedIngredient);
+                    _ingredientController.text.isEmpty
+                        ? null
+                        : recipeIngredient.add(selectedIngredient);
+                    _ingredientController.text = "";
                   },
                   child: Text("Hinzufügen")),
               ElevatedButton(
