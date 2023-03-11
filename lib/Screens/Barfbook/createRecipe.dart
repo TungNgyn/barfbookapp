@@ -4,7 +4,6 @@ import 'package:Barfbook/controller.dart';
 import 'package:Barfbook/util/Supabase/AuthController.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 
 class ScreenCreateRecipe extends StatefulWidget {
