@@ -18,11 +18,13 @@ late Ingredient selectedIngredient;
 
 class Ingredient {
   const Ingredient(
-      {required this.name,
+      {required this.id,
+      required this.name,
       required this.type,
       required this.category,
       required this.icon});
 
+  final int id;
   final String name;
   final String type;
   final String category;
@@ -84,7 +86,7 @@ class _newRecipeState extends State<ScreenCreateRecipe> {
                   suggestionsCallback: (pattern) async {
                     return await supabase
                         .from('ingredient')
-                        .select('name, type, category')
+                        .select('id, name, type, category')
                         .ilike('name', '%${pattern}%');
                   },
                   itemBuilder: (context, suggestion) {
@@ -105,6 +107,7 @@ class _newRecipeState extends State<ScreenCreateRecipe> {
                   onSuggestionSelected: (suggestion) {
                     selectedIngredient = Ingredient(
                         name: (suggestion as Map)['name'],
+                        id: suggestion['id'],
                         type: suggestion['type'],
                         category: suggestion['category'],
                         icon:
@@ -227,6 +230,17 @@ class _newRecipeState extends State<ScreenCreateRecipe> {
                   }),
                 ],
               ),
+              TextField(),
+              ElevatedButton(
+                  onPressed: () async {
+                    await supabase.rpc('insert_recipe', params: {
+                      'ingredientid': recipeIngredient[0].id,
+                      'recipename': 'Test',
+                      'recipedescription': 'beschreibung allo',
+                      'userid': user?.id
+                    });
+                  },
+                  child: Text("DB ADD"))
             ]),
           ),
         ));
