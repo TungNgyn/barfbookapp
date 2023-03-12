@@ -1,5 +1,6 @@
 import 'dart:collection';
 
+import 'package:Barfbook/Screens/Barfbook/Barfbook.dart';
 import 'package:Barfbook/controller.dart';
 import 'package:Barfbook/util/Supabase/AuthController.dart';
 import 'package:flutter/material.dart';
@@ -13,7 +14,6 @@ class ScreenCreateRecipe extends StatefulWidget {
   State<ScreenCreateRecipe> createState() => _newRecipeState();
 }
 
-final Controller controller = Get.find();
 late Ingredient selectedIngredient;
 
 class Ingredient {
@@ -29,11 +29,6 @@ class Ingredient {
   final String type;
   final String category;
   final Image icon;
-
-  @override
-  String toString() {
-    return name;
-  }
 }
 
 var enumIcon = {
@@ -54,6 +49,7 @@ class _newRecipeState extends State<ScreenCreateRecipe> {
   final TextEditingController _recipeDescriptionController =
       TextEditingController();
   var recipeIngredient = [].obs;
+  final Controller controller = Get.find();
 
   @override
   void dispose() {
@@ -77,6 +73,7 @@ class _newRecipeState extends State<ScreenCreateRecipe> {
                 icon: Icon(Icons.add),
                 onPressed: () async {
                   await _createRecipe();
+                  Get.back();
                 },
               ),
             )

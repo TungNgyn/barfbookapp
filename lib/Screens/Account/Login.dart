@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:Barfbook/controller.dart';
 import 'package:Barfbook/home.dart';
 import 'package:flutter/material.dart';
 
@@ -14,6 +15,7 @@ class ScreenLogin extends StatefulWidget {
 }
 
 class _LoginState extends State<ScreenLogin> {
+  final Controller controller = Get.find();
   bool _isLoading = false;
   bool _redirecting = false;
   late final _emailController;
