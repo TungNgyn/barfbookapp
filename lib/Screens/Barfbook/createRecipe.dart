@@ -50,7 +50,19 @@ var enumIcon = {
 
 class _newRecipeState extends State<ScreenCreateRecipe> {
   final TextEditingController _ingredientController = TextEditingController();
+  final TextEditingController _recipeNameController = TextEditingController();
+  final TextEditingController _recipeDescriptionController =
+      TextEditingController();
   var recipeIngredient = [].obs;
+
+  @override
+  void dispose() {
+    // Clean up the controller when the widget is disposed.
+    _ingredientController.dispose();
+    _recipeNameController.dispose();
+    _recipeDescriptionController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -63,7 +75,9 @@ class _newRecipeState extends State<ScreenCreateRecipe> {
               padding: const EdgeInsets.only(right: 10),
               child: IconButton(
                 icon: Icon(Icons.add),
-                onPressed: () {},
+                onPressed: () async {
+                  await _createRecipe();
+                },
               ),
             )
           ],
@@ -73,16 +87,24 @@ class _newRecipeState extends State<ScreenCreateRecipe> {
             padding: const EdgeInsets.all(20),
             child: Column(children: [
               TextField(
-                onChanged: (textfeld1text) {},
+                controller: _recipeNameController,
                 decoration: InputDecoration(
                     border: OutlineInputBorder(), labelText: "Rezeptname"),
               ),
+              SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.4,
+                  width: MediaQuery.of(context).size.width,
+                  child: Center(
+                      child: Card(
+                          child: FlutterLogo(
+                    size: 350,
+                  )))),
               TypeAheadField(
                   textFieldConfiguration: TextFieldConfiguration(
                       controller: _ingredientController,
                       decoration: InputDecoration(
                           border: OutlineInputBorder(),
-                          labelText: "Zutatensuche")),
+                          labelText: "Suche nach Zutaten")),
                   suggestionsCallback: (pattern) async {
                     return await supabase
                         .from('ingredient')
@@ -105,14 +127,14 @@ class _newRecipeState extends State<ScreenCreateRecipe> {
                     );
                   },
                   onSuggestionSelected: (suggestion) {
-                    selectedIngredient = Ingredient(
+                    recipeIngredient.add(Ingredient(
                         name: (suggestion as Map)['name'],
                         id: suggestion['id'],
                         type: suggestion['type'],
                         category: suggestion['category'],
-                        icon:
-                            Image.asset("assets/images/recipe/icons/beef.png"));
-                    _ingredientController.text = (suggestion)['name'];
+                        icon: Image.asset(
+                            "assets/images/recipe/icons/beef.png")));
+                    _ingredientController.text = "";
                   },
                   noItemsFoundBuilder: (BuildContext context) {
                     return Padding(
@@ -123,87 +145,15 @@ class _newRecipeState extends State<ScreenCreateRecipe> {
                       ),
                     );
                   }),
-              // LayoutBuilder(builder: (context, constraints) {
-              //   return Autocomplete(
-              //     displayStringForOption: _displayStringForOption,
-              //     optionsBuilder: (TextEditingValue textEditingValue) {
-              //       return textEditingValue.text.isEmpty
-              //           ? const Iterable<Ingredient>.empty()
-              //           : _ingredientOptions.where((Ingredient option) {
-              //               return option.name
-              //                   .isCaseInsensitiveContains(textEditingValue.text);
-              //             });
-              //     },
-              //     optionsViewBuilder: (context, onSelected, options) {
-              //       return Align(
-              //         alignment: Alignment.topLeft,
-              //         child: Material(
-              //           child: SizedBox(
-              //             width: constraints.biggest.width,
-              // child: ListView.builder(
-              //     padding: EdgeInsets.zero,
-              //     itemBuilder: ((context, index) {
-              //       final option = options.elementAt(index);
-
-              // return Card(
-              //   child: ListTile(
-              //     leading: option.icon,
-              //     title: Text(
-              //       option.name,
-              //       style: TextStyle(fontSize: 24),
-              //     ),
-              //     subtitle: Row(
-              //       children: [
-              //         Text(option.category),
-              //         Spacer(),
-              //         Text(option.type)
-              //       ],
-              //     ),
-              //     onTap: () => onSelected(option),
-              //   ),
-              //                   );
-              //                 }),
-              //                 itemCount: options.length),
-              //           ),
-              //         ),
-              //       );
-              //     },
-              //     onSelected: (Ingredient selection) {
-              //       debugPrint(
-              //           'You just selected ${_displayStringForOption(selection)}');
-              //     },
-              //   );
-              // }),
-              SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.4,
-                  width: MediaQuery.of(context).size.width,
-                  child: Center(
-                      child: Card(
-                          child: FlutterLogo(
-                    size: 350,
-                  )))),
-              ElevatedButton(
-                  onPressed: () {
-                    _ingredientController.text.isEmpty
-                        ? null
-                        : recipeIngredient.add(selectedIngredient);
-                    _ingredientController.text = "";
-                  },
-                  child: Text("Hinzufügen")),
-              ElevatedButton(
-                  onPressed: () {
-                    print(recipeIngredient);
-                  },
-                  child: Text("show")),
-              ElevatedButton(
-                  onPressed: () {
-                    recipeIngredient.clear();
-                  },
-                  child: Text("clear")),
               ExpansionTile(
                 initiallyExpanded: true,
                 title: Text("Zutaten"),
                 children: [
+                  ElevatedButton(
+                      onPressed: () {
+                        recipeIngredient.clear();
+                      },
+                      child: Text("Entfernen")),
                   Obx(() {
                     List<Widget> list = [];
                     for (Ingredient ingredient in recipeIngredient) {
@@ -230,19 +180,26 @@ class _newRecipeState extends State<ScreenCreateRecipe> {
                   }),
                 ],
               ),
-              TextField(),
-              ElevatedButton(
-                  onPressed: () async {
-                    await supabase.rpc('insert_recipe', params: {
-                      'ingredientid': recipeIngredient[0].id,
-                      'recipename': 'Test',
-                      'recipedescription': 'beschreibung allo',
-                      'userid': user?.id
-                    });
-                  },
-                  child: Text("DB ADD"))
+              TextField(
+                  controller: _recipeDescriptionController,
+                  maxLines: 20,
+                  decoration:
+                      InputDecoration(hintText: "Beschreibe dein Rezept!")),
             ]),
           ),
         ));
+  }
+
+  Future<dynamic> _createRecipe() async {
+    var recipeId = await supabase.rpc('insert_recipe', params: {
+      'recipename': _recipeNameController.text,
+      'recipedescription': _recipeDescriptionController.text,
+      'userid': user?.id
+    });
+    print(recipeId);
+    for (Ingredient ingredient in recipeIngredient) {
+      await supabase.rpc('insert_ingredients',
+          params: {'recipeid': recipeId, 'ingredientid': ingredient.id});
+    }
   }
 }

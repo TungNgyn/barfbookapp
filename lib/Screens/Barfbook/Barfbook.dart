@@ -15,7 +15,6 @@ class ScreenBarfbook extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    getSchedule();
     return NestedScrollView(
       headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) => [
         SliverOverlapAbsorber(

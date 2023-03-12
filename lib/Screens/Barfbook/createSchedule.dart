@@ -20,14 +20,6 @@ const enumWeek = {
 
 late var scheduledata;
 
-Future<void> getSchedule() async {
-  try {
-    scheduledata = await supabase.from('schedule').select('day, recipe');
-  } catch (error) {
-    print("ERROR = $error");
-  }
-}
-
 class _newScheduleState extends State<ScreenCreateSchedule> {
   @override
   Widget build(BuildContext context) {
