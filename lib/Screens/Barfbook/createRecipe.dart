@@ -1,6 +1,7 @@
 import 'dart:collection';
 
 import 'package:Barfbook/Screens/Barfbook/Barfbook.dart';
+import 'package:Barfbook/Screens/Barfbook/barfbook_controller.dart';
 import 'package:Barfbook/controller.dart';
 import 'package:Barfbook/util/Supabase/AuthController.dart';
 import 'package:flutter/material.dart';
@@ -15,33 +16,6 @@ class ScreenCreateRecipe extends StatefulWidget {
 }
 
 late Ingredient selectedIngredient;
-
-class Ingredient {
-  const Ingredient(
-      {required this.id,
-      required this.name,
-      required this.type,
-      required this.category,
-      required this.icon});
-
-  final int id;
-  final String name;
-  final String type;
-  final String category;
-  final Image icon;
-}
-
-var enumIcon = {
-  1: Image.asset("assets/images/recipe/icons/beef.png"),
-  2: Image.asset("assets/images/recipe/icons/hen.png"),
-  3: Image.asset("assets/images/recipe/icons/horse.png"),
-  4: Image.asset("assets/images/recipe/icons/beef.png"), // to be change
-  5: Image.asset("assets/images/recipe/icons/goat.png"),
-  6: Image.asset("assets/images/recipe/icons/rabbit.png"),
-  7: Image.asset("assets/images/recipe/icons/lamb.png"),
-  8: Image.asset("assets/images/recipe/icons/beef.png"), // to be change
-  9: Image.asset("assets/images/recipe/icons/vegan.png")
-};
 
 class _newRecipeState extends State<ScreenCreateRecipe> {
   final TextEditingController _ingredientController = TextEditingController();
@@ -58,6 +32,19 @@ class _newRecipeState extends State<ScreenCreateRecipe> {
     _recipeNameController.dispose();
     _recipeDescriptionController.dispose();
     super.dispose();
+  }
+
+  Future<dynamic> _createRecipe() async {
+    var recipeId = await supabase.rpc('insert_recipe', params: {
+      'recipename': _recipeNameController.text,
+      'recipedescription': _recipeDescriptionController.text,
+      'userid': user?.id
+    });
+    print(recipeId);
+    for (Ingredient ingredient in recipeIngredient) {
+      await supabase.rpc('insert_ingredients',
+          params: {'recipeid': recipeId, 'ingredientid': ingredient.id});
+    }
   }
 
   @override
@@ -128,9 +115,7 @@ class _newRecipeState extends State<ScreenCreateRecipe> {
                         name: (suggestion as Map)['name'],
                         id: suggestion['id'],
                         type: suggestion['type'],
-                        category: suggestion['category'],
-                        icon: Image.asset(
-                            "assets/images/recipe/icons/beef.png")));
+                        category: suggestion['category']));
                     _ingredientController.text = "";
                   },
                   noItemsFoundBuilder: (BuildContext context) {
@@ -159,9 +144,7 @@ class _newRecipeState extends State<ScreenCreateRecipe> {
                         child: ElevatedButton.icon(
                             style: ButtonStyle(),
                             onPressed: () {
-                              setState(() {
-                                recipeIngredient.remove(ingredient);
-                              });
+                              recipeIngredient.remove(ingredient);
                             },
                             icon: Image.asset(
                                 "assets/images/recipe/icons/beef.png"),
@@ -185,18 +168,5 @@ class _newRecipeState extends State<ScreenCreateRecipe> {
             ]),
           ),
         ));
-  }
-
-  Future<dynamic> _createRecipe() async {
-    var recipeId = await supabase.rpc('insert_recipe', params: {
-      'recipename': _recipeNameController.text,
-      'recipedescription': _recipeDescriptionController.text,
-      'userid': user?.id
-    });
-    print(recipeId);
-    for (Ingredient ingredient in recipeIngredient) {
-      await supabase.rpc('insert_ingredients',
-          params: {'recipeid': recipeId, 'ingredientid': ingredient.id});
-    }
   }
 }
