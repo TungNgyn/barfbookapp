@@ -49,7 +49,7 @@ class _ScreenBarfbookState extends State<ScreenBarfbook> {
   Future<void> _pullRefresh() async {
     controller.userRecipeList = await supabase
         .from('recipe')
-        .select('id, created_at, name, description, paws')
+        .select('id, created_at, modified_at, name, description, paws')
         .eq('user_id', user!.id);
     setState(() {
       recipeList.clear();

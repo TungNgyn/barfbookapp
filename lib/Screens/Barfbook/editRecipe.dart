@@ -24,6 +24,7 @@ class _editRecipeState extends State<ScreenEditRecipe> {
   late final recipeData;
   List ingredientList = [];
   List recipeIngredient = [].obs;
+  late Recipe recipe;
   @override
   void dispose() {
     // Clean up the controller when the widget is disposed.
@@ -31,6 +32,55 @@ class _editRecipeState extends State<ScreenEditRecipe> {
     _recipeNameController.dispose();
     _recipeDescriptionController.dispose();
     super.dispose();
+  }
+
+  Future<dynamic> _updateRecipe() async {
+    await supabase.rpc('update_recipe', params: {
+      'recipename': _recipeNameController.text,
+      'recipedescription': _recipeDescriptionController.text,
+      'recipeid': widget.recipeId
+    });
+    await supabase
+        .from('recipe_ingredient')
+        .delete()
+        .eq('recipe', widget.recipeId);
+    for (Ingredient ingredient in recipeIngredient) {
+      await supabase.rpc('insert_ingredients',
+          params: {'recipeid': widget.recipeId, 'ingredientid': ingredient.id});
+    }
+  }
+
+  _loadIngredient() async {
+    recipeData = await supabase
+        .from('recipe')
+        .select(
+            '''id, name, created_at, modified_at, description, paws, recipe_ingredient(ingredient)''')
+        .eq('id', widget.recipeId)
+        .single();
+
+    recipe = Recipe(
+        id: recipeData['id'],
+        name: recipeData['name'],
+        description: recipeData['description'],
+        paws: recipeData['paws'],
+        created_at: recipeData['created_at'],
+        modified_at: recipeData['modified_at'],
+        user_id: user!.id);
+    ingredientList = recipeData['recipe_ingredient'];
+    for (var ingredient in ingredientList) {
+      final ingredientData = await supabase
+          .from('ingredient')
+          .select('name, type, category')
+          .eq('id', ingredient['ingredient'])
+          .single();
+      recipeIngredient.add(Ingredient(
+          id: ingredient['ingredient'],
+          name: (ingredientData as Map)['name'],
+          type: ingredientData['type'],
+          category: ingredientData['category']));
+    }
+    _recipeNameController.text = recipeData['name'];
+    _recipeDescriptionController.text = recipeData['description'];
   }
 
   @override
@@ -49,7 +99,7 @@ class _editRecipeState extends State<ScreenEditRecipe> {
                         child: IconButton(
                           icon: Icon(Icons.create),
                           onPressed: () async {
-                            await _createRecipe();
+                            await _updateRecipe();
                             Get.back();
                           },
                         ),
@@ -64,9 +114,9 @@ class _editRecipeState extends State<ScreenEditRecipe> {
                           controller: _recipeNameController,
                           decoration: InputDecoration(
                               border: OutlineInputBorder(),
-                              labelText: "Rezeptname"),
+                              labelText: "${recipe.name}"),
                         ),
-                        Text(recipeData['created_at']),
+                        // Text(recipeData['created_at']),
                         SizedBox(
                             height: MediaQuery.of(context).size.height * 0.4,
                             width: MediaQuery.of(context).size.width,
@@ -163,50 +213,5 @@ class _editRecipeState extends State<ScreenEditRecipe> {
                   ))
               : Scaffold(body: Center(child: CircularProgressIndicator()));
         });
-  }
-
-  Future<dynamic> _createRecipe() async {
-    var recipeId = await supabase.rpc('insert_recipe', params: {
-      'recipename': _recipeNameController.text,
-      'recipedescription': _recipeDescriptionController.text,
-      'userid': user?.id
-    });
-    print(recipeId);
-    for (Ingredient ingredient in recipeIngredient) {
-      await supabase.rpc('insert_ingredients',
-          params: {'recipeid': recipeId, 'ingredientid': ingredient.id});
-    }
-  }
-
-  Future<dynamic> _loadIngredient() async {
-    recipeData = await supabase
-        .from('recipe')
-        .select(
-            '''id, name, created_at, modified_at, description, recipe_ingredient(ingredient)''')
-        .eq('id', widget.recipeId)
-        .single();
-    Recipe recipe = Recipe(
-        id: recipeData['id'],
-        name: recipeData['name'],
-        description: recipeData['description'],
-        paws: recipeData['paws'],
-        created_at: recipeData['created_at'],
-        modified_at: recipeData['modified_at'],
-        user_id: user!.id);
-    ingredientList = recipeData['recipe_ingredient'];
-    for (var ingredient in ingredientList) {
-      final ingredientData = await supabase
-          .from('ingredient')
-          .select('name, type, category')
-          .eq('id', ingredient['ingredient'])
-          .single();
-      recipeIngredient.add(Ingredient(
-          id: ingredient['ingredient'],
-          name: (ingredientData as Map)['name'],
-          type: ingredientData['type'],
-          category: ingredientData['category']));
-    }
-    _recipeNameController.text = recipeData['name'];
-    _recipeDescriptionController.text = recipeData['description'];
   }
 }

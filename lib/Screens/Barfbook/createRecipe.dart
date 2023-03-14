@@ -40,7 +40,6 @@ class _newRecipeState extends State<ScreenCreateRecipe> {
       'recipedescription': _recipeDescriptionController.text,
       'userid': user?.id
     });
-    print(recipeId);
     for (Ingredient ingredient in recipeIngredient) {
       await supabase.rpc('insert_ingredients',
           params: {'recipeid': recipeId, 'ingredientid': ingredient.id});

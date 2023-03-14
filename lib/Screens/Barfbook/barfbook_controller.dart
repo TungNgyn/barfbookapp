@@ -27,8 +27,8 @@ class Recipe {
   final String name;
   final String description;
   final int paws;
-  final DateTime created_at;
-  final DateTime modified_at;
+  final String created_at;
+  final String modified_at;
   final String user_id;
 }
 
