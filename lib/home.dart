@@ -19,8 +19,6 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
-    final Controller c = Get.put(Controller());
-
     Widget seite;
     switch (navigationIndex) {
       case 0:

@@ -152,7 +152,7 @@ class _SignUpState extends State<ScreenSignUp> {
                     thickness: 0.5,
                   ),
                   GestureDetector(
-                    onTap: () => Get.to(() => ScreenLogin()),
+                    onTap: () => Get.offAll(() => ScreenLogin()),
                     child: Text("Anmelden"),
                   ),
                 ],

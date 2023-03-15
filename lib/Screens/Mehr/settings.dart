@@ -135,13 +135,15 @@ class _settingsStartState extends State<ScreenSettings>
                           "assets/images/defaultAvatar.png",
                           height: 100,
                         )),
-                    Text("${userdata["name"]}")
+                    Text(user != null || session != null
+                        ? "${userdata["name"]}"
+                        : "")
                   ],
                 )),
             Expanded(
                 child: SettingsList(physics: ScrollPhysics(), sections: [
               CustomSettingsSection(
-                  child: userdata["name"] == "Gast"
+                  child: user == null || session == null
                       ? SectionProfileGast()
                       : SectionProfile()),
               CustomSettingsSection(
@@ -297,7 +299,7 @@ class SectionProfile extends StatelessWidget {
         SettingsTile(
           title: Text("Abmelden"),
           onPressed: (context) =>
-              {authController.signOut(), Get.to(() => ScreenLogin())},
+              {authController.signOut(), Get.offAll(() => ScreenLogin())},
         )
       ],
     );

@@ -154,9 +154,6 @@ class _LoginState extends State<ScreenLogin> {
   }
 
   Future<void> _login() async {
-    setState(() {
-      _isLoading = true;
-    });
     try {
       final AuthResponse response = await supabase.auth
           .signInWithPassword(email: email, password: password);
@@ -171,11 +168,7 @@ class _LoginState extends State<ScreenLogin> {
       Get.snackbar("Etwas ist schief gelaufen",
           'Unerwarteter Fehler aufgetreten. Bitte kontaktiere den Support.',
           backgroundColor: Colors.grey.withOpacity(0.5));
-    } finally {
-      setState(() {
-        _isLoading = false;
-      });
-    }
+    } finally {}
   }
 
   Future<void> _loginGuest() async {

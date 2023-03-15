@@ -81,16 +81,27 @@ class _ScreenBarfbookState extends State<ScreenBarfbook> {
                   body: NestedScrollView(
                     headerSliverBuilder: (_, __) => [
                       SliverAppBar(
-                        expandedHeight: 100,
-                        pinned: true,
-                        flexibleSpace: FlexibleSpaceBar(
-                          title: TabBar(tabs: [
-                            Tab(icon: Icon(Icons.directions_car)),
-                            Tab(icon: Icon(Icons.directions_transit)),
-                            Tab(icon: Icon(Icons.directions_bike)),
-                          ]),
-                        ),
-                      )
+                          expandedHeight: 100,
+                          flexibleSpace: FlexibleSpaceBar(
+                            centerTitle: true,
+                            title: Text("Barfbook"),
+                          ),
+                          pinned: true),
+                      SliverPersistentHeader(
+                          pinned: true,
+                          delegate: _SliverAppBarDelegate(
+                            TabBar(labelStyle: TextStyle(fontSize: 12), tabs: [
+                              Tab(
+                                  text: "Wochenplan",
+                                  icon: Icon(Icons.directions_car)),
+                              Tab(
+                                  text: "Rezepte",
+                                  icon: Icon(Icons.directions_transit)),
+                              Tab(
+                                  text: "Favoriten",
+                                  icon: Icon(Icons.directions_bike)),
+                            ]),
+                          )),
                     ],
                     body: TabBarView(children: [
                       // Schedule
@@ -98,7 +109,7 @@ class _ScreenBarfbookState extends State<ScreenBarfbook> {
                         onRefresh: _pullRefresh,
                         child: SingleChildScrollView(
                           child: Padding(
-                              padding: const EdgeInsets.all(20.0),
+                              padding: EdgeInsets.all(20.0),
                               child: ElevatedButton(
                                 onPressed: () =>
                                     Get.to(() => ScreenCreateSchedule()),
@@ -109,55 +120,43 @@ class _ScreenBarfbookState extends State<ScreenBarfbook> {
                       //Recipe
                       RefreshIndicator(
                         onRefresh: _pullRefresh,
-                        child: SingleChildScrollView(
-                          child: Column(children: [
-                            ElevatedButton(
-                                onPressed: () {
-                                  print(user!.id);
-                                  print(controller.userRecipeList);
-                                },
-                                child: Text("show")),
-                            Padding(
-                              padding: const EdgeInsets.all(20.0),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  controller.userRecipeList.isEmpty
-                                      ? noRecipeCreated()
-                                      : Obx(() {
-                                          List<Widget> list = [];
-                                          list.add(TextButton(
-                                            onPressed: () {
-                                              Get.to(
-                                                  () => ScreenCreateRecipe());
-                                            },
-                                            child: Icon(
-                                              Icons.add_circle_outline,
-                                              size: 50,
-                                            ),
-                                          ));
-                                          for (Recipe recipe in recipeList) {
-                                            list.add(SizedBox(
-                                              height: 40,
-                                              child: ElevatedButton.icon(
-                                                  style: ButtonStyle(),
-                                                  onPressed: () {
-                                                    Get.to(() =>
-                                                        ScreenEditRecipe(
-                                                          recipeId: recipe.id,
-                                                        ));
-                                                  },
-                                                  icon: Image.asset(
-                                                      "assets/images/recipe/icons/beef.png"),
-                                                  label: Text(recipe.name)),
-                                            ));
-                                          }
-                                          return Column(children: list);
-                                        }),
-                                ],
-                              ),
-                            ),
-                          ]),
+                        child: Padding(
+                          padding: EdgeInsets.all(20.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              controller.userRecipeList.isEmpty
+                                  ? noRecipeCreated()
+                                  : Obx(() {
+                                      List<Widget> list = [];
+                                      list.add(TextButton(
+                                        onPressed: () {
+                                          Get.to(() => ScreenCreateRecipe());
+                                        },
+                                        child: Icon(
+                                          Icons.add_circle_outline,
+                                          size: 50,
+                                        ),
+                                      ));
+                                      for (Recipe recipe in recipeList) {
+                                        list.add(SizedBox(
+                                          height: 40,
+                                          child: ElevatedButton.icon(
+                                              style: ButtonStyle(),
+                                              onPressed: () {
+                                                Get.to(() => ScreenEditRecipe(
+                                                      recipeId: recipe.id,
+                                                    ));
+                                              },
+                                              icon: Image.asset(
+                                                  "assets/images/recipe/icons/beef.png"),
+                                              label: Text(recipe.name)),
+                                        ));
+                                      }
+                                      return Column(children: list);
+                                    }),
+                            ],
+                          ),
                         ),
                       ),
                       // Favorite
@@ -248,5 +247,30 @@ class noRecipeCreated extends StatelessWidget {
         ],
       ),
     ));
+  }
+}
+
+class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
+  _SliverAppBarDelegate(this._tabBar);
+
+  final TabBar _tabBar;
+
+  @override
+  double get minExtent => _tabBar.preferredSize.height;
+  @override
+  double get maxExtent => _tabBar.preferredSize.height;
+
+  @override
+  Widget build(
+      BuildContext context, double shrinkOffset, bool overlapsContent) {
+    return Container(
+      color: Theme.of(context).colorScheme.secondaryContainer,
+      child: _tabBar,
+    );
+  }
+
+  @override
+  bool shouldRebuild(_SliverAppBarDelegate oldDelegate) {
+    return false;
   }
 }

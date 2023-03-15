@@ -1,4 +1,7 @@
+import 'package:Barfbook/Screens/Account/Login.dart';
+import 'package:Barfbook/controller.dart';
 import 'package:Barfbook/home.dart';
+import 'package:Barfbook/util/Supabase/AuthController.dart';
 import 'package:Barfbook/util/custom_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -6,19 +9,6 @@ import 'package:get/get.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 Future<void> main() async {
-  // runApp(GetMaterialApp(home: ScreenSplash()));
-  // runApp(GetMaterialApp(
-  //   home: Scaffold(
-  //     resizeToAvoidBottomInset: false,
-  //     body: Container(
-  //       decoration: BoxDecoration(
-  //           image: DecorationImage(
-  //               image: AssetImage("assets/images/splash/SteinSplash1.png"),
-  //               fit: BoxFit.cover)),
-  //     ),
-  //   ),
-  // ));
-
   await Supabase.initialize(
     url: 'https://wokqzyqvqztmyzhhuqqh.supabase.co',
     anonKey:
@@ -34,10 +24,11 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final Controller controller = Get.put(Controller());
     return GetMaterialApp(
       theme: CustomTheme.classicLight,
       darkTheme: CustomTheme.classicDark,
-      home: Home(),
+      home: session != null ? Home() : ScreenLogin(),
     );
   }
 }
