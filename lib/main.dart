@@ -26,6 +26,7 @@ class MainApp extends StatelessWidget {
   Widget build(BuildContext context) {
     final Controller controller = Get.put(Controller());
     return GetMaterialApp(
+      themeMode: ThemeMode.system,
       theme: CustomTheme.classicLight,
       darkTheme: CustomTheme.classicDark,
       home: session != null ? Home() : ScreenLogin(),
