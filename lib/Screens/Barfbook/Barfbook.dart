@@ -44,13 +44,11 @@ class _ScreenBarfbookState extends State<ScreenBarfbook> {
   @override
   void initState() {
     super.initState();
+    updateRecipeList();
   }
 
   Future<void> _pullRefresh() async {
-    controller.userRecipeList = await supabase
-        .from('recipe')
-        .select('id, created_at, modified_at, name, description, paws')
-        .eq('user_id', user!.id);
+    updateRecipeList();
     setState(() {
       recipeList.clear();
       for (var recipe in controller.userRecipeList) {
@@ -70,141 +68,123 @@ class _ScreenBarfbookState extends State<ScreenBarfbook> {
   int tabIndex = 1;
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: updateRecipeList(),
-      builder: (context, snapshot) {
-        return snapshot.connectionState == ConnectionState.done
-            ? DefaultTabController(
-                initialIndex: tabIndex,
-                length: 3,
-                child: Scaffold(
-                  body: NestedScrollView(
-                    headerSliverBuilder: (_, __) => [
-                      SliverAppBar(
-                          expandedHeight: 100,
-                          flexibleSpace: FlexibleSpaceBar(
-                            centerTitle: true,
-                            title: Text("Barfbook"),
-                          ),
-                          pinned: true),
-                      SliverPersistentHeader(
-                          pinned: true,
-                          delegate: _SliverAppBarDelegate(
-                            TabBar(labelStyle: TextStyle(fontSize: 12), tabs: [
-                              Tab(
-                                  text: "Wochenplan",
-                                  icon: Icon(Icons.directions_car)),
-                              Tab(
-                                  text: "Rezepte",
-                                  icon: Icon(Icons.directions_transit)),
-                              Tab(
-                                  text: "Favoriten",
-                                  icon: Icon(Icons.directions_bike)),
-                            ]),
-                          )),
-                    ],
-                    body: TabBarView(children: [
-                      // Schedule
-                      RefreshIndicator(
-                        onRefresh: _pullRefresh,
-                        child: SingleChildScrollView(
-                          child: Padding(
-                              padding: EdgeInsets.all(20.0),
-                              child: ElevatedButton(
-                                onPressed: () =>
-                                    Get.to(() => ScreenCreateSchedule()),
-                                child: Text("Wochenplan erstellen"),
-                              )),
-                        ),
-                      ),
-                      //Recipe
-                      RefreshIndicator(
-                        onRefresh: _pullRefresh,
+    return DefaultTabController(
+      initialIndex: tabIndex,
+      length: 3,
+      child: Scaffold(
+        body: NestedScrollView(
+          headerSliverBuilder: (_, __) => [
+            SliverAppBar(
+                expandedHeight: 100,
+                flexibleSpace: FlexibleSpaceBar(
+                  centerTitle: true,
+                  title: Text("Barfbook"),
+                ),
+                pinned: true),
+            SliverPersistentHeader(
+                pinned: true,
+                delegate: _SliverAppBarDelegate(
+                  TabBar(labelStyle: TextStyle(fontSize: 12), tabs: [
+                    Tab(text: "Wochenplan", icon: Icon(Icons.directions_car)),
+                    Tab(text: "Rezepte", icon: Icon(Icons.directions_transit)),
+                    Tab(text: "Favoriten", icon: Icon(Icons.directions_bike)),
+                  ]),
+                )),
+          ],
+          body: TabBarView(children: [
+            // Schedule
+            RefreshIndicator(
+              onRefresh: _pullRefresh,
+              child: SingleChildScrollView(
+                child: Padding(
+                    padding: EdgeInsets.all(20.0),
+                    child: ElevatedButton(
+                      onPressed: () => Get.to(() => ScreenCreateSchedule()),
+                      child: Text("Wochenplan erstellen"),
+                    )),
+              ),
+            ),
+            //Recipe
+            RefreshIndicator(
+              onRefresh: _pullRefresh,
+              child: Padding(
+                padding: EdgeInsets.all(20.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    controller.userRecipeList.isEmpty
+                        ? noRecipeCreated()
+                        : Obx(() {
+                            List<Widget> list = [];
+                            list.add(TextButton(
+                              onPressed: () {
+                                Get.to(() => ScreenCreateRecipe());
+                              },
+                              child: Icon(
+                                Icons.add_circle_outline,
+                                size: 50,
+                              ),
+                            ));
+                            for (Recipe recipe in recipeList) {
+                              list.add(SizedBox(
+                                height: 40,
+                                child: ElevatedButton.icon(
+                                    style: ButtonStyle(),
+                                    onPressed: () {
+                                      Get.to(() => ScreenEditRecipe(
+                                            recipeId: recipe.id,
+                                          ));
+                                    },
+                                    icon: Image.asset(
+                                        "assets/images/recipe/icons/beef.png"),
+                                    label: Text(recipe.name)),
+                              ));
+                            }
+                            return Column(children: list);
+                          }),
+                  ],
+                ),
+              ),
+            ),
+            // Favorite
+            RefreshIndicator(
+              onRefresh: _pullRefresh,
+              child: SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Card(
                         child: Padding(
-                          padding: EdgeInsets.all(20.0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              controller.userRecipeList.isEmpty
-                                  ? noRecipeCreated()
-                                  : Obx(() {
-                                      List<Widget> list = [];
-                                      list.add(TextButton(
-                                        onPressed: () {
-                                          Get.to(() => ScreenCreateRecipe());
-                                        },
-                                        child: Icon(
-                                          Icons.add_circle_outline,
-                                          size: 50,
-                                        ),
-                                      ));
-                                      for (Recipe recipe in recipeList) {
-                                        list.add(SizedBox(
-                                          height: 40,
-                                          child: ElevatedButton.icon(
-                                              style: ButtonStyle(),
-                                              onPressed: () {
-                                                Get.to(() => ScreenEditRecipe(
-                                                      recipeId: recipe.id,
-                                                    ));
-                                              },
-                                              icon: Image.asset(
-                                                  "assets/images/recipe/icons/beef.png"),
-                                              label: Text(recipe.name)),
-                                        ));
-                                      }
-                                      return Column(children: list);
-                                    }),
-                            ],
-                          ),
-                        ),
-                      ),
-                      // Favorite
-                      RefreshIndicator(
-                        onRefresh: _pullRefresh,
-                        child: SingleChildScrollView(
-                          child: Padding(
-                            padding: const EdgeInsets.all(20.0),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
+                          padding: const EdgeInsets.all(15.0),
+                          child: Column(children: [
+                            Padding(
+                              padding: const EdgeInsets.all(10.0),
+                              child: Image.asset(
+                                'assets/images/rezept.png',
+                                width: MediaQuery.of(context).size.width * 0.2,
+                              ),
+                            ),
+                            Column(
                               children: [
-                                Card(
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(15.0),
-                                    child: Column(children: [
-                                      Padding(
-                                        padding: const EdgeInsets.all(10.0),
-                                        child: Image.asset(
-                                          'assets/images/rezept.png',
-                                          width: MediaQuery.of(context)
-                                                  .size
-                                                  .width *
-                                              0.2,
-                                        ),
-                                      ),
-                                      Column(
-                                        children: [
-                                          Text(
-                                              'Du hast noch keine Rezepte gespeichert.'),
-                                          SizedBox(
-                                            height: 10,
-                                          ),
-                                        ],
-                                      ),
-                                    ]),
-                                  ),
+                                Text('Du hast noch keine Rezepte gespeichert.'),
+                                SizedBox(
+                                  height: 10,
                                 ),
                               ],
                             ),
-                          ),
+                          ]),
                         ),
                       ),
-                    ]),
+                    ],
                   ),
                 ),
-              )
-            : Center(child: CircularProgressIndicator());
-      },
+              ),
+            ),
+          ]),
+        ),
+      ),
     );
   }
 }

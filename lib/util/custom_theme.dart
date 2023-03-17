@@ -192,8 +192,8 @@ class CustomTheme {
 
   static final ThemeData classicDark = ThemeData(
     useMaterial3: true,
-    scaffoldBackgroundColor: Color(0xfffcfdf7),
-    secondaryHeaderColor: Color(0xffe3f2fd),
+    scaffoldBackgroundColor: Color(0xff1a1c19),
+    secondaryHeaderColor: Color(0xff616161),
     shadowColor: Color(0xff000000),
     splashColor: Color(0x66c8c8c8),
     splashFactory: InkSplash.splashFactory,

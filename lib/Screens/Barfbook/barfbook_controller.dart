@@ -30,6 +30,30 @@ class Recipe {
   final String created_at;
   final String modified_at;
   final String user_id;
+
+  String getName() {
+    return name;
+  }
+
+  String getDescription() {
+    return description;
+  }
+
+  String getCreated_at() {
+    return created_at;
+  }
+
+  String getModified_at() {
+    return modified_at;
+  }
+
+  String getUser_id() {
+    return user_id;
+  }
+
+  int getPaws() {
+    return paws;
+  }
 }
 
 var enumIcon = {
