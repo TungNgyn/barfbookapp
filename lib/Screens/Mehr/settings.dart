@@ -1,6 +1,7 @@
 import 'package:Barfbook/Screens/Account/Login.dart';
 import 'package:Barfbook/Screens/Account/SignUp.dart';
 import 'package:Barfbook/Screens/Mehr/profile.dart';
+import 'package:Barfbook/loading.dart';
 import 'package:Barfbook/main.dart';
 import 'package:Barfbook/util/Supabase/AuthController.dart';
 import 'package:Barfbook/util/custom_theme.dart';
@@ -70,31 +71,6 @@ class _settingsStartState extends State<ScreenSettings>
       case AnimationStatus.dismissed:
         return false;
     }
-  }
-
-  String? _avatarUrl;
-  Future<void> _onUpload(String imageUrl) async {
-    try {
-      final userId = supabase.auth.currentUser!.id;
-      await supabase.from('profiles').upsert({
-        'id': userId,
-        'avatar_url': imageUrl,
-      });
-      if (mounted) {
-        Get.snackbar("message", 'Updated your profile image!');
-      }
-    } on PostgrestException catch (error) {
-      Get.snackbar("message", error.message);
-    } catch (error) {
-      Get.snackbar("message", 'Unexpected error has occurred');
-    }
-    if (!mounted) {
-      return;
-    }
-
-    setState(() {
-      _avatarUrl = imageUrl;
-    });
   }
 
   String _themeModeValue = "system";

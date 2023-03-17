@@ -107,42 +107,44 @@ class _ScreenBarfbookState extends State<ScreenBarfbook> {
             //Recipe
             RefreshIndicator(
               onRefresh: _pullRefresh,
-              child: Padding(
-                padding: EdgeInsets.all(20.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    controller.userRecipeList.isEmpty
-                        ? noRecipeCreated()
-                        : Obx(() {
-                            List<Widget> list = [];
-                            list.add(TextButton(
-                              onPressed: () {
-                                Get.to(() => ScreenCreateRecipe());
-                              },
-                              child: Icon(
-                                Icons.add_circle_outline,
-                                size: 50,
-                              ),
-                            ));
-                            for (Recipe recipe in recipeList) {
-                              list.add(SizedBox(
-                                height: 40,
-                                child: ElevatedButton.icon(
-                                    style: ButtonStyle(),
-                                    onPressed: () {
-                                      Get.to(() => ScreenEditRecipe(
-                                            recipeId: recipe.id,
-                                          ));
-                                    },
-                                    icon: Image.asset(
-                                        "assets/images/recipe/icons/beef.png"),
-                                    label: Text(recipe.name)),
+              child: SingleChildScrollView(
+                child: Padding(
+                  padding: EdgeInsets.all(20.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      controller.userRecipeList.isEmpty
+                          ? noRecipeCreated()
+                          : Obx(() {
+                              List<Widget> list = [];
+                              list.add(TextButton(
+                                onPressed: () {
+                                  Get.to(() => ScreenCreateRecipe());
+                                },
+                                child: Icon(
+                                  Icons.add_circle_outline,
+                                  size: 50,
+                                ),
                               ));
-                            }
-                            return Column(children: list);
-                          }),
-                  ],
+                              for (Recipe recipe in recipeList) {
+                                list.add(SizedBox(
+                                  height: 40,
+                                  child: ElevatedButton.icon(
+                                      style: ButtonStyle(),
+                                      onPressed: () {
+                                        Get.to(() => ScreenEditRecipe(
+                                              recipeId: recipe.id,
+                                            ));
+                                      },
+                                      icon: Image.asset(
+                                          "assets/images/recipe/icons/beef.png"),
+                                      label: Text(recipe.name)),
+                                ));
+                              }
+                              return Column(children: list);
+                            }),
+                    ],
+                  ),
                 ),
               ),
             ),

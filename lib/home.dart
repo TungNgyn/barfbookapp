@@ -14,74 +14,73 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  var _selectedPageIndex;
+  List<Widget> _pages = [
+    ScreenExplore(),
+    ScreenBarfbook(),
+    ScreenLexicon(),
+    ScreenSettings()
+  ];
+  late PageController _pageController =
+      PageController(initialPage: _selectedPageIndex);
+
+  @override
+  void initState() {
+    super.initState();
+
+    _selectedPageIndex = 0;
+    _pages = [
+      ScreenExplore(),
+      ScreenBarfbook(),
+      ScreenLexicon(),
+      ScreenSettings()
+    ];
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+
+    super.dispose();
+  }
+
   // Navigation
   var navigationIndex = 0;
 
   @override
   Widget build(BuildContext context) {
-    Widget seite;
-    switch (navigationIndex) {
-      case 0:
-        seite = ScreenExplore();
-        break;
-      case 1:
-        seite = ScreenBarfbook();
-        break;
-      case 2:
-        seite = ScreenLexicon();
-        break;
-      case 3:
-        seite = ScreenSettings();
-        break;
-      default:
-        throw UnimplementedError('Kein Widget für ${navigationIndex}');
-    }
-
-    void _onNavigationTap(int index) {
-      setState(() {
-        navigationIndex = index;
-      });
-    }
-
     return Scaffold(
-      body: PageTransitionSwitcher(
-        transitionBuilder: (
-          Widget child,
-          Animation<double> animation,
-          Animation<double> secondaryAnimation,
-        ) {
-          return FadeThroughTransition(
-            animation: animation,
-            secondaryAnimation: secondaryAnimation,
-            child: child,
-          );
-        },
-        child: seite,
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        // backgroundColor: Theme.of(context).colorScheme.primary,
-        currentIndex: navigationIndex,
-        onTap: _onNavigationTap,
-        type: BottomNavigationBarType.fixed,
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.explore),
-            label: 'Entdecken',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.menu_book),
-            label: 'Barfbook',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.library_books),
-            label: 'Lexikon',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.more_horiz),
-            label: 'Mehr',
-          )
-        ],
-      ),
-    );
+        body: PageView(
+          controller: _pageController,
+          physics: NeverScrollableScrollPhysics(),
+          children: _pages,
+        ),
+        bottomNavigationBar: BottomNavigationBar(
+            type: BottomNavigationBarType.fixed,
+            items: [
+              BottomNavigationBarItem(
+                icon: Icon(Icons.explore),
+                label: 'Entdecken',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.menu_book),
+                label: 'Barfbook',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.library_books),
+                label: 'Lexikon',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.more_horiz),
+                label: 'Mehr',
+              )
+            ],
+            currentIndex: _selectedPageIndex,
+            onTap: (selectedPageIndex) {
+              setState(() {
+                _selectedPageIndex = selectedPageIndex;
+                _pageController.jumpToPage(selectedPageIndex);
+              });
+            }));
   }
 }

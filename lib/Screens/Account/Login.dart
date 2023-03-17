@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:Barfbook/controller.dart';
-import 'package:Barfbook/home.dart';
+import 'package:Barfbook/loading.dart';
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
@@ -181,7 +181,6 @@ class _LoginState extends State<ScreenLogin> {
 
       session = response.session;
       user = response.user;
-      print(userdata);
     } catch (error) {
       Get.snackbar("Etwas ist schief gelaufen",
           'Unerwarteter Fehler aufgetreten. Bitte kontaktiere den Support.',
@@ -224,7 +223,7 @@ class _LoginState extends State<ScreenLogin> {
       final session = data.session;
       if (session != null) {
         _redirecting = true;
-        Get.off(() => Home());
+        Get.off(() => ScreenLoading());
       }
     });
     super.initState();
