@@ -65,7 +65,8 @@ class _editRecipeState extends State<ScreenEditRecipe> {
         paws: recipeData['paws'],
         created_at: recipeData['created_at'],
         modified_at: recipeData['modified_at'],
-        user_id: user!.id);
+        user_id: user!.id,
+        user: "");
     ingredientList = recipeData['recipe_ingredient'];
     for (var ingredient in ingredientList) {
       final ingredientData = await supabase

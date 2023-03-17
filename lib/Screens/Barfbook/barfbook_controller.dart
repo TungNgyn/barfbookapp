@@ -21,7 +21,8 @@ class Recipe {
       required this.paws,
       required this.created_at,
       required this.modified_at,
-      required this.user_id});
+      required this.user_id,
+      required this.user});
 
   final int id;
   final String name;
@@ -30,6 +31,7 @@ class Recipe {
   final String created_at;
   final String modified_at;
   final String user_id;
+  final String user;
 
   String getName() {
     return name;
@@ -47,12 +49,12 @@ class Recipe {
     return modified_at;
   }
 
-  String getUser_id() {
-    return user_id;
-  }
-
   int getPaws() {
     return paws;
+  }
+
+  String getUser() {
+    return user;
   }
 }
 

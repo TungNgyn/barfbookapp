@@ -37,7 +37,8 @@ class _ScreenBarfbookState extends State<ScreenBarfbook> {
           paws: recipe['paws'],
           description: recipe['description'],
           modified_at: recipe['modified_at'],
-          user_id: user!.id));
+          user_id: user!.id,
+          user: ""));
     }
   }
 
@@ -59,7 +60,8 @@ class _ScreenBarfbookState extends State<ScreenBarfbook> {
             modified_at: recipe['modified_at'],
             description: recipe['description'],
             user_id: user!.id,
-            paws: recipe['paws']));
+            paws: recipe['paws'],
+            user: ""));
       }
     });
     return;

@@ -24,6 +24,12 @@ class _LoadingScreenState extends State<ScreenLoading> {
     } finally {
       controller.exploreRecipeList.clear();
       for (var recipe in controller.databaseRecipeList) {
+        print("aaaaaa");
+        List userName = await supabase
+            .from('profile')
+            .select('name')
+            .eq('id', recipe['user_id']);
+        print(userName[0]);
         controller.exploreRecipeList.add(Recipe(
             name: (recipe as Map)['name'],
             id: recipe['id'],
@@ -31,10 +37,11 @@ class _LoadingScreenState extends State<ScreenLoading> {
             paws: recipe['paws'],
             description: recipe['description'],
             modified_at: recipe['modified_at'],
-            user_id: recipe['user_id']));
+            user_id: recipe['user_id'],
+            user: userName[0]['name']));
       }
     }
-    Get.offAll(Home());
+    Get.offAll(() => Home());
   }
 
   getProfile() async {
