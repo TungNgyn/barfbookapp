@@ -1,3 +1,4 @@
+import 'package:Barfbook/Screens/Barfbook/barfbook_controller.dart';
 import 'package:Barfbook/controller.dart';
 import 'package:Barfbook/loading.dart';
 import 'package:Barfbook/util/Supabase/AuthController.dart';
@@ -27,6 +28,23 @@ class _ScreenExploreState extends State<ScreenExplore>
           child: ListView(
             children: [
               _searchBar(),
+              Text(
+                "Beliebt",
+                style: TextStyle(fontSize: 24),
+              ),
+              ListView.builder(
+                shrinkWrap: true,
+                reverse: true,
+                physics: ClampingScrollPhysics(),
+                itemCount: controller.exploreRecipeList.length,
+                itemBuilder: (_, index) {
+                  Recipe recipe = controller.exploreRecipeList[index];
+                  return Padding(
+                      padding: EdgeInsets.only(bottom: 15, top: 10),
+                      child:
+                          Text("${recipe.name}, erstellt von ${recipe.user}"));
+                },
+              )
             ],
           ),
         ),
@@ -142,7 +160,8 @@ class _ScreenExploreState extends State<ScreenExplore>
             hintText: 'Suche',
             prefixIcon: Icon(Icons.search, color: Colors.grey),
             suffixIcon: Icon(Icons.menu, color: Colors.grey),
-            contentPadding: EdgeInsets.all(20)),
+            contentPadding: EdgeInsets.all(20),
+            border: OutlineInputBorder(borderSide: BorderSide(width: 1))),
       ),
     );
   }
