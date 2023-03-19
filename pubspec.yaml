@@ -17,9 +17,7 @@ dependencies:
   get: ^4.6.5
   animations: ^2.0.7
   supabase_flutter: ^1.4.1
-  image_picker: ^0.8.6+3
   flutter_typeahead: ^4.3.7
-  flutter_native_splash: ^2.2.19
   google_fonts: ^4.0.3
   font_awesome_flutter: ^10.4.0
 

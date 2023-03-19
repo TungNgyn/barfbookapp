@@ -15,49 +15,10 @@ class ScreenLoading extends StatefulWidget {
 class _LoadingScreenState extends State<ScreenLoading> {
   final Controller controller = Get.find();
 
-  getRecipeList() async {
-    try {
-      controller.databaseRecipeList = await supabase.from('recipe').select(
-          'id, created_at, modified_at, name, description, paws, user_id');
-    } catch (error) {
-      print(error);
-    } finally {
-      controller.exploreRecipeList.clear();
-      for (var recipe in controller.databaseRecipeList) {
-        print("aaaaaa");
-        List userName = await supabase
-            .from('profile')
-            .select('name')
-            .eq('id', recipe['user_id']);
-        print(userName[0]);
-        controller.exploreRecipeList.add(Recipe(
-            name: (recipe as Map)['name'],
-            id: recipe['id'],
-            created_at: recipe['created_at'],
-            paws: recipe['paws'],
-            description: recipe['description'],
-            modified_at: recipe['modified_at'],
-            user_id: recipe['user_id'],
-            user: userName[0]['name']));
-      }
-    }
-    Get.offAll(() => Home());
-  }
-
-  getProfile() async {
-    try {
-      userdata = await supabase
-          .from('profile')
-          .select("name, email, description")
-          .match({'id': user?.id}).single();
-    } catch (error) {
-      print("ERROR = $error");
-    }
-  }
-
-  initData() {
-    getRecipeList();
-    getProfile();
+  Future<dynamic> initData() async {
+    controller.getRecipeList();
+    controller.getProfile();
+    return null;
   }
 
   @override

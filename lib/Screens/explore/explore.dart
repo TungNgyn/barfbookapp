@@ -1,4 +1,5 @@
 import 'package:Barfbook/Screens/Barfbook/barfbook_controller.dart';
+import 'package:Barfbook/Screens/explore/recipeDetailPage.dart';
 import 'package:Barfbook/controller.dart';
 import 'package:Barfbook/loading.dart';
 import 'package:Barfbook/util/Supabase/AuthController.dart';
@@ -39,10 +40,50 @@ class _ScreenExploreState extends State<ScreenExplore>
                 itemCount: controller.exploreRecipeList.length,
                 itemBuilder: (_, index) {
                   Recipe recipe = controller.exploreRecipeList[index];
-                  return Padding(
-                      padding: EdgeInsets.only(bottom: 15, top: 10),
-                      child:
-                          Text("${recipe.name}, erstellt von ${recipe.user}"));
+                  return GestureDetector(
+                    onTap: () {
+                      Get.to(() => RecipeDetailPage(
+                            recipe: recipe,
+                          ));
+                    },
+                    child: Card(
+                      elevation: 4,
+                      child: Padding(
+                          padding: EdgeInsets.only(bottom: 15, top: 10),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              FlutterLogo(
+                                size: 100,
+                              ),
+                              Expanded(
+                                  child: Padding(
+                                padding: EdgeInsets.all(15),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      recipe.name,
+                                      style: TextStyle(fontSize: 24),
+                                    ),
+                                    SizedBox(
+                                      height: 10,
+                                    ),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text("${recipe.paws} Pfoten"),
+                                        Text("erstellt von ${recipe.user}")
+                                      ],
+                                    )
+                                  ],
+                                ),
+                              ))
+                            ],
+                          )),
+                    ),
+                  );
                 },
               )
             ],
@@ -50,73 +91,15 @@ class _ScreenExploreState extends State<ScreenExplore>
         ),
       ),
     );
-
-    //   child: Scaffold(
-    //     body: Center(
-    //       child: Column(
-    //         mainAxisAlignment: MainAxisAlignment.center,
-    //         children: [
-    //           Card(
-    //             child: Padding(
-    //               padding:  EdgeInsets.all(20),
-    //               child: Column(
-    //                 children: [
-    //                   Text(
-    //                     "${controller.exploreRecipeList[index].getName()}",
-    //                     style: TextStyle(fontSize: 31),
-    //                   ),
-    //                   Row(
-    //                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-    //                     children: [
-    //                       Row(
-    //                         children: [
-    //                           Text(
-    //                             "${controller.exploreRecipeList[index].getPaws()} ",
-    //                             style: TextStyle(fontSize: 20),
-    //                           ),
-    //                           FaIcon(FontAwesomeIcons.paw)
-    //                         ],
-    //                       ),
-    //                       Text(
-    //                           "erstellt von ${controller.exploreRecipeList[index].getUser()}")
-    //                     ],
-    //                   )
-    //                 ],
-    //               ),
-    //             ),
-    //           ),
-    //           SizedBox(height: 10),
-    //           Row(
-    //             mainAxisSize: MainAxisSize.min,
-    //             children: [
-    //               ElevatedButton.icon(
-    //                 onPressed: () {},
-    //                 icon: FlutterLogo(),
-    //                 label: Text('Like'),
-    //               ),
-    //               SizedBox(width: 10),
-    //               ElevatedButton(
-    //                 onPressed: () {
-    //                   setState(() {
-    //                     index == 0 ? index = 1 : index = 0;
-    //                   });
-    //                 },
-    //                 child: Text('Next'),
-    //               ),
-    //             ],
-    //           )
-    //         ],
-    //       ),
-    //     ),
-    //   ),
-    // );
   }
 
   @override
   bool get wantKeepAlive => true;
 
   Future<void> _pullRefresh() async {
-    setState(() {});
+    setState(() {
+      controller.getRecipeList();
+    });
   }
 
   PreferredSize _appBar() {
