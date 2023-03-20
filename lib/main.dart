@@ -31,7 +31,8 @@ class MainApp extends StatelessWidget {
       themeMode: ThemeMode.system,
       theme: CustomTheme.classicLight,
       darkTheme: CustomTheme.classicDark,
-      home: session != null ? ScreenLoading() : ScreenLogin(),
+      home:
+          (session != null) || (user != null) ? ScreenLoading() : ScreenLogin(),
     );
   }
 }

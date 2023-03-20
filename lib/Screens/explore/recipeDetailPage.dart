@@ -23,6 +23,18 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.recipe.name),
+        actions: [
+          IconButton(
+              onPressed: () {
+                Get.defaultDialog(
+                    title: "Details",
+                    textConfirm: "Profil ansehen",
+                    middleText:
+                        "Erstellt am ${widget.recipe.created_at} \nZuletzt bearbeitet am ${widget.recipe.modified_at}\nvon ${widget.recipe.user}");
+              },
+              icon: Icon(Icons.info)),
+          IconButton(onPressed: () {}, icon: Icon(Icons.favorite))
+        ],
       ),
       body: SingleChildScrollView(
         padding: EdgeInsets.all(15),
@@ -56,6 +68,15 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
                   )
                 ],
               ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(top: 20, bottom: 10),
+              child: const Text("Beschreibung", style: TextStyle(fontSize: 24)),
+            ),
+            Text(
+              widget.recipe.description,
+              maxLines: 5,
+              overflow: TextOverflow.ellipsis,
             )
           ],
         ),

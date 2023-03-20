@@ -8,6 +8,7 @@ import 'package:Barfbook/util/custom_theme.dart';
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:supabase/src/supabase_stream_builder.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -79,7 +80,10 @@ class _settingsStartState extends State<ScreenSettings>
                       padding: EdgeInsets.only(left: 20, bottom: 5),
                       child: Text(
                         "Account",
-                        style: TextStyle(fontSize: 13),
+                        style: TextStyle(
+                            fontSize: 13,
+                            fontFamily:
+                                DefaultTextStyle.of(context).style.fontFamily),
                       ),
                     ),
                     Container(
@@ -102,19 +106,27 @@ class _settingsStartState extends State<ScreenSettings>
                           children: [
                             Column(
                               children: [
-                                TextButton(
-                                  onPressed: () =>
-                                      Get.to(() => ScreenProfile()),
-                                  child: Align(
-                                    alignment: Alignment.centerLeft,
-                                    child: Text(
-                                      "Profil",
-                                      style: TextStyle(
-                                          fontSize: 16,
-                                          color: Theme.of(context)
-                                              .textTheme
-                                              .labelMedium!
-                                              .color),
+                                Padding(
+                                  padding: EdgeInsets.all(5),
+                                  child: TextButton(
+                                    onPressed: () =>
+                                        Get.to(() => ScreenProfile()),
+                                    child: Align(
+                                      alignment: Alignment.centerLeft,
+                                      child: Text(
+                                        "Profil",
+                                        style: TextStyle(
+                                            letterSpacing: 0.5,
+                                            fontSize: 16,
+                                            fontFamily:
+                                                DefaultTextStyle.of(context)
+                                                    .style
+                                                    .fontFamily,
+                                            color: Theme.of(context)
+                                                .textTheme
+                                                .labelMedium!
+                                                .color),
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -122,18 +134,23 @@ class _settingsStartState extends State<ScreenSettings>
                                   height: 0,
                                   thickness: 0.7,
                                 ),
-                                TextButton(
-                                  onPressed: () => print("Money"),
-                                  child: Align(
-                                    alignment: Alignment.centerLeft,
-                                    child: Text(
-                                      "Abonnement abschließen",
-                                      style: TextStyle(
-                                          fontSize: 16,
-                                          color: Theme.of(context)
-                                              .textTheme
-                                              .labelMedium!
-                                              .color),
+                                Padding(
+                                  padding: EdgeInsets.all(5),
+                                  child: TextButton(
+                                    onPressed: () => print("Money"),
+                                    child: Align(
+                                      alignment: Alignment.centerLeft,
+                                      child: Text(
+                                        "Abonnement abschließen",
+                                        style: TextStyle(
+                                            letterSpacing: 0.5,
+                                            fontSize: 16,
+                                            fontFamily: 'Comic Sans',
+                                            color: Theme.of(context)
+                                                .textTheme
+                                                .labelMedium!
+                                                .color),
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -141,21 +158,23 @@ class _settingsStartState extends State<ScreenSettings>
                                   height: 0,
                                   thickness: 0.7,
                                 ),
-                                TextButton(
-                                  onPressed: () => {
-                                    authController.signOut(),
-                                    Get.offAll(() => ScreenLogin())
-                                  },
-                                  child: Align(
-                                    alignment: Alignment.centerLeft,
-                                    child: Text(
-                                      "Abmelden",
-                                      style: TextStyle(
-                                          fontSize: 16,
-                                          color: Theme.of(context)
-                                              .textTheme
-                                              .labelMedium!
-                                              .color),
+                                Padding(
+                                  padding: EdgeInsets.all(5),
+                                  child: TextButton(
+                                    onPressed: () => {
+                                      authController.signOut(),
+                                      Get.offAll(() => ScreenLogin())
+                                    },
+                                    child: Align(
+                                      alignment: Alignment.centerLeft,
+                                      child: Text("Abmelden",
+                                          style: TextStyle(
+                                              letterSpacing: 0.5,
+                                              fontSize: 16,
+                                              color: Theme.of(context)
+                                                  .textTheme
+                                                  .labelMedium!
+                                                  .color)),
                                     ),
                                   ),
                                 ),
