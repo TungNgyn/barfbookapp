@@ -5,7 +5,6 @@ import 'package:Barfbook/loading.dart';
 import 'package:Barfbook/util/Supabase/AuthController.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class ScreenExplore extends StatefulWidget {
   @override
@@ -97,9 +96,7 @@ class _ScreenExploreState extends State<ScreenExplore>
   bool get wantKeepAlive => true;
 
   Future<void> _pullRefresh() async {
-    setState(() {
-      controller.getRecipeList();
-    });
+    setState(() {});
   }
 
   PreferredSize _appBar() {

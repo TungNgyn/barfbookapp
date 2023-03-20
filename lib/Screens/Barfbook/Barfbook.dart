@@ -17,20 +17,18 @@ class ScreenBarfbook extends StatefulWidget {
 }
 
 class _ScreenBarfbookState extends State<ScreenBarfbook> {
-  var recipeList = [].obs;
-
   final Controller controller = Get.find();
 
   var appBarConstraints = 0.0;
 
   updateRecipeList() async {
-    controller.userRecipeList = await supabase
+    controller.userRecipeListDB = await supabase
         .from('recipe')
         .select('id, created_at, modified_at, name, description, paws')
         .eq('user_id', user!.id);
-    recipeList.clear();
-    for (var recipe in controller.userRecipeList) {
-      recipeList.add(Recipe(
+    controller.userRecipeList.clear();
+    for (var recipe in controller.userRecipeListDB) {
+      controller.userRecipeList.add(Recipe(
           name: (recipe as Map)['name'],
           id: recipe['id'],
           created_at: recipe['created_at'],
@@ -51,9 +49,9 @@ class _ScreenBarfbookState extends State<ScreenBarfbook> {
   Future<void> _pullRefresh() async {
     updateRecipeList();
     setState(() {
-      recipeList.clear();
-      for (var recipe in controller.userRecipeList) {
-        recipeList.add(Recipe(
+      controller.userRecipeList.clear();
+      for (var recipe in controller.userRecipeListDB) {
+        controller.userRecipeList.add(Recipe(
             name: (recipe as Map)['name'],
             id: recipe['id'],
             created_at: recipe['created_at'],
@@ -115,7 +113,7 @@ class _ScreenBarfbookState extends State<ScreenBarfbook> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      controller.userRecipeList.isEmpty
+                      controller.userRecipeListDB.isEmpty
                           ? noRecipeCreated()
                           : Obx(() {
                               List<Widget> list = [];
@@ -128,7 +126,7 @@ class _ScreenBarfbookState extends State<ScreenBarfbook> {
                                   size: 50,
                                 ),
                               ));
-                              for (Recipe recipe in recipeList) {
+                              for (Recipe recipe in controller.userRecipeList) {
                                 list.add(SizedBox(
                                   height: 40,
                                   child: ElevatedButton.icon(
