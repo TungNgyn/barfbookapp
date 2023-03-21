@@ -12,92 +12,64 @@ class _lexikonStartState extends State<ScreenLexicon> {
   var appBarConstraints = 0.0;
   @override
   Widget build(BuildContext context) {
-    return NestedScrollView(
-      headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) => [
-        SliverOverlapAbsorber(
-          handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
-          sliver: SliverAppBar(
-              pinned: true,
-              expandedHeight: 100,
-              flexibleSpace: LayoutBuilder(
-                  builder: (BuildContext context, BoxConstraints constraints) {
-                appBarConstraints = constraints.biggest.height;
-                double opacityVar = appBarConstraints.floor() == 159
-                    ? 1
-                    : (((appBarConstraints - 137).abs()) * 0.045);
-                opacityVar <= 0
-                    ? opacityVar = 0
-                    : opacityVar >= 1
-                        ? opacityVar = 1
-                        : opacityVar;
-                return FlexibleSpaceBar(
-                    title: Opacity(
-                        opacity: opacityVar,
-                        child: Text("Lexikon",
-                            style: Theme.of(context).textTheme.titleLarge)),
-                    centerTitle:
-                        appBarConstraints.floor() <= 137 ? true : false);
-              })),
-        ),
+    return Scaffold(
+        body: NestedScrollView(
+      headerSliverBuilder: (_, innerBoxIsScrolled) => [
+        SliverAppBar(
+            title: Text(
+              "Lexikon",
+              style: TextStyle(fontSize: 31),
+            ),
+            floating: true,
+            forceElevated: innerBoxIsScrolled),
       ],
-      body: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(height: 120),
-            Container(
-              padding: EdgeInsets.only(right: 24, left: 24, bottom: 36),
-              child: SingleChildScrollView(
-                  child: Column(
-                children: [
-                  Padding(
-                    padding: EdgeInsets.only(left: 8, top: 32),
-                    child: Align(
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        "Alles zum Thema Barf.",
-                        style: TextStyle(
-                            fontSize: 21, fontWeight: FontWeight.w600),
-                      ),
-                    ),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 15),
+            child: Column(
+              children: [
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    "Alles zum Thema Barf.",
+                    style: TextStyle(fontSize: 21, fontWeight: FontWeight.w600),
                   ),
-                  Padding(
-                    padding: EdgeInsets.only(top: 16),
-                    child: CardHorizontal(
-                      cta: "Artikel lesen",
-                      titleIcon: articlesCards["Was ist Barf?"]!['titleIcon'],
-                      title: articlesCards["Was ist Barf?"]!['title'],
-                      subtitle: articlesCards["Was ist Barf?"]!['subtitle'],
+                ),
+                Padding(
+                  padding: EdgeInsets.only(top: 16),
+                  child: CardHorizontal(
+                    cta: "Artikel lesen",
+                    titleIcon: articlesCards["Was ist Barf?"]!['titleIcon'],
+                    title: articlesCards["Was ist Barf?"]!['title'],
+                    subtitle: articlesCards["Was ist Barf?"]!['subtitle'],
+                    textContent: articlesCards["Was ist Barf?"]!['textContent'],
+                    img: articlesCards["Was ist Barf?"]!['image'],
+                  ),
+                ),
+                SizedBox(
+                  height: 8,
+                ),
+                Row(
+                  children: [
+                    CardSmall(
+                      cta: "Berechnen",
+                      titleIcon: articlesCards["Barf Rechner"]!['titleIcon'],
+                      title: articlesCards["Barf Rechner"]!['title'],
+                      subtitle: articlesCards["Barf Rechner"]!['subtitle'],
                       textContent:
-                          articlesCards["Was ist Barf?"]!['textContent'],
-                      img: articlesCards["Was ist Barf?"]!['image'],
+                          articlesCards["Barf Rechner"]!['textContent'],
+                      img: articlesCards["Barf Rechner"]!['image'],
                     ),
-                  ),
-                  SizedBox(
-                    height: 8,
-                  ),
-                  Row(
-                    children: [
-                      CardSmall(
-                        cta: "Berechnen",
-                        titleIcon: articlesCards["Barf Rechner"]!['titleIcon'],
-                        title: articlesCards["Barf Rechner"]!['title'],
-                        subtitle: articlesCards["Barf Rechner"]!['subtitle'],
-                        textContent:
-                            articlesCards["Barf Rechner"]!['textContent'],
-                        img: articlesCards["Barf Rechner"]!['image'],
-                      ),
-                      CardSmall()
-                    ],
-                  )
-                ],
-              )),
-            )
-          ],
+                    CardSmall()
+                  ],
+                )
+              ],
+            ),
+          ),
         ),
       ),
-    );
+    ));
   }
 }
 

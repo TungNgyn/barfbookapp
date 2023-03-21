@@ -17,28 +17,6 @@ class ScreenSettings extends StatefulWidget {
   _settingsStartState createState() => _settingsStartState();
 }
 
-// class SectionSettings extends StatelessWidget {
-//   SectionSettings({
-//     super.key,
-//   });
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return SettingsSection(
-//       title: Text("Einstellungen"),
-//       tiles: [
-//         SettingsTile(
-//             title: Row(
-//           children: [
-//             Text("Dunkelmodus"),
-//           ],
-//         )),
-//         SettingsTile(title: Text("allo"))
-//       ],
-//     );
-//   }
-// }
-
 class _settingsStartState extends State<ScreenSettings>
     with SingleTickerProviderStateMixin {
   @override
@@ -70,191 +48,194 @@ class _settingsStartState extends State<ScreenSettings>
                           : "")
                     ],
                   )),
-              Padding(
-                padding: const EdgeInsets.all(10),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Account Section
-                    Padding(
-                      padding: EdgeInsets.only(left: 20, bottom: 5),
-                      child: Text(
-                        "Account",
-                        style: TextStyle(
-                            fontSize: 13,
-                            fontFamily:
-                                DefaultTextStyle.of(context).style.fontFamily),
+              SingleChildScrollView(
+                child: Padding(
+                  padding: EdgeInsets.all(20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Account Section
+                      Padding(
+                        padding: EdgeInsets.only(left: 20, bottom: 5),
+                        child: Text(
+                          "Account",
+                          style: TextStyle(
+                              fontSize: 13,
+                              fontFamily: DefaultTextStyle.of(context)
+                                  .style
+                                  .fontFamily),
+                        ),
                       ),
-                    ),
-                    Container(
-                      width: MediaQuery.of(context).size.width,
-                      decoration: BoxDecoration(
-                          color: Theme.of(context).colorScheme.onPrimary,
-                          borderRadius: BorderRadius.all(Radius.circular(10)),
-                          boxShadow: [
-                            BoxShadow(
-                                spreadRadius: 0.01,
-                                blurRadius: 0.01,
-                                color: Theme.of(context).colorScheme.outline)
-                          ]),
-                      child: Padding(
-                        padding: const EdgeInsets.all(5),
-                        child: ListView(
-                          shrinkWrap: true,
-                          padding: EdgeInsets.zero,
-                          physics: NeverScrollableScrollPhysics(),
-                          children: [
-                            Column(
-                              children: [
-                                Padding(
-                                  padding: EdgeInsets.all(5),
-                                  child: TextButton(
-                                    onPressed: () =>
-                                        Get.to(() => ScreenProfile()),
-                                    child: Align(
-                                      alignment: Alignment.centerLeft,
-                                      child: Text(
-                                        "Profil",
-                                        style: TextStyle(
-                                            letterSpacing: 0.5,
-                                            fontSize: 16,
-                                            fontFamily:
-                                                DefaultTextStyle.of(context)
-                                                    .style
-                                                    .fontFamily,
-                                            color: Theme.of(context)
-                                                .textTheme
-                                                .labelMedium!
-                                                .color),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                Divider(
-                                  height: 0,
-                                  thickness: 0.7,
-                                ),
-                                Padding(
-                                  padding: EdgeInsets.all(5),
-                                  child: TextButton(
-                                    onPressed: () => print("Money"),
-                                    child: Align(
-                                      alignment: Alignment.centerLeft,
-                                      child: Text(
-                                        "Abonnement abschließen",
-                                        style: TextStyle(
-                                            letterSpacing: 0.5,
-                                            fontSize: 16,
-                                            fontFamily: 'Comic Sans',
-                                            color: Theme.of(context)
-                                                .textTheme
-                                                .labelMedium!
-                                                .color),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                Divider(
-                                  height: 0,
-                                  thickness: 0.7,
-                                ),
-                                Padding(
-                                  padding: EdgeInsets.all(5),
-                                  child: TextButton(
-                                    onPressed: () => {
-                                      authController.signOut(),
-                                      Get.offAll(() => ScreenLogin())
-                                    },
-                                    child: Align(
-                                      alignment: Alignment.centerLeft,
-                                      child: Text("Abmelden",
+                      Container(
+                        width: MediaQuery.of(context).size.width,
+                        decoration: BoxDecoration(
+                            color: Theme.of(context).colorScheme.onPrimary,
+                            borderRadius: BorderRadius.all(Radius.circular(10)),
+                            boxShadow: [
+                              BoxShadow(
+                                  spreadRadius: 0.01,
+                                  blurRadius: 0.01,
+                                  color: Theme.of(context).colorScheme.outline)
+                            ]),
+                        child: Padding(
+                          padding: const EdgeInsets.all(5),
+                          child: ListView(
+                            shrinkWrap: true,
+                            padding: EdgeInsets.zero,
+                            physics: NeverScrollableScrollPhysics(),
+                            children: [
+                              Column(
+                                children: [
+                                  Padding(
+                                    padding: EdgeInsets.all(5),
+                                    child: TextButton(
+                                      onPressed: () =>
+                                          Get.to(() => ScreenProfile()),
+                                      child: Align(
+                                        alignment: Alignment.centerLeft,
+                                        child: Text(
+                                          "Profil",
                                           style: TextStyle(
                                               letterSpacing: 0.5,
                                               fontSize: 16,
+                                              fontFamily:
+                                                  DefaultTextStyle.of(context)
+                                                      .style
+                                                      .fontFamily,
                                               color: Theme.of(context)
                                                   .textTheme
                                                   .labelMedium!
-                                                  .color)),
+                                                  .color),
+                                        ),
+                                      ),
                                     ),
                                   ),
-                                ),
-                              ],
-                            )
-                          ],
+                                  Divider(
+                                    height: 0,
+                                    thickness: 0.7,
+                                  ),
+                                  Padding(
+                                    padding: EdgeInsets.all(5),
+                                    child: TextButton(
+                                      onPressed: () => print("Money"),
+                                      child: Align(
+                                        alignment: Alignment.centerLeft,
+                                        child: Text(
+                                          "Abonnement abschließen",
+                                          style: TextStyle(
+                                              letterSpacing: 0.5,
+                                              fontSize: 16,
+                                              fontFamily: 'Comic Sans',
+                                              color: Theme.of(context)
+                                                  .textTheme
+                                                  .labelMedium!
+                                                  .color),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  Divider(
+                                    height: 0,
+                                    thickness: 0.7,
+                                  ),
+                                  Padding(
+                                    padding: EdgeInsets.all(5),
+                                    child: TextButton(
+                                      onPressed: () => {
+                                        authController.signOut(),
+                                        Get.offAll(() => ScreenLogin())
+                                      },
+                                      child: Align(
+                                        alignment: Alignment.centerLeft,
+                                        child: Text("Abmelden",
+                                            style: TextStyle(
+                                                letterSpacing: 0.5,
+                                                fontSize: 16,
+                                                color: Theme.of(context)
+                                                    .textTheme
+                                                    .labelMedium!
+                                                    .color)),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              )
+                            ],
+                          ),
                         ),
                       ),
-                    ),
-                    // System Section
-                    Padding(
-                      padding: EdgeInsets.only(left: 20, bottom: 5, top: 30),
-                      child: Text(
-                        "System",
-                        style: TextStyle(fontSize: 13),
-                      ),
-                    ),
-                    Container(
-                      width: MediaQuery.of(context).size.width,
-                      decoration: BoxDecoration(
-                          color: Theme.of(context).colorScheme.onPrimary,
-                          borderRadius: BorderRadius.all(Radius.circular(10)),
-                          boxShadow: [
-                            BoxShadow(
-                                spreadRadius: 0.01,
-                                blurRadius: 0.01,
-                                color: Theme.of(context).colorScheme.outline)
-                          ]),
-                      child: Padding(
-                        padding: const EdgeInsets.all(5),
-                        child: ListView(
-                          shrinkWrap: true,
-                          padding: EdgeInsets.zero,
-                          physics: NeverScrollableScrollPhysics(),
-                          children: [
-                            Column(
-                              children: [
-                                TextButton(
-                                  onPressed: () =>
-                                      Get.changeThemeMode(ThemeMode.light),
-                                  child: Align(
-                                    alignment: Alignment.centerLeft,
-                                    child: Text(
-                                      "Hell",
-                                      style: TextStyle(
-                                          fontSize: 16,
-                                          color: Theme.of(context)
-                                              .textTheme
-                                              .labelMedium!
-                                              .color),
-                                    ),
-                                  ),
-                                ),
-                                Divider(
-                                  height: 0,
-                                  thickness: 0.7,
-                                ),
-                                TextButton(
-                                  onPressed: () =>
-                                      Get.changeThemeMode(ThemeMode.dark),
-                                  child: Align(
-                                    alignment: Alignment.centerLeft,
-                                    child: Text(
-                                      "Dark",
-                                      style: TextStyle(
-                                          fontSize: 16,
-                                          color: Theme.of(context)
-                                              .textTheme
-                                              .labelMedium!
-                                              .color),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            )
-                          ],
+                      // System Section
+                      Padding(
+                        padding: EdgeInsets.only(left: 20, bottom: 5, top: 30),
+                        child: Text(
+                          "System",
+                          style: TextStyle(fontSize: 13),
                         ),
                       ),
-                    ),
-                  ],
+                      Container(
+                        width: MediaQuery.of(context).size.width,
+                        decoration: BoxDecoration(
+                            color: Theme.of(context).colorScheme.onPrimary,
+                            borderRadius: BorderRadius.all(Radius.circular(10)),
+                            boxShadow: [
+                              BoxShadow(
+                                  spreadRadius: 0.01,
+                                  blurRadius: 0.01,
+                                  color: Theme.of(context).colorScheme.outline)
+                            ]),
+                        child: Padding(
+                          padding: const EdgeInsets.all(5),
+                          child: ListView(
+                            shrinkWrap: true,
+                            padding: EdgeInsets.zero,
+                            physics: NeverScrollableScrollPhysics(),
+                            children: [
+                              Column(
+                                children: [
+                                  TextButton(
+                                    onPressed: () =>
+                                        Get.changeThemeMode(ThemeMode.light),
+                                    child: Align(
+                                      alignment: Alignment.centerLeft,
+                                      child: Text(
+                                        "Hell",
+                                        style: TextStyle(
+                                            fontSize: 16,
+                                            color: Theme.of(context)
+                                                .textTheme
+                                                .labelMedium!
+                                                .color),
+                                      ),
+                                    ),
+                                  ),
+                                  Divider(
+                                    height: 0,
+                                    thickness: 0.7,
+                                  ),
+                                  TextButton(
+                                    onPressed: () =>
+                                        Get.changeThemeMode(ThemeMode.dark),
+                                    child: Align(
+                                      alignment: Alignment.centerLeft,
+                                      child: Text(
+                                        "Dark",
+                                        style: TextStyle(
+                                            fontSize: 16,
+                                            color: Theme.of(context)
+                                                .textTheme
+                                                .labelMedium!
+                                                .color),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              )
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               )
             ])));

@@ -42,10 +42,10 @@ class _LoadingScreenState extends State<ScreenLoading> {
         controller.exploreRecipeList.add(Recipe(
             name: (recipe as Map)['name'],
             id: recipe['id'],
-            created_at: recipe['created_at'],
+            created_at: recipe['created_at'].substring(0, 10),
             paws: recipe['paws'],
             description: recipe['description'],
-            modified_at: recipe['modified_at'],
+            modified_at: recipe['modified_at'].substring(0, 10),
             user_id: recipe['user_id'],
             user: userName[0]['name']));
       }
@@ -59,6 +59,27 @@ class _LoadingScreenState extends State<ScreenLoading> {
       controller.userRecipeList.clear();
       for (var recipe in controller.userRecipeListDB) {
         controller.userRecipeList.add(Recipe(
+            name: (recipe as Map)['name'],
+            id: recipe['id'],
+            created_at: recipe['created_at'],
+            paws: recipe['paws'],
+            description: recipe['description'],
+            modified_at: recipe['modified_at'],
+            user_id: user!.id,
+            user: ""));
+      }
+    } catch (error) {
+      print(error);
+    }
+
+    try {
+      controller.userLikedRecipe = await supabase
+          .from('profile_liked_recipe')
+          .select('recipe')
+          .eq('profile', user!.id);
+      controller.userLikedRecipe.clear();
+      for (var recipe in controller.userLikedRecipeDB) {
+        controller.userLikedRecipe.add(Recipe(
             name: (recipe as Map)['name'],
             id: recipe['id'],
             created_at: recipe['created_at'],

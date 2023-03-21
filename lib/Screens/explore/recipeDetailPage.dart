@@ -1,4 +1,6 @@
 import 'package:Barfbook/Screens/Barfbook/barfbook_controller.dart';
+import 'package:Barfbook/controller.dart';
+import 'package:Barfbook/util/Supabase/AuthController.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -11,6 +13,8 @@ class RecipeDetailPage extends StatefulWidget {
 }
 
 class _RecipeDetailPageState extends State<RecipeDetailPage> {
+  final Controller controller = Get.find();
+
   var currentPageViewItemIndicator = 0;
   PageController pageController = PageController();
 
@@ -24,6 +28,27 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
       appBar: AppBar(
         title: Text(widget.recipe.name),
         actions: [
+          ElevatedButton(
+              onPressed: () async {
+                List list = await supabase
+                    .from('profile_liked_recipe')
+                    .select('recipe')
+                    .eq('profile', user!.id);
+                print(list.runtimeType);
+                list.contains('{recipe: 29}')
+                    ? print('{recipe: 29} ist in $list')
+                    : print('{recipe: 29} ist NICHT in $list');
+              },
+              child: Text("aaa")),
+          IconButton(
+              onPressed: () {
+                setState(() {
+                  toggleFavorite();
+                });
+              },
+              icon: (controller.userLikedRecipe.contains(widget.recipe.id))
+                  ? Icon(Icons.favorite)
+                  : Icon(Icons.favorite_border)),
           IconButton(
               onPressed: () {
                 Get.defaultDialog(
@@ -33,7 +58,51 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
                         "Erstellt am ${widget.recipe.created_at} \nZuletzt bearbeitet am ${widget.recipe.modified_at}\nvon ${widget.recipe.user}");
               },
               icon: Icon(Icons.info)),
-          IconButton(onPressed: () {}, icon: Icon(Icons.favorite))
+          IconButton(
+              onPressed: () {
+                Get.bottomSheet(
+                    isScrollControlled: true,
+                    Container(
+                        decoration: BoxDecoration(
+                            color: Theme.of(context).colorScheme.onPrimary,
+                            borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(25),
+                                topRight: Radius.circular(25))),
+                        height: MediaQuery.of(context).size.height * 0.8,
+                        child: SingleChildScrollView(
+                          child: Padding(
+                            padding: EdgeInsets.all(25),
+                            child: Column(
+                              children: [
+                                Text(
+                                  "Kommentare",
+                                  style: TextStyle(fontSize: 31),
+                                ),
+                                SizedBox(height: 35),
+                                TextField(
+                                  maxLines: 8,
+                                  decoration: InputDecoration(
+                                    border: OutlineInputBorder(
+                                        borderSide: BorderSide(
+                                            width: 1,
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .primary)),
+                                    hintText:
+                                        "Schreib was dir besonders gefällt!",
+                                  ),
+                                ),
+                                SizedBox(height: 5),
+                                ElevatedButton(
+                                    onPressed: () {},
+                                    child: Text("Kommentieren"))
+                              ],
+                            ),
+                          ),
+                        )));
+              },
+              icon: Icon(Icons.comment)),
+          SizedBox(width: 30)
         ],
       ),
       body: SingleChildScrollView(
@@ -119,5 +188,51 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
           : _indicator(false));
     }
     return list;
+  }
+
+  void toggleFavorite() async {
+    print(controller.userLikedRecipeDB);
+    if (!controller.userLikedRecipe.contains(widget.recipe.id)) {
+      await supabase
+          .from('profile_liked_recipe')
+          .insert({'recipe': widget.recipe.id, 'profile': user!.id});
+      controller.userLikedRecipe.clear();
+      controller.userLikedRecipe = await supabase
+          .from('profile_liked_recipe')
+          .select('recipe')
+          .eq('profile', user!.id);
+      for (var recipe in controller.userLikedRecipeDB) {
+        controller.userLikedRecipe.add(Recipe(
+            name: (recipe as Map)['name'],
+            id: recipe['id'],
+            created_at: recipe['created_at'],
+            paws: recipe['paws'],
+            description: recipe['description'],
+            modified_at: recipe['modified_at'],
+            user_id: user!.id,
+            user: ""));
+      }
+    } else {
+      await supabase
+          .from('profile_liked_recipe')
+          .delete()
+          .match({'recipe': widget.recipe.id, 'profile': user!.id});
+      controller.userLikedRecipe.clear();
+      controller.userLikedRecipe = await supabase
+          .from('profile_liked_recipe')
+          .select('recipe')
+          .eq('profile', user!.id);
+      for (var recipe in controller.userLikedRecipeDB) {
+        controller.userLikedRecipe.add(Recipe(
+            name: (recipe as Map)['name'],
+            id: recipe['id'],
+            created_at: recipe['created_at'],
+            paws: recipe['paws'],
+            description: recipe['description'],
+            modified_at: recipe['modified_at'],
+            user_id: user!.id,
+            user: ""));
+      }
+    }
   }
 }
