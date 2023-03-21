@@ -1,5 +1,6 @@
 import 'package:Barfbook/Screens/Barfbook/barfbook_controller.dart';
 import 'package:Barfbook/controller.dart';
+import 'package:Barfbook/loading.dart';
 import 'package:Barfbook/util/Supabase/AuthController.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -22,6 +23,17 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
     currentPageViewItemIndicator = currentIndex;
   }
 
+  bool favorite = false;
+  @override
+  void initState() {
+    for (Recipe recipe in controller.userLikedRecipe) {
+      if (recipe.id == widget.recipe.id) {
+        favorite = true;
+      }
+    }
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -30,14 +42,10 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
         actions: [
           ElevatedButton(
               onPressed: () async {
-                List list = await supabase
-                    .from('profile_liked_recipe')
-                    .select('recipe')
-                    .eq('profile', user!.id);
-                print(list.runtimeType);
-                list.contains('{recipe: 29}')
-                    ? print('{recipe: 29} ist in $list')
-                    : print('{recipe: 29} ist NICHT in $list');
+                await initData();
+                print(controller.userLikedRecipe);
+                print(controller.userLikedRecipeDB);
+                print(controller.userLikedRecipeXrefDB);
               },
               child: Text("aaa")),
           IconButton(
@@ -46,9 +54,9 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
                   toggleFavorite();
                 });
               },
-              icon: (controller.userLikedRecipe.contains(widget.recipe.id))
+              icon: (favorite == true
                   ? Icon(Icons.favorite)
-                  : Icon(Icons.favorite_border)),
+                  : Icon(Icons.favorite_border))),
           IconButton(
               onPressed: () {
                 Get.defaultDialog(
@@ -190,49 +198,70 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
     return list;
   }
 
+  updateLikedRecipe() async {
+    for (var map in controller.userLikedRecipeXrefDB) {
+      if (map?.containsKey("recipe") ?? false) {
+        print(map['recipe']);
+        var tempRecipe = await supabase
+            .from('recipe')
+            .select('id, created_at, modified_at, name, description, paws')
+            .eq('id', map['recipe']);
+
+        controller.userLikedRecipe.clear();
+        for (var recipe in tempRecipe) {
+          controller.userLikedRecipe.add(Recipe(
+              name: (recipe as Map)['name'],
+              id: recipe['id'],
+              created_at: recipe['created_at'],
+              paws: recipe['paws'],
+              description: recipe['description'],
+              modified_at: recipe['modified_at'],
+              user_id: user!.id,
+              user: ""));
+        }
+      }
+    }
+  }
+
   void toggleFavorite() async {
-    print(controller.userLikedRecipeDB);
-    if (!controller.userLikedRecipe.contains(widget.recipe.id)) {
+    if (favorite == false) {
+      favorite = true;
+
       await supabase
           .from('profile_liked_recipe')
           .insert({'recipe': widget.recipe.id, 'profile': user!.id});
-      controller.userLikedRecipe.clear();
-      controller.userLikedRecipe = await supabase
-          .from('profile_liked_recipe')
-          .select('recipe')
-          .eq('profile', user!.id);
-      for (var recipe in controller.userLikedRecipeDB) {
-        controller.userLikedRecipe.add(Recipe(
-            name: (recipe as Map)['name'],
-            id: recipe['id'],
-            created_at: recipe['created_at'],
-            paws: recipe['paws'],
-            description: recipe['description'],
-            modified_at: recipe['modified_at'],
-            user_id: user!.id,
-            user: ""));
-      }
+      initData();
     } else {
+      favorite = false;
       await supabase
           .from('profile_liked_recipe')
           .delete()
-          .match({'recipe': widget.recipe.id, 'profile': user!.id});
-      controller.userLikedRecipe.clear();
-      controller.userLikedRecipe = await supabase
-          .from('profile_liked_recipe')
-          .select('recipe')
-          .eq('profile', user!.id);
-      for (var recipe in controller.userLikedRecipeDB) {
-        controller.userLikedRecipe.add(Recipe(
-            name: (recipe as Map)['name'],
-            id: recipe['id'],
-            created_at: recipe['created_at'],
-            paws: recipe['paws'],
-            description: recipe['description'],
-            modified_at: recipe['modified_at'],
-            user_id: user!.id,
-            user: ""));
-      }
+          .match({'recipe': widget.recipe.id, 'profile': user?.id});
+      initData();
     }
+
+    // if (!controller.userLikedRecipe.contains(widget.recipe.id)) {
+    // await supabase
+    //     .from('profile_liked_recipe')
+    //     .insert({'recipe': widget.recipe.id, 'profile': user!.id});
+    //   controller.userLikedRecipe.clear();
+    //   controller.userLikedRecipe = await supabase
+    //       .from('profile_liked_recipe')
+    //       .select('recipe')
+    //       .eq('profile', user!.id);
+    //   for (var recipe in controller.userLikedRecipeDB) {
+    //     controller.userLikedRecipe.add(Recipe(
+    //         name: (recipe as Map)['name'],
+    //         id: recipe['id'],
+    //         created_at: recipe['created_at'],
+    //         paws: recipe['paws'],
+    //         description: recipe['description'],
+    //         modified_at: recipe['modified_at'],
+    //         user_id: user!.id,
+    //         user: ""));
+    //   }
+    // } else {
+
+    // }
   }
 }

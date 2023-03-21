@@ -8,6 +8,7 @@ class Controller extends GetxController {
   List userRecipeListDB = [].obs;
   List userRecipeList = [].obs;
   List userLikedRecipeDB = [].obs;
+  List userLikedRecipeXrefDB = [].obs;
   List userLikedRecipe = [].obs;
   List userFavoriteList = [].obs;
   List databaseRecipeList = [].obs;
