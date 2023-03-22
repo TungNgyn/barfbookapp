@@ -87,25 +87,28 @@ class _ScreenExploreState extends State<ScreenExplore>
                                 ),
                                 Expanded(
                                     child: Padding(
-                                  padding: EdgeInsets.all(15),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                                  padding: EdgeInsets.only(top: 10, right: 20),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
                                     children: [
-                                      Text(
-                                        recipe.name,
-                                        style: TextStyle(fontSize: 24),
-                                      ),
-                                      SizedBox(
-                                        height: 10,
-                                      ),
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
+                                      Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
                                         children: [
-                                          Text("${recipe.paws} Pfoten"),
+                                          Text(
+                                            recipe.name,
+                                            style: TextStyle(fontSize: 21),
+                                          ),
+                                          Text(recipe.category,
+                                              style: TextStyle(fontSize: 14)),
+                                          SizedBox(height: 25),
                                           Text("erstellt von ${recipe.user}")
                                         ],
+                                      ),
+                                      Text(
+                                        "${recipe.paws} Pfoten",
+                                        style: TextStyle(fontSize: 18),
                                       )
                                     ],
                                   ),

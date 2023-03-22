@@ -22,6 +22,7 @@ class _newRecipeState extends State<ScreenCreateRecipe> {
   final TextEditingController _recipeNameController = TextEditingController();
   final TextEditingController _recipeDescriptionController =
       TextEditingController();
+  final TextEditingController _recipeGramController = TextEditingController();
   var recipeIngredient = [].obs;
   final Controller controller = Get.find();
 
@@ -95,9 +96,10 @@ class _newRecipeState extends State<ScreenCreateRecipe> {
                         .ilike('name', '%${pattern}%');
                   },
                   itemBuilder: (context, suggestion) {
+                    suggestion as Map;
                     return ListTile(
                       title: Text(
-                        (suggestion as Map)['name'],
+                        (suggestion)['name'],
                         style: TextStyle(fontSize: 24),
                       ),
                       subtitle: Row(
@@ -110,6 +112,7 @@ class _newRecipeState extends State<ScreenCreateRecipe> {
                     );
                   },
                   onSuggestionSelected: (suggestion) {
+                    suggestion as Map;
                     Get.bottomSheet(
                       Container(
                         decoration: BoxDecoration(
@@ -117,24 +120,38 @@ class _newRecipeState extends State<ScreenCreateRecipe> {
                             borderRadius: BorderRadius.only(
                                 topLeft: Radius.circular(25),
                                 topRight: Radius.circular(25))),
-                        child: Column(
-                          children: [
-                            Text(
-                              "Mengenangabe",
-                              style: TextStyle(fontSize: 28),
-                            ),
-                            ElevatedButton(
-                                onPressed: () {
-                                  recipeIngredient.add(Ingredient(
-                                      name: (suggestion as Map)['name'],
-                                      id: suggestion['id'],
-                                      type: suggestion['type'],
-                                      category: suggestion['category']));
-                                  _ingredientController.text = "";
-                                  Get.back();
-                                },
-                                child: Text("Hinzufügen"))
-                          ],
+                        child: Padding(
+                          padding: EdgeInsets.all(10),
+                          child: Column(
+                            children: [
+                              Text(
+                                "${(suggestion)['name']}",
+                                style: TextStyle(fontSize: 28),
+                              ),
+                              SizedBox(height: 30),
+                              TextField(
+                                controller: _recipeGramController,
+                                keyboardType: TextInputType.number,
+                                decoration: InputDecoration(
+                                    border: OutlineInputBorder(),
+                                    labelText: "Gewicht in Gramm"),
+                              ),
+                              ElevatedButton(
+                                  onPressed: () {
+                                    recipeIngredient.add(Ingredient(
+                                        name: (suggestion)['name'],
+                                        id: suggestion['id'],
+                                        type: suggestion['type'],
+                                        category: suggestion['category'],
+                                        gram: int.parse(
+                                            _recipeGramController.text)));
+                                    _ingredientController.clear();
+                                    _recipeGramController.clear();
+                                    Get.back();
+                                  },
+                                  child: Text("Hinzufügen"))
+                            ],
+                          ),
                         ),
                       ),
                     );
@@ -169,7 +186,12 @@ class _newRecipeState extends State<ScreenCreateRecipe> {
                             },
                             icon: Image.asset(
                                 "assets/images/recipe/icons/beef.png"),
-                            label: Text(ingredient.name)),
+                            label: Row(
+                              children: [
+                                Text(ingredient.name),
+                                Text('${ingredient.gram} Gramm')
+                              ],
+                            )),
                       ));
                     }
                     return Wrap(

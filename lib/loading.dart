@@ -42,7 +42,7 @@ initData() async {
   // init recipe
   try {
     controller.databaseRecipeList = await supabase.from('recipe').select(
-        'id, created_at, modified_at, name, description, paws, user_id');
+        'id, created_at, modified_at, name, description, paws, user_id, category');
   } catch (error) {
     print(error);
   } finally {
@@ -59,6 +59,7 @@ initData() async {
           paws: recipe['paws'],
           description: recipe['description'],
           modified_at: recipe['modified_at'].substring(0, 10),
+          category: recipe['category'],
           user_id: recipe['user_id'],
           user: userName[0]['name']));
     }
@@ -68,7 +69,8 @@ initData() async {
   try {
     controller.userRecipeListDB = await supabase
         .from('recipe')
-        .select('id, created_at, modified_at, name, description, paws')
+        .select(
+            'id, created_at, modified_at, name, description, paws, category')
         .eq('user_id', user!.id);
     controller.userRecipeList.clear();
     for (var recipe in controller.userRecipeListDB) {
@@ -79,6 +81,7 @@ initData() async {
           paws: recipe['paws'],
           description: recipe['description'],
           modified_at: recipe['modified_at'],
+          category: recipe['category'],
           user_id: user!.id,
           user: ""));
     }
@@ -97,7 +100,8 @@ initData() async {
       if (map?.containsKey("recipe") ?? false) {
         var tempRecipe = await supabase
             .from('recipe')
-            .select('id, created_at, modified_at, name, description, paws')
+            .select(
+                'id, created_at, modified_at, name, description, paws, category')
             .eq('id', map['recipe']);
 
         print(controller.userLikedRecipe);
@@ -111,6 +115,7 @@ initData() async {
               paws: recipe['paws'],
               description: recipe['description'],
               modified_at: recipe['modified_at'],
+              category: recipe['category'],
               user_id: user!.id,
               user: ""));
         }

@@ -5,12 +5,14 @@ class Ingredient {
       {required this.id,
       required this.name,
       required this.type,
-      required this.category});
+      required this.category,
+      this.gram = 0});
 
   final int id;
   final String name;
   final String type;
   final String category;
+  final int gram;
 }
 
 class Recipe {
@@ -22,7 +24,8 @@ class Recipe {
       required this.created_at,
       required this.modified_at,
       required this.user_id,
-      required this.user});
+      required this.user,
+      this.category = ""});
 
   final int id;
   final String name;
@@ -32,6 +35,7 @@ class Recipe {
   final String modified_at;
   final String user_id;
   final String user;
+  final String category;
 }
 
 var enumIcon = {
