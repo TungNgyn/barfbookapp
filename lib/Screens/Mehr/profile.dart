@@ -1,11 +1,5 @@
-import 'package:Barfbook/Screens/Mehr/settings.dart';
 import 'package:Barfbook/loading.dart';
-import 'package:Barfbook/util/Supabase/AuthController.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:provider/provider.dart';
-
-import '../../main.dart';
 
 class ScreenProfile extends StatelessWidget {
   @override

@@ -1,5 +1,5 @@
-import 'package:Barfbook/Screens/Lexikon/lexicon.dart';
 import 'package:Barfbook/Screens/Mehr/settings.dart';
+import 'package:Barfbook/Screens/calculator/barfcalculator.dart';
 import 'package:Barfbook/Screens/explore/explore.dart';
 import 'package:flutter/material.dart';
 import 'package:animations/animations.dart';
@@ -18,7 +18,7 @@ class _HomeState extends State<Home> {
   List<Widget> _pages = [
     ScreenExplore(),
     ScreenBarfbook(),
-    ScreenLexicon(),
+    ScreenCalculator(),
     ScreenSettings()
   ];
   late PageController _pageController =
@@ -32,7 +32,7 @@ class _HomeState extends State<Home> {
     _pages = [
       ScreenExplore(),
       ScreenBarfbook(),
-      ScreenLexicon(),
+      ScreenCalculator(),
       ScreenSettings()
     ];
   }
@@ -66,8 +66,8 @@ class _HomeState extends State<Home> {
                 label: 'Barfbook',
               ),
               BottomNavigationBarItem(
-                icon: Icon(Icons.library_books),
-                label: 'Lexikon',
+                icon: Icon(Icons.calculate),
+                label: 'Barfrechner',
               ),
               BottomNavigationBarItem(
                 icon: Icon(Icons.more_horiz),

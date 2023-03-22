@@ -30,7 +30,7 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   assets:
-    - assets/images/lexicon/whatis/
+    - assets/images/calculator/icons/
     - assets/images/splash/
     - assets/images/recipe/icons/
     - assets/images/

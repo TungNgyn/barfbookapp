@@ -96,14 +96,17 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
                                             color: Theme.of(context)
                                                 .colorScheme
                                                 .primary)),
-                                    hintText:
-                                        "Schreib was dir besonders gefällt!",
+                                    hintText: "Schreib was dir gefällt!",
                                   ),
                                 ),
                                 SizedBox(height: 5),
                                 ElevatedButton(
                                     onPressed: () {},
-                                    child: Text("Kommentieren"))
+                                    child: Text("Kommentieren")),
+                                SizedBox(height: 20),
+                                Obx(() => ListView(
+                                      children: [Text("data")],
+                                    ))
                               ],
                             ),
                           ),

@@ -110,12 +110,34 @@ class _newRecipeState extends State<ScreenCreateRecipe> {
                     );
                   },
                   onSuggestionSelected: (suggestion) {
-                    recipeIngredient.add(Ingredient(
-                        name: (suggestion as Map)['name'],
-                        id: suggestion['id'],
-                        type: suggestion['type'],
-                        category: suggestion['category']));
-                    _ingredientController.text = "";
+                    Get.bottomSheet(
+                      Container(
+                        decoration: BoxDecoration(
+                            color: Theme.of(context).colorScheme.onPrimary,
+                            borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(25),
+                                topRight: Radius.circular(25))),
+                        child: Column(
+                          children: [
+                            Text(
+                              "Mengenangabe",
+                              style: TextStyle(fontSize: 28),
+                            ),
+                            ElevatedButton(
+                                onPressed: () {
+                                  recipeIngredient.add(Ingredient(
+                                      name: (suggestion as Map)['name'],
+                                      id: suggestion['id'],
+                                      type: suggestion['type'],
+                                      category: suggestion['category']));
+                                  _ingredientController.text = "";
+                                  Get.back();
+                                },
+                                child: Text("Hinzufügen"))
+                          ],
+                        ),
+                      ),
+                    );
                   },
                   noItemsFoundBuilder: (BuildContext context) {
                     return Padding(
