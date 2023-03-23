@@ -80,39 +80,78 @@ class _ScreenExploreState extends State<ScreenExplore>
                         child: Padding(
                             padding: EdgeInsets.only(bottom: 15, top: 10),
                             child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                FlutterLogo(
-                                  size: 100,
-                                ),
-                                Expanded(
+                                Padding(
+                                  padding: EdgeInsets.symmetric(horizontal: 10),
+                                  child: Card(
                                     child: Padding(
-                                  padding: EdgeInsets.only(top: 10, right: 20),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Column(
+                                      padding: EdgeInsets.all(10),
+                                      child: FlutterLogo(
+                                        size: 100,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                Row(
+                                  children: [
+                                    SizedBox(
+                                      height: 100,
+                                      width: 150,
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
                                         children: [
-                                          Text(
-                                            recipe.name,
-                                            style: TextStyle(fontSize: 21),
+                                          Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                recipe.name,
+                                                overflow: TextOverflow.ellipsis,
+                                                style: TextStyle(
+                                                    fontSize: 24,
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                              ),
+                                              Text(recipe.category,
+                                                  style:
+                                                      TextStyle(fontSize: 14)),
+                                            ],
                                           ),
-                                          Text(recipe.category,
-                                              style: TextStyle(fontSize: 14)),
-                                          SizedBox(height: 25),
-                                          Text("erstellt von ${recipe.user}")
+                                          TextButton.icon(
+                                              onPressed: () {},
+                                              icon: Image.asset(
+                                                'assets/images/defaultAvatar.png',
+                                                height: 24,
+                                              ),
+                                              label: Text(recipe.user))
                                         ],
                                       ),
-                                      Text(
-                                        "${recipe.paws} Pfoten",
-                                        style: TextStyle(fontSize: 18),
-                                      )
-                                    ],
-                                  ),
-                                ))
+                                    ),
+                                    SizedBox(
+                                      height: 120,
+                                      child: Row(
+                                        children: [
+                                          TextButton.icon(
+                                              onPressed: () {},
+                                              icon: Icon(
+                                                Icons.pets,
+                                                size: 50,
+                                              ),
+                                              label: Text(
+                                                '${recipe.paws}',
+                                                style: TextStyle(
+                                                    fontSize: 21,
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                              ))
+                                        ],
+                                      ),
+                                    )
+                                  ],
+                                )
                               ],
                             )),
                       ),

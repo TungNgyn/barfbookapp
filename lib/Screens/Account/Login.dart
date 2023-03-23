@@ -50,12 +50,16 @@ class _LoginState extends State<ScreenLogin> {
                 children: [
                   ElevatedButton(
                       onPressed: () async {
-                        final AuthResponse response = await supabase.auth
-                            .signInWithPassword(
-                                email: "t@n.de", password: "xadw2468");
+                        try {
+                          final AuthResponse response = await supabase.auth
+                              .signInWithPassword(
+                                  email: "t@n.de", password: "xadw2468");
 
-                        session = response.session;
-                        user = response.user;
+                          session = response.session;
+                          user = response.user;
+                        } catch (error) {
+                          Get.snackbar("Fehler", "Ein Fehler ist aufgetreten");
+                        }
                       },
                       child: Text("Tung")), // REMOVE THIS
                   ElevatedButton(

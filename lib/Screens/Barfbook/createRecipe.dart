@@ -165,44 +165,103 @@ class _newRecipeState extends State<ScreenCreateRecipe> {
                       ),
                     );
                   }),
-              ExpansionTile(
-                initiallyExpanded: true,
-                title: Text("Zutaten"),
+              SizedBox(height: 15),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  ElevatedButton(
+                  Text("Zutaten"),
+                  TextButton(
                       onPressed: () {
                         recipeIngredient.clear();
                       },
-                      child: Text("Entfernen")),
-                  Obx(() {
-                    List<Widget> list = [];
-                    for (Ingredient ingredient in recipeIngredient) {
-                      list.add(SizedBox(
-                        height: 40,
-                        child: ElevatedButton.icon(
-                            style: ButtonStyle(),
-                            onPressed: () {
-                              recipeIngredient.remove(ingredient);
-                            },
-                            icon: Image.asset(
-                                "assets/images/recipe/icons/beef.png"),
-                            label: Row(
-                              children: [
-                                Text(ingredient.name),
-                                Text('${ingredient.gram} Gramm')
-                              ],
-                            )),
-                      ));
-                    }
-                    return Wrap(
-                        alignment: WrapAlignment.spaceEvenly,
-                        direction: Axis.horizontal,
-                        spacing: 5,
-                        runSpacing: 5,
-                        children: list);
-                  }),
+                      child: Text("Alles entfernen")),
                 ],
               ),
+              SizedBox(height: 15),
+              Obx(() {
+                List<Widget> list = [];
+                for (Ingredient ingredient in recipeIngredient) {
+                  list.add(GestureDetector(
+                    onTap: () {
+                      recipeIngredient.remove(ingredient);
+                    },
+                    child: Card(
+                      elevation: 4,
+                      color: Theme.of(context).colorScheme.background,
+                      child: SizedBox(
+                        height: 100,
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 10),
+                          child: Row(
+                            children: [
+                              Padding(
+                                padding: EdgeInsets.only(right: 10),
+                                child: Card(child: FlutterLogo(size: 70)),
+                              ),
+                              Flexible(
+                                child: SizedBox(
+                                  width: 200,
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        ingredient.name,
+                                        style: TextStyle(fontSize: 18),
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                      Text('${ingredient.gram} Gramm'),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              Spacer(),
+                              Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: [
+                                  Row(
+                                    children: [
+                                      Card(
+                                        elevation: 2,
+                                        child: IconButton(
+                                            onPressed: () {},
+                                            icon: Icon(Icons.remove)),
+                                      ),
+                                      Padding(
+                                        padding: EdgeInsets.symmetric(
+                                            horizontal: 10),
+                                        child: Text(
+                                          '1',
+                                          style: TextStyle(fontSize: 18),
+                                        ),
+                                      ),
+                                      Card(
+                                        elevation: 2,
+                                        child: IconButton(
+                                            onPressed: () {},
+                                            icon: Icon(Icons.add)),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              )
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ));
+                }
+                return Wrap(
+                    alignment: WrapAlignment.spaceEvenly,
+                    direction: Axis.horizontal,
+                    spacing: 5,
+                    runSpacing: 5,
+                    children: list);
+              }),
+              SizedBox(height: 15),
               TextField(
                   controller: _recipeDescriptionController,
                   maxLines: 20,
