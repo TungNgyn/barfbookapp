@@ -138,7 +138,7 @@ class _ScreenExploreState extends State<ScreenExplore>
                                               onPressed: () {},
                                               icon: Icon(
                                                 Icons.pets,
-                                                size: 50,
+                                                size: 40,
                                               ),
                                               label: Text(
                                                 '${recipe.paws}',

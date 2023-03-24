@@ -183,7 +183,7 @@ class _newRecipeState extends State<ScreenCreateRecipe> {
                 for (Ingredient ingredient in recipeIngredient) {
                   list.add(GestureDetector(
                     onTap: () {
-                      recipeIngredient.remove(ingredient);
+                      // recipeIngredient.remove(ingredient);
                     },
                     child: Card(
                       elevation: 4,
@@ -199,21 +199,18 @@ class _newRecipeState extends State<ScreenCreateRecipe> {
                                 child: Card(child: FlutterLogo(size: 70)),
                               ),
                               Flexible(
-                                child: SizedBox(
-                                  width: 200,
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        ingredient.name,
-                                        style: TextStyle(fontSize: 18),
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                      Text('${ingredient.gram} Gramm'),
-                                    ],
-                                  ),
+                                flex: 10,
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      ingredient.name,
+                                      style: TextStyle(fontSize: 18),
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                    Text('${ingredient.gram} Gramm'),
+                                  ],
                                 ),
                               ),
                               Spacer(),
@@ -226,7 +223,10 @@ class _newRecipeState extends State<ScreenCreateRecipe> {
                                       Card(
                                         elevation: 2,
                                         child: IconButton(
-                                            onPressed: () {},
+                                            onPressed: () {
+                                              recipeIngredient
+                                                  .remove(ingredient);
+                                            },
                                             icon: Icon(Icons.remove)),
                                       ),
                                       Padding(

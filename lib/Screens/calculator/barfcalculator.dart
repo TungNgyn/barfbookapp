@@ -1,4 +1,5 @@
 import 'package:Barfbook/Screens/calculator/addPet.dart';
+import 'package:Barfbook/Screens/calculator/calculator.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -54,6 +55,11 @@ class _ScreenCalculatorState extends State<ScreenCalculator> {
                       ],
                     ),
                   )),
+              ElevatedButton(
+                  onPressed: () {
+                    Get.to(() => Calculator());
+                  },
+                  child: Text("Rechner"))
             ],
           ))),
     );
