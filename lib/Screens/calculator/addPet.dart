@@ -7,8 +7,12 @@ class ScreenAddPet extends StatefulWidget {
 
 class _ScreenAddPetState extends State<ScreenAddPet> {
   final PageController pageController = PageController();
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _breedController = TextEditingController();
+  final TextEditingController _ageController = TextEditingController();
+  final TextEditingController _weightController = TextEditingController();
+  final TextEditingController _genderController = TextEditingController();
   int? pageIndex;
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -45,6 +49,7 @@ class _ScreenAddPetState extends State<ScreenAddPet> {
                                       ),
                                       SizedBox(height: 30),
                                       TextField(
+                                        controller: _nameController,
                                         decoration: InputDecoration(
                                             hintText: "Name",
                                             border: OutlineInputBorder(
@@ -52,6 +57,7 @@ class _ScreenAddPetState extends State<ScreenAddPet> {
                                       ),
                                       SizedBox(height: 30),
                                       TextField(
+                                        controller: _ageController,
                                         decoration: InputDecoration(
                                             hintText: "Alter",
                                             border: OutlineInputBorder()),
@@ -85,17 +91,32 @@ class _ScreenAddPetState extends State<ScreenAddPet> {
                                       ),
                                       SizedBox(height: 30),
                                       TextField(
+                                        controller: _breedController,
                                         decoration: InputDecoration(
                                             hintText: "Hunderasse",
                                             border: OutlineInputBorder(
                                                 borderSide: BorderSide())),
                                       ),
-                                      SizedBox(height: 30),
                                       TextField(
+                                        controller: _weightController,
                                         decoration: InputDecoration(
                                             hintText: "Gewicht in Gramm",
                                             border: OutlineInputBorder()),
-                                      )
+                                      ),
+                                      DropdownButtonFormField(
+                                          decoration: InputDecoration(
+                                              border: OutlineInputBorder()),
+                                          items: [
+                                            'Rüde',
+                                            'Hündin',
+                                            'keine Angabe'
+                                          ]
+                                              .map((e) => DropdownMenuItem(
+                                                  value: e, child: Text(e)))
+                                              .toList(),
+                                          onChanged: (String? newValue) {
+                                            setState(() {});
+                                          })
                                     ],
                                   ),
                                 ))),
