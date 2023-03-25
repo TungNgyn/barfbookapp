@@ -6,6 +6,7 @@ class Pet {
       this.breed = 'keine Angabe',
       this.age = 0,
       this.weight = 0,
+      this.ration = 3,
       this.gender = 'rüde'});
 
   final int id;
@@ -15,4 +16,5 @@ class Pet {
   final int age;
   final int weight;
   final String gender;
+  final double ration;
 }

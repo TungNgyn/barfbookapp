@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class ScreenAddPet extends StatefulWidget {
   @override
@@ -11,10 +12,26 @@ class _ScreenAddPetState extends State<ScreenAddPet> {
   final TextEditingController _breedController = TextEditingController();
   final TextEditingController _ageController = TextEditingController();
   final TextEditingController _weightController = TextEditingController();
-  final TextEditingController _genderController = TextEditingController();
+  bool filledInput = false;
+  String? _genderController;
+  RxDouble _rationController = 3.0.obs;
   int? pageIndex;
+
   @override
   Widget build(BuildContext context) {
+    if (_nameController.text.isNotEmpty &
+        _ageController.text.isNotEmpty &
+        ((pageIndex == 0) | (pageIndex == null))) {
+      setState(() {
+        filledInput = true;
+      });
+    } else if (_breedController.text.isNotEmpty &
+        _weightController.text.isNotEmpty &
+        (pageIndex == 1)) {
+      setState(() {
+        filledInput = true;
+      });
+    }
     return Scaffold(
         appBar: AppBar(),
         body: SafeArea(
@@ -32,6 +49,7 @@ class _ScreenAddPetState extends State<ScreenAddPet> {
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
                           Card(
+                            elevation: 10,
                             child: Container(
                                 color: Theme.of(context).colorScheme.onPrimary,
                                 width: MediaQuery.of(context).size.width * 0.8,
@@ -49,6 +67,9 @@ class _ScreenAddPetState extends State<ScreenAddPet> {
                                       ),
                                       SizedBox(height: 30),
                                       TextField(
+                                        onChanged: (value) {
+                                          setState(() {});
+                                        },
                                         controller: _nameController,
                                         decoration: InputDecoration(
                                             hintText: "Name",
@@ -57,6 +78,9 @@ class _ScreenAddPetState extends State<ScreenAddPet> {
                                       ),
                                       SizedBox(height: 30),
                                       TextField(
+                                        onChanged: (value) {
+                                          setState(() {});
+                                        },
                                         controller: _ageController,
                                         decoration: InputDecoration(
                                             hintText: "Alter",
@@ -74,6 +98,7 @@ class _ScreenAddPetState extends State<ScreenAddPet> {
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
                           Card(
+                            elevation: 10,
                             child: Container(
                                 color: Theme.of(context).colorScheme.onPrimary,
                                 width: MediaQuery.of(context).size.width * 0.8,
@@ -91,6 +116,9 @@ class _ScreenAddPetState extends State<ScreenAddPet> {
                                       ),
                                       SizedBox(height: 30),
                                       TextField(
+                                        onChanged: (value) {
+                                          setState(() {});
+                                        },
                                         controller: _breedController,
                                         decoration: InputDecoration(
                                             hintText: "Hunderasse",
@@ -98,6 +126,9 @@ class _ScreenAddPetState extends State<ScreenAddPet> {
                                                 borderSide: BorderSide())),
                                       ),
                                       TextField(
+                                        onChanged: (value) {
+                                          setState(() {});
+                                        },
                                         controller: _weightController,
                                         decoration: InputDecoration(
                                             hintText: "Gewicht in Gramm",
@@ -115,7 +146,9 @@ class _ScreenAddPetState extends State<ScreenAddPet> {
                                                   value: e, child: Text(e)))
                                               .toList(),
                                           onChanged: (String? newValue) {
-                                            setState(() {});
+                                            setState(() {
+                                              _genderController = newValue;
+                                            });
                                           })
                                     ],
                                   ),
@@ -129,6 +162,7 @@ class _ScreenAddPetState extends State<ScreenAddPet> {
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
                           Card(
+                            elevation: 10,
                             child: Container(
                                 color: Theme.of(context).colorScheme.onPrimary,
                                 width: MediaQuery.of(context).size.width * 0.8,
@@ -143,10 +177,27 @@ class _ScreenAddPetState extends State<ScreenAddPet> {
                                         "Tägliche Ration",
                                         style: TextStyle(fontSize: 24),
                                       ),
-                                      TextField(
-                                        decoration: InputDecoration(),
+                                      Slider(
+                                        value: _rationController.value,
+                                        min: 1,
+                                        max: 5,
+                                        divisions: 8,
+                                        onChanged: (double value) {
+                                          setState(() {
+                                            _rationController.value = value;
+                                          });
+                                        },
                                       ),
-                                      Text("Entspricht Gramm")
+                                      Obx(() {
+                                        return Column(children: [
+                                          Text(
+                                            '${_rationController.toStringAsFixed(1)}%',
+                                            style: TextStyle(fontSize: 18),
+                                          ),
+                                          Text(
+                                              "Entspricht ${double.parse(_weightController.text) * double.parse(_rationController.toStringAsFixed(1)) ~/ 100} Gramm")
+                                        ]);
+                                      }),
                                     ],
                                   ),
                                 ))),
@@ -158,27 +209,38 @@ class _ScreenAddPetState extends State<ScreenAddPet> {
                 ),
               ),
               Flexible(
-                  flex: 2,
-                  child: ElevatedButton(
-                      onPressed: (pageIndex == 0) | (pageIndex == null)
-                          ? null
-                          : () {
-                              pageController.previousPage(
-                                  duration: Duration(seconds: 1),
-                                  curve: Curves.fastLinearToSlowEaseIn);
-                            },
-                      child: Text("Zurück"))),
-              Flexible(
-                  flex: 2,
-                  child: ElevatedButton(
-                      onPressed: pageIndex == 2
-                          ? null
-                          : () {
-                              pageController.nextPage(
-                                  duration: Duration(seconds: 1),
-                                  curve: Curves.fastLinearToSlowEaseIn);
-                            },
-                      child: Text("Weiter")))
+                  flex: 3,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      Visibility(
+                        maintainSize: true,
+                        maintainAnimation: true,
+                        maintainState: true,
+                        visible: (pageIndex == 0) | (pageIndex == null)
+                            ? false
+                            : true,
+                        child: ElevatedButton(
+                            onPressed: (pageIndex == 0) | (pageIndex == null)
+                                ? null
+                                : () {
+                                    pageController.previousPage(
+                                        duration: Duration(seconds: 1),
+                                        curve: Curves.fastLinearToSlowEaseIn);
+                                  },
+                            child: Text("Zurück")),
+                      ),
+                      ElevatedButton(
+                          onPressed: (pageIndex == 2) | (filledInput == false)
+                              ? null
+                              : () {
+                                  pageController.nextPage(
+                                      duration: Duration(seconds: 1),
+                                      curve: Curves.fastLinearToSlowEaseIn);
+                                },
+                          child: Text("Weiter"))
+                    ],
+                  ))
             ],
           ),
         ));
@@ -186,6 +248,7 @@ class _ScreenAddPetState extends State<ScreenAddPet> {
 
   _onPageViewChange(int page) {
     setState(() {
+      filledInput = false;
       pageIndex = page;
     });
   }
