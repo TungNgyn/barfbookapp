@@ -1,6 +1,6 @@
 class Pet {
   const Pet(
-      {required this.id,
+      {this.id = 0,
       required this.owner,
       required this.name,
       this.breed = 'keine Angabe',

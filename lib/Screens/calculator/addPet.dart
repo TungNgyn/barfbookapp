@@ -1,3 +1,5 @@
+import 'package:Barfbook/Screens/calculator/pet_controller.dart';
+import 'package:Barfbook/util/Supabase/AuthController.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -231,14 +233,18 @@ class _ScreenAddPetState extends State<ScreenAddPet> {
                             child: Text("Zurück")),
                       ),
                       ElevatedButton(
-                          onPressed: (pageIndex == 2) | (filledInput == false)
-                              ? null
+                          onPressed: (filledInput == false)
+                              ? (pageIndex == 2)
+                                  ? () => _addPet()
+                                  : null
                               : () {
                                   pageController.nextPage(
                                       duration: Duration(seconds: 1),
                                       curve: Curves.fastLinearToSlowEaseIn);
                                 },
-                          child: Text("Weiter"))
+                          child: (pageIndex == 2)
+                              ? Text('Hinzufügen')
+                              : Text("Weiter"))
                     ],
                   ))
             ],
@@ -251,5 +257,35 @@ class _ScreenAddPetState extends State<ScreenAddPet> {
       filledInput = false;
       pageIndex = page;
     });
+  }
+
+  _addPet() async {
+    Pet pet = Pet(
+        owner: user!.id,
+        name: _nameController.text,
+        breed: _breedController.text,
+        age: int.parse(_ageController.text),
+        weight: int.parse(_weightController.text),
+        ration: double.parse(_rationController.toStringAsFixed(1)),
+        gender: _genderController!);
+    print(pet.name);
+    try {
+      await supabase.from('pet').insert({
+        'name': _nameController.text,
+        'owner': pet.owner,
+        'breed': pet.breed,
+        'age': pet.age,
+        'weight': pet.weight,
+        'ration': pet.ration,
+        'gender': pet.gender
+      });
+    } catch (error) {
+      print(error);
+    }
+    try {
+      print(await supabase.from('pet').select('*').eq('owner', user?.id));
+    } catch (error) {
+      print(error);
+    }
   }
 }

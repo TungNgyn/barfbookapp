@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:Barfbook/Screens/Barfbook/barfbook_controller.dart';
+import 'package:Barfbook/Screens/calculator/pet_controller.dart';
 import 'package:Barfbook/controller.dart';
 import 'package:Barfbook/home.dart';
 import 'package:Barfbook/util/Supabase/AuthController.dart';
@@ -120,6 +121,28 @@ initData() async {
               user: ""));
         }
       }
+    }
+  } catch (error) {
+    print(error);
+  }
+
+  //init pet list
+
+  try {
+    controller.userPetListDB =
+        await supabase.from('pet').select('*').eq('owner', user?.id);
+
+    controller.userPetList.clear();
+    for (var pet in controller.userPetListDB) {
+      controller.userPetList.add(Pet(
+          id: (pet as Map)['id'],
+          owner: pet['owner'],
+          name: pet['name'],
+          breed: pet['breed'],
+          age: pet['age'],
+          weight: pet['weight'],
+          gender: pet['gender'],
+          ration: pet['ration']));
     }
   } catch (error) {
     print(error);

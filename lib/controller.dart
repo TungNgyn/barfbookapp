@@ -16,5 +16,6 @@ class Controller extends GetxController {
   List databaseRecipeList = [].obs;
   List exploreRecipeList = [].obs;
 
+  List userPetListDB = [].obs;
   List userPetList = [].obs;
 }
