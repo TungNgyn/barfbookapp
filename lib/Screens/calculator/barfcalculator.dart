@@ -1,5 +1,6 @@
 import 'package:Barfbook/Screens/calculator/addPet.dart';
 import 'package:Barfbook/Screens/calculator/calculator.dart';
+import 'package:Barfbook/Screens/calculator/editPet.dart';
 import 'package:Barfbook/Screens/calculator/pet_controller.dart';
 import 'package:Barfbook/controller.dart';
 import 'package:flutter/material.dart';
@@ -47,7 +48,7 @@ class _ScreenCalculatorState extends State<ScreenCalculator> {
                           height: 40,
                           child: ElevatedButton.icon(
                               onPressed: () {
-                                print(pet);
+                                Get.to(() => ScreenEditPet(pet: pet));
                               },
                               icon: Image.asset(
                                   "assets/images/recipe/icons/beef.png"),
