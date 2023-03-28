@@ -26,13 +26,15 @@ class PetTextField extends StatefulWidget {
   final String label;
   final String text;
   final TextEditingController controller;
+  final ValueChanged<String> onChanged;
 
   const PetTextField(
       {super.key,
       this.maxLines = 1,
       required this.label,
       required this.text,
-      required this.controller});
+      required this.controller,
+      required this.onChanged});
 
   @override
   State<StatefulWidget> createState() => _PetTextFieldState();
@@ -65,6 +67,7 @@ class _PetTextFieldState extends State<PetTextField> {
         ),
         SizedBox(height: 8),
         TextField(
+          onChanged: (value) => widget.onChanged,
           controller: controller,
           decoration: InputDecoration(
               border:

@@ -1,6 +1,8 @@
 import 'package:Barfbook/Screens/Account/Login.dart';
 import 'package:Barfbook/Screens/Account/SignUp.dart';
+import 'package:Barfbook/Screens/Mehr/editProfile.dart';
 import 'package:Barfbook/Screens/Mehr/profile.dart';
+import 'package:Barfbook/controller.dart';
 import 'package:Barfbook/loading.dart';
 import 'package:Barfbook/main.dart';
 import 'package:Barfbook/util/Supabase/AuthController.dart';
@@ -19,6 +21,7 @@ class ScreenSettings extends StatefulWidget {
 
 class _settingsStartState extends State<ScreenSettings>
     with SingleTickerProviderStateMixin {
+  final Controller controller = Get.find();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -44,8 +47,8 @@ class _settingsStartState extends State<ScreenSettings>
                             height: 100,
                           )),
                       Text(user != null || session != null
-                          ? "${userdata["name"]}"
-                          : "")
+                          ? "${controller.userProfile['user'].name}"
+                          : "Gast")
                     ],
                   )),
               SingleChildScrollView(
@@ -89,12 +92,44 @@ class _settingsStartState extends State<ScreenSettings>
                                   Padding(
                                     padding: EdgeInsets.all(5),
                                     child: TextButton(
-                                      onPressed: () =>
-                                          Get.to(() => ScreenProfile()),
+                                      onPressed: () => Get.to(() =>
+                                          ScreenProfile(
+                                              profile: controller
+                                                  .userProfile['user'])),
                                       child: Align(
                                         alignment: Alignment.centerLeft,
                                         child: Text(
                                           "Profil",
+                                          style: TextStyle(
+                                              letterSpacing: 0.5,
+                                              fontSize: 16,
+                                              fontFamily:
+                                                  DefaultTextStyle.of(context)
+                                                      .style
+                                                      .fontFamily,
+                                              color: Theme.of(context)
+                                                  .textTheme
+                                                  .labelMedium!
+                                                  .color),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  Divider(
+                                    height: 0,
+                                    thickness: 0.7,
+                                  ),
+                                  Padding(
+                                    padding: EdgeInsets.all(5),
+                                    child: TextButton(
+                                      onPressed: () => Get.to(() =>
+                                          ScreenEditProfile(
+                                              profile: controller
+                                                  .userProfile['user'])),
+                                      child: Align(
+                                        alignment: Alignment.centerLeft,
+                                        child: Text(
+                                          "Profil bearbeiten",
                                           style: TextStyle(
                                               letterSpacing: 0.5,
                                               fontSize: 16,
@@ -125,7 +160,10 @@ class _settingsStartState extends State<ScreenSettings>
                                           style: TextStyle(
                                               letterSpacing: 0.5,
                                               fontSize: 16,
-                                              fontFamily: 'Comic Sans',
+                                              fontFamily:
+                                                  DefaultTextStyle.of(context)
+                                                      .style
+                                                      .fontFamily,
                                               color: Theme.of(context)
                                                   .textTheme
                                                   .labelMedium!
@@ -146,16 +184,21 @@ class _settingsStartState extends State<ScreenSettings>
                                         Get.offAll(() => ScreenLogin())
                                       },
                                       child: Align(
-                                        alignment: Alignment.centerLeft,
-                                        child: Text("Abmelden",
+                                          alignment: Alignment.centerLeft,
+                                          child: Text(
+                                            "Abmelden",
                                             style: TextStyle(
                                                 letterSpacing: 0.5,
                                                 fontSize: 16,
+                                                fontFamily:
+                                                    DefaultTextStyle.of(context)
+                                                        .style
+                                                        .fontFamily,
                                                 color: Theme.of(context)
                                                     .textTheme
                                                     .labelMedium!
-                                                    .color)),
-                                      ),
+                                                    .color),
+                                          )),
                                     ),
                                   ),
                                 ],

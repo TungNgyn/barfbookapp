@@ -134,7 +134,9 @@ class _ScreenAddPetState extends State<ScreenAddPet> {
                                         controller: _weightController,
                                         decoration: InputDecoration(
                                             hintText: "Gewicht in Gramm",
-                                            border: OutlineInputBorder()),
+                                            border: OutlineInputBorder(),
+                                            suffix: Text(
+                                                "${(double.parse(_weightController.value.text) / 1000).toStringAsFixed(1)}kg")),
                                       ),
                                       DropdownButtonFormField(
                                           decoration: InputDecoration(

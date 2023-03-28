@@ -1,14 +1,13 @@
 import 'dart:async';
 
 import 'package:Barfbook/Screens/Barfbook/barfbook_controller.dart';
+import 'package:Barfbook/Screens/Mehr/profile_controller.dart';
 import 'package:Barfbook/Screens/calculator/pet_controller.dart';
 import 'package:Barfbook/controller.dart';
 import 'package:Barfbook/home.dart';
 import 'package:Barfbook/util/Supabase/AuthController.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
-Map userdata = {'name': 'name', 'email': 'email', 'description': 'description'};
 
 class ScreenLoading extends StatefulWidget {
   @override
@@ -32,15 +31,23 @@ initData() async {
   final Controller controller = Get.find();
   // init userdata
   try {
-    userdata = await supabase
+    final userdata = await supabase
         .from('profile')
-        .select("name, email, description")
+        .select("*")
         .match({'id': user?.id}).single();
+    controller.userProfile = {
+      'user': Profile(
+          id: user!.id,
+          createdAt: userdata['created_at'].substring(0, 10),
+          email: userdata['email'],
+          name: userdata['name'],
+          description: userdata['description'])
+    };
   } catch (error) {
     print("ERROR = $error");
   }
 
-  // init recipe
+  // init explore recipe and profile list
   try {
     controller.databaseRecipeList = await supabase.from('recipe').select(
         'id, created_at, modified_at, name, description, paws, user_id, category');
@@ -53,6 +60,18 @@ initData() async {
           .from('profile')
           .select('name')
           .eq('id', recipe['user_id']);
+
+      List userdata = await supabase
+          .from('profile')
+          .select("*")
+          .match({'id': recipe['user_id']});
+      controller.exploreProfileList.add(Profile(
+          id: (userdata[0] as Map)['id'],
+          createdAt: (userdata[0])['created_at'].substring(0, 10),
+          email: (userdata[0])['email'],
+          name: (userdata[0])['name'],
+          description: (userdata[0])['description']));
+
       controller.exploreRecipeList.add(Recipe(
           name: (recipe as Map)['name'],
           id: recipe['id'],

@@ -4,6 +4,8 @@ import 'package:Barfbook/util/Supabase/AuthController.dart';
 import 'package:get/get.dart';
 
 class Controller extends GetxController {
+  late Map<String, dynamic> userProfile;
+
   List userScheduleList = [].obs;
   List userRecipeListDB = [].obs;
   List userRecipeList = [].obs;
@@ -15,6 +17,7 @@ class Controller extends GetxController {
 
   List databaseRecipeList = [].obs;
   List exploreRecipeList = [].obs;
+  List exploreProfileList = [].obs;
 
   List userPetListDB = [].obs;
   List userPetList = [].obs;

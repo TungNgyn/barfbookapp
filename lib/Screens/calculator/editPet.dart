@@ -11,22 +11,32 @@ class ScreenEditPet extends StatefulWidget {
 }
 
 class _ScreenEditPetState extends State<ScreenEditPet> {
-  late RxDouble _rationController;
-  late TextEditingController _weightController;
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _breedController = TextEditingController();
+  final TextEditingController _ageController = TextEditingController();
+  late RxDouble _rationController = widget.pet.ration.obs;
+  late Rx<TextEditingController> _weightController =
+      TextEditingController(text: '${widget.pet.weight}').obs;
 
   String? _genderController;
-  @override
-  void initState() {
-    _rationController = widget.pet.ration.obs;
-    _weightController.value = TextEditingValue(text: '${widget.pet.weight}');
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text("${widget.pet.name}"),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 10),
+            child: IconButton(
+              icon: Icon(Icons.create),
+              onPressed: () async {
+                // await _updateRecipe();
+                // Get.back();
+              },
+            ),
+          )
+        ],
       ),
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: 32),
@@ -50,19 +60,63 @@ class _ScreenEditPetState extends State<ScreenEditPet> {
                 PetTextField(
                   label: 'Name',
                   text: widget.pet.name,
-                  controller: _weightController,
+                  controller: _nameController,
+                  onChanged: (name) {},
                 ),
                 SizedBox(height: 24),
                 PetTextField(
                   label: 'Alter (Jahre)',
                   text: '${widget.pet.age}',
-                  controller: _weightController,
+                  controller: _ageController,
+                  onChanged: (age) {},
                 ),
                 SizedBox(height: 24),
                 PetTextField(
-                    label: 'Gewicht (Gramm)',
-                    text: '${widget.pet.weight}',
-                    controller: _weightController),
+                    label: 'Rasse',
+                    text: widget.pet.breed,
+                    controller: _breedController,
+                    onChanged: (breed) {}),
+                SizedBox(height: 24),
+                Padding(
+                  padding: EdgeInsets.only(left: 20, bottom: 4),
+                  child: Text('Geschlecht',
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                ),
+                SizedBox(height: 8),
+                DropdownButtonFormField(
+                    value: widget.pet.gender,
+                    decoration: InputDecoration(
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12))),
+                    items: ['Rüde', 'Hündin', 'keine Angabe']
+                        .map((e) => DropdownMenuItem(value: e, child: Text(e)))
+                        .toList(),
+                    onChanged: (String? newValue) {
+                      setState(() {
+                        _genderController = newValue;
+                      });
+                    }),
+                SizedBox(height: 24),
+                Padding(
+                  padding: EdgeInsets.only(left: 20),
+                  child: Text('Gewicht (Gramm)',
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                ),
+                SizedBox(height: 8),
+                Obx(() => TextField(
+                      onChanged: (value) {
+                        setState(() {});
+                      },
+                      keyboardType: TextInputType.number,
+                      controller: _weightController.value,
+                      decoration: InputDecoration(
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12)),
+                          suffix: Text(
+                              "${(double.parse(_weightController.value.text) / 1000).toStringAsFixed(1)}kg")),
+                    )),
                 SizedBox(height: 24),
                 Padding(
                   padding: EdgeInsets.only(left: 20),
@@ -90,45 +144,12 @@ class _ScreenEditPetState extends State<ScreenEditPet> {
                             fontSize: 21, fontWeight: FontWeight.bold),
                       ),
                       Text(
-                          "Entspricht ${double.parse(_weightController.text) * double.parse(_rationController.toStringAsFixed(1)) ~/ 100} Gramm")
+                          "Entspricht ${double.parse(_weightController.value.text) * double.parse(_rationController.toStringAsFixed(1)) ~/ 100} Gramm")
                     ]);
                   }),
                 ),
               ],
             ),
-            SizedBox(height: 24),
-            Padding(
-              padding: EdgeInsets.only(left: 20, bottom: 4),
-              child: Text('Geschlecht',
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-            ),
-            DropdownButtonFormField(
-                value: widget.pet.gender,
-                decoration: InputDecoration(
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12))),
-                items: ['Rüde', 'Hündin', 'keine Angabe']
-                    .map((e) => DropdownMenuItem(value: e, child: Text(e)))
-                    .toList(),
-                onChanged: (String? newValue) {
-                  setState(() {
-                    _genderController = newValue;
-                  });
-                }),
-            SizedBox(height: 48),
-            Container(
-              padding: EdgeInsets.symmetric(horizontal: 48),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('Beschreibung',
-                      style:
-                          TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-                  SizedBox(height: 16),
-                  Text('${widget.pet.breed}')
-                ],
-              ),
-            )
           ],
         ),
       ),

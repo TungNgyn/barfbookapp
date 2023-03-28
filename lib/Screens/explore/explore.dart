@@ -1,4 +1,5 @@
 import 'package:Barfbook/Screens/Barfbook/barfbook_controller.dart';
+import 'package:Barfbook/Screens/Mehr/profile.dart';
 import 'package:Barfbook/Screens/explore/recipeDetailPage.dart';
 import 'package:Barfbook/controller.dart';
 import 'package:Barfbook/loading.dart';
@@ -33,7 +34,7 @@ class _ScreenExploreState extends State<ScreenExplore>
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          "Hallo ${userdata['name']}",
+                          "Hallo ${controller.userProfile['user'].name}",
                           style: TextStyle(fontSize: 31),
                         ),
                         Text(
@@ -121,12 +122,17 @@ class _ScreenExploreState extends State<ScreenExplore>
                                             ],
                                           ),
                                           TextButton.icon(
-                                              onPressed: () {},
+                                              onPressed: () {
+                                                Get.to(() => ScreenProfile(
+                                                    profile: controller
+                                                            .exploreProfileList[
+                                                        index]));
+                                              },
                                               icon: Image.asset(
                                                 'assets/images/defaultAvatar.png',
                                                 height: 24,
                                               ),
-                                              label: Text(recipe.user))
+                                              label: Text(recipe.user)),
                                         ],
                                       ),
                                     ),
@@ -171,39 +177,6 @@ class _ScreenExploreState extends State<ScreenExplore>
 
   Future<void> _pullRefresh() async {
     setState(() {});
-  }
-
-  PreferredSize _appBar() {
-    return PreferredSize(
-      preferredSize: Size.fromHeight(110),
-      child: SafeArea(
-        child: Padding(
-          padding: EdgeInsets.only(top: 40, left: 15, right: 15),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    "Hallo ${userdata['name']}",
-                    style: TextStyle(fontSize: 31),
-                  ),
-                  Text(
-                    "Entdecke neues",
-                    style: TextStyle(fontSize: 16),
-                  ),
-                ],
-              ),
-              IconButton(
-                onPressed: () {},
-                icon: Icon(Icons.menu),
-              )
-            ],
-          ),
-        ),
-      ),
-    );
   }
 
   Padding _searchBar() {
