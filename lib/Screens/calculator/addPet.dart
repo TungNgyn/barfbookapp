@@ -13,7 +13,8 @@ class _ScreenAddPetState extends State<ScreenAddPet> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _breedController = TextEditingController();
   final TextEditingController _ageController = TextEditingController();
-  final TextEditingController _weightController = TextEditingController();
+  final TextEditingController _weightController =
+      TextEditingController(text: '0');
   bool filledInput = false;
   String? _genderController;
   RxDouble _rationController = 3.0.obs;

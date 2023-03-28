@@ -65,50 +65,12 @@ class ScreenPetDetailPage extends StatelessWidget {
                       child: Column(
                     children: [
                       SizedBox(height: 30),
-                      Card(
-                        child: Container(
-                          width: 400,
-                          height: 250,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Container(
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.only(
-                                        topLeft: Radius.circular(12),
-                                        topRight: Radius.circular(12))),
-                                child: Padding(
-                                  padding:
-                                      const EdgeInsets.only(left: 20, top: 10),
-                                  child: Text(
-                                    "Täglicher Bedarf",
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 28),
-                                  ),
-                                ),
-                              ),
-                              Divider(),
-                              Padding(
-                                padding: const EdgeInsets.only(left: 10),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      'Fleisch',
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 21),
-                                    ),
-                                    Text('Muskelfleisch'),
-                                    Text('Pansen/Magen'),
-                                    Text('Muskelfleisch'),
-                                  ],
-                                ),
-                              )
-                            ],
-                          ),
-                        ),
+                      FeedingCard(
+                        pet: pet,
+                        days: 1,
+                        meat: 80,
+                        organs: 10,
+                        vegetables: 10,
                       ),
                     ],
                   )),
@@ -117,5 +79,173 @@ class ScreenPetDetailPage extends StatelessWidget {
             ]),
           )
         ]));
+  }
+}
+
+class FeedingCard extends StatelessWidget {
+  const FeedingCard(
+      {super.key,
+      required this.pet,
+      required this.days,
+      required this.meat,
+      required this.organs,
+      required this.vegetables});
+
+  final Pet pet;
+  final int days;
+  final int meat;
+  final int organs;
+  final int vegetables;
+
+  @override
+  Widget build(BuildContext context) {
+    final double ration = pet.weight * pet.ration / 100;
+    return Card(
+      elevation: 10,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 20),
+        child: Container(
+          width: 400,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(12),
+                        topRight: Radius.circular(12))),
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 20, right: 10),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        "Täglicher Bedarf",
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 26),
+                      ),
+                      Text(
+                        '${ration * days}g',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 26),
+                      )
+                    ],
+                  ),
+                ),
+              ),
+              Divider(),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'Fleisch ($meat%)',
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 21),
+                        ),
+                        Text(
+                            '${(ration * meat / 100 * days).toStringAsFixed(2)}g',
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 21))
+                      ],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text('Muskelfleisch (50%)'),
+                        Text(
+                            '${(ration * (meat / 100) * (50 / meat) * days).toStringAsFixed(1)}g')
+                      ],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text('Pansen/Magen (20%)'),
+                        Text(
+                            '${(ration * (meat / 100) * (20 / meat) * days).toStringAsFixed(1)}g')
+                      ],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text('fleischige Knochen (10%)'),
+                        Text(
+                            '${(ration * (meat / 100) * (10 / meat) * days).toStringAsFixed(1)}g')
+                      ],
+                    ),
+                    SizedBox(height: 16),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'Innereien ($organs%)',
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 21),
+                        ),
+                        Text(
+                            '${(pet.weight * pet.ration / 100 * organs / 100 * days).toStringAsFixed(2)}g',
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 21))
+                      ],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text('Leber (5%)'),
+                        Text(
+                            '${(pet.weight * pet.ration / 100 * organs / 100 * 5 / organs * days).toStringAsFixed(1)}g')
+                      ],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text('andere Organe (5%)'),
+                        Text(
+                            '${(pet.weight * pet.ration / 100 * organs / 100 * 5 / organs * days).toStringAsFixed(1)}g')
+                      ],
+                    ),
+                    SizedBox(height: 16),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'Vegetarisch ($vegetables%)',
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 21),
+                        ),
+                        Text(
+                            '${(pet.weight * pet.ration / 100 * vegetables / 100 * days).toStringAsFixed(2)}g',
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 21))
+                      ],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text('Gemüse (8%)'),
+                        Text(
+                            '${(pet.weight * pet.ration / 100 * vegetables / 100 * 8 / vegetables * days).toStringAsFixed(1)}g')
+                      ],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text('Obst (2%)'),
+                        Text(
+                            '${(pet.weight * pet.ration / 100 * vegetables / 100 * 2 / vegetables * days).toStringAsFixed(1)}g')
+                      ],
+                    ),
+                  ],
+                ),
+              )
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }
