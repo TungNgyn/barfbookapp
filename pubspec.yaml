@@ -36,4 +36,3 @@ flutter:
     - assets/images/
     - assets/fonts/lexend/
     
-google_sign_in_web: ^0.9.1
