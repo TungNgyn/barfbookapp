@@ -24,8 +24,6 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    supabase.auth.signOut();
-
     final Controller controller = Get.put(Controller());
     return GetMaterialApp(
       themeMode: ThemeMode.system,

@@ -48,30 +48,30 @@ class _LoginState extends State<ScreenLogin> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  ElevatedButton(
-                      onPressed: () async {
-                        try {
-                          final AuthResponse response = await supabase.auth
-                              .signInWithPassword(
-                                  email: "t@n.de", password: "xadw2468");
+                  // ElevatedButton(
+                  //     onPressed: () async {
+                  //       try {
+                  //         final AuthResponse response = await supabase.auth
+                  //             .signInWithPassword(
+                  //                 email: "t@n.de", password: "xadw2468");
 
-                          session = response.session;
-                          user = response.user;
-                        } catch (error) {
-                          Get.snackbar("Fehler", "Ein Fehler ist aufgetreten");
-                        }
-                      },
-                      child: Text("Tung")), // REMOVE THIS
-                  ElevatedButton(
-                      onPressed: () async {
-                        final AuthResponse response = await supabase.auth
-                            .signInWithPassword(
-                                email: "s@e.de", password: "xadw2468");
+                  //         session = response.session;
+                  //         user = response.user;
+                  //       } catch (error) {
+                  //         Get.snackbar("Fehler", "Ein Fehler ist aufgetreten");
+                  //       }
+                  //     },
+                  //     child: Text("Tung")), // REMOVE THIS
+                  // ElevatedButton(
+                  //     onPressed: () async {
+                  //       final AuthResponse response = await supabase.auth
+                  //           .signInWithPassword(
+                  //               email: "s@e.de", password: "xadw2468");
 
-                        session = response.session;
-                        user = response.user;
-                      },
-                      child: Text("Stein")), // REMOVE THIS
+                  //       session = response.session;
+                  //       user = response.user;
+                  //     },
+                  //     child: Text("Stein")), // REMOVE THIS
                   Center(
                       child: FlutterLogo(
                     size: _media.height * 0.1,
