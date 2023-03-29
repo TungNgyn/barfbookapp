@@ -24,8 +24,7 @@ class Recipe {
       required this.created_at,
       required this.modified_at,
       required this.user_id,
-      required this.user,
-      this.category = ""});
+      required this.user});
 
   final int id;
   final String name;
@@ -35,7 +34,6 @@ class Recipe {
   final String modified_at;
   final String user_id;
   final String user;
-  final String category;
 }
 
 var enumIcon = {

@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:Barfbook/Screens/explore/recipeDetailPage.dart';
 import 'package:Barfbook/controller.dart';
 import 'package:Barfbook/home.dart';
 import 'package:Barfbook/Screens/Barfbook/createSchedule.dart';
@@ -184,9 +185,8 @@ class _ScreenBarfbookState extends State<ScreenBarfbook> {
                                     child: ElevatedButton.icon(
                                         style: ButtonStyle(),
                                         onPressed: () {
-                                          Get.to(() => ScreenEditRecipe(
-                                                recipeId: recipe.id,
-                                              ));
+                                          Get.to(() =>
+                                              RecipeDetailPage(recipe: recipe));
                                         },
                                         icon: Image.asset(
                                             "assets/images/recipe/icons/beef.png"),

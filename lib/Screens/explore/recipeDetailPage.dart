@@ -4,6 +4,7 @@ import 'package:Barfbook/loading.dart';
 import 'package:Barfbook/util/Supabase/AuthController.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class RecipeDetailPage extends StatefulWidget {
   final Recipe recipe;
@@ -36,129 +37,133 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.recipe.name),
-        actions: [
-          ElevatedButton(
-              onPressed: () async {
-                await initData();
-                print(controller.userLikedRecipe);
-                print(controller.userLikedRecipeDB);
-                print(controller.userLikedRecipeXrefDB);
-              },
-              child: Text("aaa")),
-          IconButton(
-              onPressed: () {
-                setState(() {
-                  toggleFavorite();
-                });
-              },
-              icon: (favorite == true
-                  ? Icon(Icons.favorite)
-                  : Icon(Icons.favorite_border))),
-          IconButton(
-              onPressed: () {
-                Get.defaultDialog(
-                    title: "Details",
-                    textConfirm: "Profil ansehen",
-                    middleText:
-                        "Erstellt am ${widget.recipe.created_at} \nZuletzt bearbeitet am ${widget.recipe.modified_at}\nvon ${widget.recipe.user}");
-              },
-              icon: Icon(Icons.info)),
-          IconButton(
-              onPressed: () {
-                Get.bottomSheet(
-                    isScrollControlled: true,
-                    Container(
-                        decoration: BoxDecoration(
-                            color: Theme.of(context).colorScheme.onPrimary,
-                            borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(25),
-                                topRight: Radius.circular(25))),
-                        height: MediaQuery.of(context).size.height * 0.8,
-                        child: SingleChildScrollView(
-                          child: Padding(
-                            padding: EdgeInsets.all(25),
-                            child: Column(
-                              children: [
-                                Text(
-                                  "Kommentare",
-                                  style: TextStyle(fontSize: 31),
-                                ),
-                                SizedBox(height: 35),
-                                TextField(
-                                  maxLines: 8,
-                                  decoration: InputDecoration(
-                                    border: OutlineInputBorder(
-                                        borderSide: BorderSide(
-                                            width: 1,
-                                            color: Theme.of(context)
-                                                .colorScheme
-                                                .primary)),
-                                    hintText: "Schreib was dir gefällt!",
+    return FutureBuilder(
+      future: loadData(),
+      builder: (context, snapshot) => Scaffold(
+        appBar: AppBar(
+          title: Text(widget.recipe.name),
+          actions: [
+            ElevatedButton(
+                onPressed: () async {
+                  await initData();
+                  print(controller.userLikedRecipe);
+                  print(controller.userLikedRecipeDB);
+                  print(controller.userLikedRecipeXrefDB);
+                },
+                child: Text("aaa")),
+            IconButton(
+                onPressed: () {
+                  setState(() {
+                    toggleFavorite();
+                  });
+                },
+                icon: (favorite == true
+                    ? Icon(Icons.favorite)
+                    : Icon(Icons.favorite_border))),
+            IconButton(
+                onPressed: () {
+                  Get.defaultDialog(
+                      title: "Details",
+                      textConfirm: "Profil ansehen",
+                      middleText:
+                          "Erstellt am ${widget.recipe.created_at} \nZuletzt bearbeitet am ${widget.recipe.modified_at}\nvon ${widget.recipe.user}");
+                },
+                icon: Icon(Icons.info)),
+            IconButton(
+                onPressed: () {
+                  Get.bottomSheet(
+                      isScrollControlled: true,
+                      Container(
+                          decoration: BoxDecoration(
+                              color: Theme.of(context).colorScheme.onPrimary,
+                              borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(25),
+                                  topRight: Radius.circular(25))),
+                          height: MediaQuery.of(context).size.height * 0.8,
+                          child: SingleChildScrollView(
+                            child: Padding(
+                              padding: EdgeInsets.all(25),
+                              child: Column(
+                                children: [
+                                  Text(
+                                    "Kommentare",
+                                    style: TextStyle(fontSize: 31),
                                   ),
-                                ),
-                                SizedBox(height: 5),
-                                ElevatedButton(
-                                    onPressed: () {},
-                                    child: Text("Kommentieren")),
-                                SizedBox(height: 20),
-                                Obx(() => ListView(
-                                      children: [Text("data")],
-                                    ))
-                              ],
+                                  SizedBox(height: 35),
+                                  TextField(
+                                    maxLines: 8,
+                                    decoration: InputDecoration(
+                                      border: OutlineInputBorder(
+                                          borderSide: BorderSide(
+                                              width: 1,
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .primary)),
+                                      hintText: "Schreib was dir gefällt!",
+                                    ),
+                                  ),
+                                  SizedBox(height: 5),
+                                  ElevatedButton(
+                                      onPressed: () {},
+                                      child: Text("Kommentieren")),
+                                  SizedBox(height: 20),
+                                  Obx(() => ListView(
+                                        children: [Text("data")],
+                                      ))
+                                ],
+                              ),
                             ),
-                          ),
-                        )));
-              },
-              icon: Icon(Icons.comment)),
-          SizedBox(width: 30)
-        ],
-      ),
-      body: SingleChildScrollView(
-        padding: EdgeInsets.all(15),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              padding: EdgeInsets.only(left: 15, right: 15, bottom: 10),
-              height: MediaQuery.of(context).size.height * 0.5,
-              child: Stack(
-                alignment: Alignment.bottomCenter,
-                children: [
-                  PageView.builder(
-                      controller: pageController,
-                      itemCount: 5,
-                      onPageChanged: (int index) {
-                        setState(() {
-                          _pageViewController(index);
-                        });
-                      },
-                      itemBuilder: (_, index) {
-                        return ClipRRect(
-                            borderRadius: BorderRadius.circular(20),
-                            child: Card(child: FlutterLogo()));
-                      }),
-                  Positioned(
-                    bottom: 20,
-                    child: Row(
-                      children: _buildPageIndicator(),
-                    ),
-                  )
-                ],
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(top: 20, bottom: 10),
-              child: const Text("Beschreibung", style: TextStyle(fontSize: 24)),
-            ),
-            Text(
-              widget.recipe.description,
-              maxLines: 5,
-              overflow: TextOverflow.ellipsis,
-            )
+                          )));
+                },
+                icon: Icon(Icons.comment)),
+            SizedBox(width: 30)
           ],
+        ),
+        body: SingleChildScrollView(
+          padding: EdgeInsets.all(15),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                padding: EdgeInsets.only(left: 15, right: 15, bottom: 10),
+                height: MediaQuery.of(context).size.height * 0.5,
+                child: Stack(
+                  alignment: Alignment.bottomCenter,
+                  children: [
+                    PageView.builder(
+                        controller: pageController,
+                        itemCount: 5,
+                        onPageChanged: (int index) {
+                          setState(() {
+                            _pageViewController(index);
+                          });
+                        },
+                        itemBuilder: (_, index) {
+                          return ClipRRect(
+                              borderRadius: BorderRadius.circular(20),
+                              child: Card(child: FlutterLogo()));
+                        }),
+                    Positioned(
+                      bottom: 20,
+                      child: Row(
+                        children: _buildPageIndicator(),
+                      ),
+                    )
+                  ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 20, bottom: 10),
+                child:
+                    const Text("Beschreibung", style: TextStyle(fontSize: 24)),
+              ),
+              Text(
+                widget.recipe.description,
+                maxLines: 5,
+                overflow: TextOverflow.ellipsis,
+              )
+            ],
+          ),
         ),
       ),
     );
@@ -228,43 +233,25 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
 
   void toggleFavorite() async {
     if (favorite == false) {
-      favorite = true;
-
       await supabase
           .from('profile_liked_recipe')
-          .insert({'recipe': widget.recipe.id, 'profile': user!.id});
-      initData();
+          .insert({'recipe': widget.recipe.id, 'profile': user?.id});
+      loadData();
     } else {
-      favorite = false;
       await supabase
           .from('profile_liked_recipe')
           .delete()
           .match({'recipe': widget.recipe.id, 'profile': user?.id});
-      initData();
+      loadData();
     }
+  }
 
-    // if (!controller.userLikedRecipe.contains(widget.recipe.id)) {
-    // await supabase
-    //     .from('profile_liked_recipe')
-    //     .insert({'recipe': widget.recipe.id, 'profile': user!.id});
-    //   controller.userLikedRecipe.clear();
-    //   controller.userLikedRecipe = await supabase
-    //       .from('profile_liked_recipe')
-    //       .select('recipe')
-    //       .eq('profile', user!.id);
-    //   for (var recipe in controller.userLikedRecipeDB) {
-    //     controller.userLikedRecipe.add(Recipe(
-    //         name: (recipe as Map)['name'],
-    //         id: recipe['id'],
-    //         created_at: recipe['created_at'],
-    //         paws: recipe['paws'],
-    //         description: recipe['description'],
-    //         modified_at: recipe['modified_at'],
-    //         user_id: user!.id,
-    //         user: ""));
-    //   }
-    // } else {
+  loadData() async {
+    final liked = await supabase
+        .from('profile_liked_recipe')
+        .select('*', FetchOptions(count: CountOption.exact))
+        .match({'profile': user?.id, 'recipe': widget.recipe.id});
 
-    // }
+    liked.count == 1 ? favorite = true : favorite = false;
   }
 }
