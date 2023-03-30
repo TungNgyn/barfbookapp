@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import 'package:charts_flutter_new/flutter.dart' as charts;
 import 'package:flutter/material.dart';
 
 class Ingredient {
@@ -62,19 +61,3 @@ var enumIcon = {
   8: Image.asset("assets/images/recipe/icons/beef.png"), // to be change
   9: Image.asset("assets/images/recipe/icons/vegan.png")
 };
-
-class IngredientChart extends StatelessWidget {
-  final List<charts.Series> seriesList;
-  final bool animate;
-
-  IngredientChart(this.seriesList, {required this.animate});
-
-  @override
-  Widget build(BuildContext context) {
-    return charts.PieChart(seriesList,
-        animate: animate,
-        // Configure the width of the pie slices to 60px. The remaining space in
-        // the chart will be left as a hole in the center.
-        defaultRenderer: charts.ArcRendererConfig(arcWidth: 60));
-  }
-}

@@ -4,6 +4,7 @@ import 'package:Barfbook/Screens/Barfbook/Barfbook.dart';
 import 'package:Barfbook/Screens/Barfbook/barfbook_controller.dart';
 import 'package:Barfbook/controller.dart';
 import 'package:Barfbook/util/Supabase/AuthController.dart';
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
@@ -206,11 +207,15 @@ class _editRecipeState extends State<ScreenEditRecipe> {
                               runSpacing: 5,
                               children: list);
                         }),
-                        SizedBox(
-                            height: MediaQuery.of(context).size.height * 0.4,
-                            width: MediaQuery.of(context).size.width,
-                            child:
-                                Center(child: Card(child: IngredientChart()))),
+                        Padding(
+                          padding: EdgeInsets.symmetric(vertical: 20),
+                          child: SizedBox(
+                              height: MediaQuery.of(context).size.height * 0.4,
+                              child: Center(
+                                  child: Card(
+                                      child: PieChart(PieChartData(
+                                          sections: showSection()))))),
+                        ),
                         TextField(
                             controller: _recipeDescriptionController,
                             maxLines: 20,
@@ -221,5 +226,23 @@ class _editRecipeState extends State<ScreenEditRecipe> {
                   ))
               : Scaffold(body: Center(child: CircularProgressIndicator()));
         });
+  }
+
+  showSection() {
+    return List.generate(3, (index) {
+      switch (index) {
+        case 0:
+          return PieChartSectionData(
+              color: Colors.red, value: 80, title: '80%');
+        case 1:
+          return PieChartSectionData(
+              color: Colors.amber, value: 10, title: '10%');
+        case 2:
+          return PieChartSectionData(
+              color: Colors.green, value: 10, title: '10%');
+        default:
+          throw Error();
+      }
+    });
   }
 }
