@@ -143,8 +143,16 @@ class _newRecipeState extends State<ScreenCreateRecipe> {
                                         id: suggestion['id'],
                                         type: suggestion['type'],
                                         category: suggestion['category'],
+                                        calories: suggestion['calories'],
+                                        protein: suggestion['protein'],
+                                        fat: suggestion['fat'],
+                                        carbohydrates:
+                                            suggestion['carbohydrates'],
+                                        minerals: suggestion['minerals'],
+                                        moisture: suggestion['moisture'],
                                         gram: int.parse(
-                                            _recipeGramController.text)));
+                                          _recipeGramController.text,
+                                        )));
                                     _ingredientController.clear();
                                     _recipeGramController.clear();
                                     Get.back();

@@ -25,7 +25,6 @@ class ScreenProfile extends StatelessWidget {
             ? Scaffold(
                 extendBodyBehindAppBar: true,
                 appBar: AppBar(
-                  title: Text("Profil"),
                   backgroundColor: Colors.transparent,
                 ),
                 body: Stack(children: [
@@ -44,13 +43,19 @@ class ScreenProfile extends StatelessWidget {
                       SafeArea(
                         child: Column(
                           children: [
-                            SizedBox(
-                                height:
-                                    MediaQuery.of(context).size.height * 0.05),
                             CircleAvatar(
-                              backgroundImage:
-                                  AssetImage("assets/images/defaultAvatar.png"),
-                              radius: 65,
+                              radius: 67,
+                              child: CircleAvatar(
+                                  backgroundColor:
+                                      Theme.of(context).colorScheme.surface,
+                                  radius: 64,
+                                  child: Image.asset(
+                                      'assets/images/defaultAvatar.png')
+
+                                  // FlutterLogo(
+                                  //   size: 64,
+                                  // ),
+                                  ),
                             ),
                             Padding(
                               padding: EdgeInsets.only(top: 24),
@@ -60,92 +65,35 @@ class ScreenProfile extends StatelessWidget {
                                     fontWeight: FontWeight.w600, fontSize: 21),
                               ),
                             ),
-                            Padding(
-                              padding: EdgeInsets.only(top: 8),
-                              child: Text("${profile.email}"),
-                            ),
-                            Padding(
-                              padding: EdgeInsets.only(top: 20),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceEvenly,
-                                children: [
-                                  SizedBox(
-                                    width: MediaQuery.of(context).size.width *
-                                        0.33,
-                                    child: Column(
-                                      children: [
-                                        Text(
-                                          '${recipeList.length}',
-                                          style: TextStyle(
-                                              fontSize: 18,
-                                              fontWeight: FontWeight.bold),
-                                        ),
-                                        Text("Rezepte")
-                                      ],
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    width: MediaQuery.of(context).size.width *
-                                        0.33,
-                                    child: Column(
-                                      children: [
-                                        Text(
-                                          "0",
-                                          style: TextStyle(
-                                              fontSize: 18,
-                                              fontWeight: FontWeight.bold),
-                                        ),
-                                        Text(
-                                          "Pfoten",
-                                        )
-                                      ],
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    width: MediaQuery.of(context).size.width *
-                                        0.33,
-                                    child: Column(
-                                      children: [
-                                        Text(
-                                          "0",
-                                          style: TextStyle(
-                                              fontSize: 18,
-                                              fontWeight: FontWeight.bold),
-                                        ),
-                                        Text(
-                                          "Kommentare",
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
                           ],
                         ),
                       ),
-                      SizedBox(height: 30),
                       Expanded(
-                        flex: 5,
-                        child: Container(
-                          color: Theme.of(context).colorScheme.onSecondary,
-                          child: Center(
+                        child: Center(
+                          child: Container(
+                            width: MediaQuery.of(context).size.width,
+                            color: Theme.of(context).colorScheme.surface,
+                            child: Padding(
+                              padding:
+                                  EdgeInsets.only(top: 30, left: 24, right: 24),
                               child: Column(
-                            children: [
-                              SizedBox(height: 30),
-                              Text(
-                                "Über mich",
-                                style: TextStyle(
-                                    fontWeight: FontWeight.w600, fontSize: 21),
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    "Über mich",
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 21),
+                                  ),
+                                  SizedBox(height: 20),
+                                  Text(
+                                    profile.description,
+                                    style: TextStyle(fontSize: 18),
+                                  )
+                                ],
                               ),
-                              SizedBox(height: 20),
-                              Text(
-                                profile.description,
-                                style: TextStyle(fontSize: 18),
-                              )
-                            ],
-                          )),
+                            ),
+                          ),
                         ),
                       ),
                     ],

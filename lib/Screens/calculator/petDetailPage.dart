@@ -245,12 +245,12 @@ class FeedingCard extends StatelessWidget {
                 ),
               ),
             ),
-            Divider(),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  Divider(),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -351,6 +351,14 @@ class FeedingCard extends StatelessWidget {
                           '${(pet.weight * pet.ration / 100 * vegetables / 100 * 2 / vegetables * days).toStringAsFixed(1)}g')
                     ],
                   ),
+                  // Divider(),
+                  // Container(
+                  //   height: 20,
+                  //   child: TextButton(
+                  //     child: Text("Details"),
+                  //     onPressed: () {},
+                  //   ),
+                  // )
                 ],
               ),
             )

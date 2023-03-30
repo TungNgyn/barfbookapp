@@ -22,7 +22,7 @@ class _ScreenEditProfileState extends State<ScreenEditProfile> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("${widget.profile.name}"),
+        title: Text("Profil bearbeiten"),
         actions: [
           Padding(
             padding: const EdgeInsets.only(right: 10),
@@ -42,7 +42,7 @@ class _ScreenEditProfileState extends State<ScreenEditProfile> {
           physics: BouncingScrollPhysics(),
           children: [
             CircleAvatar(
-              radius: 66,
+              radius: 67,
               child: CircleAvatar(
                 backgroundColor: Theme.of(context).colorScheme.surface,
                 radius: 64,
@@ -55,22 +55,22 @@ class _ScreenEditProfileState extends State<ScreenEditProfile> {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                PetTextField(
+                CustomTextField(
                   label: 'Name',
                   text: widget.profile.name,
                   controller: _nameController,
                   onChanged: (name) {},
                 ),
                 SizedBox(height: 24),
-                PetTextField(
+                CustomTextField(
                   label: 'E-Mail',
                   text: widget.profile.email,
                   controller: _nameController,
                   onChanged: (age) {},
                 ),
                 SizedBox(height: 24),
-                PetTextField(
-                    label: 'Beschreibung',
+                CustomTextField(
+                    label: 'Erzähl etwas über dich!',
                     text: widget.profile.description,
                     controller: _nameController,
                     maxLines: 12,

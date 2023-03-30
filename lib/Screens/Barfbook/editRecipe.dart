@@ -171,39 +171,46 @@ class _editRecipeState extends State<ScreenEditRecipe> {
                                 ),
                               );
                             }),
-                        ExpansionTile(
-                          initiallyExpanded: true,
-                          title: Text("Zutaten"),
+                        SizedBox(height: 15),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            ElevatedButton(
+                            Text("Zutaten"),
+                            TextButton(
                                 onPressed: () {
                                   recipeIngredient.clear();
                                 },
-                                child: Text("Entfernen")),
-                            Obx(() {
-                              List<Widget> list = [];
-                              for (var ingredient in recipeIngredient) {
-                                list.add(SizedBox(
-                                  height: 40,
-                                  child: ElevatedButton.icon(
-                                      style: ButtonStyle(),
-                                      onPressed: () {
-                                        recipeIngredient.remove(ingredient);
-                                      },
-                                      icon: Image.asset(
-                                          "assets/images/recipe/icons/beef.png"),
-                                      label: Text(ingredient.name)),
-                                ));
-                              }
-                              return Wrap(
-                                  alignment: WrapAlignment.spaceEvenly,
-                                  direction: Axis.horizontal,
-                                  spacing: 5,
-                                  runSpacing: 5,
-                                  children: list);
-                            }),
+                                child: Text("Alles entfernen")),
                           ],
                         ),
+                        SizedBox(height: 15),
+                        Obx(() {
+                          List<Widget> list = [];
+                          for (var ingredient in recipeIngredient) {
+                            list.add(SizedBox(
+                              height: 40,
+                              child: ElevatedButton.icon(
+                                  style: ButtonStyle(),
+                                  onPressed: () {
+                                    recipeIngredient.remove(ingredient);
+                                  },
+                                  icon: Image.asset(
+                                      "assets/images/recipe/icons/beef.png"),
+                                  label: Text(ingredient.name)),
+                            ));
+                          }
+                          return Wrap(
+                              alignment: WrapAlignment.spaceEvenly,
+                              direction: Axis.horizontal,
+                              spacing: 5,
+                              runSpacing: 5,
+                              children: list);
+                        }),
+                        SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.4,
+                            width: MediaQuery.of(context).size.width,
+                            child:
+                                Center(child: Card(child: IngredientChart()))),
                         TextField(
                             controller: _recipeDescriptionController,
                             maxLines: 20,

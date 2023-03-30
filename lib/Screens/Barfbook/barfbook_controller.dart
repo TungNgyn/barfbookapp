@@ -1,17 +1,32 @@
 import 'package:flutter/material.dart';
 
+import 'package:charts_flutter_new/flutter.dart' as charts;
+import 'package:flutter/material.dart';
+
 class Ingredient {
   const Ingredient(
       {required this.id,
       required this.name,
       required this.type,
       required this.category,
+      this.calories = 0,
+      this.protein = 0,
+      this.fat = 0,
+      this.carbohydrates = 0,
+      this.minerals = 0,
+      this.moisture = 0,
       this.gram = 0});
 
   final int id;
   final String name;
   final String type;
   final String category;
+  final int calories;
+  final double protein;
+  final double fat;
+  final int carbohydrates;
+  final double minerals;
+  final double moisture;
   final int gram;
 }
 
@@ -47,3 +62,19 @@ var enumIcon = {
   8: Image.asset("assets/images/recipe/icons/beef.png"), // to be change
   9: Image.asset("assets/images/recipe/icons/vegan.png")
 };
+
+class IngredientChart extends StatelessWidget {
+  final List<charts.Series> seriesList;
+  final bool animate;
+
+  IngredientChart(this.seriesList, {required this.animate});
+
+  @override
+  Widget build(BuildContext context) {
+    return charts.PieChart(seriesList,
+        animate: animate,
+        // Configure the width of the pie slices to 60px. The remaining space in
+        // the chart will be left as a hole in the center.
+        defaultRenderer: charts.ArcRendererConfig(arcWidth: 60));
+  }
+}

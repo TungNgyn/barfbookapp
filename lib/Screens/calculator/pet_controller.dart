@@ -21,14 +21,14 @@ class Pet {
   final double ration;
 }
 
-class PetTextField extends StatefulWidget {
+class CustomTextField extends StatefulWidget {
   final int maxLines;
   final String label;
   final String text;
   final TextEditingController controller;
   final ValueChanged<String> onChanged;
 
-  const PetTextField(
+  const CustomTextField(
       {super.key,
       this.maxLines = 1,
       required this.label,
@@ -37,10 +37,10 @@ class PetTextField extends StatefulWidget {
       required this.onChanged});
 
   @override
-  State<StatefulWidget> createState() => _PetTextFieldState();
+  State<StatefulWidget> createState() => _CustomTextFieldState();
 }
 
-class _PetTextFieldState extends State<PetTextField> {
+class _CustomTextFieldState extends State<CustomTextField> {
   late final TextEditingController controller;
 
   @override

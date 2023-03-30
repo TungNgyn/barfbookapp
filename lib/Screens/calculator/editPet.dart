@@ -57,21 +57,21 @@ class _ScreenEditPetState extends State<ScreenEditPet> {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                PetTextField(
+                CustomTextField(
                   label: 'Name',
                   text: widget.pet.name,
                   controller: _nameController,
                   onChanged: (name) {},
                 ),
                 SizedBox(height: 24),
-                PetTextField(
+                CustomTextField(
                   label: 'Alter (Jahre)',
                   text: '${widget.pet.age}',
                   controller: _ageController,
                   onChanged: (age) {},
                 ),
                 SizedBox(height: 24),
-                PetTextField(
+                CustomTextField(
                     label: 'Rasse',
                     text: widget.pet.breed,
                     controller: _breedController,
