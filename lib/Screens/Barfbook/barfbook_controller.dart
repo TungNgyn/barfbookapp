@@ -8,12 +8,12 @@ class Ingredient {
       required this.name,
       required this.type,
       required this.category,
-      this.calories = 0,
-      this.protein = 0,
-      this.fat = 0,
-      this.carbohydrates = 0,
-      this.minerals = 0,
-      this.moisture = 0,
+      required this.calories,
+      required this.protein,
+      required this.fat,
+      required this.carbohydrates,
+      required this.minerals,
+      required this.moisture,
       this.gram = 0});
 
   final int id;

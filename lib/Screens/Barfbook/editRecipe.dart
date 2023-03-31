@@ -23,6 +23,10 @@ class _editRecipeState extends State<ScreenEditRecipe> {
   final TextEditingController _recipeDescriptionController =
       TextEditingController();
   late final recipeData;
+
+  double meatSum = 0;
+  double vegSum = 0;
+  double weightSum = 0;
   List ingredientList = [];
   List recipeIngredient = [].obs;
   late Recipe recipe;
@@ -76,10 +80,17 @@ class _editRecipeState extends State<ScreenEditRecipe> {
           .eq('id', ingredient['ingredient'])
           .single();
       recipeIngredient.add(Ingredient(
-          id: ingredient['ingredient'],
-          name: (ingredientData as Map)['name'],
-          type: ingredientData['type'],
-          category: ingredientData['category']));
+        id: ingredient['ingredient'],
+        name: (ingredientData as Map)['name'],
+        type: ingredientData['type'],
+        category: ingredientData['category'],
+        calories: ingredient['calories'],
+        protein: ingredient['protein'],
+        fat: ingredient['fat'],
+        carbohydrates: ingredient['carbohydrates'],
+        minerals: ingredient['minerals'],
+        moisture: ingredient['moisture'],
+      ));
     }
     _recipeNameController.text = recipeData['name'];
     _recipeDescriptionController.text = recipeData['description'];
@@ -160,6 +171,12 @@ class _editRecipeState extends State<ScreenEditRecipe> {
                                 id: suggestion['id'],
                                 type: suggestion['type'],
                                 category: suggestion['category'],
+                                calories: suggestion['calories'],
+                                protein: suggestion['protein'],
+                                fat: suggestion['fat'],
+                                carbohydrates: suggestion['carbohydrates'],
+                                minerals: suggestion['minerals'],
+                                moisture: suggestion['moisture'],
                               ));
                               _ingredientController.text = "";
                             },
@@ -211,10 +228,28 @@ class _editRecipeState extends State<ScreenEditRecipe> {
                           padding: EdgeInsets.symmetric(vertical: 20),
                           child: SizedBox(
                               height: MediaQuery.of(context).size.height * 0.4,
-                              child: Center(
-                                  child: Card(
-                                      child: PieChart(PieChartData(
-                                          sections: showSection()))))),
+                              child: Card(
+                                  child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceEvenly,
+                                    children: [
+                                      _indicator(Colors.red, "Fleisch"),
+                                      _indicator(Colors.green, "Vegetarisch")
+                                    ],
+                                  ),
+                                  Container(
+                                    height: 300,
+                                    child: PieChart(PieChartData(
+                                        sectionsSpace: 0,
+                                        centerSpaceRadius: 40,
+                                        sections: showSection())),
+                                  ),
+                                ],
+                              ))),
                         ),
                         TextField(
                             controller: _recipeDescriptionController,
@@ -229,20 +264,44 @@ class _editRecipeState extends State<ScreenEditRecipe> {
   }
 
   showSection() {
-    return List.generate(3, (index) {
+    return List.generate(2, (index) {
       switch (index) {
         case 0:
           return PieChartSectionData(
-              color: Colors.red, value: 80, title: '80%');
+              color: Colors.red,
+              value: meatSum / weightSum * 100,
+              title: '${meatSum / weightSum * 100}%');
         case 1:
           return PieChartSectionData(
-              color: Colors.amber, value: 10, title: '10%');
-        case 2:
-          return PieChartSectionData(
-              color: Colors.green, value: 10, title: '10%');
+              color: Colors.green,
+              value: vegSum / weightSum * 100,
+              title: '${vegSum / weightSum * 100}%');
         default:
           throw Error();
       }
     });
   }
+}
+
+@override
+Widget _indicator(Color color, String text) {
+  return Row(
+    children: [
+      Container(
+        height: 16,
+        width: 16,
+        decoration: BoxDecoration(
+          boxShadow: [
+            BoxShadow(
+              color: Colors.white38,
+            )
+          ],
+          shape: BoxShape.circle,
+          color: color,
+        ),
+      ),
+      SizedBox(width: 5),
+      Text(text)
+    ],
+  );
 }

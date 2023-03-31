@@ -4,6 +4,7 @@ import 'package:Barfbook/Screens/Barfbook/Barfbook.dart';
 import 'package:Barfbook/Screens/Barfbook/barfbook_controller.dart';
 import 'package:Barfbook/controller.dart';
 import 'package:Barfbook/util/Supabase/AuthController.dart';
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
@@ -23,15 +24,19 @@ class _newRecipeState extends State<ScreenCreateRecipe> {
   final TextEditingController _recipeDescriptionController =
       TextEditingController();
   final TextEditingController _recipeGramController = TextEditingController();
+
+  int meatSum = 0;
+  int vegSum = 0;
+  int weightSum = 0;
   var recipeIngredient = [].obs;
   final Controller controller = Get.find();
 
   @override
   void dispose() {
-    // Clean up the controller when the widget is disposed.
     _ingredientController.dispose();
     _recipeNameController.dispose();
     _recipeDescriptionController.dispose();
+    _recipeGramController.dispose();
     super.dispose();
   }
 
@@ -92,7 +97,7 @@ class _newRecipeState extends State<ScreenCreateRecipe> {
                   suggestionsCallback: (pattern) async {
                     return await supabase
                         .from('ingredient')
-                        .select('id, name, type, category')
+                        .select('*')
                         .ilike('name', '%${pattern}%');
                   },
                   itemBuilder: (context, suggestion) {
@@ -138,6 +143,7 @@ class _newRecipeState extends State<ScreenCreateRecipe> {
                               ),
                               ElevatedButton(
                                   onPressed: () {
+                                    print(suggestion);
                                     recipeIngredient.add(Ingredient(
                                         name: (suggestion)['name'],
                                         id: suggestion['id'],
@@ -153,9 +159,17 @@ class _newRecipeState extends State<ScreenCreateRecipe> {
                                         gram: int.parse(
                                           _recipeGramController.text,
                                         )));
+                                    suggestion['category'] == 'Fleisch'
+                                        ? meatSum += int.parse(
+                                            _recipeGramController.text)
+                                        : vegSum += int.parse(
+                                            _recipeGramController.text);
+                                    weightSum +=
+                                        int.parse(_recipeGramController.text);
                                     _ingredientController.clear();
                                     _recipeGramController.clear();
                                     Get.back();
+                                    setState(() {});
                                   },
                                   child: Text("Hinzufügen"))
                             ],
@@ -181,6 +195,9 @@ class _newRecipeState extends State<ScreenCreateRecipe> {
                   TextButton(
                       onPressed: () {
                         recipeIngredient.clear();
+                        weightSum = 0;
+                        meatSum = 0;
+                        vegSum = 0;
                       },
                       child: Text("Alles entfernen")),
                 ],
@@ -269,7 +286,37 @@ class _newRecipeState extends State<ScreenCreateRecipe> {
                     runSpacing: 5,
                     children: list);
               }),
-              SizedBox(height: 15),
+              Padding(
+                padding: EdgeInsets.symmetric(vertical: 20),
+                child: SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.4,
+                    child: Card(
+                        child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            _indicator(Colors.red, "Fleisch", meatSum),
+                            _indicator(Colors.green, "Vegetarisch", vegSum)
+                          ],
+                        ),
+                        Container(
+                          height: 300,
+                          child: PieChart(PieChartData(
+                              sectionsSpace: 0,
+                              centerSpaceRadius: 40,
+                              sections: showSection())),
+                        ),
+                      ],
+                    ))),
+              ),
+              ElevatedButton(
+                  onPressed: () {
+                    print(weightSum);
+                  },
+                  child: Text("CALC")),
               TextField(
                   controller: _recipeDescriptionController,
                   maxLines: 20,
@@ -278,5 +325,47 @@ class _newRecipeState extends State<ScreenCreateRecipe> {
             ]),
           ),
         ));
+  }
+
+  showSection() {
+    return List.generate(2, (index) {
+      switch (index) {
+        case 0:
+          return PieChartSectionData(
+              color: Colors.red,
+              value: weightSum == 0 ? 50 : meatSum / weightSum * 100,
+              title: weightSum == 0 ? '50%' : '${meatSum / weightSum * 100}%');
+        case 1:
+          return PieChartSectionData(
+              color: Colors.green,
+              value: weightSum == 0 ? 50 : vegSum / weightSum * 100,
+              title: weightSum == 0 ? '50%' : '${vegSum / weightSum * 100}%');
+        default:
+          throw Error();
+      }
+    });
+  }
+
+  @override
+  Widget _indicator(Color color, String text, var gram) {
+    return Row(
+      children: [
+        Container(
+          height: 16,
+          width: 16,
+          decoration: BoxDecoration(
+            boxShadow: [
+              BoxShadow(
+                color: Colors.white38,
+              )
+            ],
+            shape: BoxShape.circle,
+            color: color,
+          ),
+        ),
+        SizedBox(width: 5),
+        Text('${gram}g $text'),
+      ],
+    );
   }
 }
