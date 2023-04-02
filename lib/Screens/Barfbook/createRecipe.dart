@@ -25,8 +25,13 @@ class _newRecipeState extends State<ScreenCreateRecipe> {
       TextEditingController();
   final TextEditingController _recipeGramController = TextEditingController();
 
-  int meatSum = 0;
+  int touchedIndex = -1;
   int vegSum = 0;
+  int fruitSum = 0;
+  int meatSum = 0;
+  int rumenSum = 0;
+  int boneSum = 0;
+  int organSum = 0;
   int weightSum = 0;
   var recipeIngredient = [].obs;
   final Controller controller = Get.find();
@@ -291,25 +296,73 @@ class _newRecipeState extends State<ScreenCreateRecipe> {
                 child: SizedBox(
                     height: MediaQuery.of(context).size.height * 0.4,
                     child: Card(
-                        child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            _indicator(Colors.red, "Fleisch", meatSum),
-                            _indicator(Colors.green, "Vegetarisch", vegSum)
-                          ],
-                        ),
-                        Container(
-                          height: 300,
-                          child: PieChart(PieChartData(
-                              sectionsSpace: 0,
-                              centerSpaceRadius: 40,
-                              sections: showSection())),
-                        ),
-                      ],
+                        child: Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 10),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  _indicator(
+                                      Color(0xff679267), "Gemüse", vegSum),
+                                  _indicator(
+                                      Color(0xffC9CC3F), "Obst", fruitSum)
+                                ],
+                              ),
+                              _indicator(Colors.green, "Vegetarisch",
+                                  vegSum + fruitSum)
+                            ],
+                          ),
+                          Padding(
+                            padding: EdgeInsets.symmetric(vertical: 15),
+                            child: SizedBox(
+                              height: 200,
+                              child: PieChart(PieChartData(
+                                  pieTouchData: PieTouchData(touchCallback:
+                                      (FlTouchEvent event, pieTouchResponse) {
+                                    setState(() {
+                                      if (!event.isInterestedForInteractions ||
+                                          pieTouchResponse == null ||
+                                          pieTouchResponse.touchedSection ==
+                                              null) {
+                                        touchedIndex = -1;
+                                        return;
+                                      }
+                                      touchedIndex = pieTouchResponse
+                                          .touchedSection!.touchedSectionIndex;
+                                    });
+                                  }),
+                                  sectionsSpace: 0,
+                                  centerSpaceRadius: 40,
+                                  sections: showSection())),
+                            ),
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  _indicator(Color(0xffD2042D), "Muskelfleisch",
+                                      meatSum),
+                                  _indicator(
+                                      Color(0xffEC5800), "Pansen", rumenSum),
+                                  _indicator(
+                                      Color(0xff8B636C), "Knochen", boneSum),
+                                  _indicator(
+                                      Color(0xff880808), "Innereien", organSum),
+                                ],
+                              ),
+                              _indicator(Colors.red, "Fleisch",
+                                  meatSum + rumenSum + boneSum + organSum)
+                            ],
+                          ),
+                        ],
+                      ),
                     ))),
               ),
               ElevatedButton(
@@ -328,18 +381,90 @@ class _newRecipeState extends State<ScreenCreateRecipe> {
   }
 
   showSection() {
-    return List.generate(2, (index) {
+    return List.generate(6, (index) {
+      final isTouched = index == touchedIndex;
+      final fontSize = isTouched ? 25.0 : 16.0;
+      final radius = isTouched ? 60.0 : 50.0;
+      const shadows = [Shadow(color: Colors.black, blurRadius: 2)];
       switch (index) {
         case 0:
           return PieChartSectionData(
-              color: Colors.red,
-              value: weightSum == 0 ? 50 : meatSum / weightSum * 100,
-              title: weightSum == 0 ? '50%' : '${meatSum / weightSum * 100}%');
+            color: Color(0xffD2042D),
+            value: weightSum == 0 ? 100 / 6 : meatSum / weightSum * 100,
+            title: weightSum == 0
+                ? '${(100 / 6).toStringAsFixed(1)}%'
+                : '${meatSum / weightSum * 100}%',
+            titleStyle: TextStyle(
+                fontSize: fontSize,
+                shadows: shadows,
+                color: Theme.of(context).colorScheme.onPrimary),
+            radius: radius,
+          );
         case 1:
           return PieChartSectionData(
-              color: Colors.green,
-              value: weightSum == 0 ? 50 : vegSum / weightSum * 100,
-              title: weightSum == 0 ? '50%' : '${vegSum / weightSum * 100}%');
+            color: Color(0xffEC5800),
+            value: weightSum == 0 ? 100 / 6 : rumenSum / weightSum * 100,
+            title: weightSum == 0
+                ? '${(100 / 6).toStringAsFixed(1)}%'
+                : '${rumenSum / weightSum * 100}%',
+            titleStyle: TextStyle(
+                fontSize: fontSize,
+                shadows: shadows,
+                color: Theme.of(context).colorScheme.onPrimary),
+            radius: radius,
+          );
+        case 2:
+          return PieChartSectionData(
+            color: Color(0xff8B636C),
+            value: weightSum == 0 ? 100 / 6 : boneSum / weightSum * 100,
+            title: weightSum == 0
+                ? '${(100 / 6).toStringAsFixed(1)}%'
+                : '${boneSum / weightSum * 100}%',
+            titleStyle: TextStyle(
+                fontSize: fontSize,
+                shadows: shadows,
+                color: Theme.of(context).colorScheme.onPrimary),
+            radius: radius,
+          );
+        case 3:
+          return PieChartSectionData(
+            color: Color(0xff880808),
+            value: weightSum == 0 ? 100 / 6 : organSum / weightSum * 100,
+            title: weightSum == 0
+                ? '${(100 / 6).toStringAsFixed(1)}%'
+                : '${organSum / weightSum * 100}%',
+            titleStyle: TextStyle(
+                fontSize: fontSize,
+                shadows: shadows,
+                color: Theme.of(context).colorScheme.onPrimary),
+            radius: radius,
+          );
+        case 4:
+          return PieChartSectionData(
+            color: Color(0xff679267),
+            value: weightSum == 0 ? 100 / 6 : vegSum / weightSum * 100,
+            title: weightSum == 0
+                ? '${(100 / 6).toStringAsFixed(1)}%'
+                : '${vegSum / weightSum * 100}%',
+            titleStyle: TextStyle(
+                fontSize: fontSize,
+                shadows: shadows,
+                color: Theme.of(context).colorScheme.onPrimary),
+            radius: radius,
+          );
+        case 5:
+          return PieChartSectionData(
+            color: Color(0xffC9CC3F),
+            value: weightSum == 0 ? 100 / 6 : fruitSum / weightSum * 100,
+            title: weightSum == 0
+                ? '${(100 / 6).toStringAsFixed(1)}%'
+                : '${fruitSum / weightSum * 100}%',
+            titleStyle: TextStyle(
+                fontSize: fontSize,
+                shadows: shadows,
+                color: Theme.of(context).colorScheme.onPrimary),
+            radius: radius,
+          );
         default:
           throw Error();
       }
