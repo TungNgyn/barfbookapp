@@ -20,13 +20,13 @@ class Ingredient {
   final String name;
   final String type;
   final String category;
-  final int calories;
+  final double calories;
   final double protein;
   final double fat;
-  final int carbohydrates;
+  final double carbohydrates;
   final double minerals;
   final double moisture;
-  final int gram;
+  final double gram;
 }
 
 class Recipe {

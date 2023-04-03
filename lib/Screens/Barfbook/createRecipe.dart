@@ -26,13 +26,13 @@ class _newRecipeState extends State<ScreenCreateRecipe> {
   final TextEditingController _recipeGramController = TextEditingController();
 
   int touchedIndex = -1;
-  int vegSum = 0;
-  int fruitSum = 0;
-  int meatSum = 0;
-  int rumenSum = 0;
-  int boneSum = 0;
-  int organSum = 0;
-  int weightSum = 0;
+  double vegSum = 0;
+  double fruitSum = 0;
+  double meatSum = 0;
+  double rumenSum = 0;
+  double boneSum = 0;
+  double organSum = 0;
+  double weightSum = 0;
   var recipeIngredient = [].obs;
   final Controller controller = Get.find();
 
@@ -148,6 +148,8 @@ class _newRecipeState extends State<ScreenCreateRecipe> {
                               ),
                               ElevatedButton(
                                   onPressed: () {
+                                    print(
+                                        '${_recipeGramController.text} asadasd');
                                     print(suggestion);
                                     recipeIngredient.add(Ingredient(
                                         name: (suggestion)['name'],
@@ -161,16 +163,39 @@ class _newRecipeState extends State<ScreenCreateRecipe> {
                                             suggestion['carbohydrates'],
                                         minerals: suggestion['minerals'],
                                         moisture: suggestion['moisture'],
-                                        gram: int.parse(
+                                        gram: double.parse(
                                           _recipeGramController.text,
                                         )));
-                                    suggestion['category'] == 'Fleisch'
-                                        ? meatSum += int.parse(
-                                            _recipeGramController.text)
-                                        : vegSum += int.parse(
+                                    switch (suggestion['category']) {
+                                      case 'Fleisch':
+                                        meatSum += double.parse(
                                             _recipeGramController.text);
-                                    weightSum +=
-                                        int.parse(_recipeGramController.text);
+                                        break;
+                                      case 'Pansen':
+                                        rumenSum += double.parse(
+                                            _recipeGramController.text);
+                                        break;
+                                      case 'Knochen':
+                                        boneSum += double.parse(
+                                            _recipeGramController.text);
+                                        break;
+                                      case 'Innereien':
+                                        organSum += double.parse(
+                                            _recipeGramController.text);
+                                        break;
+                                      case 'Gemüse':
+                                        vegSum += double.parse(
+                                            _recipeGramController.text);
+                                        break;
+                                      case 'Obst':
+                                        fruitSum += double.parse(
+                                            _recipeGramController.text);
+                                        break;
+                                      default:
+                                        throw Error();
+                                    }
+                                    weightSum += double.parse(
+                                        _recipeGramController.text);
                                     _ingredientController.clear();
                                     _recipeGramController.clear();
                                     Get.back();
@@ -301,22 +326,8 @@ class _newRecipeState extends State<ScreenCreateRecipe> {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  _indicator(
-                                      Color(0xff679267), "Gemüse", vegSum),
-                                  _indicator(
-                                      Color(0xffC9CC3F), "Obst", fruitSum)
-                                ],
-                              ),
-                              _indicator(Colors.green, "Vegetarisch",
-                                  vegSum + fruitSum)
-                            ],
-                          ),
+                          _indicator(
+                              Colors.green, "Vegetarisch", vegSum + fruitSum),
                           Padding(
                             padding: EdgeInsets.symmetric(vertical: 15),
                             child: SizedBox(
@@ -325,6 +336,34 @@ class _newRecipeState extends State<ScreenCreateRecipe> {
                                   pieTouchData: PieTouchData(touchCallback:
                                       (FlTouchEvent event, pieTouchResponse) {
                                     setState(() {
+                                      if (!event.isInterestedForInteractions &&
+                                          pieTouchResponse != null &&
+                                          (pieTouchResponse.touchedSection!
+                                                  .touchedSectionIndex !=
+                                              -1)) {
+                                        print(pieTouchResponse.touchedSection!
+                                            .touchedSectionIndex);
+                                        print(pieTouchResponse.touchedSection!
+                                            .touchedSection!.value);
+                                        print(pieTouchResponse.touchedSection!
+                                            .touchedSection!.title);
+                                        Get.defaultDialog(
+                                            title: pieTouchResponse
+                                                        .touchedSection!
+                                                        .touchedSectionIndex ==
+                                                    0
+                                                ? 'Fleischanteil'
+                                                : 'Gemüseanteil',
+                                            content: SizedBox(
+                                                height: 200,
+                                                width: 300,
+                                                child: BarChart(pieTouchResponse
+                                                            .touchedSection!
+                                                            .touchedSectionIndex ==
+                                                        0
+                                                    ? meatBarData()
+                                                    : vegBarData())));
+                                      }
                                       if (!event.isInterestedForInteractions ||
                                           pieTouchResponse == null ||
                                           pieTouchResponse.touchedSection ==
@@ -341,26 +380,8 @@ class _newRecipeState extends State<ScreenCreateRecipe> {
                                   sections: showSection())),
                             ),
                           ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  _indicator(Color(0xffD2042D), "Muskelfleisch",
-                                      meatSum),
-                                  _indicator(
-                                      Color(0xffEC5800), "Pansen", rumenSum),
-                                  _indicator(
-                                      Color(0xff8B636C), "Knochen", boneSum),
-                                  _indicator(
-                                      Color(0xff880808), "Innereien", organSum),
-                                ],
-                              ),
-                              _indicator(Colors.red, "Fleisch",
-                                  meatSum + rumenSum + boneSum + organSum)
-                            ],
-                          ),
+                          _indicator(Colors.red, "Fleisch",
+                              meatSum + rumenSum + boneSum + organSum)
                         ],
                       ),
                     ))),
@@ -380,8 +401,222 @@ class _newRecipeState extends State<ScreenCreateRecipe> {
         ));
   }
 
+  BarChartData meatBarData() {
+    return BarChartData(
+        barTouchData: BarTouchData(
+          touchTooltipData: BarTouchTooltipData(
+            tooltipBgColor: Colors.blueGrey,
+            tooltipHorizontalAlignment: FLHorizontalAlignment.right,
+            tooltipMargin: -10,
+            getTooltipItem: (group, groupIndex, rod, rodIndex) {
+              String component;
+              switch (group.x) {
+                case 0:
+                  component = 'Muskelfleisch';
+                  break;
+                case 1:
+                  component = 'Magen/Pansen';
+                  break;
+                case 2:
+                  component = 'Fleischige Knochen';
+                  break;
+                case 3:
+                  component = 'Innereien';
+                  break;
+                default:
+                  throw Error();
+              }
+              return BarTooltipItem(
+                '$component\n',
+                const TextStyle(
+                  color: Colors.white70,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18,
+                ),
+                children: <TextSpan>[
+                  TextSpan(
+                    text: '${(rod.toY - 1).toStringAsFixed(1)}g',
+                    style: TextStyle(
+                      color: Colors.white60,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ],
+              );
+            },
+          ),
+        ),
+        titlesData: FlTitlesData(
+            show: true,
+            topTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
+            leftTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
+            rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
+            bottomTitles: AxisTitles(
+                sideTitles: SideTitles(
+                    showTitles: true,
+                    getTitlesWidget: meatTitles,
+                    reservedSize: 38))),
+        borderData: FlBorderData(show: false),
+        barGroups: meatGroups(),
+        gridData: FlGridData(show: false));
+  }
+
+  BarChartData vegBarData() {
+    return BarChartData(
+        barTouchData: BarTouchData(
+          touchTooltipData: BarTouchTooltipData(
+            tooltipBgColor: Colors.blueGrey,
+            tooltipHorizontalAlignment: FLHorizontalAlignment.right,
+            tooltipMargin: -10,
+            getTooltipItem: (group, groupIndex, rod, rodIndex) {
+              String component;
+              switch (group.x) {
+                case 0:
+                  component = 'Gemüse';
+                  break;
+                case 1:
+                  component = 'Obst';
+                  break;
+                default:
+                  throw Error();
+              }
+              return BarTooltipItem(
+                '$component\n',
+                const TextStyle(
+                  color: Colors.white70,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18,
+                ),
+                children: <TextSpan>[
+                  TextSpan(
+                    text: '${(rod.toY - 1).toStringAsFixed(1)}g',
+                    style: TextStyle(
+                      color: Colors.white60,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ],
+              );
+            },
+          ),
+        ),
+        titlesData: FlTitlesData(
+            show: true,
+            topTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
+            leftTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
+            rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
+            bottomTitles: AxisTitles(
+                sideTitles: SideTitles(
+                    showTitles: true,
+                    getTitlesWidget: vegTitles,
+                    reservedSize: 38))),
+        borderData: FlBorderData(show: false),
+        barGroups: vegGroups(),
+        gridData: FlGridData(show: false));
+  }
+
+  Widget vegTitles(double value, TitleMeta meta) {
+    Widget text;
+    switch (value.toInt()) {
+      case 0:
+        text = Text('G');
+        break;
+      case 1:
+        text = Text('O');
+        break;
+      default:
+        text = Text('');
+        break;
+    }
+    return SideTitleWidget(
+      axisSide: meta.axisSide,
+      space: 16,
+      child: text,
+    );
+  }
+
+  Widget meatTitles(double value, TitleMeta meta) {
+    Widget text;
+    switch (value.toInt()) {
+      case 0:
+        text = Text('M');
+        break;
+      case 1:
+        text = Text('P');
+        break;
+      case 2:
+        text = Text('K');
+        break;
+      case 3:
+        text = Text('I');
+        break;
+      default:
+        text = Text('');
+        break;
+    }
+    return SideTitleWidget(
+      axisSide: meta.axisSide,
+      space: 16,
+      child: text,
+    );
+  }
+
+  BarChartGroupData makeGroupData(
+    int x,
+    double y, {
+    Color? barColor,
+    double width = 22,
+    List<int> showTooltips = const [],
+  }) {
+    barColor = Theme.of(context).colorScheme.tertiary;
+    return BarChartGroupData(
+      x: x,
+      barRods: [
+        BarChartRodData(
+          toY: y + 1,
+          color: barColor,
+          width: width,
+          backDrawRodData: BackgroundBarChartRodData(
+            show: true,
+            toY: weightSum == 0 ? 10 : weightSum,
+            color: barColor.withOpacity(0.1),
+          ),
+        ),
+      ],
+      showingTooltipIndicators: showTooltips,
+    );
+  }
+
+  List<BarChartGroupData> meatGroups() => List.generate(4, (i) {
+        switch (i) {
+          case 0:
+            return makeGroupData(0, meatSum);
+          case 1:
+            return makeGroupData(1, rumenSum);
+          case 2:
+            return makeGroupData(2, boneSum);
+          case 3:
+            return makeGroupData(3, organSum);
+          default:
+            return throw Error();
+        }
+      });
+
+  List<BarChartGroupData> vegGroups() => List.generate(2, (i) {
+        switch (i) {
+          case 0:
+            return makeGroupData(0, vegSum);
+          case 1:
+            return makeGroupData(1, fruitSum);
+          default:
+            return throw Error();
+        }
+      });
+
   showSection() {
-    return List.generate(6, (index) {
+    return List.generate(2, (index) {
       final isTouched = index == touchedIndex;
       final fontSize = isTouched ? 25.0 : 16.0;
       final radius = isTouched ? 60.0 : 50.0;
@@ -389,10 +624,10 @@ class _newRecipeState extends State<ScreenCreateRecipe> {
       switch (index) {
         case 0:
           return PieChartSectionData(
-            color: Color(0xffD2042D),
-            value: weightSum == 0 ? 100 / 6 : meatSum / weightSum * 100,
+            color: Colors.red,
+            value: weightSum == 0 ? 100 / 2 : meatSum / weightSum * 100,
             title: weightSum == 0
-                ? '${(100 / 6).toStringAsFixed(1)}%'
+                ? '${(100 / 2).toStringAsFixed(1)}%'
                 : '${meatSum / weightSum * 100}%',
             titleStyle: TextStyle(
                 fontSize: fontSize,
@@ -402,63 +637,11 @@ class _newRecipeState extends State<ScreenCreateRecipe> {
           );
         case 1:
           return PieChartSectionData(
-            color: Color(0xffEC5800),
-            value: weightSum == 0 ? 100 / 6 : rumenSum / weightSum * 100,
+            color: Colors.green,
+            value: weightSum == 0 ? 100 / 2 : vegSum / weightSum * 100,
             title: weightSum == 0
-                ? '${(100 / 6).toStringAsFixed(1)}%'
-                : '${rumenSum / weightSum * 100}%',
-            titleStyle: TextStyle(
-                fontSize: fontSize,
-                shadows: shadows,
-                color: Theme.of(context).colorScheme.onPrimary),
-            radius: radius,
-          );
-        case 2:
-          return PieChartSectionData(
-            color: Color(0xff8B636C),
-            value: weightSum == 0 ? 100 / 6 : boneSum / weightSum * 100,
-            title: weightSum == 0
-                ? '${(100 / 6).toStringAsFixed(1)}%'
-                : '${boneSum / weightSum * 100}%',
-            titleStyle: TextStyle(
-                fontSize: fontSize,
-                shadows: shadows,
-                color: Theme.of(context).colorScheme.onPrimary),
-            radius: radius,
-          );
-        case 3:
-          return PieChartSectionData(
-            color: Color(0xff880808),
-            value: weightSum == 0 ? 100 / 6 : organSum / weightSum * 100,
-            title: weightSum == 0
-                ? '${(100 / 6).toStringAsFixed(1)}%'
-                : '${organSum / weightSum * 100}%',
-            titleStyle: TextStyle(
-                fontSize: fontSize,
-                shadows: shadows,
-                color: Theme.of(context).colorScheme.onPrimary),
-            radius: radius,
-          );
-        case 4:
-          return PieChartSectionData(
-            color: Color(0xff679267),
-            value: weightSum == 0 ? 100 / 6 : vegSum / weightSum * 100,
-            title: weightSum == 0
-                ? '${(100 / 6).toStringAsFixed(1)}%'
+                ? '${(100 / 2).toStringAsFixed(1)}%'
                 : '${vegSum / weightSum * 100}%',
-            titleStyle: TextStyle(
-                fontSize: fontSize,
-                shadows: shadows,
-                color: Theme.of(context).colorScheme.onPrimary),
-            radius: radius,
-          );
-        case 5:
-          return PieChartSectionData(
-            color: Color(0xffC9CC3F),
-            value: weightSum == 0 ? 100 / 6 : fruitSum / weightSum * 100,
-            title: weightSum == 0
-                ? '${(100 / 6).toStringAsFixed(1)}%'
-                : '${fruitSum / weightSum * 100}%',
             titleStyle: TextStyle(
                 fontSize: fontSize,
                 shadows: shadows,
@@ -471,7 +654,6 @@ class _newRecipeState extends State<ScreenCreateRecipe> {
     });
   }
 
-  @override
   Widget _indicator(Color color, String text, var gram) {
     return Row(
       children: [
