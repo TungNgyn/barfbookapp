@@ -33,6 +33,12 @@ class _newRecipeState extends State<ScreenCreateRecipe> {
   double boneSum = 0;
   double organSum = 0;
   double weightSum = 0;
+  double caloriesSum = 0;
+  double proteinSum = 0;
+  double fatSum = 0;
+  double carbohydratesSum = 0;
+  double mineralsSum = 0;
+  double moistureSum = 0;
   var recipeIngredient = [].obs;
   final Controller controller = Get.find();
 
@@ -148,9 +154,6 @@ class _newRecipeState extends State<ScreenCreateRecipe> {
                               ),
                               ElevatedButton(
                                   onPressed: () {
-                                    print(suggestion['calories'].runtimeType);
-                                    print(suggestion['protein'].runtimeType);
-                                    print(suggestion);
                                     recipeIngredient.add(Ingredient(
                                         id: suggestion['id'],
                                         name: suggestion['name'],
@@ -171,6 +174,36 @@ class _newRecipeState extends State<ScreenCreateRecipe> {
                                         gram: double.parse(
                                           _recipeGramController.text,
                                         )));
+                                    caloriesSum +=
+                                        (suggestion['calories'].toDouble() /
+                                            100 *
+                                            double.parse(
+                                                _recipeGramController.text));
+                                    proteinSum +=
+                                        (suggestion['protein'].toDouble() /
+                                            100 *
+                                            double.parse(
+                                                _recipeGramController.text));
+                                    fatSum += (suggestion['fat'].toDouble() /
+                                        100 *
+                                        double.parse(
+                                            _recipeGramController.text));
+                                    carbohydratesSum +=
+                                        (suggestion['carbohydrates']
+                                                .toDouble() /
+                                            100 *
+                                            double.parse(
+                                                _recipeGramController.text));
+                                    mineralsSum +=
+                                        (suggestion['minerals'].toDouble() /
+                                            100 *
+                                            double.parse(
+                                                _recipeGramController.text));
+                                    moistureSum +=
+                                        (suggestion['moisture'].toDouble() /
+                                            100 *
+                                            double.parse(
+                                                _recipeGramController.text));
                                     switch (suggestion['category']) {
                                       case 'Fleisch':
                                         meatSum += double.parse(
@@ -327,14 +360,86 @@ class _newRecipeState extends State<ScreenCreateRecipe> {
                     height: MediaQuery.of(context).size.height * 0.4,
                     child: Card(
                         child: Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 10),
+                      padding: EdgeInsets.symmetric(horizontal: 15),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          _indicator(
-                              Colors.green, "Vegetarisch", vegSum + fruitSum),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              _indicator(Colors.green, "Vegetarisch",
+                                  vegSum + fruitSum),
+                              IconButton(
+                                  onPressed: () {
+                                    Get.defaultDialog(
+                                        title: 'Analytische Bestandteile',
+                                        content: Center(
+                                          child: Padding(
+                                            padding: EdgeInsets.symmetric(
+                                                horizontal: 20),
+                                            child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceBetween,
+                                                    children: [
+                                                      Text('Kalorien:'),
+                                                      Text(
+                                                          '${caloriesSum.toStringAsFixed(1)}kcal')
+                                                    ],
+                                                  ),
+                                                  Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceBetween,
+                                                    children: [
+                                                      Text('Protein:'),
+                                                      Text(
+                                                          '${proteinSum.toStringAsFixed(1)}g')
+                                                    ],
+                                                  ),
+                                                  Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceBetween,
+                                                    children: [
+                                                      Text('Fett:'),
+                                                      Text(
+                                                          '${fatSum.toStringAsFixed(1)}g')
+                                                    ],
+                                                  ),
+                                                  Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceBetween,
+                                                    children: [
+                                                      Text('Kohlenhydrate:'),
+                                                      Text(
+                                                          '${carbohydratesSum.toStringAsFixed(1)}g')
+                                                    ],
+                                                  ),
+                                                  Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceBetween,
+                                                    children: [
+                                                      Text('Mineralien:'),
+                                                      Text(
+                                                          '${mineralsSum.toStringAsFixed(1)}g')
+                                                    ],
+                                                  ),
+                                                ]),
+                                          ),
+                                        ));
+                                  },
+                                  icon: Icon(Icons.info))
+                            ],
+                          ),
                           Padding(
-                            padding: EdgeInsets.symmetric(vertical: 15),
+                            padding: EdgeInsets.symmetric(vertical: 25),
                             child: SizedBox(
                               height: 200,
                               child: PieChart(PieChartData(
@@ -570,7 +675,8 @@ class _newRecipeState extends State<ScreenCreateRecipe> {
 
   BarChartGroupData makeGroupData(
     int x,
-    double y, {
+    double y,
+    bool meat, {
     Color? barColor,
     double width = 22,
     List<int> showTooltips = const [],
@@ -585,7 +691,11 @@ class _newRecipeState extends State<ScreenCreateRecipe> {
           width: width,
           backDrawRodData: BackgroundBarChartRodData(
             show: true,
-            toY: weightSum == 0 ? 10 : weightSum,
+            toY: meat
+                ? weightSum == 0
+                    ? 10
+                    : meatSum + rumenSum + boneSum + organSum
+                : vegSum + fruitSum,
             color: barColor.withOpacity(0.1),
           ),
         ),
@@ -597,13 +707,13 @@ class _newRecipeState extends State<ScreenCreateRecipe> {
   List<BarChartGroupData> meatGroups() => List.generate(4, (i) {
         switch (i) {
           case 0:
-            return makeGroupData(0, meatSum);
+            return makeGroupData(0, meatSum, true);
           case 1:
-            return makeGroupData(1, rumenSum);
+            return makeGroupData(1, rumenSum, true);
           case 2:
-            return makeGroupData(2, boneSum);
+            return makeGroupData(2, boneSum, true);
           case 3:
-            return makeGroupData(3, organSum);
+            return makeGroupData(3, organSum, true);
           default:
             return throw Error();
         }
@@ -612,9 +722,9 @@ class _newRecipeState extends State<ScreenCreateRecipe> {
   List<BarChartGroupData> vegGroups() => List.generate(2, (i) {
         switch (i) {
           case 0:
-            return makeGroupData(0, vegSum);
+            return makeGroupData(0, vegSum, false);
           case 1:
-            return makeGroupData(1, fruitSum);
+            return makeGroupData(1, fruitSum, false);
           default:
             return throw Error();
         }
@@ -623,9 +733,9 @@ class _newRecipeState extends State<ScreenCreateRecipe> {
   showSection() {
     return List.generate(2, (index) {
       final isTouched = index == touchedIndex;
-      final fontSize = isTouched ? 25.0 : 16.0;
+      final fontSize = isTouched ? 25.0 : 18.0;
       final radius = isTouched ? 60.0 : 50.0;
-      const shadows = [Shadow(color: Colors.black, blurRadius: 2)];
+      const shadows = [Shadow(color: Colors.black, blurRadius: 20)];
       switch (index) {
         case 0:
           return PieChartSectionData(
@@ -635,11 +745,12 @@ class _newRecipeState extends State<ScreenCreateRecipe> {
                 : (meatSum + rumenSum + boneSum + organSum) / weightSum * 100,
             title: weightSum == 0
                 ? '${(100 / 2).toStringAsFixed(1)}%'
-                : '${(meatSum + rumenSum + boneSum + organSum) / weightSum * 100}%',
+                : '${((meatSum + rumenSum + boneSum + organSum) / weightSum * 100).toStringAsFixed(1)}%',
             titleStyle: TextStyle(
                 fontSize: fontSize,
+                fontWeight: FontWeight.bold,
                 shadows: shadows,
-                color: Theme.of(context).colorScheme.onPrimary),
+                color: Theme.of(context).colorScheme.onSecondary),
             radius: radius,
           );
         case 1:
@@ -650,11 +761,12 @@ class _newRecipeState extends State<ScreenCreateRecipe> {
                 : (vegSum + fruitSum) / weightSum * 100,
             title: weightSum == 0
                 ? '${(100 / 2).toStringAsFixed(1)}%'
-                : '${(vegSum + fruitSum) / weightSum * 100}%',
+                : '${((vegSum + fruitSum) / weightSum * 100).toStringAsFixed(1)}%',
             titleStyle: TextStyle(
                 fontSize: fontSize,
+                fontWeight: FontWeight.bold,
                 shadows: shadows,
-                color: Theme.of(context).colorScheme.onPrimary),
+                color: Theme.of(context).colorScheme.onSecondary),
             radius: radius,
           );
         default:
