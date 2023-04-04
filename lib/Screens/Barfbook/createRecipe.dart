@@ -148,21 +148,26 @@ class _newRecipeState extends State<ScreenCreateRecipe> {
                               ),
                               ElevatedButton(
                                   onPressed: () {
-                                    print(
-                                        '${_recipeGramController.text} asadasd');
+                                    print(suggestion['calories'].runtimeType);
+                                    print(suggestion['protein'].runtimeType);
                                     print(suggestion);
                                     recipeIngredient.add(Ingredient(
-                                        name: (suggestion)['name'],
                                         id: suggestion['id'],
+                                        name: suggestion['name'],
                                         type: suggestion['type'],
                                         category: suggestion['category'],
-                                        calories: suggestion['calories'],
-                                        protein: suggestion['protein'],
-                                        fat: suggestion['fat'],
+                                        calories:
+                                            suggestion['calories'].toDouble(),
+                                        protein:
+                                            suggestion['protein'].toDouble(),
+                                        fat: suggestion['fat'].toDouble(),
                                         carbohydrates:
-                                            suggestion['carbohydrates'],
-                                        minerals: suggestion['minerals'],
-                                        moisture: suggestion['moisture'],
+                                            suggestion['carbohydrates']
+                                                .toDouble(),
+                                        minerals:
+                                            suggestion['minerals'].toDouble(),
+                                        moisture:
+                                            suggestion['moisture'].toDouble(),
                                         gram: double.parse(
                                           _recipeGramController.text,
                                         )));
@@ -625,10 +630,12 @@ class _newRecipeState extends State<ScreenCreateRecipe> {
         case 0:
           return PieChartSectionData(
             color: Colors.red,
-            value: weightSum == 0 ? 100 / 2 : meatSum / weightSum * 100,
+            value: weightSum == 0
+                ? 100 / 2
+                : (meatSum + rumenSum + boneSum + organSum) / weightSum * 100,
             title: weightSum == 0
                 ? '${(100 / 2).toStringAsFixed(1)}%'
-                : '${meatSum / weightSum * 100}%',
+                : '${(meatSum + rumenSum + boneSum + organSum) / weightSum * 100}%',
             titleStyle: TextStyle(
                 fontSize: fontSize,
                 shadows: shadows,
@@ -638,10 +645,12 @@ class _newRecipeState extends State<ScreenCreateRecipe> {
         case 1:
           return PieChartSectionData(
             color: Colors.green,
-            value: weightSum == 0 ? 100 / 2 : vegSum / weightSum * 100,
+            value: weightSum == 0
+                ? 100 / 2
+                : (vegSum + fruitSum) / weightSum * 100,
             title: weightSum == 0
                 ? '${(100 / 2).toStringAsFixed(1)}%'
-                : '${vegSum / weightSum * 100}%',
+                : '${(vegSum + fruitSum) / weightSum * 100}%',
             titleStyle: TextStyle(
                 fontSize: fontSize,
                 shadows: shadows,
