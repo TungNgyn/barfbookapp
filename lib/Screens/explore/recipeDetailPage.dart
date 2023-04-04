@@ -8,13 +8,14 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 class RecipeDetailPage extends StatefulWidget {
   final Recipe recipe;
-  const RecipeDetailPage({required this.recipe});
+  RecipeDetailPage({required this.recipe});
 
   @override
   State<RecipeDetailPage> createState() => _RecipeDetailPageState();
 }
 
 class _RecipeDetailPageState extends State<RecipeDetailPage> {
+  late List recipeIngredients = [];
   final Controller controller = Get.find();
 
   var currentPageViewItemIndicator = 0;
@@ -44,11 +45,8 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
           title: Text(widget.recipe.name),
           actions: [
             ElevatedButton(
-                onPressed: () async {
-                  await initData();
-                  print(controller.userLikedRecipe);
-                  print(controller.userLikedRecipeDB);
-                  print(controller.userLikedRecipeXrefDB);
+                onPressed: () {
+                  print(recipeIngredients);
                 },
                 child: Text("aaa")),
             IconButton(
@@ -169,7 +167,7 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
     );
   }
 
-  Widget _indicator(bool isActive) {
+  Widget _pageIndicator(bool isActive) {
     return Container(
       height: 10,
       child: AnimatedContainer(
@@ -200,8 +198,8 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
     List<Widget> list = [];
     for (int i = 0; i < 5; i++) {
       list.add(i == currentPageViewItemIndicator
-          ? _indicator(true)
-          : _indicator(false));
+          ? _pageIndicator(true)
+          : _pageIndicator(false));
     }
     return list;
   }
@@ -212,7 +210,7 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
         print(map['recipe']);
         var tempRecipe = await supabase
             .from('recipe')
-            .select('id, created_at, modified_at, name, description, paws')
+            .select('id, created_at, modified_at, name, description')
             .eq('id', map['recipe']);
 
         controller.userLikedRecipe.clear();
@@ -221,7 +219,7 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
               name: (recipe as Map)['name'],
               id: recipe['id'],
               created_at: recipe['created_at'],
-              paws: recipe['paws'],
+              paws: 0,
               description: recipe['description'],
               modified_at: recipe['modified_at'],
               user_id: user!.id,
@@ -247,6 +245,35 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
   }
 
   loadData() async {
+    // load ingredient
+    recipeIngredients.clear();
+    try {
+      final recipeIngredientsList = await supabase
+          .from('recipe_ingredient')
+          .select('*')
+          .eq('recipe', widget.recipe.id);
+      for (var recipeIngredient in recipeIngredientsList) {
+        final ingredientsList = await supabase
+            .from('ingredient')
+            .select('*')
+            .eq('id', recipeIngredient['ingredient']);
+        recipeIngredients.add(Ingredient(
+            id: ingredientsList[0]['id'],
+            name: ingredientsList[0]['name'],
+            type: ingredientsList[0]['type'],
+            category: ingredientsList[0]['category'],
+            calories: ingredientsList[0]['calories'].toDouble(),
+            protein: ingredientsList[0]['protein'].toDouble(),
+            fat: ingredientsList[0]['fat'].toDouble(),
+            carbohydrates: ingredientsList[0]['carbohydrates'].toDouble(),
+            minerals: ingredientsList[0]['minerals'].toDouble(),
+            moisture: ingredientsList[0]['moisture'].toDouble()));
+      }
+    } catch (error) {
+      print(error);
+    }
+
+    // like check
     final liked = await supabase
         .from('profile_liked_recipe')
         .select('*', FetchOptions(count: CountOption.exact))

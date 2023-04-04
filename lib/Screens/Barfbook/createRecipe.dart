@@ -58,8 +58,11 @@ class _newRecipeState extends State<ScreenCreateRecipe> {
       'userid': user?.id
     });
     for (Ingredient ingredient in recipeIngredient) {
-      await supabase.rpc('insert_ingredients',
-          params: {'recipeid': recipeId, 'ingredientid': ingredient.id});
+      await supabase.rpc('insert_ingredients', params: {
+        'recipeid': recipeId,
+        'ingredientid': ingredient.id,
+        'grams': ingredient.gram
+      });
     }
   }
 
@@ -75,8 +78,7 @@ class _newRecipeState extends State<ScreenCreateRecipe> {
               child: IconButton(
                 icon: Icon(Icons.add),
                 onPressed: () async {
-                  await _createRecipe();
-                  Get.back();
+                  await _createRecipe().then((value) => Get.back());
                 },
               ),
             )
@@ -355,9 +357,9 @@ class _newRecipeState extends State<ScreenCreateRecipe> {
                     children: list);
               }),
               Padding(
-                padding: EdgeInsets.symmetric(vertical: 20),
+                padding: EdgeInsets.symmetric(vertical: 10),
                 child: SizedBox(
-                    height: MediaQuery.of(context).size.height * 0.4,
+                    height: MediaQuery.of(context).size.height * 0.36,
                     child: Card(
                         child: Padding(
                       padding: EdgeInsets.symmetric(horizontal: 15),
@@ -451,12 +453,6 @@ class _newRecipeState extends State<ScreenCreateRecipe> {
                                           (pieTouchResponse.touchedSection!
                                                   .touchedSectionIndex !=
                                               -1)) {
-                                        print(pieTouchResponse.touchedSection!
-                                            .touchedSectionIndex);
-                                        print(pieTouchResponse.touchedSection!
-                                            .touchedSection!.value);
-                                        print(pieTouchResponse.touchedSection!
-                                            .touchedSection!.title);
                                         Get.defaultDialog(
                                             title: pieTouchResponse
                                                         .touchedSection!
@@ -466,7 +462,7 @@ class _newRecipeState extends State<ScreenCreateRecipe> {
                                                 : 'Gemüseanteil',
                                             content: SizedBox(
                                                 height: 200,
-                                                width: 300,
+                                                width: 200,
                                                 child: BarChart(pieTouchResponse
                                                             .touchedSection!
                                                             .touchedSectionIndex ==
@@ -486,7 +482,7 @@ class _newRecipeState extends State<ScreenCreateRecipe> {
                                     });
                                   }),
                                   sectionsSpace: 0,
-                                  centerSpaceRadius: 40,
+                                  centerSpaceRadius: 60,
                                   sections: showSection())),
                             ),
                           ),
@@ -496,11 +492,6 @@ class _newRecipeState extends State<ScreenCreateRecipe> {
                       ),
                     ))),
               ),
-              ElevatedButton(
-                  onPressed: () {
-                    print(weightSum);
-                  },
-                  child: Text("CALC")),
               TextField(
                   controller: _recipeDescriptionController,
                   maxLines: 20,
@@ -676,7 +667,7 @@ class _newRecipeState extends State<ScreenCreateRecipe> {
   BarChartGroupData makeGroupData(
     int x,
     double y,
-    bool meat, {
+    double yMax, {
     Color? barColor,
     double width = 22,
     List<int> showTooltips = const [],
@@ -691,11 +682,7 @@ class _newRecipeState extends State<ScreenCreateRecipe> {
           width: width,
           backDrawRodData: BackgroundBarChartRodData(
             show: true,
-            toY: meat
-                ? weightSum == 0
-                    ? 10
-                    : meatSum + rumenSum + boneSum + organSum
-                : vegSum + fruitSum,
+            toY: yMax,
             color: barColor.withOpacity(0.1),
           ),
         ),
@@ -707,13 +694,17 @@ class _newRecipeState extends State<ScreenCreateRecipe> {
   List<BarChartGroupData> meatGroups() => List.generate(4, (i) {
         switch (i) {
           case 0:
-            return makeGroupData(0, meatSum, true);
+            return makeGroupData(
+                0, meatSum, meatSum + rumenSum + boneSum + organSum);
           case 1:
-            return makeGroupData(1, rumenSum, true);
+            return makeGroupData(
+                1, rumenSum, meatSum + rumenSum + boneSum + organSum);
           case 2:
-            return makeGroupData(2, boneSum, true);
+            return makeGroupData(
+                2, boneSum, meatSum + rumenSum + boneSum + organSum);
           case 3:
-            return makeGroupData(3, organSum, true);
+            return makeGroupData(
+                3, organSum, meatSum + rumenSum + boneSum + organSum);
           default:
             return throw Error();
         }
@@ -722,9 +713,9 @@ class _newRecipeState extends State<ScreenCreateRecipe> {
   List<BarChartGroupData> vegGroups() => List.generate(2, (i) {
         switch (i) {
           case 0:
-            return makeGroupData(0, vegSum, false);
+            return makeGroupData(0, vegSum, vegSum + fruitSum);
           case 1:
-            return makeGroupData(1, fruitSum, false);
+            return makeGroupData(1, fruitSum, vegSum + fruitSum);
           default:
             return throw Error();
         }

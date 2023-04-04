@@ -50,8 +50,9 @@ initData() async {
 
   // init explore recipe and likes and profile list
   try {
-    controller.databaseRecipeList = await supabase.from('recipe').select(
-        'id, created_at, modified_at, name, description, paws, user_id');
+    controller.databaseRecipeList = await supabase
+        .from('recipe')
+        .select('id, created_at, modified_at, name, description, user_id');
   } catch (error) {
     print(error);
   } finally {
@@ -94,7 +95,7 @@ initData() async {
   try {
     controller.userRecipeListDB = await supabase
         .from('recipe')
-        .select('id, created_at, modified_at, name, description, paws')
+        .select('id, created_at, modified_at, name, description')
         .eq('user_id', user!.id);
     controller.userRecipeList.clear();
     for (var recipe in controller.userRecipeListDB) {
@@ -102,7 +103,7 @@ initData() async {
           name: (recipe as Map)['name'],
           id: recipe['id'],
           created_at: recipe['created_at'],
-          paws: recipe['paws'],
+          paws: 0,
           description: recipe['description'],
           modified_at: recipe['modified_at'],
           user_id: user!.id,
