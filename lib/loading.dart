@@ -124,7 +124,7 @@ initData() async {
       if (map?.containsKey("recipe") ?? false) {
         var tempRecipe = await supabase
             .from('recipe')
-            .select('id, created_at, modified_at, name, description, paws')
+            .select('id, created_at, modified_at, name, description')
             .eq('id', map['recipe']);
 
         controller.userLikedRecipe.clear();
@@ -133,7 +133,7 @@ initData() async {
               name: (recipe as Map)['name'],
               id: recipe['id'],
               created_at: recipe['created_at'],
-              paws: recipe['paws'],
+              paws: 0,
               description: recipe['description'],
               modified_at: recipe['modified_at'],
               user_id: user!.id,
@@ -171,8 +171,9 @@ initData() async {
 loadExplorePage() async {
   final Controller controller = Get.find();
   try {
-    controller.databaseRecipeList = await supabase.from('recipe').select(
-        'id, created_at, modified_at, name, description, paws, user_id');
+    controller.databaseRecipeList = await supabase
+        .from('recipe')
+        .select('id, created_at, modified_at, name, description, user_id');
   } catch (error) {
     print(error);
   } finally {

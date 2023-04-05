@@ -257,17 +257,19 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
             .from('ingredient')
             .select('*')
             .eq('id', recipeIngredient['ingredient']);
-        recipeIngredients.add(Ingredient(
-            id: ingredientsList[0]['id'],
-            name: ingredientsList[0]['name'],
-            type: ingredientsList[0]['type'],
-            category: ingredientsList[0]['category'],
-            calories: ingredientsList[0]['calories'].toDouble(),
-            protein: ingredientsList[0]['protein'].toDouble(),
-            fat: ingredientsList[0]['fat'].toDouble(),
-            carbohydrates: ingredientsList[0]['carbohydrates'].toDouble(),
-            minerals: ingredientsList[0]['minerals'].toDouble(),
-            moisture: ingredientsList[0]['moisture'].toDouble()));
+        for (var ingredient in ingredientsList) {
+          recipeIngredients.add(Ingredient(
+              id: ingredient['id'],
+              name: ingredient['name'],
+              type: ingredient['type'],
+              category: ingredient['category'],
+              calories: ingredient['calories'].toDouble(),
+              protein: ingredient['protein'].toDouble(),
+              fat: ingredient['fat'].toDouble(),
+              carbohydrates: ingredient['carbohydrates'].toDouble(),
+              minerals: ingredient['minerals'].toDouble(),
+              moisture: ingredient['moisture'].toDouble()));
+        }
       }
     } catch (error) {
       print(error);
