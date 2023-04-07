@@ -26,7 +26,7 @@ class _ScreenBarfbookState extends State<ScreenBarfbook> {
   updateRecipeList() async {
     controller.userRecipeListDB = await supabase
         .from('recipe')
-        .select('id, created_at, modified_at, name, description, paws')
+        .select('id, created_at, modified_at, name, description')
         .eq('user_id', user!.id);
     controller.userRecipeList.clear();
     for (var recipe in controller.userRecipeListDB) {
@@ -34,7 +34,7 @@ class _ScreenBarfbookState extends State<ScreenBarfbook> {
           name: (recipe as Map)['name'],
           id: recipe['id'],
           created_at: recipe['created_at'],
-          paws: recipe['paws'],
+          paws: 0,
           description: recipe['description'],
           modified_at: recipe['modified_at'],
           user_id: user!.id,
@@ -118,7 +118,7 @@ class _ScreenBarfbookState extends State<ScreenBarfbook> {
                                       style: ButtonStyle(),
                                       onPressed: () {
                                         Get.to(() => ScreenEditRecipe(
-                                              recipeId: recipe.id,
+                                              recipe: recipe,
                                             ));
                                       },
                                       icon: Image.asset(

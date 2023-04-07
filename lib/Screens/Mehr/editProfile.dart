@@ -70,7 +70,7 @@ class _ScreenEditProfileState extends State<ScreenEditProfile> {
                 ),
                 SizedBox(height: 24),
                 CustomTextField(
-                    label: 'Erzähl etwas über dich!',
+                    label: 'Biografie',
                     text: widget.profile.description,
                     controller: _nameController,
                     maxLines: 12,

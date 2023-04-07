@@ -556,6 +556,7 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
 
   BarChartData meatBarData() {
     return BarChartData(
+        alignment: BarChartAlignment.spaceBetween,
         barTouchData: BarTouchData(
           touchTooltipData: BarTouchTooltipData(
             tooltipBgColor: Colors.blueGrey,
@@ -674,10 +675,12 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
     Widget text;
     switch (value.toInt()) {
       case 0:
-        text = Text('G');
+        text =
+            Text('${(vegSum / (vegSum + fruitSum) * 100).toStringAsFixed(1)}%');
         break;
       case 1:
-        text = Text('O');
+        text = Text(
+            '${(fruitSum / (vegSum + fruitSum) * 100).toStringAsFixed(1)}%');
         break;
       default:
         text = Text('');
@@ -694,16 +697,20 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
     Widget text;
     switch (value.toInt()) {
       case 0:
-        text = Text('M');
+        text = Text(
+            '${(meatSum / (meatSum + rumenSum + boneSum + organSum) * 100).toStringAsFixed(1)}%');
         break;
       case 1:
-        text = Text('P');
+        text = Text(
+            '${(rumenSum / (meatSum + rumenSum + boneSum + organSum) * 100).toStringAsFixed(1)}%');
         break;
       case 2:
-        text = Text('K');
+        text = Text(
+            '${(boneSum / (meatSum + rumenSum + boneSum + organSum) * 100).toStringAsFixed(1)}%');
         break;
       case 3:
-        text = Text('I');
+        text = Text(
+            '${(organSum / (meatSum + rumenSum + boneSum + organSum) * 100).toStringAsFixed(1)}%');
         break;
       default:
         text = Text('');

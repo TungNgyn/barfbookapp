@@ -24,7 +24,7 @@ class _ScreenEditPetState extends State<ScreenEditPet> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("${widget.pet.name}"),
+        title: Text("${widget.pet.name} bearbeiten"),
         actions: [
           Padding(
             padding: const EdgeInsets.only(right: 10),

@@ -82,8 +82,7 @@ class _ScreenPetDetailPageState extends State<ScreenPetDetailPage> {
                                   pet: widget.pet,
                                   days: 1,
                                   meat: 80,
-                                  organs: 10,
-                                  vegetables: 10,
+                                  vegetables: 20,
                                 ),
                               ],
                             ),
@@ -202,13 +201,11 @@ class FeedingCard extends StatelessWidget {
       required this.pet,
       required this.days,
       required this.meat,
-      required this.organs,
       required this.vegetables});
 
   final Pet pet;
   final int days;
   final int meat;
-  final int organs;
   final int vegetables;
 
   @override
@@ -260,7 +257,7 @@ class FeedingCard extends StatelessWidget {
                             fontWeight: FontWeight.bold, fontSize: 21),
                       ),
                       Text(
-                          '${(ration * meat / 100 * days).toStringAsFixed(2)}g',
+                          '${((ration / 100 * meat) * days).toStringAsFixed(2)}g',
                           style: TextStyle(
                               fontWeight: FontWeight.bold, fontSize: 21))
                     ],
@@ -270,7 +267,7 @@ class FeedingCard extends StatelessWidget {
                     children: [
                       Text('Muskelfleisch (50%)'),
                       Text(
-                          '${(ration * (meat / 100) * (50 / meat) * days).toStringAsFixed(1)}g')
+                          '${(((ration / 100 * meat) * 0.5) * days).toStringAsFixed(1)}g')
                     ],
                   ),
                   Row(
@@ -278,46 +275,23 @@ class FeedingCard extends StatelessWidget {
                     children: [
                       Text('Pansen/Magen (20%)'),
                       Text(
-                          '${(ration * (meat / 100) * (20 / meat) * days).toStringAsFixed(1)}g')
+                          '${(((ration / 100 * meat) * 0.2) * days).toStringAsFixed(1)}g')
                     ],
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text('fleischige Knochen (10%)'),
+                      Text('fleischige Knochen (15%)'),
                       Text(
-                          '${(ration * (meat / 100) * (10 / meat) * days).toStringAsFixed(1)}g')
-                    ],
-                  ),
-                  SizedBox(height: 16),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        'Innereien ($organs%)',
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 21),
-                      ),
-                      Text(
-                          '${(pet.weight * pet.ration / 100 * organs / 100 * days).toStringAsFixed(2)}g',
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 21))
+                          '${(((ration / 100 * meat) * 0.15) * days).toStringAsFixed(1)}g')
                     ],
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text('Leber (5%)'),
+                      Text('Organe (15%)'),
                       Text(
-                          '${(pet.weight * pet.ration / 100 * organs / 100 * 5 / organs * days).toStringAsFixed(1)}g')
-                    ],
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text('andere Organe (5%)'),
-                      Text(
-                          '${(pet.weight * pet.ration / 100 * organs / 100 * 5 / organs * days).toStringAsFixed(1)}g')
+                          '${(((ration / 100 * meat) * 0.15) * days).toStringAsFixed(1)}g')
                     ],
                   ),
                   SizedBox(height: 16),
@@ -330,7 +304,7 @@ class FeedingCard extends StatelessWidget {
                             fontWeight: FontWeight.bold, fontSize: 21),
                       ),
                       Text(
-                          '${(pet.weight * pet.ration / 100 * vegetables / 100 * days).toStringAsFixed(2)}g',
+                          '${((ration / 100 * vegetables) * days).toStringAsFixed(2)}g',
                           style: TextStyle(
                               fontWeight: FontWeight.bold, fontSize: 21))
                     ],
@@ -338,17 +312,17 @@ class FeedingCard extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text('Gemüse (8%)'),
+                      Text('Gemüse (80%)'),
                       Text(
-                          '${(pet.weight * pet.ration / 100 * vegetables / 100 * 8 / vegetables * days).toStringAsFixed(1)}g')
+                          '${(((ration / 100 * vegetables) * 0.8) * days).toStringAsFixed(1)}g')
                     ],
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text('Obst (2%)'),
+                      Text('Obst (20%)'),
                       Text(
-                          '${(pet.weight * pet.ration / 100 * vegetables / 100 * 2 / vegetables * days).toStringAsFixed(1)}g')
+                          '${(((ration / 100 * vegetables) * 0.2) * days).toStringAsFixed(1)}g')
                     ],
                   ),
                   // Divider(),
