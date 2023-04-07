@@ -16,6 +16,7 @@ class RecipeDetailPage extends StatefulWidget {
 }
 
 class _RecipeDetailPageState extends State<RecipeDetailPage> {
+  Future? _future;
   int touchedIndex = -1;
   double vegSum = 0;
   double fruitSum = 0;
@@ -44,327 +45,364 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
   bool favorite = false;
   @override
   void initState() {
+    _future = loadData();
     for (Recipe recipe in controller.userLikedRecipe) {
       if (recipe.id == widget.recipe.id) {
         favorite = true;
       }
     }
     super.initState();
-    loadData();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(
-          title: Text(widget.recipe.name),
-          actions: [
-            ElevatedButton(
-                onPressed: () {
-                  setState(() {});
-                  Get.defaultDialog(
-                      title: 'Zutaten',
-                      content: SizedBox(
-                        height: MediaQuery.of(context).size.height * 0.7,
-                        width: MediaQuery.of(context).size.height * 0.8,
-                        child: SingleChildScrollView(
-                            child: Column(children: [
-                          Wrap(
-                            children: [
-                              for (Ingredient ingredient in recipeIngredients)
-                                Card(
-                                    elevation: 4,
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(10),
-                                      child: Row(
-                                        children: [
-                                          Padding(
-                                            padding: EdgeInsets.only(right: 10),
-                                            child: Card(
-                                                child: FlutterLogo(size: 70)),
-                                          ),
-                                          Flexible(
-                                            flex: 10,
-                                            child: Column(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.center,
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Text(
-                                                  ingredient.name,
-                                                  style:
-                                                      TextStyle(fontSize: 18),
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
-                                                ),
-                                                Text(
-                                                    '${ingredient.gram} Gramm'),
-                                              ],
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    )),
-                            ],
-                          ),
-                        ])),
-                      ));
-                },
-                child: Text("Zutaten")),
-            IconButton(
-                onPressed: () {
-                  setState(() {
-                    toggleFavorite();
-                  });
-                },
-                icon: (favorite == true
-                    ? Icon(Icons.favorite)
-                    : Icon(Icons.favorite_border))),
-            IconButton(
-                onPressed: () {
-                  Get.defaultDialog(
-                      title: "Details",
-                      textConfirm: "Profil ansehen",
-                      middleText:
-                          "Erstellt am ${widget.recipe.created_at} \nZuletzt bearbeitet am ${widget.recipe.modified_at}\nvon ${widget.recipe.user}");
-                },
-                icon: Icon(Icons.info)),
-            IconButton(
-                onPressed: () {
-                  Get.bottomSheet(
-                      isScrollControlled: true,
-                      Container(
-                          decoration: BoxDecoration(
-                              color: Theme.of(context).colorScheme.onPrimary,
-                              borderRadius: BorderRadius.only(
-                                  topLeft: Radius.circular(25),
-                                  topRight: Radius.circular(25))),
-                          height: MediaQuery.of(context).size.height * 0.8,
-                          child: SingleChildScrollView(
-                            child: Padding(
-                              padding: EdgeInsets.all(25),
-                              child: Column(
-                                children: [
-                                  Text(
-                                    "Kommentare",
-                                    style: TextStyle(fontSize: 31),
+    return FutureBuilder(
+        future: _future,
+        builder: (context, snapshot) => snapshot.connectionState ==
+                ConnectionState.done
+            ? Scaffold(
+                appBar: AppBar(
+                  title: Text(widget.recipe.name),
+                  actions: [
+                    IconButton(
+                        onPressed: () {
+                          print(weightSum);
+                        },
+                        icon: Icon(Icons.abc)),
+                    ElevatedButton(
+                        onPressed: () {
+                          setState(() {});
+                          Get.defaultDialog(
+                              title: 'Zutaten',
+                              content: SizedBox(
+                                height:
+                                    MediaQuery.of(context).size.height * 0.7,
+                                width: MediaQuery.of(context).size.height * 0.8,
+                                child: SingleChildScrollView(
+                                    child: Column(children: [
+                                  Wrap(
+                                    children: [
+                                      for (Ingredient ingredient
+                                          in recipeIngredients)
+                                        Card(
+                                            elevation: 4,
+                                            child: Padding(
+                                              padding: const EdgeInsets.all(10),
+                                              child: Row(
+                                                children: [
+                                                  Padding(
+                                                    padding: EdgeInsets.only(
+                                                        right: 10),
+                                                    child: Card(
+                                                        child: FlutterLogo(
+                                                            size: 70)),
+                                                  ),
+                                                  Flexible(
+                                                    flex: 10,
+                                                    child: Column(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .center,
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
+                                                      children: [
+                                                        Text(
+                                                          ingredient.name,
+                                                          style: TextStyle(
+                                                              fontSize: 18),
+                                                          overflow: TextOverflow
+                                                              .ellipsis,
+                                                        ),
+                                                        Text(
+                                                            '${ingredient.gram} Gramm'),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            )),
+                                    ],
                                   ),
-                                  SizedBox(height: 35),
-                                  TextField(
-                                    maxLines: 8,
-                                    decoration: InputDecoration(
-                                      border: OutlineInputBorder(
-                                          borderSide: BorderSide(
-                                              width: 1,
-                                              color: Theme.of(context)
-                                                  .colorScheme
-                                                  .primary)),
-                                      hintText: "Schreib was dir gefällt!",
-                                    ),
-                                  ),
-                                  SizedBox(height: 5),
-                                  ElevatedButton(
-                                      onPressed: () {},
-                                      child: Text("Kommentieren")),
-                                  SizedBox(height: 20),
-                                  Obx(() => ListView(
-                                        children: [Text("data")],
-                                      ))
-                                ],
-                              ),
-                            ),
-                          )));
-                },
-                icon: Icon(Icons.comment)),
-            SizedBox(width: 30)
-          ],
-        ),
-        body: SingleChildScrollView(
-          padding: EdgeInsets.all(15),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                padding: EdgeInsets.only(left: 15, right: 15, bottom: 10),
-                height: MediaQuery.of(context).size.height * 0.5,
-                child: Stack(
-                  alignment: Alignment.bottomCenter,
-                  children: [
-                    PageView.builder(
-                        controller: pageController,
-                        itemCount: 5,
-                        onPageChanged: (int index) {
+                                ])),
+                              ));
+                        },
+                        child: Text("Zutaten")),
+                    IconButton(
+                        onPressed: () {
                           setState(() {
-                            _pageViewController(index);
+                            toggleFavorite();
                           });
                         },
-                        itemBuilder: (_, index) {
-                          return ClipRRect(
-                              borderRadius: BorderRadius.circular(20),
-                              child: Card(child: FlutterLogo()));
-                        }),
-                    Positioned(
-                      bottom: 20,
-                      child: Row(
-                        children: _buildPageIndicator(),
-                      ),
-                    )
-                  ],
-                ),
-              ),
-              Padding(
-                padding: EdgeInsets.symmetric(vertical: 10),
-                child: SizedBox(
-                    height: MediaQuery.of(context).size.height * 0.36,
-                    child: Card(
-                        child: Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 15),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              _indicator(Colors.green, "Vegetarisch",
-                                  vegSum + fruitSum),
-                              IconButton(
-                                  onPressed: () {
-                                    Get.defaultDialog(
-                                        title: 'Analytische Bestandteile',
-                                        content: Center(
-                                          child: Padding(
-                                            padding: EdgeInsets.symmetric(
-                                                horizontal: 20),
-                                            child: Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: [
-                                                  Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .spaceBetween,
-                                                    children: [
-                                                      Text('Kalorien:'),
-                                                      Text(
-                                                          '${caloriesSum.toStringAsFixed(1)}kcal')
-                                                    ],
-                                                  ),
-                                                  Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .spaceBetween,
-                                                    children: [
-                                                      Text('Protein:'),
-                                                      Text(
-                                                          '${proteinSum.toStringAsFixed(1)}g')
-                                                    ],
-                                                  ),
-                                                  Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .spaceBetween,
-                                                    children: [
-                                                      Text('Fett:'),
-                                                      Text(
-                                                          '${fatSum.toStringAsFixed(1)}g')
-                                                    ],
-                                                  ),
-                                                  Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .spaceBetween,
-                                                    children: [
-                                                      Text('Kohlenhydrate:'),
-                                                      Text(
-                                                          '${carbohydratesSum.toStringAsFixed(1)}g')
-                                                    ],
-                                                  ),
-                                                  Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .spaceBetween,
-                                                    children: [
-                                                      Text('Mineralien:'),
-                                                      Text(
-                                                          '${mineralsSum.toStringAsFixed(1)}g')
-                                                    ],
-                                                  ),
-                                                ]),
+                        icon: (favorite == true
+                            ? Icon(Icons.favorite)
+                            : Icon(Icons.favorite_border))),
+                    IconButton(
+                        onPressed: () {
+                          Get.defaultDialog(
+                              title: "Details",
+                              textConfirm: "Profil ansehen",
+                              middleText:
+                                  "Erstellt am ${widget.recipe.created_at} \nZuletzt bearbeitet am ${widget.recipe.modified_at}\nvon ${widget.recipe.user}");
+                        },
+                        icon: Icon(Icons.info)),
+                    IconButton(
+                        onPressed: () {
+                          Get.bottomSheet(
+                              isScrollControlled: true,
+                              Container(
+                                  decoration: BoxDecoration(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .onPrimary,
+                                      borderRadius: BorderRadius.only(
+                                          topLeft: Radius.circular(25),
+                                          topRight: Radius.circular(25))),
+                                  height:
+                                      MediaQuery.of(context).size.height * 0.8,
+                                  child: SingleChildScrollView(
+                                    child: Padding(
+                                      padding: EdgeInsets.all(25),
+                                      child: Column(
+                                        children: [
+                                          Text(
+                                            "Kommentare",
+                                            style: TextStyle(fontSize: 31),
                                           ),
-                                        ));
-                                  },
-                                  icon: Icon(Icons.info))
-                            ],
-                          ),
-                          Padding(
-                            padding: EdgeInsets.symmetric(vertical: 25),
-                            child: SizedBox(
-                              height: 200,
-                              child: PieChart(PieChartData(
-                                  pieTouchData: PieTouchData(touchCallback:
-                                      (FlTouchEvent event, pieTouchResponse) {
-                                    setState(() {
-                                      if (!event.isInterestedForInteractions &&
-                                          pieTouchResponse != null &&
-                                          (pieTouchResponse.touchedSection!
-                                                  .touchedSectionIndex !=
-                                              -1)) {
-                                        Get.defaultDialog(
-                                            title: pieTouchResponse
-                                                        .touchedSection!
-                                                        .touchedSectionIndex ==
-                                                    0
-                                                ? 'Fleischanteil'
-                                                : 'Gemüseanteil',
-                                            content: SizedBox(
-                                                height: 200,
-                                                width: 200,
-                                                child: BarChart(pieTouchResponse
-                                                            .touchedSection!
-                                                            .touchedSectionIndex ==
-                                                        0
-                                                    ? meatBarData()
-                                                    : vegBarData())));
-                                      }
-                                      if (!event.isInterestedForInteractions ||
-                                          pieTouchResponse == null ||
-                                          pieTouchResponse.touchedSection ==
-                                              null) {
-                                        touchedIndex = -1;
-                                        return;
-                                      }
-                                      touchedIndex = pieTouchResponse
-                                          .touchedSection!.touchedSectionIndex;
-                                    });
-                                  }),
-                                  sectionsSpace: 0,
-                                  centerSpaceRadius: 60,
-                                  sections: showSection())),
-                            ),
-                          ),
-                          _indicator(Colors.red, "Fleisch",
-                              meatSum + rumenSum + boneSum + organSum)
-                        ],
-                      ),
-                    ))),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 20, bottom: 10),
-                child: Column(
-                  children: [
-                    const Text("Beschreibung", style: TextStyle(fontSize: 24)),
-                    Text(
-                      widget.recipe.description,
-                      maxLines: 5,
-                      overflow: TextOverflow.ellipsis,
-                    )
+                                          SizedBox(height: 35),
+                                          TextField(
+                                            maxLines: 8,
+                                            decoration: InputDecoration(
+                                              border: OutlineInputBorder(
+                                                  borderSide: BorderSide(
+                                                      width: 1,
+                                                      color: Theme.of(context)
+                                                          .colorScheme
+                                                          .primary)),
+                                              hintText:
+                                                  "Schreib was dir gefällt!",
+                                            ),
+                                          ),
+                                          SizedBox(height: 5),
+                                          ElevatedButton(
+                                              onPressed: () {},
+                                              child: Text("Kommentieren")),
+                                          SizedBox(height: 20),
+                                          Obx(() => ListView(
+                                                children: [Text("data")],
+                                              ))
+                                        ],
+                                      ),
+                                    ),
+                                  )));
+                        },
+                        icon: Icon(Icons.comment)),
+                    SizedBox(width: 30)
                   ],
                 ),
-              ),
-            ],
-          ),
-        ));
+                body: SingleChildScrollView(
+                  padding: EdgeInsets.all(15),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        padding:
+                            EdgeInsets.only(left: 15, right: 15, bottom: 10),
+                        height: MediaQuery.of(context).size.height * 0.5,
+                        child: Stack(
+                          alignment: Alignment.bottomCenter,
+                          children: [
+                            PageView.builder(
+                                controller: pageController,
+                                itemCount: 5,
+                                onPageChanged: (int index) {
+                                  setState(() {
+                                    _pageViewController(index);
+                                  });
+                                },
+                                itemBuilder: (_, index) {
+                                  return ClipRRect(
+                                      borderRadius: BorderRadius.circular(20),
+                                      child: Card(child: FlutterLogo()));
+                                }),
+                            Positioned(
+                              bottom: 20,
+                              child: Row(
+                                children: _buildPageIndicator(),
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.symmetric(vertical: 10),
+                        child: SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.36,
+                            child: Card(
+                                child: Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 15),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      _indicator(Colors.green, "Vegetarisch",
+                                          vegSum + fruitSum),
+                                      IconButton(
+                                          onPressed: () {
+                                            Get.defaultDialog(
+                                                title:
+                                                    'Analytische Bestandteile',
+                                                content: Center(
+                                                  child: Padding(
+                                                    padding:
+                                                        EdgeInsets.symmetric(
+                                                            horizontal: 20),
+                                                    child: Column(
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .start,
+                                                        children: [
+                                                          Row(
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .spaceBetween,
+                                                            children: [
+                                                              Text('Kalorien:'),
+                                                              Text(
+                                                                  '${caloriesSum.toStringAsFixed(1)}kcal')
+                                                            ],
+                                                          ),
+                                                          Row(
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .spaceBetween,
+                                                            children: [
+                                                              Text('Protein:'),
+                                                              Text(
+                                                                  '${proteinSum.toStringAsFixed(1)}g')
+                                                            ],
+                                                          ),
+                                                          Row(
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .spaceBetween,
+                                                            children: [
+                                                              Text('Fett:'),
+                                                              Text(
+                                                                  '${fatSum.toStringAsFixed(1)}g')
+                                                            ],
+                                                          ),
+                                                          Row(
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .spaceBetween,
+                                                            children: [
+                                                              Text(
+                                                                  'Kohlenhydrate:'),
+                                                              Text(
+                                                                  '${carbohydratesSum.toStringAsFixed(1)}g')
+                                                            ],
+                                                          ),
+                                                          Row(
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .spaceBetween,
+                                                            children: [
+                                                              Text(
+                                                                  'Mineralien:'),
+                                                              Text(
+                                                                  '${mineralsSum.toStringAsFixed(1)}g')
+                                                            ],
+                                                          ),
+                                                        ]),
+                                                  ),
+                                                ));
+                                          },
+                                          icon: Icon(Icons.info))
+                                    ],
+                                  ),
+                                  Padding(
+                                    padding: EdgeInsets.symmetric(vertical: 25),
+                                    child: SizedBox(
+                                      height: 200,
+                                      child: PieChart(PieChartData(
+                                          pieTouchData: PieTouchData(
+                                              touchCallback:
+                                                  (FlTouchEvent event,
+                                                      pieTouchResponse) {
+                                            setState(() {
+                                              if (!event
+                                                      .isInterestedForInteractions &&
+                                                  pieTouchResponse != null &&
+                                                  (pieTouchResponse
+                                                          .touchedSection!
+                                                          .touchedSectionIndex !=
+                                                      -1)) {
+                                                Get.defaultDialog(
+                                                    title: pieTouchResponse
+                                                                .touchedSection!
+                                                                .touchedSectionIndex ==
+                                                            0
+                                                        ? 'Fleischanteil'
+                                                        : 'Gemüseanteil',
+                                                    content: SizedBox(
+                                                        height: 200,
+                                                        width: 200,
+                                                        child: BarChart(pieTouchResponse
+                                                                    .touchedSection!
+                                                                    .touchedSectionIndex ==
+                                                                0
+                                                            ? meatBarData()
+                                                            : vegBarData())));
+                                              }
+                                              if (!event
+                                                      .isInterestedForInteractions ||
+                                                  pieTouchResponse == null ||
+                                                  pieTouchResponse
+                                                          .touchedSection ==
+                                                      null) {
+                                                touchedIndex = -1;
+                                                return;
+                                              }
+                                              touchedIndex = pieTouchResponse
+                                                  .touchedSection!
+                                                  .touchedSectionIndex;
+                                            });
+                                          }),
+                                          sectionsSpace: 0,
+                                          centerSpaceRadius: 60,
+                                          sections: showSection())),
+                                    ),
+                                  ),
+                                  _indicator(Colors.red, "Fleisch",
+                                      meatSum + rumenSum + boneSum + organSum)
+                                ],
+                              ),
+                            ))),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 20, bottom: 10),
+                        child: Column(
+                          children: [
+                            const Text("Beschreibung",
+                                style: TextStyle(fontSize: 24)),
+                            Text(
+                              widget.recipe.description,
+                              maxLines: 5,
+                              overflow: TextOverflow.ellipsis,
+                            )
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ))
+            : Center(
+                child: CircularProgressIndicator(),
+              ));
   }
 
   Widget _pageIndicator(bool isActive) {
@@ -471,6 +509,36 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
               minerals: ingredient['minerals'].toDouble(),
               moisture: ingredient['moisture'].toDouble(),
               gram: gram));
+          caloriesSum += (ingredient['calories'].toDouble() / 100 * gram);
+          proteinSum += (ingredient['protein'].toDouble() / 100 * gram);
+          fatSum += (ingredient['fat'].toDouble() / 100 * gram);
+          carbohydratesSum +=
+              (ingredient['carbohydrates'].toDouble() / 100 * gram);
+          mineralsSum += (ingredient['minerals'].toDouble() / 100 * gram);
+          moistureSum += (ingredient['moisture'].toDouble() / 100 * gram);
+          switch (ingredient['category']) {
+            case 'Fleisch':
+              meatSum += gram;
+              break;
+            case 'Pansen':
+              rumenSum += gram;
+              break;
+            case 'Knochen':
+              boneSum += gram;
+              break;
+            case 'Innereien':
+              organSum += gram;
+              break;
+            case 'Gemüse':
+              vegSum += gram;
+              break;
+            case 'Obst':
+              fruitSum += gram;
+              break;
+            default:
+              throw Error();
+          }
+          weightSum += gram;
         }
       }
     } catch (error) {
