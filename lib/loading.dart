@@ -115,6 +115,7 @@ initData() async {
 
   // init favorites
   try {
+    controller.userLikedRecipe.clear();
     controller.userLikedRecipeXrefDB = await supabase
         .from('profile_liked_recipe')
         .select('profile, recipe')
@@ -127,7 +128,6 @@ initData() async {
             .select('id, created_at, modified_at, name, description')
             .eq('id', map['recipe']);
 
-        controller.userLikedRecipe.clear();
         for (var recipe in tempRecipe) {
           controller.userLikedRecipe.add(Recipe(
               name: (recipe as Map)['name'],
@@ -210,5 +210,40 @@ loadExplorePage() async {
           user_id: recipe['user_id'],
           user: userName[0]['name']));
     }
+  }
+}
+
+initFavorite() async {
+  final Controller controller = Get.find();
+  try {
+    controller.userLikedRecipe.clear();
+    controller.userLikedRecipeXrefDB = await supabase
+        .from('profile_liked_recipe')
+        .select('profile, recipe')
+        .eq('profile', user!.id);
+
+    for (var map in controller.userLikedRecipeXrefDB) {
+      if (map?.containsKey("recipe") ?? false) {
+        print(map);
+        var tempRecipe = await supabase
+            .from('recipe')
+            .select('id, created_at, modified_at, name, description')
+            .eq('id', map['recipe']);
+
+        for (var recipe in tempRecipe) {
+          controller.userLikedRecipe.add(Recipe(
+              name: (recipe as Map)['name'],
+              id: recipe['id'],
+              created_at: recipe['created_at'],
+              paws: 0,
+              description: recipe['description'],
+              modified_at: recipe['modified_at'],
+              user_id: user!.id,
+              user: ""));
+        }
+      }
+    }
+  } catch (error) {
+    print(error);
   }
 }

@@ -185,8 +185,10 @@ class _ScreenBarfbookState extends State<ScreenBarfbook> {
                                     child: ElevatedButton.icon(
                                         style: ButtonStyle(),
                                         onPressed: () {
-                                          Get.to(() =>
-                                              RecipeDetailPage(recipe: recipe));
+                                          Get.to(() => RecipeDetailPage(
+                                                recipe: recipe,
+                                                favorite: true,
+                                              ));
                                         },
                                         icon: Image.asset(
                                             "assets/images/recipe/icons/beef.png"),
@@ -195,6 +197,11 @@ class _ScreenBarfbookState extends State<ScreenBarfbook> {
                                 }
                                 return Column(children: list);
                               }),
+                        ElevatedButton(
+                            onPressed: () {
+                              print(controller.userLikedRecipe.length);
+                            },
+                            child: Text("Test"))
                       ],
                     ),
                   ),

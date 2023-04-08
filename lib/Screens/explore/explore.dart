@@ -74,9 +74,22 @@ class _ScreenExploreState extends State<ScreenExplore>
                       Recipe recipe = controller.exploreRecipeList[index];
                       return GestureDetector(
                         onTap: () {
+                          for (var map in controller.userLikedRecipeXrefDB) {
+                            if (map?.containsKey("recipe") ?? false) {
+                              if (map['recipe'] == recipe.id) {
+                                Get.to(() => RecipeDetailPage(
+                                      recipe: recipe,
+                                      favorite: true,
+                                    ));
+                                return;
+                              }
+                            }
+                          }
                           Get.to(() => RecipeDetailPage(
                                 recipe: recipe,
+                                favorite: false,
                               ));
+                          return;
                         },
                         child: Card(
                           elevation: 4,

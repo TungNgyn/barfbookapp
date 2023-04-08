@@ -1,4 +1,6 @@
 import 'package:Barfbook/Screens/Barfbook/barfbook_controller.dart';
+import 'package:Barfbook/Screens/Mehr/profile.dart';
+import 'package:Barfbook/Screens/Mehr/profile_controller.dart';
 import 'package:Barfbook/controller.dart';
 import 'package:Barfbook/loading.dart';
 import 'package:Barfbook/util/Supabase/AuthController.dart';
@@ -9,13 +11,15 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 class RecipeDetailPage extends StatefulWidget {
   final Recipe recipe;
-  RecipeDetailPage({required this.recipe});
+  bool favorite;
+  RecipeDetailPage({required this.recipe, this.favorite = false});
 
   @override
   State<RecipeDetailPage> createState() => _RecipeDetailPageState();
 }
 
 class _RecipeDetailPageState extends State<RecipeDetailPage> {
+  late Profile profile;
   Future? _future;
   int touchedIndex = -1;
   double vegSum = 0;
@@ -42,15 +46,9 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
     currentPageViewItemIndicator = currentIndex;
   }
 
-  bool favorite = false;
   @override
   void initState() {
     _future = loadData();
-    for (Recipe recipe in controller.userLikedRecipe) {
-      if (recipe.id == widget.recipe.id) {
-        favorite = true;
-      }
-    }
     super.initState();
   }
 
@@ -64,84 +62,38 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
                 appBar: AppBar(
                   title: Text(widget.recipe.name),
                   actions: [
-                    IconButton(
-                        onPressed: () {
-                          print(weightSum);
-                        },
-                        icon: Icon(Icons.abc)),
                     ElevatedButton(
-                        onPressed: () {
-                          setState(() {});
-                          Get.defaultDialog(
-                              title: 'Zutaten',
-                              content: SizedBox(
-                                height:
-                                    MediaQuery.of(context).size.height * 0.7,
-                                width: MediaQuery.of(context).size.height * 0.8,
-                                child: SingleChildScrollView(
-                                    child: Column(children: [
-                                  Wrap(
-                                    children: [
-                                      for (Ingredient ingredient
-                                          in recipeIngredients)
-                                        Card(
-                                            elevation: 4,
-                                            child: Padding(
-                                              padding: const EdgeInsets.all(10),
-                                              child: Row(
-                                                children: [
-                                                  Padding(
-                                                    padding: EdgeInsets.only(
-                                                        right: 10),
-                                                    child: Card(
-                                                        child: FlutterLogo(
-                                                            size: 70)),
-                                                  ),
-                                                  Flexible(
-                                                    flex: 10,
-                                                    child: Column(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .center,
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .start,
-                                                      children: [
-                                                        Text(
-                                                          ingredient.name,
-                                                          style: TextStyle(
-                                                              fontSize: 18),
-                                                          overflow: TextOverflow
-                                                              .ellipsis,
-                                                        ),
-                                                        Text(
-                                                            '${ingredient.gram} Gramm'),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            )),
-                                    ],
-                                  ),
-                                ])),
-                              ));
-                        },
-                        child: Text("Zutaten")),
-                    IconButton(
-                        onPressed: () {
-                          setState(() {
-                            toggleFavorite();
+                        onPressed: () async {
+                          await supabase
+                              .from('profile_liked_recipe')
+                              .delete()
+                              .match({
+                            'recipe': widget.recipe.id,
+                            'profile': user?.id
                           });
                         },
-                        icon: (favorite == true
-                            ? Icon(Icons.favorite)
-                            : Icon(Icons.favorite_border))),
+                        child: Text("DEL")),
+                    if (widget.recipe.user_id != user!.id)
+                      IconButton(
+                          onPressed: () {
+                            setState(() {
+                              toggleFavorite();
+                            });
+                          },
+                          icon: (widget.favorite == true
+                              ? Icon(Icons.favorite)
+                              : Icon(Icons.favorite_border))),
                     IconButton(
                         onPressed: () {
                           Get.defaultDialog(
                               title: "Details",
                               textConfirm: "Profil ansehen",
+                              confirm: ElevatedButton(
+                                  onPressed: () {
+                                    Get.to(
+                                        () => ScreenProfile(profile: profile));
+                                  },
+                                  child: Text("Profil anzeigen")),
                               middleText:
                                   "Erstellt am ${widget.recipe.created_at} \nZuletzt bearbeitet am ${widget.recipe.modified_at}\nvon ${widget.recipe.user}");
                         },
@@ -234,6 +186,68 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
                           ],
                         ),
                       ),
+                      ElevatedButton(
+                          onPressed: () {
+                            setState(() {});
+                            Get.defaultDialog(
+                                title: 'Zutaten',
+                                content: SizedBox(
+                                  height:
+                                      MediaQuery.of(context).size.height * 0.7,
+                                  width:
+                                      MediaQuery.of(context).size.height * 0.8,
+                                  child: SingleChildScrollView(
+                                      child: Column(children: [
+                                    Wrap(
+                                      children: [
+                                        for (Ingredient ingredient
+                                            in recipeIngredients)
+                                          Card(
+                                              elevation: 4,
+                                              child: Padding(
+                                                padding:
+                                                    const EdgeInsets.all(10),
+                                                child: Row(
+                                                  children: [
+                                                    Padding(
+                                                      padding: EdgeInsets.only(
+                                                          right: 10),
+                                                      child: Card(
+                                                          child: FlutterLogo(
+                                                              size: 70)),
+                                                    ),
+                                                    Flexible(
+                                                      flex: 10,
+                                                      child: Column(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .center,
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .start,
+                                                        children: [
+                                                          Text(
+                                                            ingredient.name,
+                                                            style: TextStyle(
+                                                                fontSize: 18),
+                                                            overflow:
+                                                                TextOverflow
+                                                                    .ellipsis,
+                                                          ),
+                                                          Text(
+                                                              '${ingredient.gram} Gramm'),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              )),
+                                      ],
+                                    ),
+                                  ])),
+                                ));
+                          },
+                          child: Text("Zutaten")),
                       Padding(
                         padding: EdgeInsets.symmetric(vertical: 10),
                         child: SizedBox(
@@ -443,42 +457,56 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
   }
 
   updateLikedRecipe() async {
-    for (var map in controller.userLikedRecipeXrefDB) {
-      if (map?.containsKey("recipe") ?? false) {
-        print(map['recipe']);
-        var tempRecipe = await supabase
-            .from('recipe')
-            .select('id, created_at, modified_at, name, description')
-            .eq('id', map['recipe']);
+    try {
+      controller.userLikedRecipeXrefDB = await supabase
+          .from('profile_liked_recipe')
+          .select('profile, recipe')
+          .eq('profile', user!.id);
 
-        controller.userLikedRecipe.clear();
-        for (var recipe in tempRecipe) {
-          controller.userLikedRecipe.add(Recipe(
-              name: (recipe as Map)['name'],
-              id: recipe['id'],
-              created_at: recipe['created_at'],
-              paws: 0,
-              description: recipe['description'],
-              modified_at: recipe['modified_at'],
-              user_id: user!.id,
-              user: ""));
+      for (var map in controller.userLikedRecipeXrefDB) {
+        if (map?.containsKey("recipe") ?? false) {
+          var tempRecipe = await supabase
+              .from('recipe')
+              .select('id, created_at, modified_at, name, description')
+              .eq('id', map['recipe']);
+
+          controller.userLikedRecipe.clear();
+          for (var recipe in tempRecipe) {
+            controller.userLikedRecipe.add(Recipe(
+                name: (recipe as Map)['name'],
+                id: recipe['id'],
+                created_at: recipe['created_at'],
+                paws: 0,
+                description: recipe['description'],
+                modified_at: recipe['modified_at'],
+                user_id: user!.id,
+                user: ""));
+          }
         }
       }
+    } catch (error) {
+      print(error);
     }
   }
 
   void toggleFavorite() async {
-    if (favorite == false) {
+    if (widget.favorite == false) {
       await supabase
           .from('profile_liked_recipe')
           .insert({'recipe': widget.recipe.id, 'profile': user?.id});
-      loadData();
+      widget.favorite = true;
+      initFavorite();
+      updateLikedRecipe();
+      setState(() {});
     } else {
       await supabase
           .from('profile_liked_recipe')
           .delete()
           .match({'recipe': widget.recipe.id, 'profile': user?.id});
-      loadData();
+      widget.favorite = false;
+      initFavorite();
+      updateLikedRecipe();
+      setState(() {});
     }
   }
 
@@ -545,13 +573,32 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
       print(error);
     }
 
-    // like check
-    final liked = await supabase
-        .from('profile_liked_recipe')
-        .select('*', FetchOptions(count: CountOption.exact))
-        .match({'profile': user?.id, 'recipe': widget.recipe.id});
+    //load profile
+    try {
+      final profileDB = await supabase
+          .from('profile')
+          .select('*')
+          .eq('id', widget.recipe.user_id);
+      profile = Profile(
+          id: profileDB[0]['id'],
+          createdAt: profileDB[0]['created_at'],
+          email: profileDB[0]['email'],
+          name: profileDB[0]['name'],
+          description: profileDB[0]['description']);
+    } catch (error) {
+      print(error);
+    }
 
-    liked.count == 1 ? favorite = true : favorite = false;
+    //init favorite
+    try {
+      for (var recipe in controller.userLikedRecipe) {
+        if (recipe.id == widget.recipe.id) {
+          widget.favorite = true;
+        }
+      }
+    } catch (error) {
+      print(error);
+    }
   }
 
   BarChartData meatBarData() {
