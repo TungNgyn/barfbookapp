@@ -238,7 +238,7 @@ class _ScreenAddPetState extends State<ScreenAddPet> {
                       ElevatedButton(
                           onPressed: (filledInput == false)
                               ? (pageIndex == 2)
-                                  ? () => _addPet()
+                                  ? () => _addPet().then((value) => Get.back())
                                   : null
                               : () {
                                   pageController.nextPage(

@@ -80,7 +80,7 @@ class AddPetCard extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.all(10.0),
                 child: Image.asset(
-                  'assets/images/calculator/icons/minibull.png',
+                  'assets/icons/petCard.png',
                   width: MediaQuery.of(context).size.width * 0.2,
                 ),
               ),

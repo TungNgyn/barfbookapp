@@ -35,5 +35,6 @@ flutter:
     - assets/images/splash/
     - assets/images/recipe/icons/
     - assets/images/
+    - assets/icons/
     - assets/fonts/lexend/
     

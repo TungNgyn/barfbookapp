@@ -1,6 +1,7 @@
 import 'package:Barfbook/Screens/Mehr/profile_controller.dart';
 import 'package:Barfbook/Screens/calculator/pet_controller.dart';
 import 'package:Barfbook/controller.dart';
+import 'package:Barfbook/util/Supabase/AuthController.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -16,7 +17,8 @@ class ScreenEditProfile extends StatefulWidget {
 class _ScreenEditProfileState extends State<ScreenEditProfile> {
   final Controller controller = Get.find();
   final TextEditingController _nameController = TextEditingController();
-  String? _genderController;
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _descriptionController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -29,8 +31,7 @@ class _ScreenEditProfileState extends State<ScreenEditProfile> {
             child: IconButton(
               icon: Icon(Icons.create),
               onPressed: () async {
-                // await _updateRecipe();
-                // Get.back();
+                await _updateProfile().then((value) => Get.back());
               },
             ),
           )
@@ -65,14 +66,14 @@ class _ScreenEditProfileState extends State<ScreenEditProfile> {
                 CustomTextField(
                   label: 'E-Mail',
                   text: widget.profile.email,
-                  controller: _nameController,
+                  controller: _emailController,
                   onChanged: (age) {},
                 ),
                 SizedBox(height: 24),
                 CustomTextField(
                     label: 'Biografie',
                     text: widget.profile.description,
-                    controller: _nameController,
+                    controller: _descriptionController,
                     maxLines: 12,
                     onChanged: (breed) {}),
                 SizedBox(height: 24),
@@ -82,5 +83,19 @@ class _ScreenEditProfileState extends State<ScreenEditProfile> {
         ),
       ),
     );
+  }
+
+  Future<dynamic> _updateProfile() async {
+    try {
+      await supabase.rpc('update_profile', params: {
+        'profilename': _nameController.text,
+        'profileemail': _emailController.text,
+        'profiledescription': _descriptionController.text,
+        'profileid': widget.profile.id
+      });
+    } catch (error) {
+      print(error);
+      Get.snackbar("Fehler!", "Etwas hat nicht funktioniert");
+    }
   }
 }

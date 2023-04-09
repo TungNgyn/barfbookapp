@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:Barfbook/Screens/explore/explore.dart';
 import 'package:Barfbook/Screens/explore/recipeDetailPage.dart';
 import 'package:Barfbook/controller.dart';
 import 'package:Barfbook/home.dart';
@@ -20,8 +21,6 @@ class ScreenBarfbook extends StatefulWidget {
 
 class _ScreenBarfbookState extends State<ScreenBarfbook> {
   final Controller controller = Get.find();
-
-  var appBarConstraints = 0.0;
 
   updateRecipeList() async {
     controller.userRecipeListDB = await supabase
@@ -55,12 +54,12 @@ class _ScreenBarfbookState extends State<ScreenBarfbook> {
     return;
   }
 
-  int tabIndex = 1;
+  int tabIndex = 0;
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
       initialIndex: tabIndex,
-      length: 3,
+      length: 2,
       child: Scaffold(
         body: NestedScrollView(
           headerSliverBuilder: (_, innerBoxIsScrolled) => [
@@ -73,44 +72,59 @@ class _ScreenBarfbookState extends State<ScreenBarfbook> {
               floating: true,
               forceElevated: innerBoxIsScrolled,
               bottom: TabBar(labelStyle: TextStyle(fontSize: 12), tabs: [
-                Tab(text: "Wochenplan", icon: Icon(Icons.directions_car)),
-                Tab(text: "Rezepte", icon: Icon(Icons.directions_transit)),
-                Tab(text: "Favoriten", icon: Icon(Icons.directions_bike)),
+                Tab(
+                    child: Column(
+                  children: [
+                    Image.asset("assets/icons/recipe.png", width: 32),
+                    Text("Rezepte")
+                  ],
+                )),
+                Tab(
+                    child: Column(
+                  children: [
+                    Image.asset("assets/icons/favorite.png", width: 32),
+                    Text("Favoriten")
+                  ],
+                )),
               ]),
             ),
           ],
-          body: RefreshIndicator(
-            onRefresh: _pullRefresh,
+          body: SafeArea(
             child: TabBarView(children: [
-              // Schedule
-              SingleChildScrollView(
-                child: Padding(
-                    padding: EdgeInsets.all(20.0),
-                    child: ElevatedButton(
-                      onPressed: () => Get.to(() => ScreenCreateSchedule()),
-                      child: Text("Wochenplan erstellen"),
-                    )),
-              ),
+              // // Schedule
+              // SingleChildScrollView(
+              //   child: Padding(
+              //       padding: EdgeInsets.all(20.0),
+              //       child: ElevatedButton(
+              //         onPressed: () => Get.to(() => ScreenCreateSchedule()),
+              //         child: Text("Wochenplan erstellen"),
+              //       )),
+              // ),
               //Recipe
-              SingleChildScrollView(
-                child: Padding(
-                  padding: EdgeInsets.all(20.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      controller.userRecipeListDB.isEmpty
+              Scaffold(
+                  floatingActionButtonLocation:
+                      FloatingActionButtonLocation.centerFloat,
+                  floatingActionButton: FloatingActionButton.large(
+                    onPressed: () {
+                      Get.to(() => ScreenCreateRecipe());
+                    },
+                    child: Icon(Icons.add),
+                  ),
+                  body: CustomScrollView(slivers: [
+                    SliverFillRemaining(
+                      child: controller.userRecipeListDB.isEmpty
                           ? noRecipeCreated()
                           : Obx(() {
                               List<Widget> list = [];
-                              list.add(TextButton(
-                                onPressed: () {
-                                  Get.to(() => ScreenCreateRecipe());
-                                },
-                                child: Icon(
-                                  Icons.add_circle_outline,
-                                  size: 50,
-                                ),
-                              ));
+                              // list.add(TextButton(
+                              //   onPressed: () {
+                              //     Get.to(() => ScreenCreateRecipe());
+                              //   },
+                              //   child: Icon(
+                              //     Icons.add_circle_outline,
+                              //     size: 50,
+                              //   ),
+                              // ));
                               for (Recipe recipe in controller.userRecipeList) {
                                 list.add(SizedBox(
                                   height: 40,
@@ -128,85 +142,65 @@ class _ScreenBarfbookState extends State<ScreenBarfbook> {
                               }
                               return Column(children: list);
                             }),
-                    ],
-                  ),
-                ),
-              ),
-              // Favorite
-              RefreshIndicator(
-                onRefresh: _pullRefresh,
-                child: SingleChildScrollView(
-                  child: Padding(
-                    padding: const EdgeInsets.all(20.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        controller.userLikedRecipe.isEmpty
-                            ? Card(
-                                child: Padding(
-                                  padding: const EdgeInsets.all(15.0),
-                                  child: Column(children: [
-                                    Padding(
-                                      padding: const EdgeInsets.all(10.0),
-                                      child: Image.asset(
-                                        'assets/images/rezept.png',
-                                        width:
-                                            MediaQuery.of(context).size.width *
-                                                0.2,
-                                      ),
-                                    ),
-                                    Column(
-                                      children: [
-                                        Text(
-                                            'Du hast noch keine Rezepte gespeichert.'),
-                                        SizedBox(
-                                          height: 10,
-                                        ),
-                                      ],
-                                    ),
-                                  ]),
-                                ),
-                              )
-                            : Obx(() {
-                                List<Widget> list = [];
-                                list.add(TextButton(
-                                  onPressed: () {
-                                    Get.to(() => ScreenCreateRecipe());
-                                  },
-                                  child: Icon(
-                                    Icons.add_circle_outline,
-                                    size: 50,
-                                  ),
-                                ));
-                                for (Recipe recipe
-                                    in controller.userLikedRecipe) {
-                                  list.add(SizedBox(
-                                    height: 40,
-                                    child: ElevatedButton.icon(
-                                        style: ButtonStyle(),
-                                        onPressed: () {
-                                          Get.to(() => RecipeDetailPage(
-                                                recipe: recipe,
-                                                favorite: true,
-                                              ));
-                                        },
-                                        icon: Image.asset(
-                                            "assets/images/recipe/icons/beef.png"),
-                                        label: Text(recipe.name)),
-                                  ));
-                                }
-                                return Column(children: list);
-                              }),
-                        ElevatedButton(
-                            onPressed: () {
-                              print(controller.userLikedRecipe.length);
-                            },
-                            child: Text("Test"))
-                      ],
                     ),
+                  ])),
+              // Favorite
+              Scaffold(
+                  floatingActionButtonLocation:
+                      FloatingActionButtonLocation.centerFloat,
+                  floatingActionButton: FloatingActionButton.large(
+                    onPressed: () {
+                      Get.offAll(() => Home());
+                    },
+                    child: Icon(Icons.search),
                   ),
-                ),
-              ),
+                  body: CustomScrollView(slivers: [
+                    SliverFillRemaining(
+                      child: controller.userLikedRecipe.isEmpty
+                          ? Card(
+                              child: Column(children: [
+                                Padding(
+                                  padding: const EdgeInsets.all(10.0),
+                                  child: Image.asset(
+                                    'assets/images/rezept.png',
+                                    width:
+                                        MediaQuery.of(context).size.width * 0.2,
+                                  ),
+                                ),
+                                Column(
+                                  children: [
+                                    Text(
+                                        'Du hast noch keine Rezepte gespeichert.'),
+                                    SizedBox(
+                                      height: 10,
+                                    ),
+                                  ],
+                                ),
+                              ]),
+                            )
+                          : Obx(() {
+                              List<Widget> list = [];
+                              for (Recipe recipe
+                                  in controller.userLikedRecipe) {
+                                list.add(SizedBox(
+                                  height: 40,
+                                  child: ElevatedButton.icon(
+                                      style: ButtonStyle(),
+                                      onPressed: () {
+                                        Get.to(() => RecipeDetailPage(
+                                              recipe: recipe,
+                                              favorite: true,
+                                            ));
+                                      },
+                                      icon: Image.asset(
+                                          "assets/images/recipe/icons/beef.png"),
+                                      label: Text(recipe.name)),
+                                ));
+                              }
+                              return Column(children: list);
+                            }),
+                    ),
+                  ])),
             ]),
           ),
         ),

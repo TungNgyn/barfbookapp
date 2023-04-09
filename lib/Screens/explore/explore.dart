@@ -156,9 +156,9 @@ class _ScreenExploreState extends State<ScreenExplore>
                                           children: [
                                             TextButton.icon(
                                                 onPressed: () {},
-                                                icon: Icon(
-                                                  Icons.pets,
-                                                  size: 40,
+                                                icon: Image.asset(
+                                                  'assets/icons/paw.png',
+                                                  width: 48,
                                                 ),
                                                 label: Text(
                                                   '${recipe.paws}',
@@ -191,9 +191,8 @@ class _ScreenExploreState extends State<ScreenExplore>
   bool get wantKeepAlive => true;
 
   Future<void> _pullRefresh() async {
-    setState(() {
-      loadExplorePage();
-    });
+    loadExplorePage();
+    setState(() {});
   }
 
   Padding _searchBar() {

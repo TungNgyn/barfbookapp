@@ -224,7 +224,6 @@ initFavorite() async {
 
     for (var map in controller.userLikedRecipeXrefDB) {
       if (map?.containsKey("recipe") ?? false) {
-        print(map);
         var tempRecipe = await supabase
             .from('recipe')
             .select('id, created_at, modified_at, name, description')

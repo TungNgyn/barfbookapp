@@ -75,8 +75,7 @@ class _editRecipeState extends State<ScreenEditRecipe> {
                         child: IconButton(
                           icon: Icon(Icons.create),
                           onPressed: () async {
-                            await _updateRecipe();
-                            Get.back();
+                            await _updateRecipe().then((value) => Get.back());
                           },
                         ),
                       )
@@ -168,7 +167,7 @@ class _editRecipeState extends State<ScreenEditRecipe> {
                             SizedBox(height: 15),
                             Obx(() {
                               List<Widget> list = [];
-                              for (Ingredient ingredient in recipeIngredients) {
+                              for (Ingredient ingredient in recipeIngredient) {
                                 list.add(GestureDetector(
                                   onTap: () {
                                     // recipeIngredient.remove(ingredient);
@@ -508,20 +507,25 @@ class _editRecipeState extends State<ScreenEditRecipe> {
   }
 
   Future<dynamic> _updateRecipe() async {
-    await supabase.rpc('update_recipe', params: {
-      'recipename': _recipeNameController.text,
-      'recipedescription': _recipeDescriptionController.text,
-      'recipeid': widget.recipe.id
-    });
-    await supabase
-        .from('recipe_ingredient')
-        .delete()
-        .eq('recipe', widget.recipe.id);
-    for (Ingredient ingredient in recipeIngredient) {
-      await supabase.rpc('insert_ingredients', params: {
-        'recipeid': widget.recipe.id,
-        'ingredientid': ingredient.id
+    try {
+      await supabase.rpc('update_recipe', params: {
+        'recipename': _recipeNameController.text,
+        'recipedescription': _recipeDescriptionController.text,
+        'recipeid': widget.recipe.id
       });
+      await supabase
+          .from('recipe_ingredient')
+          .delete()
+          .eq('recipe', widget.recipe.id);
+      for (Ingredient ingredient in recipeIngredient) {
+        await supabase.rpc('insert_ingredients', params: {
+          'recipeid': widget.recipe.id,
+          'ingredientid': ingredient.id
+        });
+      }
+    } catch (error) {
+      print(error);
+      Get.snackbar("Fehler!", "Etwas hat nicht funktioniert");
     }
   }
 
