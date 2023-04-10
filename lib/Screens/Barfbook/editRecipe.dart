@@ -130,17 +130,18 @@ class _editRecipeState extends State<ScreenEditRecipe> {
                                 },
                                 onSuggestionSelected: (suggestion) {
                                   recipeIngredient.add(Ingredient(
-                                    name: (suggestion as Map)['name'],
-                                    id: suggestion['id'],
-                                    type: suggestion['type'],
-                                    category: suggestion['category'],
-                                    calories: suggestion['calories'],
-                                    protein: suggestion['protein'],
-                                    fat: suggestion['fat'],
-                                    carbohydrates: suggestion['carbohydrates'],
-                                    minerals: suggestion['minerals'],
-                                    moisture: suggestion['moisture'],
-                                  ));
+                                      name: (suggestion as Map)['name'],
+                                      id: suggestion['id'],
+                                      type: suggestion['type'],
+                                      category: suggestion['category'],
+                                      calories: suggestion['calories'],
+                                      protein: suggestion['protein'],
+                                      fat: suggestion['fat'],
+                                      carbohydrates:
+                                          suggestion['carbohydrates'],
+                                      minerals: suggestion['minerals'],
+                                      moisture: suggestion['moisture'],
+                                      path: suggestion['path']));
                                   _ingredientController.text = "";
                                 },
                                 noItemsFoundBuilder: (BuildContext context) {
@@ -468,6 +469,7 @@ class _editRecipeState extends State<ScreenEditRecipe> {
               carbohydrates: ingredient['carbohydrates'].toDouble(),
               minerals: ingredient['minerals'].toDouble(),
               moisture: ingredient['moisture'].toDouble(),
+              path: ingredient['path'],
               gram: gram));
           caloriesSum += (ingredient['calories'].toDouble() / 100 * gram);
           proteinSum += (ingredient['protein'].toDouble() / 100 * gram);
