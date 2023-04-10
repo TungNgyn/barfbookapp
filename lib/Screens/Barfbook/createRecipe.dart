@@ -16,29 +16,37 @@ class ScreenCreateRecipe extends StatefulWidget {
   State<ScreenCreateRecipe> createState() => _newRecipeState();
 }
 
-late Ingredient selectedIngredient;
-
 class _newRecipeState extends State<ScreenCreateRecipe> {
   final TextEditingController _ingredientController = TextEditingController();
   final TextEditingController _recipeNameController = TextEditingController();
   final TextEditingController _recipeDescriptionController =
       TextEditingController();
-  final TextEditingController _recipeGramController = TextEditingController();
+  final List selectedIngredients = [];
+
+  final filterList = [];
+  final List<CustomFilterChip> _chipsList = [
+    CustomFilterChip("Muskelfleisch", false),
+    CustomFilterChip("Pansen", false),
+    CustomFilterChip("Knochen", false),
+    CustomFilterChip("Innereien", false),
+    CustomFilterChip("Gemüse", false),
+    CustomFilterChip("Obst", false),
+  ];
 
   int touchedIndex = -1;
-  double vegSum = 0;
-  double fruitSum = 0;
-  double meatSum = 0;
-  double rumenSum = 0;
-  double boneSum = 0;
-  double organSum = 0;
-  double weightSum = 0;
-  double caloriesSum = 0;
-  double proteinSum = 0;
-  double fatSum = 0;
-  double carbohydratesSum = 0;
-  double mineralsSum = 0;
-  double moistureSum = 0;
+  List<double> vegSum = [0];
+  List<double> fruitSum = [0];
+  List<double> meatSum = [0];
+  List<double> rumenSum = [0];
+  List<double> boneSum = [0];
+  List<double> organSum = [0];
+  List<double> weightSum = [0];
+  List<double> caloriesSum = [0];
+  List<double> proteinSum = [0];
+  List<double> fatSum = [0];
+  List<double> carbohydratesSum = [0];
+  List<double> mineralsSum = [0];
+  List<double> moistureSum = [0];
   var recipeIngredient = [].obs;
   final Controller controller = Get.find();
 
@@ -47,7 +55,6 @@ class _newRecipeState extends State<ScreenCreateRecipe> {
     _ingredientController.dispose();
     _recipeNameController.dispose();
     _recipeDescriptionController.dispose();
-    _recipeGramController.dispose();
     super.dispose();
   }
 
@@ -101,261 +108,442 @@ class _newRecipeState extends State<ScreenCreateRecipe> {
                           child: FlutterLogo(
                     size: 350,
                   )))),
-              TypeAheadField(
-                  textFieldConfiguration: TextFieldConfiguration(
-                      controller: _ingredientController,
-                      decoration: InputDecoration(
-                          border: OutlineInputBorder(),
-                          labelText: "Suche nach Zutaten")),
-                  suggestionsCallback: (pattern) async {
-                    return await supabase
-                        .from('ingredient')
-                        .select('*')
-                        .ilike('name', '%${pattern}%');
-                  },
-                  itemBuilder: (context, suggestion) {
-                    suggestion as Map;
-                    return ListTile(
-                      title: Text(
-                        (suggestion)['name'],
-                        style: TextStyle(fontSize: 24),
-                      ),
-                      subtitle: Row(
-                        children: [
-                          Text(suggestion['category']),
-                          Spacer(),
-                          Text(suggestion['type'])
-                        ],
-                      ),
-                    );
-                  },
-                  onSuggestionSelected: (suggestion) {
-                    suggestion as Map;
-                    Get.bottomSheet(
-                      Container(
-                        decoration: BoxDecoration(
-                            color: Theme.of(context).colorScheme.onPrimary,
-                            borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(25),
-                                topRight: Radius.circular(25))),
-                        child: Padding(
-                          padding: EdgeInsets.all(10),
-                          child: Column(
-                            children: [
-                              Text(
-                                "${(suggestion)['name']}",
-                                style: TextStyle(fontSize: 28),
-                              ),
-                              SizedBox(height: 30),
-                              TextField(
-                                controller: _recipeGramController,
-                                keyboardType: TextInputType.number,
-                                decoration: InputDecoration(
-                                    border: OutlineInputBorder(),
-                                    labelText: "Gewicht in Gramm"),
-                              ),
-                              ElevatedButton(
-                                  onPressed: () {
-                                    recipeIngredient.add(Ingredient(
-                                        id: suggestion['id'],
-                                        name: suggestion['name'],
-                                        type: suggestion['type'],
-                                        category: suggestion['category'],
-                                        calories:
-                                            suggestion['calories'].toDouble(),
-                                        protein:
-                                            suggestion['protein'].toDouble(),
-                                        fat: suggestion['fat'].toDouble(),
-                                        carbohydrates:
-                                            suggestion['carbohydrates']
-                                                .toDouble(),
-                                        minerals:
-                                            suggestion['minerals'].toDouble(),
-                                        moisture:
-                                            suggestion['moisture'].toDouble(),
-                                        gram: double.parse(
-                                          _recipeGramController.text,
-                                        )));
-                                    caloriesSum +=
-                                        (suggestion['calories'].toDouble() /
-                                            100 *
-                                            double.parse(
-                                                _recipeGramController.text));
-                                    proteinSum +=
-                                        (suggestion['protein'].toDouble() /
-                                            100 *
-                                            double.parse(
-                                                _recipeGramController.text));
-                                    fatSum += (suggestion['fat'].toDouble() /
-                                        100 *
-                                        double.parse(
-                                            _recipeGramController.text));
-                                    carbohydratesSum +=
-                                        (suggestion['carbohydrates']
-                                                .toDouble() /
-                                            100 *
-                                            double.parse(
-                                                _recipeGramController.text));
-                                    mineralsSum +=
-                                        (suggestion['minerals'].toDouble() /
-                                            100 *
-                                            double.parse(
-                                                _recipeGramController.text));
-                                    moistureSum +=
-                                        (suggestion['moisture'].toDouble() /
-                                            100 *
-                                            double.parse(
-                                                _recipeGramController.text));
-                                    switch (suggestion['category']) {
-                                      case 'Fleisch':
-                                        meatSum += double.parse(
-                                            _recipeGramController.text);
-                                        break;
-                                      case 'Pansen':
-                                        rumenSum += double.parse(
-                                            _recipeGramController.text);
-                                        break;
-                                      case 'Knochen':
-                                        boneSum += double.parse(
-                                            _recipeGramController.text);
-                                        break;
-                                      case 'Innereien':
-                                        organSum += double.parse(
-                                            _recipeGramController.text);
-                                        break;
-                                      case 'Gemüse':
-                                        vegSum += double.parse(
-                                            _recipeGramController.text);
-                                        break;
-                                      case 'Obst':
-                                        fruitSum += double.parse(
-                                            _recipeGramController.text);
-                                        break;
-                                      default:
-                                        throw Error();
-                                    }
-                                    weightSum += double.parse(
-                                        _recipeGramController.text);
-                                    _ingredientController.clear();
-                                    _recipeGramController.clear();
-                                    Get.back();
-                                    setState(() {});
-                                  },
-                                  child: Text("Hinzufügen"))
-                            ],
-                          ),
-                        ),
-                      ),
-                    );
-                  },
-                  noItemsFoundBuilder: (BuildContext context) {
-                    return Padding(
-                      padding: const EdgeInsets.all(20),
-                      child: Text(
-                        'Keine Zutat gefunden!',
-                        style: TextStyle(fontSize: 18),
-                      ),
-                    );
-                  }),
-              SizedBox(height: 15),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text("Zutaten"),
+                  Row(
+                    children: [
+                      Text(
+                        "Zutaten",
+                        style: TextStyle(fontSize: 18),
+                      ),
+                      IconButton(
+                          onPressed: () {
+                            Get.bottomSheet(
+                                isScrollControlled: true,
+                                StatefulBuilder(
+                                  builder: (BuildContext context,
+                                          StateSetter setModalState) =>
+                                      Container(
+                                    height: MediaQuery.of(context).size.height *
+                                        0.8,
+                                    decoration: BoxDecoration(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .surface,
+                                        borderRadius: BorderRadius.only(
+                                            topLeft: Radius.circular(25),
+                                            topRight: Radius.circular(25))),
+                                    child: Column(
+                                      children: [
+                                        Padding(
+                                          padding: EdgeInsets.symmetric(
+                                              vertical: 15),
+                                          child: Text(
+                                            "Zutatensuche",
+                                            style: TextStyle(
+                                                fontSize: 21,
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                        ),
+                                        Padding(
+                                          padding: EdgeInsets.symmetric(
+                                              horizontal: 10),
+                                          child: TypeAheadField(
+                                              textFieldConfiguration:
+                                                  TextFieldConfiguration(
+                                                      controller:
+                                                          _ingredientController,
+                                                      decoration: InputDecoration(
+                                                          border: OutlineInputBorder(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          12)),
+                                                          labelText:
+                                                              "Suche nach Zutaten")),
+                                              suggestionsCallback:
+                                                  (pattern) async {
+                                                return await supabase
+                                                    .from('ingredient')
+                                                    .select('*')
+                                                    .ilike('name', '%$pattern%')
+                                                    .in_(
+                                                        'category',
+                                                        filterList.isEmpty
+                                                            ? [
+                                                                'Muskelfleisch',
+                                                                'Pansen',
+                                                                'Knochen',
+                                                                'Innereien',
+                                                                'Gemüse',
+                                                                'Obst'
+                                                              ]
+                                                            : filterList);
+                                              },
+                                              itemBuilder:
+                                                  (context, suggestion) {
+                                                suggestion as Map;
+                                                return ListTile(
+                                                  title: Text(
+                                                    (suggestion)['name'],
+                                                    style:
+                                                        TextStyle(fontSize: 24),
+                                                  ),
+                                                  subtitle: Row(
+                                                    children: [
+                                                      Text(suggestion[
+                                                          'category']),
+                                                      Spacer(),
+                                                      Text(suggestion['type'])
+                                                    ],
+                                                  ),
+                                                );
+                                              },
+                                              onSuggestionSelected:
+                                                  (suggestion) {
+                                                suggestion as Map;
+                                                // Get.bottomSheet(
+                                                //   Container(
+                                                //     decoration: BoxDecoration(
+                                                //         color: Theme.of(context)
+                                                //             .colorScheme
+                                                //             .onPrimary,
+                                                //         borderRadius:
+                                                //             BorderRadius.only(
+                                                //                 topLeft: Radius
+                                                //                     .circular(
+                                                //                         25),
+                                                //                 topRight: Radius
+                                                //                     .circular(
+                                                //                         25))),
+                                                //     child: Padding(
+                                                //       padding:
+                                                //           EdgeInsets.all(10),
+                                                //       child: Column(
+                                                //         children: [
+                                                //           Text(
+                                                //             "${(suggestion)['name']}",
+                                                //             style: TextStyle(
+                                                //                 fontSize: 28),
+                                                //           ),
+                                                //           SizedBox(height: 30),
+                                                // TextField(
+                                                //   controller:
+                                                //       _recipeGramController,
+                                                //   keyboardType:
+                                                //       TextInputType
+                                                //           .number,
+                                                //   decoration: InputDecoration(
+                                                //       border:
+                                                //           OutlineInputBorder(),
+                                                //       labelText:
+                                                //           "Gewicht in Gramm"),
+                                                // ),
+                                                //           ElevatedButton(
+                                                //               onPressed: () {
+                                                recipeIngredient.add(Ingredient(
+                                                  id: suggestion['id'],
+                                                  name: suggestion['name'],
+                                                  type: suggestion['type'],
+                                                  category:
+                                                      suggestion['category'],
+                                                  calories:
+                                                      suggestion['calories']
+                                                          .toDouble(),
+                                                  protein: suggestion['protein']
+                                                      .toDouble(),
+                                                  fat: suggestion['fat']
+                                                      .toDouble(),
+                                                  carbohydrates: suggestion[
+                                                          'carbohydrates']
+                                                      .toDouble(),
+                                                  minerals:
+                                                      suggestion['minerals']
+                                                          .toDouble(),
+                                                  moisture:
+                                                      suggestion['moisture']
+                                                          .toDouble(),
+                                                ));
+                                                //         Get.back();
+                                                //         setState(() {});
+                                                //       },
+                                                //       child: Text(
+                                                //           "Hinzufügen"))
+                                                // ],
+                                                // ),
+                                                // ),
+                                                // ),
+                                                // );
+                                              },
+                                              noItemsFoundBuilder:
+                                                  (BuildContext context) {
+                                                return Padding(
+                                                  padding:
+                                                      const EdgeInsets.all(20),
+                                                  child: Text(
+                                                    'Keine Zutat gefunden!',
+                                                    style:
+                                                        TextStyle(fontSize: 18),
+                                                  ),
+                                                );
+                                              }),
+                                        ),
+                                        ElevatedButton(
+                                            onPressed: () {
+                                              for (var recipe
+                                                  in recipeIngredient) {
+                                                print(recipe.gram);
+                                              }
+                                            },
+                                            child: Text("TEST")),
+                                        Text("Kategorie"),
+                                        Padding(
+                                          padding: EdgeInsets.only(
+                                              bottom: 15, left: 15, right: 15),
+                                          child: Wrap(
+                                            children: [
+                                              for (var chip in _chipsList)
+                                                FilterChip(
+                                                  label: Text(chip.label),
+                                                  selected: chip.isSelected,
+                                                  showCheckmark: false,
+                                                  onSelected: (value) {
+                                                    value == true
+                                                        ? filterList
+                                                            .add(chip.label)
+                                                        : filterList
+                                                            .remove(chip.label);
+
+                                                    setModalState(() {
+                                                      chip.isSelected = value;
+                                                    });
+                                                  },
+                                                )
+                                            ],
+                                          ),
+                                        ),
+                                        Obx(() {
+                                          List<Widget> list = [];
+                                          for (Ingredient ingredient
+                                              in recipeIngredient) {
+                                            final TextEditingController
+                                                _recipeGramController =
+                                                TextEditingController();
+                                            list.add(GestureDetector(
+                                              onTap: () {
+                                                // recipeIngredient.remove(ingredient);
+                                              },
+                                              child: Card(
+                                                elevation: 4,
+                                                color: Theme.of(context)
+                                                    .colorScheme
+                                                    .background,
+                                                child: SizedBox(
+                                                  height: 100,
+                                                  child: Padding(
+                                                    padding:
+                                                        EdgeInsets.symmetric(
+                                                            horizontal: 10),
+                                                    child: Row(
+                                                      children: [
+                                                        Padding(
+                                                          padding:
+                                                              EdgeInsets.only(
+                                                                  right: 10),
+                                                          child: Card(
+                                                              child:
+                                                                  FlutterLogo(
+                                                                      size:
+                                                                          70)),
+                                                        ),
+                                                        Flexible(
+                                                          flex: 7,
+                                                          child: SizedBox(
+                                                            width:
+                                                                MediaQuery.of(
+                                                                        context)
+                                                                    .size
+                                                                    .width,
+                                                            child: Column(
+                                                              mainAxisAlignment:
+                                                                  MainAxisAlignment
+                                                                      .center,
+                                                              crossAxisAlignment:
+                                                                  CrossAxisAlignment
+                                                                      .start,
+                                                              children: [
+                                                                Text(
+                                                                  ingredient
+                                                                      .name,
+                                                                  style: TextStyle(
+                                                                      fontSize:
+                                                                          18),
+                                                                  overflow:
+                                                                      TextOverflow
+                                                                          .ellipsis,
+                                                                ),
+                                                                Text(
+                                                                    '${ingredient.category}'),
+                                                                Text(
+                                                                    '${ingredient.type}')
+                                                              ],
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        Flexible(
+                                                            flex: 5,
+                                                            child: TextField(
+                                                              onChanged:
+                                                                  (value) {
+                                                                setState(() {
+                                                                  ingredient
+                                                                          .gram =
+                                                                      double.parse(
+                                                                          value);
+                                                                  caloriesSum.add(ingredient
+                                                                          .calories
+                                                                          .toDouble() /
+                                                                      100 *
+                                                                      double.parse(
+                                                                          _recipeGramController
+                                                                              .text));
+                                                                  proteinSum.add(ingredient
+                                                                          .protein
+                                                                          .toDouble() /
+                                                                      100 *
+                                                                      double.parse(
+                                                                          _recipeGramController
+                                                                              .text));
+
+                                                                  fatSum.add(ingredient
+                                                                          .fat
+                                                                          .toDouble() /
+                                                                      100 *
+                                                                      double.parse(
+                                                                          _recipeGramController
+                                                                              .text));
+                                                                  carbohydratesSum.add(ingredient
+                                                                          .carbohydrates
+                                                                          .toDouble() /
+                                                                      100 *
+                                                                      double.parse(
+                                                                          _recipeGramController
+                                                                              .text));
+                                                                  mineralsSum.add(ingredient
+                                                                          .minerals
+                                                                          .toDouble() /
+                                                                      100 *
+                                                                      double.parse(
+                                                                          _recipeGramController
+                                                                              .text));
+                                                                  moistureSum.add(ingredient
+                                                                          .moisture
+                                                                          .toDouble() /
+                                                                      100 *
+                                                                      double.parse(
+                                                                          _recipeGramController
+                                                                              .text));
+                                                                  switch (ingredient
+                                                                      .category) {
+                                                                    case 'Muskelfleisch':
+                                                                      meatSum.add(
+                                                                          double.parse(
+                                                                              _recipeGramController.text));
+                                                                      break;
+                                                                    case 'Pansen':
+                                                                      rumenSum.add(
+                                                                          double.parse(
+                                                                              _recipeGramController.text));
+                                                                      break;
+                                                                    case 'Knochen':
+                                                                      boneSum.add(
+                                                                          double.parse(
+                                                                              _recipeGramController.text));
+                                                                      break;
+                                                                    case 'Innereien':
+                                                                      organSum.add(
+                                                                          double.parse(
+                                                                              _recipeGramController.text));
+                                                                      break;
+                                                                    case 'Gemüse':
+                                                                      vegSum.add(
+                                                                          double.parse(
+                                                                              _recipeGramController.text));
+                                                                      break;
+                                                                    case 'Obst':
+                                                                      fruitSum.add(
+                                                                          double.parse(
+                                                                              _recipeGramController.text));
+                                                                      break;
+                                                                    default:
+                                                                      throw Error();
+                                                                  }
+                                                                  weightSum.add(
+                                                                      double.parse(
+                                                                          _recipeGramController
+                                                                              .text));
+                                                                });
+                                                              },
+                                                              controller:
+                                                                  _recipeGramController,
+                                                              keyboardType:
+                                                                  TextInputType
+                                                                      .number,
+                                                              decoration:
+                                                                  InputDecoration(
+                                                                      suffixIcon:
+                                                                          Padding(
+                                                                        padding:
+                                                                            EdgeInsets.only(right: 5),
+                                                                        child: Text(
+                                                                            'Gramm'),
+                                                                      ),
+                                                                      suffixIconConstraints: BoxConstraints(
+                                                                          minWidth:
+                                                                              0,
+                                                                          minHeight:
+                                                                              0),
+                                                                      border: OutlineInputBorder(
+                                                                          borderRadius: BorderRadius.circular(
+                                                                              12)),
+                                                                      hintText:
+                                                                          '${ingredient.gram}'),
+                                                            ))
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                            ));
+                                          }
+                                          return Wrap(
+                                              alignment:
+                                                  WrapAlignment.spaceEvenly,
+                                              direction: Axis.horizontal,
+                                              spacing: 5,
+                                              runSpacing: 5,
+                                              children: list);
+                                        }),
+                                      ],
+                                    ),
+                                  ),
+                                ));
+                          },
+                          icon: Icon(Icons.search))
+                    ],
+                  ),
                   TextButton(
                       onPressed: () {
                         recipeIngredient.clear();
-                        weightSum = 0;
-                        meatSum = 0;
-                        vegSum = 0;
+                        weightSum.clear;
+                        meatSum.clear;
+                        vegSum.clear;
                       },
                       child: Text("Alles entfernen")),
                 ],
               ),
               SizedBox(height: 15),
-              Obx(() {
-                List<Widget> list = [];
-                for (Ingredient ingredient in recipeIngredient) {
-                  list.add(GestureDetector(
-                    onTap: () {
-                      // recipeIngredient.remove(ingredient);
-                    },
-                    child: Card(
-                      elevation: 4,
-                      color: Theme.of(context).colorScheme.background,
-                      child: SizedBox(
-                        height: 100,
-                        child: Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 10),
-                          child: Row(
-                            children: [
-                              Padding(
-                                padding: EdgeInsets.only(right: 10),
-                                child: Card(child: FlutterLogo(size: 70)),
-                              ),
-                              Flexible(
-                                flex: 10,
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      ingredient.name,
-                                      style: TextStyle(fontSize: 18),
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                    Text('${ingredient.gram} Gramm'),
-                                  ],
-                                ),
-                              ),
-                              Spacer(),
-                              Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.end,
-                                children: [
-                                  Row(
-                                    children: [
-                                      Card(
-                                        elevation: 2,
-                                        child: IconButton(
-                                            onPressed: () {
-                                              recipeIngredient
-                                                  .remove(ingredient);
-                                            },
-                                            icon: Icon(Icons.remove)),
-                                      ),
-                                      Padding(
-                                        padding: EdgeInsets.symmetric(
-                                            horizontal: 10),
-                                        child: Text(
-                                          '1',
-                                          style: TextStyle(fontSize: 18),
-                                        ),
-                                      ),
-                                      Card(
-                                        elevation: 2,
-                                        child: IconButton(
-                                            onPressed: () {},
-                                            icon: Icon(Icons.add)),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              )
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                  ));
-                }
-                return Wrap(
-                    alignment: WrapAlignment.spaceEvenly,
-                    direction: Axis.horizontal,
-                    spacing: 5,
-                    runSpacing: 5,
-                    children: list);
-              }),
               Padding(
                 padding: EdgeInsets.symmetric(vertical: 10),
                 child: SizedBox(
@@ -369,8 +557,12 @@ class _newRecipeState extends State<ScreenCreateRecipe> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              _indicator(Colors.green, "Vegetarisch",
-                                  vegSum + fruitSum),
+                              _indicator(
+                                  Colors.green,
+                                  "Vegetarisch",
+                                  vegSum.fold<double>(0, (p, c) => p + c) +
+                                      fruitSum.fold<double>(
+                                          0, (p, c) => p + c)),
                               IconButton(
                                   onPressed: () {
                                     Get.defaultDialog(
@@ -390,7 +582,7 @@ class _newRecipeState extends State<ScreenCreateRecipe> {
                                                     children: [
                                                       Text('Kalorien:'),
                                                       Text(
-                                                          '${caloriesSum.toStringAsFixed(1)}kcal')
+                                                          '${caloriesSum.fold<double>(0, (p, c) => p + c).toStringAsFixed(1)}kcal')
                                                     ],
                                                   ),
                                                   Row(
@@ -400,7 +592,7 @@ class _newRecipeState extends State<ScreenCreateRecipe> {
                                                     children: [
                                                       Text('Protein:'),
                                                       Text(
-                                                          '${proteinSum.toStringAsFixed(1)}g')
+                                                          '${proteinSum.fold<double>(0, (p, c) => p + c).toStringAsFixed(1)}g')
                                                     ],
                                                   ),
                                                   Row(
@@ -410,7 +602,7 @@ class _newRecipeState extends State<ScreenCreateRecipe> {
                                                     children: [
                                                       Text('Fett:'),
                                                       Text(
-                                                          '${fatSum.toStringAsFixed(1)}g')
+                                                          '${fatSum.fold<double>(0, (p, c) => p + c).toStringAsFixed(1)}g')
                                                     ],
                                                   ),
                                                   Row(
@@ -420,7 +612,7 @@ class _newRecipeState extends State<ScreenCreateRecipe> {
                                                     children: [
                                                       Text('Kohlenhydrate:'),
                                                       Text(
-                                                          '${carbohydratesSum.toStringAsFixed(1)}g')
+                                                          '${carbohydratesSum.fold<double>(0, (p, c) => p + c).toStringAsFixed(1)}g')
                                                     ],
                                                   ),
                                                   Row(
@@ -430,7 +622,7 @@ class _newRecipeState extends State<ScreenCreateRecipe> {
                                                     children: [
                                                       Text('Mineralien:'),
                                                       Text(
-                                                          '${mineralsSum.toStringAsFixed(1)}g')
+                                                          '${mineralsSum.fold<double>(0, (p, c) => p + c).toStringAsFixed(1)}g')
                                                     ],
                                                   ),
                                                 ]),
@@ -486,8 +678,13 @@ class _newRecipeState extends State<ScreenCreateRecipe> {
                                   sections: showSection())),
                             ),
                           ),
-                          _indicator(Colors.red, "Fleisch",
-                              meatSum + rumenSum + boneSum + organSum)
+                          _indicator(
+                              Colors.red,
+                              "Fleisch",
+                              meatSum.fold<double>(0, (p, c) => p + c) +
+                                  rumenSum.fold<double>(0, (p, c) => p + c) +
+                                  boneSum.fold<double>(0, (p, c) => p + c) +
+                                  organSum.fold<double>(0, (p, c) => p + c))
                         ],
                       ),
                     ))),
@@ -623,12 +820,12 @@ class _newRecipeState extends State<ScreenCreateRecipe> {
     Widget text;
     switch (value.toInt()) {
       case 0:
-        text =
-            Text('${(vegSum / (vegSum + fruitSum) * 100).toStringAsFixed(1)}%');
+        text = Text(
+            '${(vegSum.fold<double>(0, (p, c) => p + c) / (vegSum.fold<double>(0, (p, c) => p + c) + fruitSum.fold<double>(0, (p, c) => p + c)) * 100).toStringAsFixed(1)}%');
         break;
       case 1:
         text = Text(
-            '${(fruitSum / (vegSum + fruitSum) * 100).toStringAsFixed(1)}%');
+            '${(fruitSum.fold<double>(0, (p, c) => p + c) / (vegSum.fold<double>(0, (p, c) => p + c) + fruitSum.fold<double>(0, (p, c) => p + c)) * 100).toStringAsFixed(1)}%');
         break;
       default:
         text = Text('');
@@ -646,19 +843,19 @@ class _newRecipeState extends State<ScreenCreateRecipe> {
     switch (value.toInt()) {
       case 0:
         text = Text(
-            '${(meatSum / (meatSum + rumenSum + boneSum + organSum) * 100).toStringAsFixed(1)}%');
+            '${(meatSum.fold<double>(0, (p, c) => p + c) / (meatSum.fold<double>(0, (p, c) => p + c) + rumenSum.fold<double>(0, (p, c) => p + c) + boneSum.fold<double>(0, (p, c) => p + c) + organSum.fold<double>(0, (p, c) => p + c)) * 100).toStringAsFixed(1)}%');
         break;
       case 1:
         text = Text(
-            '${(rumenSum / (meatSum + rumenSum + boneSum + organSum) * 100).toStringAsFixed(1)}%');
+            '${(rumenSum.fold<double>(0, (p, c) => p + c) / (meatSum.fold<double>(0, (p, c) => p + c) + rumenSum.fold<double>(0, (p, c) => p + c) + boneSum.fold<double>(0, (p, c) => p + c) + organSum.fold<double>(0, (p, c) => p + c)) * 100).toStringAsFixed(1)}%');
         break;
       case 2:
         text = Text(
-            '${(boneSum / (meatSum + rumenSum + boneSum + organSum) * 100).toStringAsFixed(1)}%');
+            '${(boneSum.fold<double>(0, (p, c) => p + c) / (meatSum.fold<double>(0, (p, c) => p + c) + rumenSum.fold<double>(0, (p, c) => p + c) + boneSum.fold<double>(0, (p, c) => p + c) + organSum.fold<double>(0, (p, c) => p + c)) * 100).toStringAsFixed(1)}%');
         break;
       case 3:
         text = Text(
-            '${(organSum / (meatSum + rumenSum + boneSum + organSum) * 100).toStringAsFixed(1)}%');
+            '${(organSum.fold<double>(0, (p, c) => p + c) / (meatSum.fold<double>(0, (p, c) => p + c) + rumenSum.fold<double>(0, (p, c) => p + c) + boneSum.fold<double>(0, (p, c) => p + c) + organSum.fold<double>(0, (p, c) => p + c)) * 100).toStringAsFixed(1)}%');
         break;
       default:
         text = Text('');
@@ -702,16 +899,36 @@ class _newRecipeState extends State<ScreenCreateRecipe> {
         switch (i) {
           case 0:
             return makeGroupData(
-                0, meatSum, meatSum + rumenSum + boneSum + organSum);
+                0,
+                meatSum.fold<double>(0, (p, c) => p + c),
+                meatSum.fold<double>(0, (p, c) => p + c) +
+                    rumenSum.fold<double>(0, (p, c) => p + c) +
+                    boneSum.fold<double>(0, (p, c) => p + c) +
+                    organSum.fold<double>(0, (p, c) => p + c));
           case 1:
             return makeGroupData(
-                1, rumenSum, meatSum + rumenSum + boneSum + organSum);
+                1,
+                rumenSum.fold<double>(0, (p, c) => p + c),
+                meatSum.fold<double>(0, (p, c) => p + c) +
+                    rumenSum.fold<double>(0, (p, c) => p + c) +
+                    boneSum.fold<double>(0, (p, c) => p + c) +
+                    organSum.fold<double>(0, (p, c) => p + c));
           case 2:
             return makeGroupData(
-                2, boneSum, meatSum + rumenSum + boneSum + organSum);
+                2,
+                boneSum.fold<double>(0, (p, c) => p + c),
+                meatSum.fold<double>(0, (p, c) => p + c) +
+                    rumenSum.fold<double>(0, (p, c) => p + c) +
+                    boneSum.fold<double>(0, (p, c) => p + c) +
+                    organSum.fold<double>(0, (p, c) => p + c));
           case 3:
             return makeGroupData(
-                3, organSum, meatSum + rumenSum + boneSum + organSum);
+                3,
+                organSum.fold<double>(0, (p, c) => p + c),
+                meatSum.fold<double>(0, (p, c) => p + c) +
+                    rumenSum.fold<double>(0, (p, c) => p + c) +
+                    boneSum.fold<double>(0, (p, c) => p + c) +
+                    organSum.fold<double>(0, (p, c) => p + c));
           default:
             return throw Error();
         }
@@ -720,9 +937,17 @@ class _newRecipeState extends State<ScreenCreateRecipe> {
   List<BarChartGroupData> vegGroups() => List.generate(2, (i) {
         switch (i) {
           case 0:
-            return makeGroupData(0, vegSum, vegSum + fruitSum);
+            return makeGroupData(
+                0,
+                vegSum.fold<double>(0, (p, c) => p + c),
+                vegSum.fold<double>(0, (p, c) => p + c) +
+                    fruitSum.fold<double>(0, (p, c) => p + c));
           case 1:
-            return makeGroupData(1, fruitSum, vegSum + fruitSum);
+            return makeGroupData(
+                1,
+                fruitSum.fold<double>(0, (p, c) => p + c),
+                vegSum.fold<double>(0, (p, c) => p + c) +
+                    fruitSum.fold<double>(0, (p, c) => p + c));
           default:
             return throw Error();
         }
@@ -738,12 +963,17 @@ class _newRecipeState extends State<ScreenCreateRecipe> {
         case 0:
           return PieChartSectionData(
             color: Colors.red,
-            value: weightSum == 0
+            value: weightSum.fold<double>(0, (p, c) => p + c) == 0
                 ? 100 / 2
-                : (meatSum + rumenSum + boneSum + organSum) / weightSum * 100,
-            title: weightSum == 0
+                : (meatSum.fold<double>(0, (p, c) => p + c) +
+                        rumenSum.fold<double>(0, (p, c) => p + c) +
+                        boneSum.fold<double>(0, (p, c) => p + c) +
+                        organSum.fold<double>(0, (p, c) => p + c)) /
+                    weightSum.fold<double>(0, (p, c) => p + c) *
+                    100,
+            title: weightSum.fold<double>(0, (p, c) => p + c) == 0
                 ? '${(100 / 2).toStringAsFixed(1)}%'
-                : '${((meatSum + rumenSum + boneSum + organSum) / weightSum * 100).toStringAsFixed(1)}%',
+                : '${((meatSum.fold<double>(0, (p, c) => p + c) + rumenSum.fold<double>(0, (p, c) => p + c) + boneSum.fold<double>(0, (p, c) => p + c) + organSum.fold<double>(0, (p, c) => p + c)) / weightSum.fold<double>(0, (p, c) => p + c) * 100).toStringAsFixed(1)}%',
             titleStyle: TextStyle(
                 fontSize: fontSize,
                 fontWeight: FontWeight.bold,
@@ -754,12 +984,15 @@ class _newRecipeState extends State<ScreenCreateRecipe> {
         case 1:
           return PieChartSectionData(
             color: Colors.green,
-            value: weightSum == 0
+            value: weightSum.fold<double>(0, (p, c) => p + c) == 0
                 ? 100 / 2
-                : (vegSum + fruitSum) / weightSum * 100,
-            title: weightSum == 0
+                : (vegSum.fold<double>(0, (p, c) => p + c) +
+                        fruitSum.fold<double>(0, (p, c) => p + c)) /
+                    weightSum.fold<double>(0, (p, c) => p + c) *
+                    100,
+            title: weightSum.fold<double>(0, (p, c) => p + c) == 0
                 ? '${(100 / 2).toStringAsFixed(1)}%'
-                : '${((vegSum + fruitSum) / weightSum * 100).toStringAsFixed(1)}%',
+                : '${((vegSum.fold<double>(0, (p, c) => p + c) + fruitSum.fold<double>(0, (p, c) => p + c)) / weightSum.fold<double>(0, (p, c) => p + c) * 100).toStringAsFixed(1)}%',
             titleStyle: TextStyle(
                 fontSize: fontSize,
                 fontWeight: FontWeight.bold,

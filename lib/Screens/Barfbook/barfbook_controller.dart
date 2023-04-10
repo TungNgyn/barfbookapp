@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/material.dart';
 
 class Ingredient {
-  const Ingredient(
+  Ingredient(
       {required this.id,
       required this.name,
       required this.type,
@@ -26,7 +26,7 @@ class Ingredient {
   final double carbohydrates;
   final double minerals;
   final double moisture;
-  final double gram;
+  double gram;
 }
 
 class Recipe {
@@ -50,23 +50,23 @@ class Recipe {
   final String user;
 }
 
-var enumIcon = {
-  1: Image.asset("assets/images/recipe/icons/beef.png"),
-  2: Image.asset("assets/images/recipe/icons/hen.png"),
-  3: Image.asset("assets/images/recipe/icons/horse.png"),
-  4: Image.asset("assets/images/recipe/icons/beef.png"), // to be change
-  5: Image.asset("assets/images/recipe/icons/goat.png"),
-  6: Image.asset("assets/images/recipe/icons/rabbit.png"),
-  7: Image.asset("assets/images/recipe/icons/lamb.png"),
-  8: Image.asset("assets/images/recipe/icons/beef.png"), // to be change
-  9: Image.asset("assets/images/recipe/icons/vegan.png")
-};
-
 getRecipeIcon(final category) {
   switch (category) {
     case 'Rind':
       return Image.asset("assets/icons/recipe/beef.png");
-      break;
-      case ''
+    case 'Geflügel':
+    case 'Huhn':
+    case 'Truthahn':
+    case 'Pute':
+      return Image.asset("assets/icons/recipe/beef.png");
+    default:
+      return Icon(Icons.animation);
   }
+}
+
+class CustomFilterChip {
+  String label;
+  bool isSelected;
+
+  CustomFilterChip(this.label, this.isSelected);
 }

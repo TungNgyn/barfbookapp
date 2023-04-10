@@ -62,17 +62,6 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
                 appBar: AppBar(
                   title: Text(widget.recipe.name),
                   actions: [
-                    ElevatedButton(
-                        onPressed: () async {
-                          await supabase
-                              .from('profile_liked_recipe')
-                              .delete()
-                              .match({
-                            'recipe': widget.recipe.id,
-                            'profile': user?.id
-                          });
-                        },
-                        child: Text("DEL")),
                     if (widget.recipe.user_id != user!.id)
                       IconButton(
                           onPressed: () {
@@ -545,7 +534,7 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
           mineralsSum += (ingredient['minerals'].toDouble() / 100 * gram);
           moistureSum += (ingredient['moisture'].toDouble() / 100 * gram);
           switch (ingredient['category']) {
-            case 'Fleisch':
+            case 'Muskelfleisch':
               meatSum += gram;
               break;
             case 'Pansen':

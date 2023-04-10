@@ -1,5 +1,7 @@
 import 'package:Barfbook/Screens/Barfbook/barfbook_controller.dart';
 import 'package:Barfbook/Screens/Mehr/profile.dart';
+import 'package:Barfbook/Screens/explore/newRecipe.dart';
+import 'package:Barfbook/Screens/explore/popularRecipe.dart';
 import 'package:Barfbook/Screens/explore/recipeDetailPage.dart';
 import 'package:Barfbook/controller.dart';
 import 'package:Barfbook/loading.dart';
@@ -19,7 +21,8 @@ class _ScreenExploreState extends State<ScreenExplore>
 
   @override
   Widget build(BuildContext context) {
-    super.build(context);
+    Recipe recipe = controller.exploreRecipeList[index];
+
     return Scaffold(
       body: NestedScrollView(
         headerSliverBuilder: (context, innerBoxIsScrolled) {
@@ -58,126 +61,169 @@ class _ScreenExploreState extends State<ScreenExplore>
           child: SafeArea(
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: 15),
-              child: ListView(
+              child: Column(
                 children: [
                   _searchBar(),
-                  Text(
-                    "Beliebt",
-                    style: TextStyle(fontSize: 24),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        "Beliebte Rezepte",
+                        style: TextStyle(fontSize: 24),
+                      ),
+                      IconButton(
+                          onPressed: () {
+                            Get.to(() => ScreenPopularRecipe());
+                          },
+                          icon: Icon(Icons.arrow_forward_sharp))
+                    ],
                   ),
-                  ListView.builder(
-                    shrinkWrap: true,
-                    reverse: true,
-                    physics: ClampingScrollPhysics(),
-                    itemCount: controller.exploreRecipeList.length,
-                    itemBuilder: (_, index) {
-                      Recipe recipe = controller.exploreRecipeList[index];
-                      return GestureDetector(
-                        onTap: () {
-                          for (var map in controller.userLikedRecipeXrefDB) {
-                            if (map?.containsKey("recipe") ?? false) {
-                              if (map['recipe'] == recipe.id) {
-                                Get.to(() => RecipeDetailPage(
-                                      recipe: recipe,
-                                      favorite: true,
-                                    ));
-                                return;
+                  SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(children: [
+                      for (var recipe in controller.exploreRecipeList)
+                        GestureDetector(
+                          onTap: () {
+                            for (var map in controller.userLikedRecipeXrefDB) {
+                              if (map?.containsKey("recipe") ?? false) {
+                                if (map['recipe'] == recipe.id) {
+                                  Get.to(() => RecipeDetailPage(
+                                        recipe: recipe,
+                                        favorite: true,
+                                      ));
+                                  return;
+                                }
                               }
                             }
-                          }
-                          Get.to(() => RecipeDetailPage(
-                                recipe: recipe,
-                                favorite: false,
-                              ));
-                          return;
-                        },
-                        child: Card(
-                          elevation: 4,
-                          child: Padding(
-                              padding: EdgeInsets.only(bottom: 15, top: 10),
-                              child: Row(
-                                children: [
-                                  Padding(
-                                    padding:
-                                        EdgeInsets.symmetric(horizontal: 10),
-                                    child: Card(
-                                      child: Padding(
-                                        padding: EdgeInsets.all(10),
-                                        child: FlutterLogo(
-                                          size: 100,
+                            Get.to(() => RecipeDetailPage(
+                                  recipe: recipe,
+                                  favorite: false,
+                                ));
+                            return;
+                          },
+                          child: Card(
+                            child: Padding(
+                                padding: EdgeInsets.all(15),
+                                child: Row(
+                                  children: [
+                                    Column(
+                                      children: [
+                                        Text(
+                                          recipe.name,
+                                          style: TextStyle(fontSize: 18),
                                         ),
-                                      ),
-                                    ),
-                                  ),
-                                  Row(
-                                    children: [
-                                      SizedBox(
-                                        height: 100,
-                                        width: 150,
-                                        child: Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Text(
-                                                  recipe.name,
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
-                                                  style: TextStyle(
-                                                      fontSize: 24,
-                                                      fontWeight:
-                                                          FontWeight.bold),
-                                                ),
-                                              ],
+                                        TextButton.icon(
+                                            onPressed: () {
+                                              Get.to(() => ScreenProfile(
+                                                  profile: controller
+                                                          .exploreProfileList[
+                                                      index]));
+                                            },
+                                            icon: Image.asset(
+                                              'assets/images/defaultAvatar.png',
+                                              height: 24,
                                             ),
-                                            TextButton.icon(
-                                                onPressed: () {
-                                                  Get.to(() => ScreenProfile(
-                                                      profile: controller
-                                                              .exploreProfileList[
-                                                          index]));
-                                                },
-                                                icon: Image.asset(
-                                                  'assets/images/defaultAvatar.png',
-                                                  height: 24,
-                                                ),
-                                                label: Text(recipe.user)),
-                                          ],
+                                            label: Text(recipe.user)),
+                                      ],
+                                    ),
+                                    TextButton.icon(
+                                        onPressed: () {},
+                                        icon: Image.asset(
+                                          'assets/icons/paw.png',
+                                          width: 48,
                                         ),
-                                      ),
-                                      SizedBox(
-                                        height: 120,
-                                        child: Row(
-                                          children: [
-                                            TextButton.icon(
-                                                onPressed: () {},
-                                                icon: Image.asset(
-                                                  'assets/icons/paw.png',
-                                                  width: 48,
-                                                ),
-                                                label: Text(
-                                                  '${recipe.paws}',
-                                                  style: TextStyle(
-                                                      fontSize: 21,
-                                                      fontWeight:
-                                                          FontWeight.bold),
-                                                ))
-                                          ],
+                                        label: Text(
+                                          '${recipe.paws}',
+                                          style: TextStyle(
+                                              fontSize: 21,
+                                              fontWeight: FontWeight.bold),
+                                        ))
+                                  ],
+                                )),
+                          ),
+                        )
+                    ]),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        "Neue Rezepte",
+                        style: TextStyle(fontSize: 24),
+                      ),
+                      IconButton(
+                          onPressed: () {
+                            Get.to(() => ScreenNewRecipe());
+                          },
+                          icon: Icon(Icons.arrow_forward_sharp))
+                    ],
+                  ),
+                  SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(children: [
+                      for (var recipe in controller.exploreRecipeList)
+                        GestureDetector(
+                          onTap: () {
+                            for (var map in controller.userLikedRecipeXrefDB) {
+                              if (map?.containsKey("recipe") ?? false) {
+                                if (map['recipe'] == recipe.id) {
+                                  Get.to(() => RecipeDetailPage(
+                                        recipe: recipe,
+                                        favorite: true,
+                                      ));
+                                  return;
+                                }
+                              }
+                            }
+                            Get.to(() => RecipeDetailPage(
+                                  recipe: recipe,
+                                  favorite: false,
+                                ));
+                            return;
+                          },
+                          child: Card(
+                            child: Padding(
+                                padding: EdgeInsets.all(15),
+                                child: Row(
+                                  children: [
+                                    Column(
+                                      children: [
+                                        Text(
+                                          recipe.name,
+                                          style: TextStyle(fontSize: 18),
                                         ),
-                                      )
-                                    ],
-                                  )
-                                ],
-                              )),
-                        ),
-                      );
-                    },
-                  )
+                                        TextButton.icon(
+                                            onPressed: () {
+                                              Get.to(() => ScreenProfile(
+                                                  profile: controller
+                                                          .exploreProfileList[
+                                                      index]));
+                                            },
+                                            icon: Image.asset(
+                                              'assets/images/defaultAvatar.png',
+                                              height: 24,
+                                            ),
+                                            label: Text(recipe.user)),
+                                      ],
+                                    ),
+                                    TextButton.icon(
+                                        onPressed: () {},
+                                        icon: Image.asset(
+                                          'assets/icons/paw.png',
+                                          width: 48,
+                                        ),
+                                        label: Text(
+                                          '${recipe.paws}',
+                                          style: TextStyle(
+                                              fontSize: 21,
+                                              fontWeight: FontWeight.bold),
+                                        ))
+                                  ],
+                                )),
+                          ),
+                        )
+                    ]),
+                  ),
                 ],
               ),
             ),

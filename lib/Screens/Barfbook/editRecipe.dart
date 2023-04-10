@@ -477,7 +477,7 @@ class _editRecipeState extends State<ScreenEditRecipe> {
           mineralsSum += (ingredient['minerals'].toDouble() / 100 * gram);
           moistureSum += (ingredient['moisture'].toDouble() / 100 * gram);
           switch (ingredient['category']) {
-            case 'Fleisch':
+            case 'Muskelfleisch':
               meatSum += gram;
               break;
             case 'Pansen':
