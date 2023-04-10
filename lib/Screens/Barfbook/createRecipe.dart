@@ -294,6 +294,7 @@ class _newRecipeState extends State<ScreenCreateRecipe> {
                                               for (var recipe
                                                   in recipeIngredient) {
                                                 print(recipe.gram);
+                                                print(meatSum);
                                               }
                                             },
                                             child: Text("TEST")),
@@ -394,9 +395,86 @@ class _newRecipeState extends State<ScreenCreateRecipe> {
                                                         Flexible(
                                                             flex: 5,
                                                             child: TextField(
-                                                              onChanged:
+                                                              onSubmitted:
                                                                   (value) {
                                                                 setState(() {
+                                                                  //remove old value
+                                                                  caloriesSum.remove(ingredient
+                                                                          .calories
+                                                                          .toDouble() /
+                                                                      100 *
+                                                                      ingredient
+                                                                          .gram);
+                                                                  proteinSum.remove(ingredient
+                                                                          .protein
+                                                                          .toDouble() /
+                                                                      100 *
+                                                                      ingredient
+                                                                          .gram);
+
+                                                                  fatSum.remove(ingredient
+                                                                          .fat
+                                                                          .toDouble() /
+                                                                      100 *
+                                                                      ingredient
+                                                                          .gram);
+                                                                  carbohydratesSum.remove(ingredient
+                                                                          .carbohydrates
+                                                                          .toDouble() /
+                                                                      100 *
+                                                                      ingredient
+                                                                          .gram);
+                                                                  mineralsSum.remove(ingredient
+                                                                          .minerals
+                                                                          .toDouble() /
+                                                                      100 *
+                                                                      ingredient
+                                                                          .gram);
+                                                                  moistureSum.remove(ingredient
+                                                                          .moisture
+                                                                          .toDouble() /
+                                                                      100 *
+                                                                      ingredient
+                                                                          .gram);
+                                                                  switch (ingredient
+                                                                      .category) {
+                                                                    case 'Muskelfleisch':
+                                                                      meatSum.remove(
+                                                                          ingredient
+                                                                              .gram);
+                                                                      break;
+                                                                    case 'Pansen':
+                                                                      rumenSum.remove(
+                                                                          ingredient
+                                                                              .gram);
+                                                                      break;
+                                                                    case 'Knochen':
+                                                                      boneSum.remove(
+                                                                          ingredient
+                                                                              .gram);
+                                                                      break;
+                                                                    case 'Innereien':
+                                                                      organSum.remove(
+                                                                          ingredient
+                                                                              .gram);
+                                                                      break;
+                                                                    case 'Gemüse':
+                                                                      vegSum.remove(
+                                                                          ingredient
+                                                                              .gram);
+                                                                      break;
+                                                                    case 'Obst':
+                                                                      fruitSum.remove(
+                                                                          ingredient
+                                                                              .gram);
+                                                                      break;
+                                                                    default:
+                                                                      throw Error();
+                                                                  }
+                                                                  weightSum.remove(
+                                                                      ingredient
+                                                                          .gram);
+                                                                  //update new value
                                                                   ingredient
                                                                           .gram =
                                                                       double.parse(
