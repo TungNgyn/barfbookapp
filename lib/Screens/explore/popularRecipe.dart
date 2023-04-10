@@ -19,7 +19,10 @@ class ScreenPopularRecipe extends StatelessWidget {
         physics: ClampingScrollPhysics(),
         itemCount: controller.exploreRecipeList.length,
         itemBuilder: (_, index) {
+          controller.exploreRecipeList
+              .sort(((a, b) => a.paws.compareTo(b.paws)));
           Recipe recipe = controller.exploreRecipeList[index];
+
           return GestureDetector(
             onTap: () {
               for (var map in controller.userLikedRecipeXrefDB) {

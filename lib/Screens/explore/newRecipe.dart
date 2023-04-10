@@ -19,6 +19,8 @@ class ScreenNewRecipe extends StatelessWidget {
         physics: ClampingScrollPhysics(),
         itemCount: controller.exploreRecipeList.length,
         itemBuilder: (_, index) {
+          controller.exploreRecipeList
+              .sort(((a, b) => a.created_at.compareTo(b.created_at)));
           Recipe recipe = controller.exploreRecipeList[index];
           return GestureDetector(
             onTap: () {

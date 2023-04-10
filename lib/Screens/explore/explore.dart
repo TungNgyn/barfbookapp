@@ -64,20 +64,7 @@ class _ScreenExploreState extends State<ScreenExplore>
               child: Column(
                 children: [
                   _searchBar(),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        "Beliebte Rezepte",
-                        style: TextStyle(fontSize: 24),
-                      ),
-                      IconButton(
-                          onPressed: () {
-                            Get.to(() => ScreenPopularRecipe());
-                          },
-                          icon: Icon(Icons.arrow_forward_sharp))
-                    ],
-                  ),
+                  sortPopularRecipe(),
                   SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
                     child: Row(children: [
@@ -144,20 +131,7 @@ class _ScreenExploreState extends State<ScreenExplore>
                         )
                     ]),
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        "Neue Rezepte",
-                        style: TextStyle(fontSize: 24),
-                      ),
-                      IconButton(
-                          onPressed: () {
-                            Get.to(() => ScreenNewRecipe());
-                          },
-                          icon: Icon(Icons.arrow_forward_sharp))
-                    ],
-                  ),
+                  sortNewRecipe(),
                   SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
                     child: Row(children: [
@@ -230,6 +204,43 @@ class _ScreenExploreState extends State<ScreenExplore>
           ),
         ),
       ),
+    );
+  }
+
+  Row sortPopularRecipe() {
+    controller.exploreRecipeList.sort(((a, b) => b.paws.compareTo(a.paws)));
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+          "Beliebte Rezepte",
+          style: TextStyle(fontSize: 24),
+        ),
+        IconButton(
+            onPressed: () {
+              Get.to(() => ScreenPopularRecipe());
+            },
+            icon: Icon(Icons.arrow_forward_sharp))
+      ],
+    );
+  }
+
+  Row sortNewRecipe() {
+    controller.exploreRecipeList
+        .sort(((a, b) => b.created_at.compareTo(a.created_at)));
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+          "Neue Rezepte",
+          style: TextStyle(fontSize: 24),
+        ),
+        IconButton(
+            onPressed: () {
+              Get.to(() => ScreenNewRecipe());
+            },
+            icon: Icon(Icons.arrow_forward_sharp))
+      ],
     );
   }
 
