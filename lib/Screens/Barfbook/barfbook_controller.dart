@@ -61,3 +61,12 @@ var enumIcon = {
   8: Image.asset("assets/images/recipe/icons/beef.png"), // to be change
   9: Image.asset("assets/images/recipe/icons/vegan.png")
 };
+
+getRecipeIcon(final category) {
+  switch (category) {
+    case 'Rind':
+      return Image.asset("assets/icons/recipe/beef.png");
+      break;
+      case ''
+  }
+}

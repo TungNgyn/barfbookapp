@@ -128,16 +128,15 @@ class _ScreenBarfbookState extends State<ScreenBarfbook> {
                               for (Recipe recipe in controller.userRecipeList) {
                                 list.add(SizedBox(
                                   height: 40,
-                                  child: ElevatedButton.icon(
-                                      style: ButtonStyle(),
-                                      onPressed: () {
-                                        Get.to(() => ScreenEditRecipe(
-                                              recipe: recipe,
-                                            ));
-                                      },
-                                      icon: Image.asset(
-                                          "assets/images/recipe/icons/beef.png"),
-                                      label: Text(recipe.name)),
+                                  child: ElevatedButton(
+                                    child: Text(recipe.name),
+                                    style: ButtonStyle(),
+                                    onPressed: () {
+                                      Get.to(() => ScreenEditRecipe(
+                                            recipe: recipe,
+                                          ));
+                                    },
+                                  ),
                                 ));
                               }
                               return Column(children: list);
