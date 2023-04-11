@@ -123,10 +123,8 @@ initData() async {
 
     for (var map in controller.userLikedRecipeXrefDB) {
       if (map?.containsKey("recipe") ?? false) {
-        var tempRecipe = await supabase
-            .from('recipe')
-            .select('id, created_at, modified_at, name, description')
-            .eq('id', map['recipe']);
+        var tempRecipe =
+            await supabase.from('recipe').select('*').eq('id', map['recipe']);
 
         for (var recipe in tempRecipe) {
           controller.userLikedRecipe.add(Recipe(
@@ -136,7 +134,7 @@ initData() async {
               paws: 0,
               description: recipe['description'],
               modified_at: recipe['modified_at'],
-              user_id: user!.id,
+              user_id: recipe['user_id'],
               user: ""));
         }
       }

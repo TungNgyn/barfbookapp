@@ -70,7 +70,7 @@ class _HomeState extends State<Home> {
                 label: 'Barfrechner',
               ),
               BottomNavigationBarItem(
-                icon: Icon(Icons.more_horiz),
+                icon: Icon(Icons.settings),
                 label: 'Mehr',
               )
             ],

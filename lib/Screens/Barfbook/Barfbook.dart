@@ -114,33 +114,80 @@ class _ScreenBarfbookState extends State<ScreenBarfbook> {
                     SliverFillRemaining(
                       child: controller.userRecipeListDB.isEmpty
                           ? noRecipeCreated()
-                          : Obx(() {
-                              List<Widget> list = [];
-                              // list.add(TextButton(
-                              //   onPressed: () {
-                              //     Get.to(() => ScreenCreateRecipe());
-                              //   },
-                              //   child: Icon(
-                              //     Icons.add_circle_outline,
-                              //     size: 50,
-                              //   ),
-                              // ));
-                              for (Recipe recipe in controller.userRecipeList) {
-                                list.add(SizedBox(
-                                  height: 40,
-                                  child: ElevatedButton(
-                                    child: Text(recipe.name),
-                                    style: ButtonStyle(),
-                                    onPressed: () {
-                                      Get.to(() => ScreenEditRecipe(
-                                            recipe: recipe,
-                                          ));
+                          : Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 20),
+                              child: Obx(() {
+                                List<Widget> list = [];
+                                for (Recipe recipe
+                                    in controller.userRecipeList) {
+                                  list.add(GestureDetector(
+                                    onTap: () {
+                                      Get.to(() =>
+                                          ScreenEditRecipe(recipe: recipe));
                                     },
-                                  ),
-                                ));
-                              }
-                              return Column(children: list);
-                            }),
+                                    child: Card(
+                                      elevation: 4,
+                                      child: Padding(
+                                          padding: EdgeInsets.only(
+                                              bottom: 15, top: 10),
+                                          child: Row(
+                                            children: [
+                                              Padding(
+                                                padding: EdgeInsets.symmetric(
+                                                    horizontal: 10),
+                                                child: Card(
+                                                  child: Padding(
+                                                    padding: EdgeInsets.all(10),
+                                                    child: FlutterLogo(
+                                                      size: 100,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                              Row(
+                                                children: [
+                                                  SizedBox(
+                                                    height: 100,
+                                                    width: 150,
+                                                    child: Column(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .spaceBetween,
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
+                                                      children: [
+                                                        Column(
+                                                          crossAxisAlignment:
+                                                              CrossAxisAlignment
+                                                                  .start,
+                                                          children: [
+                                                            Text(
+                                                              recipe.name,
+                                                              overflow:
+                                                                  TextOverflow
+                                                                      .ellipsis,
+                                                              style: TextStyle(
+                                                                  fontSize: 24,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ],
+                                              )
+                                            ],
+                                          )),
+                                    ),
+                                  ));
+                                }
+                                return Column(children: list);
+                              }),
+                            ),
                     ),
                   ])),
               // Favorite
@@ -177,27 +224,80 @@ class _ScreenBarfbookState extends State<ScreenBarfbook> {
                                 ),
                               ]),
                             )
-                          : Obx(() {
-                              List<Widget> list = [];
-                              for (Recipe recipe
-                                  in controller.userLikedRecipe) {
-                                list.add(SizedBox(
-                                  height: 40,
-                                  child: ElevatedButton.icon(
-                                      style: ButtonStyle(),
-                                      onPressed: () {
-                                        Get.to(() => RecipeDetailPage(
-                                              recipe: recipe,
-                                              favorite: true,
-                                            ));
-                                      },
-                                      icon: Image.asset(
-                                          "assets/images/recipe/icons/beef.png"),
-                                      label: Text(recipe.name)),
-                                ));
-                              }
-                              return Column(children: list);
-                            }),
+                          : Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 20),
+                              child: Obx(() {
+                                List<Widget> list = [];
+                                for (Recipe recipe
+                                    in controller.userLikedRecipe) {
+                                  list.add(GestureDetector(
+                                    onTap: () {
+                                      Get.to(() => RecipeDetailPage(
+                                          recipe: recipe, favorite: true));
+                                    },
+                                    child: Card(
+                                      elevation: 4,
+                                      child: Padding(
+                                          padding: EdgeInsets.only(
+                                              bottom: 15, top: 10),
+                                          child: Row(
+                                            children: [
+                                              Padding(
+                                                padding: EdgeInsets.symmetric(
+                                                    horizontal: 10),
+                                                child: Card(
+                                                  child: Padding(
+                                                    padding: EdgeInsets.all(10),
+                                                    child: FlutterLogo(
+                                                      size: 100,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                              Row(
+                                                children: [
+                                                  SizedBox(
+                                                    height: 100,
+                                                    width: 150,
+                                                    child: Column(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .spaceBetween,
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
+                                                      children: [
+                                                        Column(
+                                                          crossAxisAlignment:
+                                                              CrossAxisAlignment
+                                                                  .start,
+                                                          children: [
+                                                            Text(
+                                                              recipe.name,
+                                                              overflow:
+                                                                  TextOverflow
+                                                                      .ellipsis,
+                                                              style: TextStyle(
+                                                                  fontSize: 24,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ],
+                                              )
+                                            ],
+                                          )),
+                                    ),
+                                  ));
+                                }
+                                return Column(children: list);
+                              }),
+                            ),
                     ),
                   ])),
             ]),

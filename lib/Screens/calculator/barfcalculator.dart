@@ -18,6 +18,13 @@ class _ScreenCalculatorState extends State<ScreenCalculator> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      floatingActionButton: FloatingActionButton.large(
+        onPressed: () {
+          Get.to(() => ScreenAddPet());
+        },
+        child: Icon(Icons.add),
+      ),
       body: NestedScrollView(
           headerSliverBuilder: (context, innerBoxIsScrolled) {
             return [
@@ -35,25 +42,44 @@ class _ScreenCalculatorState extends State<ScreenCalculator> {
                   ? AddPetCard()
                   : Obx(() {
                       List<Widget> list = [];
-                      list.add(TextButton(
-                        onPressed: () {
-                          Get.to(() => ScreenAddPet());
-                        },
-                        child: Icon(
-                          Icons.add_circle_outline,
-                          size: 50,
-                        ),
-                      ));
                       for (Pet pet in controller.userPetList) {
-                        list.add(SizedBox(
-                          height: 40,
-                          child: ElevatedButton.icon(
-                              onPressed: () {
-                                Get.to(() => ScreenPetDetailPage(pet: pet));
-                              },
-                              icon: Image.asset(
-                                  "assets/images/recipe/icons/beef.png"),
-                              label: Text(pet.name)),
+                        list.add(
+                            //   SizedBox(
+                            //   height: 40,
+                            //   child:
+                            //   ElevatedButton.icon(
+                            //       onPressed: () {
+                            // Get.to(() => ScreenPetDetailPage(pet: pet));
+                            //       },
+                            //       icon: Image.asset(
+                            //           "assets/images/recipe/icons/beef.png"),
+                            //       label: Text(pet.name)),
+                            // ));
+                            GestureDetector(
+                          onTap: () {
+                            Get.to(() => ScreenPetDetailPage(pet: pet));
+                          },
+                          child: Padding(
+                            padding: EdgeInsets.all(15),
+                            child: Card(
+                              child: Column(
+                                children: [
+                                  Text(
+                                    pet.name,
+                                    style: TextStyle(
+                                        fontSize: 21,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                  Text('${pet.age} Jahre'),
+                                  Text('${pet.breed}'),
+                                  Text(
+                                      '${(pet.weight / 1000).toStringAsFixed(1)}kg'),
+                                  Text('${pet.ration}% tägliche Ration'),
+                                  Text('${pet.gender}')
+                                ],
+                              ),
+                            ),
+                          ),
                         ));
                       }
                       return Column(children: list);

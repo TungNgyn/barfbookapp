@@ -277,6 +277,75 @@ class _settingsStartState extends State<ScreenSettings>
                           ),
                         ),
                       ),
+                      //about us
+                      Padding(
+                        padding: EdgeInsets.only(left: 20, bottom: 5, top: 30),
+                        child: Text(
+                          "Barfbook-Team",
+                          style: TextStyle(fontSize: 13),
+                        ),
+                      ),
+                      Container(
+                        width: MediaQuery.of(context).size.width,
+                        decoration: BoxDecoration(
+                            color: Theme.of(context).colorScheme.onPrimary,
+                            borderRadius: BorderRadius.all(Radius.circular(10)),
+                            boxShadow: [
+                              BoxShadow(
+                                  spreadRadius: 0.01,
+                                  blurRadius: 0.01,
+                                  color: Theme.of(context).colorScheme.outline)
+                            ]),
+                        child: Padding(
+                          padding: const EdgeInsets.all(5),
+                          child: ListView(
+                            shrinkWrap: true,
+                            padding: EdgeInsets.zero,
+                            physics: NeverScrollableScrollPhysics(),
+                            children: [
+                              Column(
+                                children: [
+                                  TextButton(
+                                    onPressed: () {},
+                                    child: Align(
+                                      alignment: Alignment.centerLeft,
+                                      child: Text(
+                                        "Über uns ",
+                                        style: TextStyle(
+                                            fontSize: 16,
+                                            color: Theme.of(context)
+                                                .textTheme
+                                                .labelMedium!
+                                                .color),
+                                      ),
+                                    ),
+                                  ),
+                                  Divider(
+                                    height: 0,
+                                    thickness: 0.7,
+                                  ),
+                                  TextButton(
+                                    onPressed: () =>
+                                        Get.changeThemeMode(ThemeMode.dark),
+                                    child: Align(
+                                      alignment: Alignment.centerLeft,
+                                      child: Text(
+                                        "Dark",
+                                        style: TextStyle(
+                                            fontSize: 16,
+                                            color: Theme.of(context)
+                                                .textTheme
+                                                .labelMedium!
+                                                .color),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              )
+                            ],
+                          ),
+                        ),
+                      ),
                     ],
                   ),
                 ),
