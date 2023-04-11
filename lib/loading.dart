@@ -29,6 +29,7 @@ class _LoadingScreenState extends State<ScreenLoading> {
 }
 
 initData() async {
+  authController.signOut();
   final Controller controller = Get.find();
   // init userdata
   try {
@@ -66,8 +67,9 @@ initData() async {
           .select('name')
           .eq('id', recipe['user_id']);
 
-      final avatar =
-          await supabase.storage.from('profile').download('defaultAvatar');
+      final avatar = await supabase.storage
+          .from('profile')
+          .download('${recipe['user_id']}');
       List userdata = await supabase
           .from('profile')
           .select("*")
@@ -93,7 +95,8 @@ initData() async {
           description: recipe['description'],
           modified_at: recipe['modified_at'].substring(0, 10),
           user_id: recipe['user_id'],
-          user: userName[0]['name']));
+          user: userName[0]['name'],
+          userAvatar: avatar));
     }
   }
 
@@ -188,8 +191,9 @@ loadExplorePage() async {
           .select('name')
           .eq('id', recipe['user_id']);
 
-      final avatar =
-          await supabase.storage.from('profile').download('defaultAvatar');
+      final avatar = await supabase.storage
+          .from('profile')
+          .download('${recipe['user_id']}');
       List userdata = await supabase
           .from('profile')
           .select("*")

@@ -21,8 +21,6 @@ class _ScreenExploreState extends State<ScreenExplore>
 
   @override
   Widget build(BuildContext context) {
-    Recipe recipe = controller.exploreRecipeList[index];
-
     return Scaffold(
       body: NestedScrollView(
         headerSliverBuilder: (context, innerBoxIsScrolled) {
@@ -106,8 +104,8 @@ class _ScreenExploreState extends State<ScreenExplore>
                                                           .exploreProfileList[
                                                       index]));
                                             },
-                                            icon: Image.asset(
-                                              'assets/images/defaultAvatar.png',
+                                            icon: Image.memory(
+                                              recipe.userAvatar,
                                               height: 24,
                                             ),
                                             label: Text(recipe.user)),
@@ -173,8 +171,8 @@ class _ScreenExploreState extends State<ScreenExplore>
                                                           .exploreProfileList[
                                                       index]));
                                             },
-                                            icon: Image.asset(
-                                              'assets/images/defaultAvatar.png',
+                                            icon: Image.memory(
+                                              recipe.userAvatar,
                                               height: 24,
                                             ),
                                             label: Text(recipe.user)),

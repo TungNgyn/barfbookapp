@@ -40,7 +40,8 @@ class Recipe {
       required this.created_at,
       required this.modified_at,
       required this.user_id,
-      required this.user});
+      required this.user,
+      this.userAvatar});
 
   final int id;
   final String name;
@@ -50,6 +51,7 @@ class Recipe {
   final String modified_at;
   final String user_id;
   final String user;
+  final userAvatar;
 }
 
 getRecipeIcon(final category) {

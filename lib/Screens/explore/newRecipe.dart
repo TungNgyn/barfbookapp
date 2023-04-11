@@ -85,8 +85,8 @@ class ScreenNewRecipe extends StatelessWidget {
                                           profile: controller
                                               .exploreProfileList[index]));
                                     },
-                                    icon: Image.asset(
-                                      'assets/images/defaultAvatar.png',
+                                    icon: Image.memory(
+                                      recipe.userAvatar,
                                       height: 24,
                                     ),
                                     label: Text(recipe.user)),

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:Barfbook/home.dart';
 import 'package:Barfbook/Screens/Account/Login.dart';
@@ -214,15 +215,25 @@ class _SignUpState extends State<ScreenSignUp> {
       _isLoading = true;
     });
     try {
-      final AuthResponse response = await supabase.auth
-          .signUp(email: ".com", password: "12345678", data: {'name': 'Gast'});
+      final AuthResponse response = await supabase.auth.signUp(
+          email: "${DateTime.now().microsecondsSinceEpoch}@barfbook.app",
+          password: "BarfbookGast",
+          data: {'name': 'Gast', 'description': "Ich bin ein BARF-Gast."});
 
       session = response.session;
       user = response.user;
+
+      final avatarFile = File('lib/assets/images/defaultAvatar.png');
+      await supabase.storage.from('profile').upload(
+            '${user?.id}',
+            avatarFile,
+            fileOptions: const FileOptions(cacheControl: '3600', upsert: false),
+          );
     } catch (error) {
       Get.snackbar("Etwas ist schief gelaufen",
           'Unerwarteter Fehler aufgetreten. Bitte kontaktiere den Support.',
           backgroundColor: Colors.grey.withOpacity(0.5));
+      print(error);
     } finally {
       setState(() {
         _isLoading = false;
