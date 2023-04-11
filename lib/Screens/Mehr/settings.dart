@@ -42,9 +42,9 @@ class _settingsStartState extends State<ScreenSettings>
                       Material(
                           borderRadius: BorderRadius.all(Radius.circular(50)),
                           elevation: 10,
-                          child: Image.asset(
-                            "assets/images/defaultAvatar.png",
-                            height: 100,
+                          child: Image.memory(
+                            controller.userProfile['user'].avatar,
+                            width: 100,
                           )),
                       Text(user != null || session != null
                           ? "${controller.userProfile['user'].name}"

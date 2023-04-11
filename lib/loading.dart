@@ -32,6 +32,8 @@ initData() async {
   final Controller controller = Get.find();
   // init userdata
   try {
+    final avatar =
+        await supabase.storage.from('profile').download('${user?.id}');
     final userdata = await supabase
         .from('profile')
         .select("*")
@@ -42,7 +44,8 @@ initData() async {
           createdAt: userdata['created_at'].substring(0, 10),
           email: userdata['email'],
           name: userdata['name'],
-          description: userdata['description'])
+          description: userdata['description'],
+          avatar: avatar)
     };
   } catch (error) {
     print("ERROR = $error");
@@ -63,6 +66,8 @@ initData() async {
           .select('name')
           .eq('id', recipe['user_id']);
 
+      final avatar =
+          await supabase.storage.from('profile').download('defaultAvatar');
       List userdata = await supabase
           .from('profile')
           .select("*")
@@ -72,7 +77,8 @@ initData() async {
           createdAt: (userdata[0])['created_at'].substring(0, 10),
           email: (userdata[0])['email'],
           name: (userdata[0])['name'],
-          description: (userdata[0])['description']));
+          description: (userdata[0])['description'],
+          avatar: avatar));
 
       final paws = await supabase
           .from('profile_liked_recipe')
@@ -182,6 +188,8 @@ loadExplorePage() async {
           .select('name')
           .eq('id', recipe['user_id']);
 
+      final avatar =
+          await supabase.storage.from('profile').download('defaultAvatar');
       List userdata = await supabase
           .from('profile')
           .select("*")
@@ -191,7 +199,8 @@ loadExplorePage() async {
           createdAt: (userdata[0])['created_at'].substring(0, 10),
           email: (userdata[0])['email'],
           name: (userdata[0])['name'],
-          description: (userdata[0])['description']));
+          description: (userdata[0])['description'],
+          avatar: avatar));
 
       final paws = await supabase
           .from('profile_liked_recipe')

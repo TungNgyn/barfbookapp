@@ -574,7 +574,8 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
           createdAt: profileDB[0]['created_at'],
           email: profileDB[0]['email'],
           name: profileDB[0]['name'],
-          description: profileDB[0]['description']);
+          description: profileDB[0]['description'],
+          avatar: 0);
     } catch (error) {
       print(error);
     }
