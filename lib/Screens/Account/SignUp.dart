@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:path_provider/path_provider.dart';
+import 'package:flutter/services.dart' show rootBundle;
 import 'package:Barfbook/home.dart';
 import 'package:Barfbook/Screens/Account/Login.dart';
 import 'package:Barfbook/util/Supabase/AuthController.dart';
@@ -223,12 +225,14 @@ class _SignUpState extends State<ScreenSignUp> {
       session = response.session;
       user = response.user;
 
-      final avatarFile = File('lib/assets/images/defaultAvatar.png');
-      await supabase.storage.from('profile').upload(
-            '${user?.id}',
-            avatarFile,
-            fileOptions: const FileOptions(cacheControl: '3600', upsert: false),
-          );
+      final bytes = await rootBundle.load('assets/images/defaultAvatar.png');
+      final tempDir = await getTemporaryDirectory();
+      final file = File('${tempDir.path}/defaultAvatar.png');
+      await file.writeAsBytes(
+          bytes.buffer.asUint8List(bytes.offsetInBytes, bytes.lengthInBytes));
+
+      final storageResponse =
+          await supabase.storage.from('profile').upload('${user?.id}', file);
     } catch (error) {
       Get.snackbar("Etwas ist schief gelaufen",
           'Unerwarteter Fehler aufgetreten. Bitte kontaktiere den Support.',

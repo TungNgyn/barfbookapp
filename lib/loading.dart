@@ -29,7 +29,6 @@ class _LoadingScreenState extends State<ScreenLoading> {
 }
 
 initData() async {
-  authController.signOut();
   final Controller controller = Get.find();
   // init userdata
   try {
