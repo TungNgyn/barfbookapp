@@ -241,8 +241,7 @@ class _SignUpState extends State<ScreenSignUp> {
       await file.writeAsBytes(
           bytes.buffer.asUint8List(bytes.offsetInBytes, bytes.lengthInBytes));
 
-      final storageResponse =
-          await supabase.storage.from('profile').upload('${user?.id}', file);
+      await supabase.storage.from('profile').upload('${user?.id}', file);
     } catch (error) {
       print(error);
     }

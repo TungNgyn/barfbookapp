@@ -95,8 +95,6 @@ initData() async {
           name: userdata[0]['name'],
           description: userdata[0]['description'],
           avatar: avatar));
-      print(userdata[0]['name']);
-      print(controller.exploreProfileList);
 
       final paws = await supabase
           .from('profile_liked_recipe')
@@ -223,8 +221,6 @@ loadExplorePage() async {
           name: userdata[0]['name'],
           description: userdata[0]['description'],
           avatar: avatar));
-      print(userdata[0]['name']);
-      print(controller.exploreProfileList);
 
       final paws = await supabase
           .from('profile_liked_recipe')

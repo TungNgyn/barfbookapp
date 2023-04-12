@@ -47,15 +47,16 @@ class _settingsStartState extends State<ScreenSettings>
                           }
                         },
                         child: CircleAvatar(
-                          radius: 55,
-                          child: CircleAvatar(
-                            backgroundColor:
-                                Theme.of(context).colorScheme.surface,
-                            radius: 52,
-                            child: Image.memory(
-                              controller.userProfile['user'].avatar,
-                              width: 100,
-                            ),
+                          backgroundColor: Colors.transparent,
+                          radius: 52,
+                          child: Container(
+                            decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                image: DecorationImage(
+                                    fit: BoxFit.fill,
+                                    image: Image.memory(controller
+                                            .userProfile['user'].avatar)
+                                        .image)),
                           ),
                         ),
                       ),

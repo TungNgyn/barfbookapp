@@ -102,15 +102,19 @@ class _ScreenProfileState extends State<ScreenProfile>
                       child: Column(
                         children: [
                           CircleAvatar(
-                            radius: 67,
-                            child: CircleAvatar(
-                              backgroundColor:
-                                  Theme.of(context).colorScheme.surface,
-                              radius: 64,
-                              child: Image.memory(
-                                widget.profile.avatar,
-                                width: 150,
-                              ),
+                            backgroundColor: Colors.transparent,
+                            radius: 64,
+                            child: Container(
+                              decoration: BoxDecoration(
+                                  border: Border.all(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .primary),
+                                  shape: BoxShape.circle,
+                                  image: DecorationImage(
+                                      fit: BoxFit.fill,
+                                      image: Image.memory(widget.profile.avatar)
+                                          .image)),
                             ),
                           ),
                           Padding(
@@ -206,8 +210,7 @@ class _ScreenProfileState extends State<ScreenProfile>
             paws: 0,
             created_at: recipe['created_at'],
             modified_at: recipe['modified_at'],
-            user_id: recipe['user_id'],
-            user: recipe['user_id']));
+            user_id: recipe['user_id']));
       }
     } catch (error) {
       print(error);
