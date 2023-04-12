@@ -1,4 +1,4 @@
-package com.example.barfbookapp
+package com.tung.barfbookapp
 
 import io.flutter.embedding.android.FlutterActivity
 
