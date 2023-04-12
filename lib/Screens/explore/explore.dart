@@ -17,7 +17,6 @@ class ScreenExplore extends StatefulWidget {
 class _ScreenExploreState extends State<ScreenExplore>
     with AutomaticKeepAliveClientMixin<ScreenExplore> {
   final Controller controller = Get.find();
-  int index = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -100,15 +99,13 @@ class _ScreenExploreState extends State<ScreenExplore>
                                         TextButton.icon(
                                             onPressed: () {
                                               Get.to(() => ScreenProfile(
-                                                  profile: controller
-                                                          .exploreProfileList[
-                                                      index]));
+                                                  profile: recipe.user));
                                             },
                                             icon: Image.memory(
                                               recipe.userAvatar,
                                               height: 24,
                                             ),
-                                            label: Text(recipe.user)),
+                                            label: Text(recipe.user.name)),
                                       ],
                                     ),
                                     TextButton.icon(
@@ -167,15 +164,13 @@ class _ScreenExploreState extends State<ScreenExplore>
                                         TextButton.icon(
                                             onPressed: () {
                                               Get.to(() => ScreenProfile(
-                                                  profile: controller
-                                                          .exploreProfileList[
-                                                      index]));
+                                                  profile: recipe.user));
                                             },
                                             icon: Image.memory(
                                               recipe.userAvatar,
                                               height: 24,
                                             ),
-                                            label: Text(recipe.user)),
+                                            label: Text(recipe.user.name)),
                                       ],
                                     ),
                                     TextButton.icon(

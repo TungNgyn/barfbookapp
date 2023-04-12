@@ -36,8 +36,7 @@ class _ScreenBarfbookState extends State<ScreenBarfbook> {
           paws: 0,
           description: recipe['description'],
           modified_at: recipe['modified_at'],
-          user_id: user!.id,
-          user: ""));
+          user_id: user!.id));
     }
   }
 

@@ -39,22 +39,26 @@ class _settingsStartState extends State<ScreenSettings>
                   ])),
                   child: Column(
                     children: [
-                      Material(
-                          borderRadius: BorderRadius.all(Radius.circular(50)),
-                          elevation: 10,
-                          child: GestureDetector(
-                            onTap: () {
-                              if (controller.userProfile['user'].name !=
-                                  'Gast') {
-                                Get.to(() => ScreenProfile(
-                                    profile: controller.userProfile['user']));
-                              }
-                            },
+                      GestureDetector(
+                        onTap: () {
+                          if (controller.userProfile['user'].name != 'Gast') {
+                            Get.to(() => ScreenProfile(
+                                profile: controller.userProfile['user']));
+                          }
+                        },
+                        child: CircleAvatar(
+                          radius: 55,
+                          child: CircleAvatar(
+                            backgroundColor:
+                                Theme.of(context).colorScheme.surface,
+                            radius: 52,
                             child: Image.memory(
                               controller.userProfile['user'].avatar,
                               width: 100,
                             ),
-                          )),
+                          ),
+                        ),
+                      ),
                       Text(user != null || session != null
                           ? "${controller.userProfile['user'].name}"
                           : "Gast")
@@ -370,6 +374,32 @@ class _settingsStartState extends State<ScreenSettings>
                 physics: NeverScrollableScrollPhysics(),
                 children: [
                   Column(children: [
+                    Padding(
+                      padding: EdgeInsets.all(5),
+                      child: TextButton(
+                        onPressed: () => {
+                          authController
+                              .signOut()
+                              .then((value) => Get.offAll(() => ScreenLogin()))
+                        },
+                        child: Align(
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            "Anmelden",
+                            style: TextStyle(
+                                letterSpacing: 0.5,
+                                fontSize: 16,
+                                fontFamily: DefaultTextStyle.of(context)
+                                    .style
+                                    .fontFamily,
+                                color: Theme.of(context)
+                                    .textTheme
+                                    .labelMedium!
+                                    .color),
+                          ),
+                        ),
+                      ),
+                    ),
                     Padding(
                       padding: EdgeInsets.all(5),
                       child: TextButton(

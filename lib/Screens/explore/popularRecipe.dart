@@ -82,15 +82,14 @@ class ScreenPopularRecipe extends StatelessWidget {
                                 ),
                                 TextButton.icon(
                                     onPressed: () {
-                                      Get.to(() => ScreenProfile(
-                                          profile: controller
-                                              .exploreProfileList[index]));
+                                      Get.to(() =>
+                                          ScreenProfile(profile: recipe.user!));
                                     },
                                     icon: Image.memory(
                                       recipe.userAvatar,
                                       height: 24,
                                     ),
-                                    label: Text(recipe.user)),
+                                    label: Text(recipe.user!.name)),
                               ],
                             ),
                           ),

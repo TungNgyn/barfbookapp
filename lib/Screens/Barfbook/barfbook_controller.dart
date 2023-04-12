@@ -1,3 +1,4 @@
+import 'package:Barfbook/Screens/Mehr/profile_controller.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter/material.dart';
@@ -40,7 +41,7 @@ class Recipe {
       required this.created_at,
       required this.modified_at,
       required this.user_id,
-      required this.user,
+      this.user,
       this.userAvatar});
 
   final int id;
@@ -50,7 +51,7 @@ class Recipe {
   final String created_at;
   final String modified_at;
   final String user_id;
-  final String user;
+  final Profile? user;
   final userAvatar;
 }
 

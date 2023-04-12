@@ -130,6 +130,7 @@ class _SignUpState extends State<ScreenSignUp> {
                               GetUtils.isEmail(email)
                                   ? password.length >= 8
                                       ? _signUp()
+                                          .then((value) => _createAvatar())
                                       : Get.snackbar(
                                           "Etwas ist schief gelaufen",
                                           "Dein Passwort ist zu kurz!")
@@ -147,9 +148,7 @@ class _SignUpState extends State<ScreenSignUp> {
                 children: [
                   GestureDetector(
                       onTap: () {
-                        _isLoading
-                            ? null
-                            : _loginGuest().then((value) => _createAvatar());
+                        _isLoading ? null : _loginGuest();
                       },
                       child: Text("Als Gast fortfahren")),
                   VerticalDivider(

@@ -468,8 +468,7 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
                 paws: 0,
                 description: recipe['description'],
                 modified_at: recipe['modified_at'],
-                user_id: user!.id,
-                user: ""));
+                user_id: user!.id));
           }
         }
       }

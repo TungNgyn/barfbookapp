@@ -43,15 +43,16 @@ class _ScreenProfileState extends State<ScreenProfile>
                 appBar: AppBar(
                   backgroundColor: Colors.transparent,
                   actions: [
-                    Padding(
-                      padding: const EdgeInsets.only(right: 10),
-                      child: IconButton(
-                          onPressed: () {
-                            Get.to(() =>
-                                ScreenEditProfile(profile: widget.profile));
-                          },
-                          icon: Icon(Icons.edit)),
-                    )
+                    if (widget.profile.id == user?.id)
+                      Padding(
+                        padding: const EdgeInsets.only(right: 10),
+                        child: IconButton(
+                            onPressed: () {
+                              Get.to(() =>
+                                  ScreenEditProfile(profile: widget.profile));
+                            },
+                            icon: Icon(Icons.edit)),
+                      )
                   ],
                 ),
                 // body: Stack(children: [
@@ -103,16 +104,14 @@ class _ScreenProfileState extends State<ScreenProfile>
                           CircleAvatar(
                             radius: 67,
                             child: CircleAvatar(
-                                backgroundColor:
-                                    Theme.of(context).colorScheme.surface,
-                                radius: 64,
-                                child: Image.asset(
-                                    'assets/images/defaultAvatar.png')
-
-                                // FlutterLogo(
-                                //   size: 64,
-                                // ),
-                                ),
+                              backgroundColor:
+                                  Theme.of(context).colorScheme.surface,
+                              radius: 64,
+                              child: Image.memory(
+                                widget.profile.avatar,
+                                width: 150,
+                              ),
+                            ),
                           ),
                           Padding(
                             padding: EdgeInsets.only(top: 24),

@@ -48,8 +48,6 @@ initData() async {
           avatar: avatar)
     };
   } catch (error) {
-    print("ERROR = $error");
-
     final avatar =
         await supabase.storage.from('profile').download('defaultAvatar');
     final userdata = await supabase
@@ -76,6 +74,7 @@ initData() async {
     print(error);
   } finally {
     controller.exploreRecipeList.clear();
+    controller.exploreProfileList.clear();
     for (var recipe in controller.databaseRecipeList) {
       List userName = await supabase
           .from('profile')
@@ -90,28 +89,33 @@ initData() async {
           .select("*")
           .match({'id': recipe['user_id']});
       controller.exploreProfileList.add(Profile(
-          id: (userdata[0] as Map)['id'],
-          createdAt: (userdata[0])['created_at'].substring(0, 10),
-          email: (userdata[0])['email'],
-          name: (userdata[0])['name'],
-          description: (userdata[0])['description'],
+          id: userdata[0]['id'],
+          createdAt: userdata[0]['created_at'].substring(0, 10),
+          email: userdata[0]['email'],
+          name: userdata[0]['name'],
+          description: userdata[0]['description'],
           avatar: avatar));
+      print(userdata[0]['name']);
+      print(controller.exploreProfileList);
 
       final paws = await supabase
           .from('profile_liked_recipe')
           .select('*', FetchOptions(count: CountOption.exact))
           .eq('recipe', recipe['id']);
-
-      controller.exploreRecipeList.add(Recipe(
-          name: (recipe as Map)['name'],
-          id: recipe['id'],
-          created_at: recipe['created_at'].substring(0, 10),
-          paws: paws.count,
-          description: recipe['description'],
-          modified_at: recipe['modified_at'].substring(0, 10),
-          user_id: recipe['user_id'],
-          user: userName[0]['name'],
-          userAvatar: avatar));
+      for (var profile in controller.exploreProfileList) {
+        if (profile.id == recipe['user_id']) {
+          controller.exploreRecipeList.add(Recipe(
+              name: (recipe as Map)['name'],
+              id: recipe['id'],
+              created_at: recipe['created_at'].substring(0, 10),
+              paws: paws.count,
+              description: recipe['description'],
+              modified_at: recipe['modified_at'].substring(0, 10),
+              user_id: recipe['user_id'],
+              user: profile,
+              userAvatar: avatar));
+        }
+      }
     }
   }
 
@@ -130,8 +134,7 @@ initData() async {
           paws: 0,
           description: recipe['description'],
           modified_at: recipe['modified_at'],
-          user_id: user!.id,
-          user: ""));
+          user_id: user!.id));
     }
   } catch (error) {
     print(error);
@@ -158,8 +161,7 @@ initData() async {
               paws: 0,
               description: recipe['description'],
               modified_at: recipe['modified_at'],
-              user_id: recipe['user_id'],
-              user: ""));
+              user_id: recipe['user_id']));
         }
       }
     }
@@ -200,6 +202,7 @@ loadExplorePage() async {
     print(error);
   } finally {
     controller.exploreRecipeList.clear();
+    controller.exploreProfileList.clear();
     for (var recipe in controller.databaseRecipeList) {
       List userName = await supabase
           .from('profile')
@@ -214,27 +217,33 @@ loadExplorePage() async {
           .select("*")
           .match({'id': recipe['user_id']});
       controller.exploreProfileList.add(Profile(
-          id: (userdata[0] as Map)['id'],
-          createdAt: (userdata[0])['created_at'].substring(0, 10),
-          email: (userdata[0])['email'],
-          name: (userdata[0])['name'],
-          description: (userdata[0])['description'],
+          id: userdata[0]['id'],
+          createdAt: userdata[0]['created_at'].substring(0, 10),
+          email: userdata[0]['email'],
+          name: userdata[0]['name'],
+          description: userdata[0]['description'],
           avatar: avatar));
+      print(userdata[0]['name']);
+      print(controller.exploreProfileList);
 
       final paws = await supabase
           .from('profile_liked_recipe')
           .select('*', FetchOptions(count: CountOption.exact))
           .eq('recipe', recipe['id']);
-
-      controller.exploreRecipeList.add(Recipe(
-          name: (recipe as Map)['name'],
-          id: recipe['id'],
-          created_at: recipe['created_at'].substring(0, 10),
-          paws: paws.count,
-          description: recipe['description'],
-          modified_at: recipe['modified_at'].substring(0, 10),
-          user_id: recipe['user_id'],
-          user: userName[0]['name']));
+      for (var profile in controller.exploreProfileList) {
+        if (profile.id == recipe['user_id']) {
+          controller.exploreRecipeList.add(Recipe(
+              name: (recipe as Map)['name'],
+              id: recipe['id'],
+              created_at: recipe['created_at'].substring(0, 10),
+              paws: paws.count,
+              description: recipe['description'],
+              modified_at: recipe['modified_at'].substring(0, 10),
+              user_id: recipe['user_id'],
+              user: profile,
+              userAvatar: avatar));
+        }
+      }
     }
   }
 }
@@ -263,8 +272,7 @@ initFavorite() async {
               paws: 0,
               description: recipe['description'],
               modified_at: recipe['modified_at'],
-              user_id: user!.id,
-              user: ""));
+              user_id: user!.id));
         }
       }
     }
