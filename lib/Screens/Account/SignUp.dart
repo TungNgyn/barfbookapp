@@ -147,7 +147,9 @@ class _SignUpState extends State<ScreenSignUp> {
                 children: [
                   GestureDetector(
                       onTap: () {
-                        _isLoading ? null : _loginGuest();
+                        _isLoading
+                            ? null
+                            : _loginGuest().then((value) => _createAvatar());
                       },
                       child: Text("Als Gast fortfahren")),
                   VerticalDivider(
@@ -224,7 +226,16 @@ class _SignUpState extends State<ScreenSignUp> {
 
       session = response.session;
       user = response.user;
+    } catch (error) {
+      Get.snackbar("Etwas ist schief gelaufen",
+          'Unerwarteter Fehler aufgetreten. Bitte kontaktiere den Support.',
+          backgroundColor: Colors.grey.withOpacity(0.5));
+      print(error);
+    }
+  }
 
+  Future _createAvatar() async {
+    try {
       final bytes = await rootBundle.load('assets/images/defaultAvatar.png');
       final tempDir = await getTemporaryDirectory();
       final file = File('${tempDir.path}/defaultAvatar.png');
@@ -234,14 +245,7 @@ class _SignUpState extends State<ScreenSignUp> {
       final storageResponse =
           await supabase.storage.from('profile').upload('${user?.id}', file);
     } catch (error) {
-      Get.snackbar("Etwas ist schief gelaufen",
-          'Unerwarteter Fehler aufgetreten. Bitte kontaktiere den Support.',
-          backgroundColor: Colors.grey.withOpacity(0.5));
       print(error);
-    } finally {
-      setState(() {
-        _isLoading = false;
-      });
     }
   }
 }

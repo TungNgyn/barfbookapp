@@ -1,4 +1,5 @@
 import 'package:Barfbook/Screens/Barfbook/barfbook_controller.dart';
+import 'package:Barfbook/Screens/Mehr/editProfile.dart';
 import 'package:Barfbook/Screens/Mehr/profile_controller.dart';
 import 'package:Barfbook/Screens/calculator/pet_controller.dart';
 import 'package:Barfbook/controller.dart';
@@ -41,6 +42,17 @@ class _ScreenProfileState extends State<ScreenProfile>
                 extendBodyBehindAppBar: true,
                 appBar: AppBar(
                   backgroundColor: Colors.transparent,
+                  actions: [
+                    Padding(
+                      padding: const EdgeInsets.only(right: 10),
+                      child: IconButton(
+                          onPressed: () {
+                            Get.to(() =>
+                                ScreenEditProfile(profile: widget.profile));
+                          },
+                          icon: Icon(Icons.edit)),
+                    )
+                  ],
                 ),
                 // body: Stack(children: [
                 //   Opacity(

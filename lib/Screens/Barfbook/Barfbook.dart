@@ -89,262 +89,256 @@ class _ScreenBarfbookState extends State<ScreenBarfbook> {
               ]),
             ),
           ],
-          body: SafeArea(
-            child: TabBarView(children: [
-              // // Schedule
-              // SingleChildScrollView(
-              //   child: Padding(
-              //       padding: EdgeInsets.all(20.0),
-              //       child: ElevatedButton(
-              //         onPressed: () => Get.to(() => ScreenCreateSchedule()),
-              //         child: Text("Wochenplan erstellen"),
-              //       )),
-              // ),
-              //Recipe
-              Scaffold(
-                  floatingActionButtonLocation:
-                      FloatingActionButtonLocation.centerFloat,
-                  floatingActionButton: FloatingActionButton.large(
-                    onPressed: () {
-                      Get.to(() => ScreenCreateRecipe());
-                    },
-                    child: Icon(Icons.add),
-                  ),
-                  body: CustomScrollView(slivers: [
-                    SliverFillRemaining(
-                      child: controller.userRecipeListDB.isEmpty
-                          ? noRecipeCreated()
-                          : Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 20),
-                              child: Obx(() {
-                                List<Widget> list = [];
-                                for (Recipe recipe
-                                    in controller.userRecipeList) {
-                                  list.add(GestureDetector(
-                                    onTap: () {
-                                      Get.to(() =>
-                                          ScreenEditRecipe(recipe: recipe));
-                                    },
-                                    child: Card(
-                                      elevation: 4,
-                                      child: Padding(
-                                          padding: EdgeInsets.only(
-                                              bottom: 15, top: 10),
-                                          child: Row(
-                                            children: [
-                                              Padding(
-                                                padding: EdgeInsets.symmetric(
-                                                    horizontal: 10),
-                                                child: Card(
-                                                  child: Padding(
-                                                    padding: EdgeInsets.all(10),
-                                                    child: FlutterLogo(
-                                                      size: 100,
-                                                    ),
+          body: TabBarView(children: [
+            // // Schedule
+            // SingleChildScrollView(
+            //   child: Padding(
+            //       padding: EdgeInsets.all(20.0),
+            //       child: ElevatedButton(
+            //         onPressed: () => Get.to(() => ScreenCreateSchedule()),
+            //         child: Text("Wochenplan erstellen"),
+            //       )),
+            // ),
+            //Recipe
+            Scaffold(
+                floatingActionButtonLocation:
+                    FloatingActionButtonLocation.centerFloat,
+                floatingActionButton: FloatingActionButton.large(
+                  onPressed: () {
+                    controller.userProfile['user'].name == 'Gast'
+                        ? Get.snackbar("Registrierung",
+                            "Du musst angemeldet sein, um ein Rezept zu erstellen.")
+                        : Get.to(() => ScreenCreateRecipe());
+                  },
+                  child: Icon(Icons.add),
+                ),
+                body: CustomScrollView(slivers: [
+                  SliverFillRemaining(
+                    child: controller.userRecipeListDB.isEmpty
+                        ? noRecipeCreatedCard(context)
+                        : Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 20),
+                            child: Obx(() {
+                              List<Widget> list = [];
+                              for (Recipe recipe in controller.userRecipeList) {
+                                list.add(GestureDetector(
+                                  onTap: () {
+                                    Get.to(
+                                        () => ScreenEditRecipe(recipe: recipe));
+                                  },
+                                  child: Card(
+                                    elevation: 4,
+                                    child: Padding(
+                                        padding: EdgeInsets.only(
+                                            bottom: 15, top: 10),
+                                        child: Row(
+                                          children: [
+                                            Padding(
+                                              padding: EdgeInsets.symmetric(
+                                                  horizontal: 10),
+                                              child: Card(
+                                                child: Padding(
+                                                  padding: EdgeInsets.all(10),
+                                                  child: FlutterLogo(
+                                                    size: 100,
                                                   ),
                                                 ),
                                               ),
-                                              Row(
-                                                children: [
-                                                  SizedBox(
-                                                    height: 100,
-                                                    width: 150,
-                                                    child: Column(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .spaceBetween,
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .start,
-                                                      children: [
-                                                        Column(
-                                                          crossAxisAlignment:
-                                                              CrossAxisAlignment
-                                                                  .start,
-                                                          children: [
-                                                            Text(
-                                                              recipe.name,
-                                                              overflow:
-                                                                  TextOverflow
-                                                                      .ellipsis,
-                                                              style: TextStyle(
-                                                                  fontSize: 24,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .bold),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      ],
-                                                    ),
+                                            ),
+                                            Row(
+                                              children: [
+                                                SizedBox(
+                                                  height: 100,
+                                                  width: 150,
+                                                  child: Column(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceBetween,
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: [
+                                                      Column(
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .start,
+                                                        children: [
+                                                          Text(
+                                                            recipe.name,
+                                                            overflow:
+                                                                TextOverflow
+                                                                    .ellipsis,
+                                                            style: TextStyle(
+                                                                fontSize: 24,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ],
                                                   ),
-                                                ],
-                                              )
-                                            ],
-                                          )),
-                                    ),
-                                  ));
-                                }
-                                return Column(children: list);
-                              }),
-                            ),
-                    ),
-                  ])),
-              // Favorite
-              Scaffold(
-                  floatingActionButtonLocation:
-                      FloatingActionButtonLocation.centerFloat,
-                  floatingActionButton: FloatingActionButton.large(
-                    onPressed: () {
-                      Get.offAll(() => Home());
-                    },
-                    child: Icon(Icons.search),
-                  ),
-                  body: CustomScrollView(slivers: [
-                    SliverFillRemaining(
-                      child: controller.userLikedRecipe.isEmpty
-                          ? Card(
-                              child: Column(children: [
-                                Padding(
-                                  padding: const EdgeInsets.all(10.0),
-                                  child: Image.asset(
-                                    'assets/images/rezept.png',
-                                    width:
-                                        MediaQuery.of(context).size.width * 0.2,
+                                                ),
+                                              ],
+                                            )
+                                          ],
+                                        )),
                                   ),
-                                ),
-                                Column(
-                                  children: [
-                                    Text(
-                                        'Du hast noch keine Rezepte gespeichert.'),
-                                    SizedBox(
-                                      height: 10,
-                                    ),
-                                  ],
-                                ),
-                              ]),
-                            )
-                          : Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 20),
-                              child: Obx(() {
-                                List<Widget> list = [];
-                                for (Recipe recipe
-                                    in controller.userLikedRecipe) {
-                                  list.add(GestureDetector(
-                                    onTap: () {
-                                      Get.to(() => RecipeDetailPage(
-                                          recipe: recipe, favorite: true));
-                                    },
-                                    child: Card(
-                                      elevation: 4,
-                                      child: Padding(
-                                          padding: EdgeInsets.only(
-                                              bottom: 15, top: 10),
-                                          child: Row(
-                                            children: [
-                                              Padding(
-                                                padding: EdgeInsets.symmetric(
-                                                    horizontal: 10),
-                                                child: Card(
-                                                  child: Padding(
-                                                    padding: EdgeInsets.all(10),
-                                                    child: FlutterLogo(
-                                                      size: 100,
-                                                    ),
+                                ));
+                              }
+                              return Column(children: list);
+                            }),
+                          ),
+                  ),
+                ])),
+            // Favorite
+            Scaffold(
+                floatingActionButtonLocation:
+                    FloatingActionButtonLocation.centerFloat,
+                floatingActionButton: FloatingActionButton.large(
+                  onPressed: () {
+                    Get.offAll(() => Home());
+                  },
+                  child: Icon(Icons.search),
+                ),
+                body: CustomScrollView(slivers: [
+                  SliverFillRemaining(
+                    child: controller.userLikedRecipe.isEmpty
+                        ? noFavoriteRecipeCard(context)
+                        : Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 20),
+                            child: Obx(() {
+                              List<Widget> list = [];
+                              for (Recipe recipe
+                                  in controller.userLikedRecipe) {
+                                list.add(GestureDetector(
+                                  onTap: () {
+                                    Get.to(() => RecipeDetailPage(
+                                        recipe: recipe, favorite: true));
+                                  },
+                                  child: Card(
+                                    elevation: 4,
+                                    child: Padding(
+                                        padding: EdgeInsets.only(
+                                            bottom: 15, top: 10),
+                                        child: Row(
+                                          children: [
+                                            Padding(
+                                              padding: EdgeInsets.symmetric(
+                                                  horizontal: 10),
+                                              child: Card(
+                                                child: Padding(
+                                                  padding: EdgeInsets.all(10),
+                                                  child: FlutterLogo(
+                                                    size: 100,
                                                   ),
                                                 ),
                                               ),
-                                              Row(
-                                                children: [
-                                                  SizedBox(
-                                                    height: 100,
-                                                    width: 150,
-                                                    child: Column(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .spaceBetween,
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .start,
-                                                      children: [
-                                                        Column(
-                                                          crossAxisAlignment:
-                                                              CrossAxisAlignment
-                                                                  .start,
-                                                          children: [
-                                                            Text(
-                                                              recipe.name,
-                                                              overflow:
-                                                                  TextOverflow
-                                                                      .ellipsis,
-                                                              style: TextStyle(
-                                                                  fontSize: 24,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .bold),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      ],
-                                                    ),
+                                            ),
+                                            Row(
+                                              children: [
+                                                SizedBox(
+                                                  height: 100,
+                                                  width: 150,
+                                                  child: Column(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceBetween,
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: [
+                                                      Column(
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .start,
+                                                        children: [
+                                                          Text(
+                                                            recipe.name,
+                                                            overflow:
+                                                                TextOverflow
+                                                                    .ellipsis,
+                                                            style: TextStyle(
+                                                                fontSize: 24,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ],
                                                   ),
-                                                ],
-                                              )
-                                            ],
-                                          )),
-                                    ),
-                                  ));
-                                }
-                                return Column(children: list);
-                              }),
-                            ),
-                    ),
-                  ])),
-            ]),
-          ),
+                                                ),
+                                              ],
+                                            )
+                                          ],
+                                        )),
+                                  ),
+                                ));
+                              }
+                              return Column(children: list);
+                            }),
+                          ),
+                  ),
+                ])),
+          ]),
         ),
       ),
     );
   }
-}
 
-class noRecipeCreated extends StatelessWidget {
-  const noRecipeCreated({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-        child: Padding(
-      padding: const EdgeInsets.all(15.0),
-      child: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(10.0),
-            child: Image.asset(
-              'assets/images/barfbook.png',
-              width: MediaQuery.of(context).size.width * 0.2,
-            ),
-          ),
-          Column(
+  Widget noRecipeCreatedCard(BuildContext context) {
+    return Column(
+      children: [
+        Card(
+            child: Padding(
+          padding: const EdgeInsets.all(15.0),
+          child: Column(
             children: [
-              Text("Du hast noch kein eigenes Rezept erstellt."),
-              Text("Fang jetzt damit an!"),
-              SizedBox(height: 10),
-              TextButton(
-                onPressed: () {
-                  Get.to(() => ScreenCreateRecipe());
-                },
-                child: Icon(
-                  Icons.add_circle_outline,
-                  size: 50,
+              Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: Image.asset(
+                  'assets/icons/recipe.png',
+                  width: MediaQuery.of(context).size.width * 0.2,
                 ),
-              )
+              ),
+              Column(
+                children: [
+                  Text("Du hast noch kein eigenes Rezept erstellt."),
+                  Text("Fang jetzt damit an!"),
+                ],
+              ),
             ],
           ),
-        ],
-      ),
-    ));
+        )),
+      ],
+    );
+  }
+
+  Widget noFavoriteRecipeCard(BuildContext context) {
+    return Column(
+      children: [
+        Card(
+          child: Padding(
+            padding: const EdgeInsets.all(15),
+            child: Column(children: [
+              Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: Image.asset(
+                  'assets/icons/favorite.png',
+                  width: MediaQuery.of(context).size.width * 0.2,
+                ),
+              ),
+              Column(
+                children: [
+                  Text('Du hast noch keine Rezepte gespeichert.'),
+                  Text('Finde die besten Rezepte!'),
+                ],
+              ),
+            ]),
+          ),
+        ),
+      ],
+    );
   }
 }

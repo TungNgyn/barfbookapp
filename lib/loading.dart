@@ -49,6 +49,22 @@ initData() async {
     };
   } catch (error) {
     print("ERROR = $error");
+
+    final avatar =
+        await supabase.storage.from('profile').download('defaultAvatar');
+    final userdata = await supabase
+        .from('profile')
+        .select("*")
+        .match({'id': user?.id}).single();
+    controller.userProfile = {
+      'user': Profile(
+          id: user!.id,
+          createdAt: userdata['created_at'].substring(0, 10),
+          email: userdata['email'],
+          name: userdata['name'],
+          description: userdata['description'],
+          avatar: avatar)
+    };
   }
 
   // init explore recipe and likes and profile list

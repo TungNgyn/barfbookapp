@@ -42,9 +42,18 @@ class _settingsStartState extends State<ScreenSettings>
                       Material(
                           borderRadius: BorderRadius.all(Radius.circular(50)),
                           elevation: 10,
-                          child: Image.memory(
-                            controller.userProfile['user'].avatar,
-                            width: 100,
+                          child: GestureDetector(
+                            onTap: () {
+                              if (controller.userProfile['user'].name !=
+                                  'Gast') {
+                                Get.to(() => ScreenProfile(
+                                    profile: controller.userProfile['user']));
+                              }
+                            },
+                            child: Image.memory(
+                              controller.userProfile['user'].avatar,
+                              width: 100,
+                            ),
                           )),
                       Text(user != null || session != null
                           ? "${controller.userProfile['user'].name}"
@@ -69,144 +78,9 @@ class _settingsStartState extends State<ScreenSettings>
                                   .fontFamily),
                         ),
                       ),
-                      Container(
-                        width: MediaQuery.of(context).size.width,
-                        decoration: BoxDecoration(
-                            color: Theme.of(context).colorScheme.onPrimary,
-                            borderRadius: BorderRadius.all(Radius.circular(10)),
-                            boxShadow: [
-                              BoxShadow(
-                                  spreadRadius: 0.01,
-                                  blurRadius: 0.01,
-                                  color: Theme.of(context).colorScheme.outline)
-                            ]),
-                        child: Padding(
-                          padding: const EdgeInsets.all(5),
-                          child: ListView(
-                            shrinkWrap: true,
-                            padding: EdgeInsets.zero,
-                            physics: NeverScrollableScrollPhysics(),
-                            children: [
-                              Column(
-                                children: [
-                                  Padding(
-                                    padding: EdgeInsets.all(5),
-                                    child: TextButton(
-                                      onPressed: () => Get.to(() =>
-                                          ScreenProfile(
-                                              profile: controller
-                                                  .userProfile['user'])),
-                                      child: Align(
-                                        alignment: Alignment.centerLeft,
-                                        child: Text(
-                                          "Profil",
-                                          style: TextStyle(
-                                              letterSpacing: 0.5,
-                                              fontSize: 16,
-                                              fontFamily:
-                                                  DefaultTextStyle.of(context)
-                                                      .style
-                                                      .fontFamily,
-                                              color: Theme.of(context)
-                                                  .textTheme
-                                                  .labelMedium!
-                                                  .color),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  Divider(
-                                    height: 0,
-                                    thickness: 0.7,
-                                  ),
-                                  Padding(
-                                    padding: EdgeInsets.all(5),
-                                    child: TextButton(
-                                      onPressed: () => Get.to(() =>
-                                          ScreenEditProfile(
-                                              profile: controller
-                                                  .userProfile['user'])),
-                                      child: Align(
-                                        alignment: Alignment.centerLeft,
-                                        child: Text(
-                                          "Profil bearbeiten",
-                                          style: TextStyle(
-                                              letterSpacing: 0.5,
-                                              fontSize: 16,
-                                              fontFamily:
-                                                  DefaultTextStyle.of(context)
-                                                      .style
-                                                      .fontFamily,
-                                              color: Theme.of(context)
-                                                  .textTheme
-                                                  .labelMedium!
-                                                  .color),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  Divider(
-                                    height: 0,
-                                    thickness: 0.7,
-                                  ),
-                                  Padding(
-                                    padding: EdgeInsets.all(5),
-                                    child: TextButton(
-                                      onPressed: () => print("Money"),
-                                      child: Align(
-                                        alignment: Alignment.centerLeft,
-                                        child: Text(
-                                          "Abonnement abschließen",
-                                          style: TextStyle(
-                                              letterSpacing: 0.5,
-                                              fontSize: 16,
-                                              fontFamily:
-                                                  DefaultTextStyle.of(context)
-                                                      .style
-                                                      .fontFamily,
-                                              color: Theme.of(context)
-                                                  .textTheme
-                                                  .labelMedium!
-                                                  .color),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  Divider(
-                                    height: 0,
-                                    thickness: 0.7,
-                                  ),
-                                  Padding(
-                                    padding: EdgeInsets.all(5),
-                                    child: TextButton(
-                                      onPressed: () => {
-                                        authController.signOut(),
-                                        Get.offAll(() => ScreenLogin())
-                                      },
-                                      child: Align(
-                                          alignment: Alignment.centerLeft,
-                                          child: Text(
-                                            "Abmelden",
-                                            style: TextStyle(
-                                                letterSpacing: 0.5,
-                                                fontSize: 16,
-                                                fontFamily:
-                                                    DefaultTextStyle.of(context)
-                                                        .style
-                                                        .fontFamily,
-                                                color: Theme.of(context)
-                                                    .textTheme
-                                                    .labelMedium!
-                                                    .color),
-                                          )),
-                                    ),
-                                  ),
-                                ],
-                              )
-                            ],
-                          ),
-                        ),
-                      ),
+                      controller.userProfile['user'].name == 'Gast'
+                          ? accountGuestSettings(context)
+                          : accountSettings(context),
                       // System Section
                       Padding(
                         padding: EdgeInsets.only(left: 20, bottom: 5, top: 30),
@@ -351,5 +225,178 @@ class _settingsStartState extends State<ScreenSettings>
                 ),
               )
             ])));
+  }
+
+  Container accountSettings(BuildContext context) {
+    return Container(
+      width: MediaQuery.of(context).size.width,
+      decoration: BoxDecoration(
+          color: Theme.of(context).colorScheme.onPrimary,
+          borderRadius: BorderRadius.all(Radius.circular(10)),
+          boxShadow: [
+            BoxShadow(
+                spreadRadius: 0.01,
+                blurRadius: 0.01,
+                color: Theme.of(context).colorScheme.outline)
+          ]),
+      child: Padding(
+        padding: const EdgeInsets.all(5),
+        child: ListView(
+          shrinkWrap: true,
+          padding: EdgeInsets.zero,
+          physics: NeverScrollableScrollPhysics(),
+          children: [
+            Column(
+              children: [
+                Padding(
+                  padding: EdgeInsets.all(5),
+                  child: TextButton(
+                    onPressed: () => Get.to(() =>
+                        ScreenProfile(profile: controller.userProfile['user'])),
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        "Profil",
+                        style: TextStyle(
+                            letterSpacing: 0.5,
+                            fontSize: 16,
+                            fontFamily:
+                                DefaultTextStyle.of(context).style.fontFamily,
+                            color:
+                                Theme.of(context).textTheme.labelMedium!.color),
+                      ),
+                    ),
+                  ),
+                ),
+                Divider(
+                  height: 0,
+                  thickness: 0.7,
+                ),
+                Padding(
+                  padding: EdgeInsets.all(5),
+                  child: TextButton(
+                    onPressed: () => Get.to(() => ScreenEditProfile(
+                        profile: controller.userProfile['user'])),
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        "Profil bearbeiten",
+                        style: TextStyle(
+                            letterSpacing: 0.5,
+                            fontSize: 16,
+                            fontFamily:
+                                DefaultTextStyle.of(context).style.fontFamily,
+                            color:
+                                Theme.of(context).textTheme.labelMedium!.color),
+                      ),
+                    ),
+                  ),
+                ),
+                Divider(
+                  height: 0,
+                  thickness: 0.7,
+                ),
+                Padding(
+                  padding: EdgeInsets.all(5),
+                  child: TextButton(
+                    onPressed: () => print("Money"),
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        "Abonnement abschließen",
+                        style: TextStyle(
+                            letterSpacing: 0.5,
+                            fontSize: 16,
+                            fontFamily:
+                                DefaultTextStyle.of(context).style.fontFamily,
+                            color:
+                                Theme.of(context).textTheme.labelMedium!.color),
+                      ),
+                    ),
+                  ),
+                ),
+                Divider(
+                  height: 0,
+                  thickness: 0.7,
+                ),
+                Padding(
+                  padding: EdgeInsets.all(5),
+                  child: TextButton(
+                    onPressed: () => {
+                      authController.signOut(),
+                      Get.offAll(() => ScreenLogin())
+                    },
+                    child: Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          "Abmelden",
+                          style: TextStyle(
+                              letterSpacing: 0.5,
+                              fontSize: 16,
+                              fontFamily:
+                                  DefaultTextStyle.of(context).style.fontFamily,
+                              color: Theme.of(context)
+                                  .textTheme
+                                  .labelMedium!
+                                  .color),
+                        )),
+                  ),
+                ),
+              ],
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
+  accountGuestSettings(BuildContext context) {
+    return Container(
+        width: MediaQuery.of(context).size.width,
+        decoration: BoxDecoration(
+            color: Theme.of(context).colorScheme.onPrimary,
+            borderRadius: BorderRadius.all(Radius.circular(10)),
+            boxShadow: [
+              BoxShadow(
+                  spreadRadius: 0.01,
+                  blurRadius: 0.01,
+                  color: Theme.of(context).colorScheme.outline)
+            ]),
+        child: Padding(
+            padding: const EdgeInsets.all(5),
+            child: ListView(
+                shrinkWrap: true,
+                padding: EdgeInsets.zero,
+                physics: NeverScrollableScrollPhysics(),
+                children: [
+                  Column(children: [
+                    Padding(
+                      padding: EdgeInsets.all(5),
+                      child: TextButton(
+                        onPressed: () => {
+                          authController
+                              .signOut()
+                              .then((value) => Get.offAll(() => ScreenSignUp()))
+                        },
+                        child: Align(
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            "Account erstellen",
+                            style: TextStyle(
+                                letterSpacing: 0.5,
+                                fontSize: 16,
+                                fontFamily: DefaultTextStyle.of(context)
+                                    .style
+                                    .fontFamily,
+                                color: Theme.of(context)
+                                    .textTheme
+                                    .labelMedium!
+                                    .color),
+                          ),
+                        ),
+                      ),
+                    )
+                  ])
+                ])));
   }
 }

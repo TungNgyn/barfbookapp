@@ -21,7 +21,10 @@ class _ScreenCalculatorState extends State<ScreenCalculator> {
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: FloatingActionButton.large(
         onPressed: () {
-          Get.to(() => ScreenAddPet());
+          controller.userProfile['user'].name == 'Gast'
+              ? Get.snackbar("Registrierung",
+                  "Du musst angemeldet sein, um ein Haustier hinzuzufügen.")
+              : Get.to(() => ScreenAddPet());
         },
         child: Icon(Icons.add),
       ),
@@ -39,7 +42,7 @@ class _ScreenCalculatorState extends State<ScreenCalculator> {
               child: Column(
             children: [
               controller.userPetListDB.isEmpty
-                  ? AddPetCard()
+                  ? AddPetCard(context)
                   : Obx(() {
                       List<Widget> list = [];
                       for (Pet pet in controller.userPetList) {
@@ -88,15 +91,8 @@ class _ScreenCalculatorState extends State<ScreenCalculator> {
           ))),
     );
   }
-}
 
-class AddPetCard extends StatelessWidget {
-  const AddPetCard({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
+  Widget AddPetCard(BuildContext context) {
     return Card(
         elevation: 10,
         child: Padding(
@@ -114,14 +110,6 @@ class AddPetCard extends StatelessWidget {
                 children: [
                   Text("Du hast noch keine Haustiere hinzugefügt."),
                   Text("Trage jetzt einen ein!"),
-                  SizedBox(height: 10),
-                  IconButton(
-                    onPressed: () {
-                      Get.to(() => ScreenAddPet());
-                    },
-                    icon: Icon(Icons.add_circle_outline),
-                    iconSize: 50,
-                  )
                 ],
               ),
             ],

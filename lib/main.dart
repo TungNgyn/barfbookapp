@@ -24,7 +24,7 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    authController.signOut();
+    // authController.signOut();
     final Controller controller = Get.put(Controller());
     return GetMaterialApp(
       themeMode: ThemeMode.system,
