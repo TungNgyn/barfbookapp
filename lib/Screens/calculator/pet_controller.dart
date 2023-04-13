@@ -9,7 +9,8 @@ class Pet {
       this.age = 0,
       this.weight = 0,
       this.ration = 3,
-      this.gender = 'rüde'});
+      this.gender = 'rüde',
+      required this.avatar});
 
   final int id;
   final String owner;
@@ -19,6 +20,7 @@ class Pet {
   final int weight;
   final String gender;
   final double ration;
+  final avatar;
 }
 
 class CustomTextField extends StatefulWidget {

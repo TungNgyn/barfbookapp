@@ -53,7 +53,7 @@ class _settingsStartState extends State<ScreenSettings>
                             decoration: BoxDecoration(
                                 shape: BoxShape.circle,
                                 image: DecorationImage(
-                                    fit: BoxFit.fill,
+                                    fit: BoxFit.cover,
                                     image: Image.memory(controller
                                             .userProfile['user'].avatar)
                                         .image)),

@@ -173,6 +173,7 @@ initData() async {
     controller.userPetListDB =
         await supabase.from('pet').select('*').eq('owner', user?.id);
 
+    final avatar = await supabase.storage.from('pet').download('defaultDog');
     controller.userPetList.clear();
     for (var pet in controller.userPetListDB) {
       controller.userPetList.add(Pet(
@@ -183,7 +184,8 @@ initData() async {
           age: pet['age'],
           weight: pet['weight'],
           gender: pet['gender'],
-          ration: pet['ration']));
+          ration: pet['ration'],
+          avatar: avatar));
     }
   } catch (error) {
     print(error);

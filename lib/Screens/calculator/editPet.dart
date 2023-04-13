@@ -11,9 +11,12 @@ class ScreenEditPet extends StatefulWidget {
 }
 
 class _ScreenEditPetState extends State<ScreenEditPet> {
-  final TextEditingController _nameController = TextEditingController();
-  final TextEditingController _breedController = TextEditingController();
-  final TextEditingController _ageController = TextEditingController();
+  late final TextEditingController _nameController =
+      TextEditingController(text: widget.pet.name);
+  late final TextEditingController _breedController =
+      TextEditingController(text: widget.pet.breed);
+  late final TextEditingController _ageController =
+      TextEditingController(text: '${widget.pet.age}');
   late RxDouble _rationController = widget.pet.ration.obs;
   late Rx<TextEditingController> _weightController =
       TextEditingController(text: '${widget.pet.weight}').obs;

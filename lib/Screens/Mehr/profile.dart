@@ -96,101 +96,124 @@ class _ScreenProfileState extends State<ScreenProfile>
                 //     ],
                 //   ),
                 // ),
-                body: Column(
-                  children: [
-                    SafeArea(
-                      child: Column(
-                        children: [
-                          CircleAvatar(
-                            backgroundColor: Colors.transparent,
-                            radius: 64,
-                            child: Container(
-                              decoration: BoxDecoration(
-                                  border: Border.all(
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .primary),
-                                  shape: BoxShape.circle,
-                                  image: DecorationImage(
-                                      fit: BoxFit.fill,
-                                      image: Image.memory(widget.profile.avatar)
-                                          .image)),
-                            ),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.only(top: 24),
-                            child: Text(
-                              "${widget.profile.name}",
-                              style: TextStyle(
-                                  fontWeight: FontWeight.w600, fontSize: 21),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Row(children: [
-                      TabBar(
-                          isScrollable: true,
-                          controller: tabController,
-                          indicator:
-                              BoxDecoration(borderRadius: BorderRadius.zero),
-                          labelColor: Colors.black,
-                          labelStyle: TextStyle(
-                              fontSize: 21, fontWeight: FontWeight.bold),
-                          unselectedLabelColor: Colors.black26,
-                          onTap: (tapIndex) {
-                            selectedIndex = tapIndex;
-                          },
-                          tabs: [
-                            Tab(text: "Profil"),
-                            Tab(text: "Haustiere"),
-                            Tab(text: "Rezepte"),
-                          ])
-                    ]),
-                    SizedBox(height: 20),
-                    Expanded(
-                      child: TabBarView(
-                        controller: tabController,
-                        children: [
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                "Über mich",
-                                style: TextStyle(
-                                    fontWeight: FontWeight.w600, fontSize: 21),
+                body: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 20),
+                  child: Column(
+                    children: [
+                      SafeArea(
+                        child: Column(
+                          children: [
+                            CircleAvatar(
+                              backgroundColor: Colors.transparent,
+                              radius: 64,
+                              child: Container(
+                                decoration: BoxDecoration(
+                                    border: Border.all(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .primary),
+                                    shape: BoxShape.circle,
+                                    image: DecorationImage(
+                                        fit: BoxFit.cover,
+                                        image:
+                                            Image.memory(widget.profile.avatar)
+                                                .image)),
                               ),
-                              SizedBox(height: 20),
-                              Text(
-                                widget.profile.description,
-                                style: TextStyle(fontSize: 18),
-                              )
-                            ],
-                          ),
-                          (petList.isEmpty)
-                              ? Text("Noch keine Haustiere hinzugefügt.")
-                              : Column(
-                                  children: [
-                                    for (var pet in petList) Text('${pet.name}')
-                                  ],
-                                ),
-                          (recipeList.isEmpty)
-                              ? Text("Noch keine Rezepte erstellt.")
-                              : Column(
-                                  children: [
-                                    for (var recipe in recipeList)
-                                      Text('${recipe.name}')
-                                  ],
-                                ),
-                        ],
+                            ),
+                            Padding(
+                              padding: EdgeInsets.only(top: 16),
+                              child: Text(
+                                "${widget.profile.name}",
+                                style: TextStyle(
+                                    fontWeight: FontWeight.w600, fontSize: 31),
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                    ElevatedButton(
-                        onPressed: () {
-                          print(petList);
-                        },
-                        child: Text("Pet"))
-                  ],
+                      Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            TabBar(
+                                isScrollable: true,
+                                controller: tabController,
+                                indicator: BoxDecoration(
+                                    borderRadius: BorderRadius.zero),
+                                labelStyle: TextStyle(
+                                    fontSize: 21, fontWeight: FontWeight.bold),
+                                onTap: (tapIndex) {
+                                  selectedIndex = tapIndex;
+                                },
+                                tabs: [
+                                  Tab(text: "Profil"),
+                                  Tab(text: "Haustiere"),
+                                  Tab(text: "Rezepte"),
+                                ])
+                          ]),
+                      SizedBox(height: 20),
+                      Expanded(
+                        child: TabBarView(
+                          controller: tabController,
+                          children: [
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  "Über mich",
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 21),
+                                ),
+                                SizedBox(height: 20),
+                                Text(
+                                  widget.profile.description,
+                                  style: TextStyle(fontSize: 18),
+                                )
+                              ],
+                            ),
+                            (petList.isEmpty)
+                                ? Text("Noch keine Haustiere hinzugefügt.")
+                                : Column(
+                                    children: [
+                                      for (var pet in petList)
+                                        CircleAvatar(
+                                          backgroundColor: Colors.transparent,
+                                          radius: 64,
+                                          child: Container(
+                                            decoration: BoxDecoration(
+                                                border: Border.all(
+                                                    color: Theme.of(context)
+                                                        .colorScheme
+                                                        .primary),
+                                                shape: BoxShape.circle,
+                                                image: DecorationImage(
+                                                    image:
+                                                        Image.memory(pet.avatar)
+                                                            .image)),
+                                          ),
+                                        ),
+                                    ],
+                                  ),
+                            (recipeList.isEmpty)
+                                ? Text("Noch keine Rezepte erstellt.")
+                                : Column(
+                                    children: [
+                                      for (var recipe in recipeList)
+                                        Text('${recipe.name}')
+                                    ],
+                                  ),
+                          ],
+                        ),
+                      ),
+                      SafeArea(
+                        child: ElevatedButton(
+                            onPressed: () {
+                              print(petList);
+                            },
+                            child: Text("Pet")),
+                      )
+                    ],
+                  ),
                 ),
               )
             : Center(child: CircularProgressIndicator()));
@@ -219,6 +242,9 @@ class _ScreenProfileState extends State<ScreenProfile>
       final petDB =
           await supabase.from('pet').select('*').eq('owner', widget.profile.id);
       for (var pet in petDB) {
+        print(pet['id']);
+        final avatar =
+            await supabase.storage.from('pet').download('${pet['id']}');
         petList.add(Pet(
             owner: pet['owner'],
             name: pet['name'],
@@ -226,7 +252,8 @@ class _ScreenProfileState extends State<ScreenProfile>
             age: pet['age'],
             weight: pet['weight'],
             gender: pet['gender'],
-            ration: pet['ration']));
+            ration: pet['ration'],
+            avatar: avatar));
       }
     } catch (error) {
       print(error);

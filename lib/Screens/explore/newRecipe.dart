@@ -84,9 +84,22 @@ class ScreenNewRecipe extends StatelessWidget {
                                       Get.to(() =>
                                           ScreenProfile(profile: recipe.user!));
                                     },
-                                    icon: Image.memory(
-                                      recipe.userAvatar,
-                                      height: 24,
+                                    icon: CircleAvatar(
+                                      backgroundColor: Colors.transparent,
+                                      radius: 14,
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                            border: Border.all(
+                                                color: Theme.of(context)
+                                                    .colorScheme
+                                                    .primary),
+                                            shape: BoxShape.circle,
+                                            image: DecorationImage(
+                                                fit: BoxFit.cover,
+                                                image: Image.memory(
+                                                        recipe.userAvatar)
+                                                    .image)),
+                                      ),
                                     ),
                                     label: Text(recipe.user!.name)),
                               ],

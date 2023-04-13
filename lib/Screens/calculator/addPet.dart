@@ -270,7 +270,8 @@ class _ScreenAddPetState extends State<ScreenAddPet> {
         age: int.parse(_ageController.text),
         weight: int.parse(_weightController.text),
         ration: double.parse(_rationController.toStringAsFixed(1)),
-        gender: _genderController!);
+        gender: _genderController!,
+        avatar: '');
     print(pet.name);
     try {
       await supabase.from('pet').insert({

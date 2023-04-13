@@ -107,9 +107,8 @@ class _ScreenEditProfileState extends State<ScreenEditProfile> {
                         border: Border.all(
                             color: Theme.of(context).colorScheme.primary),
                         shape: BoxShape.circle,
-                        image: DecorationImage(
-                            fit: BoxFit.fill,
-                            image: Image.memory(avatar).image)),
+                        image:
+                            DecorationImage(image: Image.memory(avatar).image)),
                   ),
                 ),
               ),

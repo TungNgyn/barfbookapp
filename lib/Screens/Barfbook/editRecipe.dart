@@ -7,6 +7,7 @@ import 'package:Barfbook/home.dart';
 import 'package:Barfbook/util/Supabase/AuthController.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:keyboard_actions/keyboard_actions.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
@@ -23,9 +24,10 @@ class ScreenEditRecipe extends StatefulWidget {
 class _editRecipeState extends State<ScreenEditRecipe> {
   Future? _future;
   final TextEditingController _ingredientController = TextEditingController();
-  final TextEditingController _recipeNameController = TextEditingController();
-  final TextEditingController _recipeDescriptionController =
-      TextEditingController();
+  late final TextEditingController _recipeNameController =
+      TextEditingController(text: widget.recipe.name);
+  late final TextEditingController _recipeDescriptionController =
+      TextEditingController(text: widget.recipe.description);
 
   final categoryFilter = [];
   final typeFilter = [];
@@ -108,8 +110,8 @@ class _editRecipeState extends State<ScreenEditRecipe> {
                             TextField(
                               controller: _recipeNameController,
                               decoration: InputDecoration(
-                                  border: OutlineInputBorder(),
-                                  labelText: "${widget.recipe.name}"),
+                                  border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(12))),
                             ),
                             // Text(recipeData['created_at']),
                             SizedBox(
@@ -461,7 +463,13 @@ class _editRecipeState extends State<ScreenEditRecipe> {
                                                                               node.unfocus();
                                                                             },
                                                                             child:
-                                                                                Icon(Icons.check),
+                                                                                Padding(
+                                                                              padding: EdgeInsets.only(right: 15),
+                                                                              child: Icon(
+                                                                                Icons.check,
+                                                                                size: 28,
+                                                                              ),
+                                                                            ),
                                                                           );
                                                                         }
                                                                       ],
@@ -531,14 +539,53 @@ class _editRecipeState extends State<ScreenEditRecipe> {
                                                                           ),
                                                                           Flexible(
                                                                               flex: 5,
-                                                                              child: Column(
-                                                                                crossAxisAlignment: CrossAxisAlignment.end,
-                                                                                children: [
-                                                                                  IconButton(
-                                                                                      onPressed: () {
-                                                                                        setState(() {
-                                                                                          recipeIngredients.remove(ingredient);
+                                                                              child: KeyboardActions(
+                                                                                config: _buildKeyboardActionsConfig(context, _recipeGramController.value.text),
+                                                                                child: Column(
+                                                                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                                                                  children: [
+                                                                                    IconButton(
+                                                                                        onPressed: () {
+                                                                                          setState(() {
+                                                                                            recipeIngredients.remove(ingredient);
 
+                                                                                            caloriesSum.remove(ingredient.calories.toDouble() / 100 * ingredient.gram);
+                                                                                            proteinSum.remove(ingredient.protein.toDouble() / 100 * ingredient.gram);
+
+                                                                                            fatSum.remove(ingredient.fat.toDouble() / 100 * ingredient.gram);
+                                                                                            carbohydratesSum.remove(ingredient.carbohydrates.toDouble() / 100 * ingredient.gram);
+                                                                                            mineralsSum.remove(ingredient.minerals.toDouble() / 100 * ingredient.gram);
+                                                                                            moistureSum.remove(ingredient.moisture.toDouble() / 100 * ingredient.gram);
+                                                                                            switch (ingredient.category) {
+                                                                                              case 'Muskelfleisch':
+                                                                                                meatSum.remove(ingredient.gram);
+                                                                                                break;
+                                                                                              case 'Pansen':
+                                                                                                rumenSum.remove(ingredient.gram);
+                                                                                                break;
+                                                                                              case 'Knochen':
+                                                                                                boneSum.remove(ingredient.gram);
+                                                                                                break;
+                                                                                              case 'Innereien':
+                                                                                                organSum.remove(ingredient.gram);
+                                                                                                break;
+                                                                                              case 'Gemüse':
+                                                                                                vegSum.remove(ingredient.gram);
+                                                                                                break;
+                                                                                              case 'Obst':
+                                                                                                fruitSum.remove(ingredient.gram);
+                                                                                                break;
+                                                                                              default:
+                                                                                                throw Error();
+                                                                                            }
+                                                                                            weightSum.remove(ingredient.gram);
+                                                                                          });
+                                                                                        },
+                                                                                        icon: Icon(Icons.close)),
+                                                                                    TextField(
+                                                                                      onChanged: (value) {
+                                                                                        setState(() {
+                                                                                          //remove old value
                                                                                           caloriesSum.remove(ingredient.calories.toDouble() / 100 * ingredient.gram);
                                                                                           proteinSum.remove(ingredient.protein.toDouble() / 100 * ingredient.gram);
 
@@ -569,89 +616,58 @@ class _editRecipeState extends State<ScreenEditRecipe> {
                                                                                               throw Error();
                                                                                           }
                                                                                           weightSum.remove(ingredient.gram);
+                                                                                          //update new value
+                                                                                          ingredient.gram = double.parse(value);
+                                                                                          caloriesSum.add(ingredient.calories.toDouble() / 100 * double.parse(_recipeGramController.text));
+                                                                                          proteinSum.add(ingredient.protein.toDouble() / 100 * double.parse(_recipeGramController.text));
+
+                                                                                          fatSum.add(ingredient.fat.toDouble() / 100 * double.parse(_recipeGramController.text));
+                                                                                          carbohydratesSum.add(ingredient.carbohydrates.toDouble() / 100 * double.parse(_recipeGramController.text));
+                                                                                          mineralsSum.add(ingredient.minerals.toDouble() / 100 * double.parse(_recipeGramController.text));
+                                                                                          moistureSum.add(ingredient.moisture.toDouble() / 100 * double.parse(_recipeGramController.text));
+                                                                                          switch (ingredient.category) {
+                                                                                            case 'Muskelfleisch':
+                                                                                              meatSum.add(double.parse(_recipeGramController.text));
+                                                                                              break;
+                                                                                            case 'Pansen':
+                                                                                              rumenSum.add(double.parse(_recipeGramController.text));
+                                                                                              break;
+                                                                                            case 'Knochen':
+                                                                                              boneSum.add(double.parse(_recipeGramController.text));
+                                                                                              break;
+                                                                                            case 'Innereien':
+                                                                                              organSum.add(double.parse(_recipeGramController.text));
+                                                                                              break;
+                                                                                            case 'Gemüse':
+                                                                                              vegSum.add(double.parse(_recipeGramController.text));
+                                                                                              break;
+                                                                                            case 'Obst':
+                                                                                              fruitSum.add(double.parse(_recipeGramController.text));
+                                                                                              break;
+                                                                                            default:
+                                                                                              throw Error();
+                                                                                          }
+                                                                                          weightSum.add(double.parse(_recipeGramController.text));
                                                                                         });
                                                                                       },
-                                                                                      icon: Icon(Icons.close)),
-                                                                                  TextField(
-                                                                                    onChanged: (value) {
-                                                                                      setState(() {
-                                                                                        //remove old value
-                                                                                        caloriesSum.remove(ingredient.calories.toDouble() / 100 * ingredient.gram);
-                                                                                        proteinSum.remove(ingredient.protein.toDouble() / 100 * ingredient.gram);
-
-                                                                                        fatSum.remove(ingredient.fat.toDouble() / 100 * ingredient.gram);
-                                                                                        carbohydratesSum.remove(ingredient.carbohydrates.toDouble() / 100 * ingredient.gram);
-                                                                                        mineralsSum.remove(ingredient.minerals.toDouble() / 100 * ingredient.gram);
-                                                                                        moistureSum.remove(ingredient.moisture.toDouble() / 100 * ingredient.gram);
-                                                                                        switch (ingredient.category) {
-                                                                                          case 'Muskelfleisch':
-                                                                                            meatSum.remove(ingredient.gram);
-                                                                                            break;
-                                                                                          case 'Pansen':
-                                                                                            rumenSum.remove(ingredient.gram);
-                                                                                            break;
-                                                                                          case 'Knochen':
-                                                                                            boneSum.remove(ingredient.gram);
-                                                                                            break;
-                                                                                          case 'Innereien':
-                                                                                            organSum.remove(ingredient.gram);
-                                                                                            break;
-                                                                                          case 'Gemüse':
-                                                                                            vegSum.remove(ingredient.gram);
-                                                                                            break;
-                                                                                          case 'Obst':
-                                                                                            fruitSum.remove(ingredient.gram);
-                                                                                            break;
-                                                                                          default:
-                                                                                            throw Error();
-                                                                                        }
-                                                                                        weightSum.remove(ingredient.gram);
-                                                                                        //update new value
-                                                                                        ingredient.gram = double.parse(value);
-                                                                                        caloriesSum.add(ingredient.calories.toDouble() / 100 * double.parse(_recipeGramController.text));
-                                                                                        proteinSum.add(ingredient.protein.toDouble() / 100 * double.parse(_recipeGramController.text));
-
-                                                                                        fatSum.add(ingredient.fat.toDouble() / 100 * double.parse(_recipeGramController.text));
-                                                                                        carbohydratesSum.add(ingredient.carbohydrates.toDouble() / 100 * double.parse(_recipeGramController.text));
-                                                                                        mineralsSum.add(ingredient.minerals.toDouble() / 100 * double.parse(_recipeGramController.text));
-                                                                                        moistureSum.add(ingredient.moisture.toDouble() / 100 * double.parse(_recipeGramController.text));
-                                                                                        switch (ingredient.category) {
-                                                                                          case 'Muskelfleisch':
-                                                                                            meatSum.add(double.parse(_recipeGramController.text));
-                                                                                            break;
-                                                                                          case 'Pansen':
-                                                                                            rumenSum.add(double.parse(_recipeGramController.text));
-                                                                                            break;
-                                                                                          case 'Knochen':
-                                                                                            boneSum.add(double.parse(_recipeGramController.text));
-                                                                                            break;
-                                                                                          case 'Innereien':
-                                                                                            organSum.add(double.parse(_recipeGramController.text));
-                                                                                            break;
-                                                                                          case 'Gemüse':
-                                                                                            vegSum.add(double.parse(_recipeGramController.text));
-                                                                                            break;
-                                                                                          case 'Obst':
-                                                                                            fruitSum.add(double.parse(_recipeGramController.text));
-                                                                                            break;
-                                                                                          default:
-                                                                                            throw Error();
-                                                                                        }
-                                                                                        weightSum.add(double.parse(_recipeGramController.text));
-                                                                                      });
-                                                                                    },
-                                                                                    controller: _recipeGramController,
-                                                                                    keyboardType: TextInputType.number,
-                                                                                    decoration: InputDecoration(
-                                                                                        suffixIcon: Padding(
-                                                                                          padding: EdgeInsets.only(right: 5),
-                                                                                          child: Text('Gramm'),
-                                                                                        ),
-                                                                                        suffixIconConstraints: BoxConstraints(minWidth: 0, minHeight: 0),
-                                                                                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-                                                                                        hintText: '${ingredient.gram}'),
-                                                                                  ),
-                                                                                ],
+                                                                                      inputFormatters: [
+                                                                                        FilteringTextInputFormatter.digitsOnly
+                                                                                      ],
+                                                                                      keyboardType: TextInputType.number,
+                                                                                      textInputAction: TextInputAction.done,
+                                                                                      controller: _recipeGramController,
+                                                                                      decoration: InputDecoration(
+                                                                                          suffixIcon: Padding(
+                                                                                            padding: EdgeInsets.only(right: 5),
+                                                                                            child: Text('Gramm'),
+                                                                                          ),
+                                                                                          suffixIconConstraints: BoxConstraints(minWidth: 0, minHeight: 0),
+                                                                                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                                                                                          hintText: '${ingredient.gram}'),
+                                                                                      focusNode: _gramFocus,
+                                                                                    ),
+                                                                                  ],
+                                                                                ),
                                                                               )),
                                                                         ],
                                                                       ),
@@ -942,10 +958,12 @@ class _editRecipeState extends State<ScreenEditRecipe> {
                                   ))),
                             ),
                             TextField(
-                                controller: _recipeDescriptionController,
-                                maxLines: 10,
-                                decoration: InputDecoration(
-                                    hintText: "${widget.recipe.description}")),
+                              controller: _recipeDescriptionController,
+                              maxLines: 10,
+                              decoration: InputDecoration(
+                                  border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(12))),
+                            ),
                             Padding(
                               padding: const EdgeInsets.all(10),
                               child: ElevatedButton(
