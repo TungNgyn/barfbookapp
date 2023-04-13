@@ -296,14 +296,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.2.0"
-  keyboard_visibility:
-    dependency: "direct main"
-    description:
-      name: keyboard_visibility
-      sha256: "88217e79f12bdfed032320875b3c421c18b67657197d4316dbf7bd24e15101e3"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.5.6"
   lints:
     dependency: transitive
     description:

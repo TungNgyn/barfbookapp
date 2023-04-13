@@ -8,6 +8,7 @@ import 'package:Barfbook/util/Supabase/AuthController.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:keyboard_actions/keyboard_actions.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 
 class ScreenEditRecipe extends StatefulWidget {
@@ -431,6 +432,44 @@ class _editRecipeState extends State<ScreenEditRecipe> {
                                                               final TextEditingController
                                                                   _recipeGramController =
                                                                   TextEditingController();
+
+                                                              final _gramFocus =
+                                                                  FocusNode();
+                                                              KeyboardActionsConfig
+                                                                  _buildKeyboardActionsConfig(
+                                                                      BuildContext
+                                                                          context,
+                                                                      value) {
+                                                                return KeyboardActionsConfig(
+                                                                  nextFocus:
+                                                                      true,
+                                                                  keyboardActionsPlatform:
+                                                                      KeyboardActionsPlatform
+                                                                          .ALL,
+                                                                  keyboardBarColor:
+                                                                      Colors.grey[
+                                                                          200],
+                                                                  actions: [
+                                                                    KeyboardActionsItem(
+                                                                      focusNode:
+                                                                          _gramFocus,
+                                                                      toolbarButtons: [
+                                                                        (node) {
+                                                                          return GestureDetector(
+                                                                            onTap:
+                                                                                () {
+                                                                              node.unfocus();
+                                                                            },
+                                                                            child:
+                                                                                Icon(Icons.check),
+                                                                          );
+                                                                        }
+                                                                      ],
+                                                                    ),
+                                                                  ],
+                                                                );
+                                                              }
+
                                                               list.add(
                                                                   GestureDetector(
                                                                 onTap: () {
@@ -534,7 +573,7 @@ class _editRecipeState extends State<ScreenEditRecipe> {
                                                                                       },
                                                                                       icon: Icon(Icons.close)),
                                                                                   TextField(
-                                                                                    onSubmitted: (value) {
+                                                                                    onChanged: (value) {
                                                                                       setState(() {
                                                                                         //remove old value
                                                                                         caloriesSum.remove(ingredient.calories.toDouble() / 100 * ingredient.gram);
