@@ -195,6 +195,7 @@ class _LoginState extends State<ScreenLogin> {
       Get.snackbar("Etwas ist schief gelaufen",
           'Unerwarteter Fehler aufgetreten. Bitte kontaktiere den Support.',
           backgroundColor: Colors.grey.withOpacity(0.5));
+      print(error);
     } finally {}
   }
 

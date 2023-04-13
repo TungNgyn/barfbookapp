@@ -22,6 +22,8 @@ dependencies:
   google_fonts: ^4.0.3
   font_awesome_flutter: ^10.4.0
   fl_chart: ^0.61.0
+  keyboard_actions: ^4.2.0
+  keyboard_visibility: ^0.5.6
 
 dev_dependencies:
   flutter_test:
