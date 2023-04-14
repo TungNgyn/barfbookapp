@@ -24,6 +24,7 @@ dependencies:
   fl_chart: ^0.61.0
   keyboard_actions: ^4.2.0
   table_calendar: ^3.0.9
+  intl: ^0.18.0
 
 dev_dependencies:
   flutter_test:

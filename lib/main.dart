@@ -6,6 +6,7 @@ import 'package:Barfbook/util/custom_theme.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/date_symbol_data_local.dart';
 
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -17,7 +18,7 @@ Future<void> main() async {
   );
   WidgetsFlutterBinding.ensureInitialized();
 
-  runApp(MainApp());
+  initializeDateFormatting().then((_) => runApp(MainApp()));
 }
 
 class MainApp extends StatelessWidget {

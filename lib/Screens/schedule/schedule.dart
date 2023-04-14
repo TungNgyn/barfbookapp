@@ -1,10 +1,8 @@
-import 'package:Barfbook/Screens/Barfbook/addPet.dart';
-import 'package:Barfbook/Screens/Barfbook/editPet.dart';
-import 'package:Barfbook/Screens/Barfbook/petDetailPage.dart';
-import 'package:Barfbook/Screens/Barfbook/pet_controller.dart';
+import 'package:Barfbook/Screens/Barfbook/barfbook_controller.dart';
 import 'package:Barfbook/controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:table_calendar/table_calendar.dart';
 
 class ScreenSchedule extends StatefulWidget {
   @override
@@ -13,6 +11,9 @@ class ScreenSchedule extends StatefulWidget {
 
 class _ScreenScheduleState extends State<ScreenSchedule> {
   final Controller controller = Get.find();
+
+  DateTime? _selectedDay;
+  DateTime? _focusedDay;
 
   @override
   Widget build(BuildContext context) {
@@ -28,97 +29,26 @@ class _ScreenScheduleState extends State<ScreenSchedule> {
             ];
           },
           body: SafeArea(
-              child: Column(
-            children: [
-              controller.userPetListDB.isEmpty
-                  ? addPetCard(context)
-                  : Obx(() {
-                      List<Widget> list = [];
-                      for (Pet pet in controller.userPetList) {
-                        list.add(
-                            //   SizedBox(
-                            //   height: 40,
-                            //   child:
-                            //   ElevatedButton.icon(
-                            //       onPressed: () {
-                            // Get.to(() => ScreenPetDetailPage(pet: pet));
-                            //       },
-                            //       icon: Image.asset(
-                            //           "assets/images/recipe/icons/beef.png"),
-                            //       label: Text(pet.name)),
-                            // ));
-                            GestureDetector(
-                          onTap: () {
-                            Get.to(() => ScreenPetDetailPage(pet: pet));
-                          },
-                          child: Card(
-                            child: Padding(
-                              padding: const EdgeInsets.all(15),
-                              child: Column(
-                                children: [
-                                  CircleAvatar(
-                                    backgroundColor:
-                                        Theme.of(context).colorScheme.surface,
-                                    radius: 64,
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                          border: Border.all(
-                                              color: Theme.of(context)
-                                                  .colorScheme
-                                                  .primary),
-                                          shape: BoxShape.circle,
-                                          image: DecorationImage(
-                                              image: Image.memory(pet.avatar)
-                                                  .image)),
-                                    ),
-                                  ),
-                                  Text(
-                                    pet.name,
-                                    style: TextStyle(
-                                        fontSize: 21,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                  Text('${pet.age} Jahre'),
-                                  Text('${pet.breed}'),
-                                  Text(
-                                      '${(pet.weight / 1000).toStringAsFixed(1)}kg'),
-                                  Text('${pet.ration}% tägliche Ration'),
-                                  Text('${pet.gender}')
-                                ],
-                              ),
-                            ),
-                          ),
-                        ));
-                      }
-                      return Wrap(children: list);
-                    }),
-            ],
+              child: Center(
+            child: TableCalendar(
+              locale: 'de_DE',
+              firstDay: DateTime.utc(2020, 01, 01),
+              lastDay: DateTime.utc(2029, 12, 31),
+              focusedDay: DateTime.now(),
+              selectedDayPredicate: (day) {
+                return isSameDay(_selectedDay, day);
+              },
+              onDaySelected: (selectedDay, focusedDay) {
+                setState(() {
+                  _selectedDay = selectedDay;
+                  _focusedDay = focusedDay; // update `_focusedDay` here as well
+                });
+                print(selectedDay);
+                print(focusedDay);
+              },
+              calendarFormat: CalendarFormat.month,
+            ),
           ))),
     );
-  }
-
-  Widget addPetCard(BuildContext context) {
-    return Card(
-        elevation: 10,
-        child: Padding(
-          padding: const EdgeInsets.all(15.0),
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: Image.asset(
-                  'assets/icons/petCard.png',
-                  width: MediaQuery.of(context).size.width * 0.2,
-                ),
-              ),
-              Column(
-                children: [
-                  Text("Du hast noch keine Haustiere hinzugefügt."),
-                  Text("Trage jetzt einen ein!"),
-                ],
-              ),
-            ],
-          ),
-        ));
   }
 }
