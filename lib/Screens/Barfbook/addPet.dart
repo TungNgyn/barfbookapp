@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:Barfbook/Screens/calculator/pet_controller.dart';
+import 'package:Barfbook/Screens/Barfbook/pet_controller.dart';
 import 'package:Barfbook/util/Supabase/AuthController.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';

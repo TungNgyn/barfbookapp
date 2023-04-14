@@ -1,5 +1,7 @@
 import 'package:Barfbook/Screens/Account/Login.dart';
 import 'package:Barfbook/Screens/Account/SignUp.dart';
+import 'package:Barfbook/Screens/Mehr/AGB.dart';
+import 'package:Barfbook/Screens/Mehr/aboutUsPage.dart';
 import 'package:Barfbook/Screens/Mehr/editProfile.dart';
 import 'package:Barfbook/Screens/Mehr/profile.dart';
 import 'package:Barfbook/controller.dart';
@@ -22,6 +24,11 @@ class ScreenSettings extends StatefulWidget {
 class _settingsStartState extends State<ScreenSettings>
     with SingleTickerProviderStateMixin {
   final Controller controller = Get.find();
+  bool isPressedLight = false;
+  bool isPressedDark = false;
+  bool isPressedAbout = false;
+  bool isPressedAGB = false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -50,7 +57,7 @@ class _settingsStartState extends State<ScreenSettings>
                     },
                     child: CircleAvatar(
                       backgroundColor: Colors.transparent,
-                      radius: 52,
+                      radius: 64,
                       child: Container(
                         decoration: BoxDecoration(
                             shape: BoxShape.circle,
@@ -64,12 +71,18 @@ class _settingsStartState extends State<ScreenSettings>
                   ),
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 15),
-                    child: Text(
-                      user != null || session != null
-                          ? "${controller.userProfile['user'].name}"
-                          : "Gast",
-                      style:
-                          TextStyle(fontWeight: FontWeight.w200, fontSize: 21),
+                    child: Column(
+                      children: [
+                        Text(
+                          user != null || session != null
+                              ? "${controller.userProfile['user'].name}"
+                              : "Gast",
+                          style: TextStyle(
+                              fontWeight: FontWeight.w200, fontSize: 24),
+                        ),
+                        if (user != null || session != null)
+                          Text("${controller.userProfile['user'].email}")
+                      ],
                     ),
                   ),
                 ],
@@ -121,55 +134,106 @@ class _settingsStartState extends State<ScreenSettings>
                                     color:
                                         Theme.of(context).colorScheme.outline)
                               ]),
-                          child: Padding(
-                            padding: const EdgeInsets.all(5),
-                            child: ListView(
-                              shrinkWrap: true,
-                              padding: EdgeInsets.zero,
-                              physics: NeverScrollableScrollPhysics(),
-                              children: [
-                                Column(
-                                  children: [
-                                    TextButton(
-                                      onPressed: () =>
-                                          Get.changeThemeMode(ThemeMode.light),
-                                      child: Align(
-                                        alignment: Alignment.centerLeft,
-                                        child: Text(
-                                          "Hell",
-                                          style: TextStyle(
-                                              fontSize: 16,
-                                              color: Theme.of(context)
-                                                  .textTheme
-                                                  .labelMedium!
-                                                  .color),
+                          child: ListView(
+                            shrinkWrap: true,
+                            padding: EdgeInsets.zero,
+                            physics: NeverScrollableScrollPhysics(),
+                            children: [
+                              Column(
+                                children: [
+                                  GestureDetector(
+                                    onTapDown: (details) {
+                                      setState(() {
+                                        isPressedLight = true;
+                                      });
+                                    },
+                                    onTapCancel: () {
+                                      setState(() {
+                                        isPressedLight = false;
+                                      });
+                                    },
+                                    onTap: () => {
+                                      Get.changeThemeMode(ThemeMode.light),
+                                      setState(() {
+                                        isPressedLight = false;
+                                      })
+                                    },
+                                    child: Container(
+                                      color: isPressedLight
+                                          ? Colors.transparent.withOpacity(0.1)
+                                          : Colors.transparent,
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Align(
+                                          alignment: Alignment.centerLeft,
+                                          child: Text(
+                                            "Light",
+                                            style: TextStyle(
+                                                letterSpacing: 0.5,
+                                                fontSize: 16,
+                                                fontFamily:
+                                                    DefaultTextStyle.of(context)
+                                                        .style
+                                                        .fontFamily,
+                                                color: Theme.of(context)
+                                                    .textTheme
+                                                    .labelMedium!
+                                                    .color),
+                                          ),
                                         ),
                                       ),
                                     ),
-                                    Divider(
-                                      height: 0,
-                                      thickness: 0.7,
-                                    ),
-                                    TextButton(
-                                      onPressed: () =>
-                                          Get.changeThemeMode(ThemeMode.dark),
-                                      child: Align(
-                                        alignment: Alignment.centerLeft,
-                                        child: Text(
-                                          "Dark",
-                                          style: TextStyle(
-                                              fontSize: 16,
-                                              color: Theme.of(context)
-                                                  .textTheme
-                                                  .labelMedium!
-                                                  .color),
-                                        ),
+                                  ),
+                                  Divider(
+                                    height: 0,
+                                    thickness: 0.7,
+                                  ),
+                                  GestureDetector(
+                                    onTapDown: (details) {
+                                      setState(() {
+                                        isPressedDark = true;
+                                      });
+                                    },
+                                    onTapCancel: () {
+                                      setState(() {
+                                        isPressedDark = false;
+                                      });
+                                    },
+                                    onTap: () => {
+                                      Get.changeThemeMode(ThemeMode.dark),
+                                      setState(() {
+                                        isPressedDark = false;
+                                      })
+                                    },
+                                    child: Container(
+                                      color: isPressedDark
+                                          ? Colors.transparent.withOpacity(0.1)
+                                          : Colors.transparent,
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Align(
+                                            alignment: Alignment.centerLeft,
+                                            child: Text(
+                                              "Dark",
+                                              style: TextStyle(
+                                                  letterSpacing: 0.5,
+                                                  fontSize: 16,
+                                                  fontFamily:
+                                                      DefaultTextStyle.of(
+                                                              context)
+                                                          .style
+                                                          .fontFamily,
+                                                  color: Theme.of(context)
+                                                      .textTheme
+                                                      .labelMedium!
+                                                      .color),
+                                            )),
                                       ),
                                     ),
-                                  ],
-                                )
-                              ],
-                            ),
+                                  ),
+                                ],
+                              )
+                            ],
                           ),
                         ),
                         //about us
@@ -194,54 +258,106 @@ class _settingsStartState extends State<ScreenSettings>
                                     color:
                                         Theme.of(context).colorScheme.outline)
                               ]),
-                          child: Padding(
-                            padding: const EdgeInsets.all(5),
-                            child: ListView(
-                              shrinkWrap: true,
-                              padding: EdgeInsets.zero,
-                              physics: NeverScrollableScrollPhysics(),
-                              children: [
-                                Column(
-                                  children: [
-                                    TextButton(
-                                      onPressed: () {},
-                                      child: Align(
-                                        alignment: Alignment.centerLeft,
-                                        child: Text(
-                                          "Über uns ",
-                                          style: TextStyle(
-                                              fontSize: 16,
-                                              color: Theme.of(context)
-                                                  .textTheme
-                                                  .labelMedium!
-                                                  .color),
+                          child: ListView(
+                            shrinkWrap: true,
+                            padding: EdgeInsets.zero,
+                            physics: NeverScrollableScrollPhysics(),
+                            children: [
+                              Column(
+                                children: [
+                                  GestureDetector(
+                                    onTapDown: (details) {
+                                      setState(() {
+                                        isPressedAGB = true;
+                                      });
+                                    },
+                                    onTapCancel: () {
+                                      setState(() {
+                                        isPressedAGB = false;
+                                      });
+                                    },
+                                    onTap: () => {
+                                      Get.to(() => AGB()),
+                                      setState(() {
+                                        isPressedAGB = false;
+                                      })
+                                    },
+                                    child: Container(
+                                      color: isPressedAGB
+                                          ? Colors.transparent.withOpacity(0.1)
+                                          : Colors.transparent,
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Align(
+                                            alignment: Alignment.centerLeft,
+                                            child: Text(
+                                              "Allgemeine Geschäftsbedingungen",
+                                              style: TextStyle(
+                                                  letterSpacing: 0.5,
+                                                  fontSize: 16,
+                                                  fontFamily:
+                                                      DefaultTextStyle.of(
+                                                              context)
+                                                          .style
+                                                          .fontFamily,
+                                                  color: Theme.of(context)
+                                                      .textTheme
+                                                      .labelMedium!
+                                                      .color),
+                                            )),
+                                      ),
+                                    ),
+                                  ),
+                                  Divider(
+                                    height: 0,
+                                    thickness: 0.7,
+                                  ),
+                                  GestureDetector(
+                                    onTapDown: (details) {
+                                      setState(() {
+                                        isPressedAbout = true;
+                                      });
+                                    },
+                                    onTapCancel: () {
+                                      setState(() {
+                                        isPressedAbout = false;
+                                      });
+                                    },
+                                    onTap: () => {
+                                      Get.to(() => AboutUsPage()),
+                                      setState(() {
+                                        isPressedAbout = false;
+                                      })
+                                    },
+                                    child: Container(
+                                      color: isPressedAbout
+                                          ? Colors.transparent.withOpacity(0.1)
+                                          : Colors.transparent,
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Align(
+                                          alignment: Alignment.centerLeft,
+                                          child: Text(
+                                            "Über uns",
+                                            style: TextStyle(
+                                                letterSpacing: 0.5,
+                                                fontSize: 16,
+                                                fontFamily:
+                                                    DefaultTextStyle.of(context)
+                                                        .style
+                                                        .fontFamily,
+                                                color: Theme.of(context)
+                                                    .textTheme
+                                                    .labelMedium!
+                                                    .color),
+                                          ),
                                         ),
                                       ),
                                     ),
-                                    Divider(
-                                      height: 0,
-                                      thickness: 0.7,
-                                    ),
-                                    TextButton(
-                                      onPressed: () =>
-                                          Get.changeThemeMode(ThemeMode.dark),
-                                      child: Align(
-                                        alignment: Alignment.centerLeft,
-                                        child: Text(
-                                          "Dark",
-                                          style: TextStyle(
-                                              fontSize: 16,
-                                              color: Theme.of(context)
-                                                  .textTheme
-                                                  .labelMedium!
-                                                  .color),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                )
-                              ],
-                            ),
+                                  ),
+                                ],
+                              )
+                            ],
                           ),
                         ),
                       ],
@@ -256,6 +372,11 @@ class _settingsStartState extends State<ScreenSettings>
     ]));
   }
 
+  bool isPressedProfile = false;
+  bool isPressedAbo = false;
+  bool isPressedLogOff = false;
+  bool isPressedProfileEdit = false;
+  bool isPressed = false;
   Container accountSettings(BuildContext context) {
     return Container(
       width: MediaQuery.of(context).size.width,
@@ -268,117 +389,228 @@ class _settingsStartState extends State<ScreenSettings>
                 blurRadius: 0.01,
                 color: Theme.of(context).colorScheme.outline)
           ]),
-      child: Padding(
-        padding: const EdgeInsets.all(5),
-        child: ListView(
-          shrinkWrap: true,
-          padding: EdgeInsets.zero,
-          physics: NeverScrollableScrollPhysics(),
-          children: [
-            Column(
-              children: [
-                Padding(
-                  padding: EdgeInsets.all(5),
-                  child: TextButton(
-                    onPressed: () => Get.to(() =>
-                        ScreenProfile(profile: controller.userProfile['user'])),
+      child: ListView(
+        shrinkWrap: true,
+        padding: EdgeInsets.zero,
+        physics: NeverScrollableScrollPhysics(),
+        children: [
+          Column(
+            children: [
+              GestureDetector(
+                onTapDown: (details) {
+                  setState(() {
+                    isPressedProfile = true;
+                  });
+                },
+                onTapCancel: () {
+                  setState(() {
+                    isPressedProfile = false;
+                  });
+                },
+                onTap: () {
+                  setState(() {
+                    isPressedProfile = false;
+                  });
+                  Get.to(
+                    () =>
+                        ScreenProfile(profile: controller.userProfile['user']),
+                  );
+                },
+                child: Container(
+                  color: isPressedProfile
+                      ? Colors.transparent.withOpacity(0.1)
+                      : Colors.transparent,
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
                     child: Align(
                       alignment: Alignment.centerLeft,
-                      child: Text(
-                        "Profil",
-                        style: TextStyle(
-                            letterSpacing: 0.5,
-                            fontSize: 16,
-                            fontFamily:
-                                DefaultTextStyle.of(context).style.fontFamily,
-                            color:
-                                Theme.of(context).textTheme.labelMedium!.color),
+                      child: Row(
+                        children: [
+                          Icon(Icons.account_box),
+                          Text(
+                            "Profil",
+                            style: TextStyle(
+                                letterSpacing: 0.5,
+                                fontSize: 16,
+                                fontFamily: DefaultTextStyle.of(context)
+                                    .style
+                                    .fontFamily,
+                                color: Theme.of(context)
+                                    .textTheme
+                                    .labelMedium!
+                                    .color),
+                          ),
+                        ],
                       ),
                     ),
                   ),
                 ),
-                Divider(
-                  height: 0,
-                  thickness: 0.7,
-                ),
-                Padding(
-                  padding: EdgeInsets.all(5),
-                  child: TextButton(
-                    onPressed: () => Get.to(() => ScreenEditProfile(
-                        profile: controller.userProfile['user'])),
+              ),
+              Divider(
+                height: 0,
+                thickness: 0.7,
+              ),
+              GestureDetector(
+                onTapDown: (details) {
+                  setState(() {
+                    isPressedProfileEdit = true;
+                  });
+                },
+                onTapCancel: () {
+                  setState(() {
+                    isPressedProfileEdit = false;
+                  });
+                },
+                onTap: () => {
+                  Get.to(
+                    () => ScreenEditProfile(
+                        profile: controller.userProfile['user']),
+                  ),
+                  setState(() {
+                    isPressedProfileEdit = false;
+                  })
+                },
+                child: Container(
+                  color: isPressedProfileEdit
+                      ? Colors.transparent.withOpacity(0.1)
+                      : Colors.transparent,
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
                     child: Align(
                       alignment: Alignment.centerLeft,
-                      child: Text(
-                        "Profil bearbeiten",
-                        style: TextStyle(
-                            letterSpacing: 0.5,
-                            fontSize: 16,
-                            fontFamily:
-                                DefaultTextStyle.of(context).style.fontFamily,
-                            color:
-                                Theme.of(context).textTheme.labelMedium!.color),
+                      child: Row(
+                        children: [
+                          Icon(Icons.manage_accounts),
+                          Text(
+                            "Profil bearbeiten",
+                            style: TextStyle(
+                                letterSpacing: 0.5,
+                                fontSize: 16,
+                                fontFamily: DefaultTextStyle.of(context)
+                                    .style
+                                    .fontFamily,
+                                color: Theme.of(context)
+                                    .textTheme
+                                    .labelMedium!
+                                    .color),
+                          ),
+                        ],
                       ),
                     ),
                   ),
                 ),
-                Divider(
-                  height: 0,
-                  thickness: 0.7,
-                ),
-                Padding(
-                  padding: EdgeInsets.all(5),
-                  child: TextButton(
-                    onPressed: () => print("Money"),
+              ),
+              Divider(
+                height: 0,
+                thickness: 0.7,
+              ),
+              GestureDetector(
+                onTapDown: (details) {
+                  setState(() {
+                    isPressedAbo = true;
+                  });
+                },
+                onTapCancel: () {
+                  setState(() {
+                    isPressedAbo = false;
+                  });
+                },
+                onTap: () => {
+                  print("Money"),
+                  setState(() {
+                    isPressedAbo = false;
+                  })
+                },
+                child: Container(
+                  color: isPressedAbo
+                      ? Colors.transparent.withOpacity(0.1)
+                      : Colors.transparent,
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
                     child: Align(
                       alignment: Alignment.centerLeft,
-                      child: Text(
-                        "Abonnement abschließen",
-                        style: TextStyle(
-                            letterSpacing: 0.5,
-                            fontSize: 16,
-                            fontFamily:
-                                DefaultTextStyle.of(context).style.fontFamily,
-                            color:
-                                Theme.of(context).textTheme.labelMedium!.color),
+                      child: Row(
+                        children: [
+                          Icon(Icons.monetization_on),
+                          Text(
+                            "Abonnement abschließen",
+                            style: TextStyle(
+                                letterSpacing: 0.5,
+                                fontSize: 16,
+                                fontFamily: DefaultTextStyle.of(context)
+                                    .style
+                                    .fontFamily,
+                                color: Theme.of(context)
+                                    .textTheme
+                                    .labelMedium!
+                                    .color),
+                          ),
+                        ],
                       ),
                     ),
                   ),
                 ),
-                Divider(
-                  height: 0,
-                  thickness: 0.7,
-                ),
-                Padding(
-                  padding: EdgeInsets.all(5),
-                  child: TextButton(
-                    onPressed: () => {
-                      authController.signOut(),
-                      Get.offAll(() => ScreenLogin())
-                    },
+              ),
+              Divider(
+                height: 0,
+                thickness: 0.7,
+              ),
+              GestureDetector(
+                onTapDown: (details) {
+                  setState(() {
+                    isPressedLogOff = true;
+                  });
+                },
+                onTapCancel: () {
+                  setState(() {
+                    isPressedLogOff = false;
+                  });
+                },
+                onTap: () => {
+                  authController.signOut(),
+                  Get.offAll(() => ScreenLogin()),
+                  setState(() {
+                    isPressedLogOff = false;
+                  })
+                },
+                child: Container(
+                  color: isPressedLogOff
+                      ? Colors.transparent.withOpacity(0.1)
+                      : Colors.transparent,
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
                     child: Align(
                         alignment: Alignment.centerLeft,
-                        child: Text(
-                          "Abmelden",
-                          style: TextStyle(
-                              letterSpacing: 0.5,
-                              fontSize: 16,
-                              fontFamily:
-                                  DefaultTextStyle.of(context).style.fontFamily,
-                              color: Theme.of(context)
-                                  .textTheme
-                                  .labelMedium!
-                                  .color),
+                        child: Row(
+                          children: [
+                            Icon(Icons.logout),
+                            Text(
+                              "Abmelden",
+                              style: TextStyle(
+                                  letterSpacing: 0.5,
+                                  fontSize: 16,
+                                  fontFamily: DefaultTextStyle.of(context)
+                                      .style
+                                      .fontFamily,
+                                  color: Theme.of(context)
+                                      .textTheme
+                                      .labelMedium!
+                                      .color),
+                            ),
+                          ],
                         )),
                   ),
                 ),
-              ],
-            )
-          ],
-        ),
+              ),
+            ],
+          )
+        ],
       ),
     );
   }
 
+  bool isPressedLogIn = false;
+  bool isPressedSignIn = false;
   accountGuestSettings(BuildContext context) {
     return Container(
         width: MediaQuery.of(context).size.width,
@@ -391,67 +623,108 @@ class _settingsStartState extends State<ScreenSettings>
                   blurRadius: 0.01,
                   color: Theme.of(context).colorScheme.outline)
             ]),
-        child: Padding(
-            padding: const EdgeInsets.all(5),
-            child: ListView(
-                shrinkWrap: true,
-                padding: EdgeInsets.zero,
-                physics: NeverScrollableScrollPhysics(),
-                children: [
-                  Column(children: [
-                    Padding(
-                      padding: EdgeInsets.all(5),
-                      child: TextButton(
-                        onPressed: () => {
-                          authController
-                              .signOut()
-                              .then((value) => Get.offAll(() => ScreenLogin()))
-                        },
-                        child: Align(
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                            "Anmelden",
-                            style: TextStyle(
-                                letterSpacing: 0.5,
-                                fontSize: 16,
-                                fontFamily: DefaultTextStyle.of(context)
-                                    .style
-                                    .fontFamily,
-                                color: Theme.of(context)
-                                    .textTheme
-                                    .labelMedium!
-                                    .color),
-                          ),
+        child: ListView(
+            shrinkWrap: true,
+            padding: EdgeInsets.zero,
+            physics: NeverScrollableScrollPhysics(),
+            children: [
+              Column(children: [
+                GestureDetector(
+                  onTapDown: (details) {
+                    setState(() {
+                      isPressedLogIn = true;
+                    });
+                  },
+                  onTapCancel: () {
+                    setState(() {
+                      isPressedLogIn = false;
+                    });
+                  },
+                  onTap: () => {
+                    setState(() {
+                      isPressedLogIn = false;
+                    }),
+                    authController
+                        .signOut()
+                        .then((value) => Get.offAll(() => ScreenLogin()))
+                  },
+                  child: Container(
+                    color: isPressedLogIn
+                        ? Colors.transparent.withOpacity(0.1)
+                        : Colors.transparent,
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Align(
+                        alignment: Alignment.centerLeft,
+                        child: Row(
+                          children: [
+                            Icon(Icons.login),
+                            Text(
+                              "Anmelden",
+                              style: TextStyle(
+                                  letterSpacing: 0.5,
+                                  fontSize: 16,
+                                  fontFamily: DefaultTextStyle.of(context)
+                                      .style
+                                      .fontFamily,
+                                  color: Theme.of(context)
+                                      .textTheme
+                                      .labelMedium!
+                                      .color),
+                            ),
+                          ],
                         ),
                       ),
                     ),
-                    Padding(
-                      padding: EdgeInsets.all(5),
-                      child: TextButton(
-                        onPressed: () => {
-                          authController
-                              .signOut()
-                              .then((value) => Get.offAll(() => ScreenSignUp()))
-                        },
-                        child: Align(
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                            "Account erstellen",
-                            style: TextStyle(
-                                letterSpacing: 0.5,
-                                fontSize: 16,
-                                fontFamily: DefaultTextStyle.of(context)
-                                    .style
-                                    .fontFamily,
-                                color: Theme.of(context)
-                                    .textTheme
-                                    .labelMedium!
-                                    .color),
-                          ),
+                  ),
+                ),
+                GestureDetector(
+                  onTapDown: (details) {
+                    setState(() {
+                      isPressedSignIn = true;
+                    });
+                  },
+                  onTapCancel: () {
+                    setState(() {
+                      isPressedSignIn = false;
+                    });
+                  },
+                  onTap: () => {
+                    authController
+                        .signOut()
+                        .then((value) => Get.offAll(() => ScreenSignUp()))
+                  },
+                  child: Container(
+                    color: isPressedSignIn
+                        ? Colors.transparent.withOpacity(0.1)
+                        : Colors.transparent,
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Align(
+                        alignment: Alignment.centerLeft,
+                        child: Row(
+                          children: [
+                            Icon(Icons.account_box),
+                            Text(
+                              "Account erstellen",
+                              style: TextStyle(
+                                  letterSpacing: 0.5,
+                                  fontSize: 16,
+                                  fontFamily: DefaultTextStyle.of(context)
+                                      .style
+                                      .fontFamily,
+                                  color: Theme.of(context)
+                                      .textTheme
+                                      .labelMedium!
+                                      .color),
+                            ),
+                          ],
                         ),
                       ),
-                    )
-                  ])
-                ])));
+                    ),
+                  ),
+                )
+              ])
+            ]));
   }
 }

@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:Barfbook/Screens/Barfbook/barfbook_controller.dart';
 import 'package:Barfbook/Screens/Mehr/profile_controller.dart';
-import 'package:Barfbook/Screens/calculator/pet_controller.dart';
+import 'package:Barfbook/Screens/Barfbook/pet_controller.dart';
 import 'package:Barfbook/controller.dart';
 import 'package:Barfbook/home.dart';
 import 'package:Barfbook/util/Supabase/AuthController.dart';
@@ -85,10 +85,6 @@ initData() async {
             .from('recipe')
             .download('defaultRecipeAvatar');
       }
-      List userName = await supabase
-          .from('profile')
-          .select('name')
-          .eq('id', recipe['user_id']);
 
       final userAvatar = await supabase.storage
           .from('profile')
@@ -144,11 +140,17 @@ initData() async {
             .from('recipe')
             .download('defaultRecipeAvatar');
       }
+
+      final paws = await supabase
+          .from('profile_liked_recipe')
+          .select('*', FetchOptions(count: CountOption.exact))
+          .eq('recipe', recipe['id']);
+
       controller.userRecipeList.add(Recipe(
           name: (recipe as Map)['name'],
           id: recipe['id'],
           created_at: recipe['created_at'],
-          paws: 0,
+          paws: paws.count,
           description: recipe['description'],
           modified_at: recipe['modified_at'],
           user_id: user!.id,
@@ -182,15 +184,38 @@ initData() async {
                 .from('recipe')
                 .download('defaultRecipeAvatar');
           }
+
+          final userAvatar = await supabase.storage
+              .from('profile')
+              .download('${recipe['user_id']}');
+
+          List userdata = await supabase
+              .from('profile')
+              .select("*")
+              .match({'id': recipe['user_id']});
+
+          final paws = await supabase
+              .from('profile_liked_recipe')
+              .select('*', FetchOptions(count: CountOption.exact))
+              .eq('recipe', recipe['id']);
+
           controller.userLikedRecipe.add(Recipe(
               name: (recipe as Map)['name'],
               id: recipe['id'],
               created_at: recipe['created_at'],
-              paws: 0,
+              paws: paws.count,
               description: recipe['description'],
               modified_at: recipe['modified_at'],
               user_id: recipe['user_id'],
-              avatar: recipeAvatar));
+              avatar: recipeAvatar,
+              user: Profile(
+                  id: userdata[0]['id'],
+                  createdAt: userdata[0]['created_at'],
+                  email: userdata[0]['email'],
+                  name: userdata[0]['name'],
+                  description: userdata[0]['description'],
+                  avatar: userAvatar),
+              userAvatar: userAvatar));
         }
       }
     }

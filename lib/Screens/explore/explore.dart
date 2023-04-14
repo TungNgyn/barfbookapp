@@ -194,7 +194,7 @@ class _ScreenExploreState extends State<ScreenExplore>
       children: [
         Text(
           "Beliebte Rezepte",
-          style: TextStyle(fontSize: 24),
+          style: TextStyle(fontSize: 21),
         ),
         IconButton(
             onPressed: () {
@@ -213,7 +213,7 @@ class _ScreenExploreState extends State<ScreenExplore>
       children: [
         Text(
           "Neue Rezepte",
-          style: TextStyle(fontSize: 24),
+          style: TextStyle(fontSize: 21),
         ),
         IconButton(
             onPressed: () {

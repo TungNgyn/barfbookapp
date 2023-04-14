@@ -1,5 +1,9 @@
 import 'dart:async';
 
+import 'package:Barfbook/Screens/Barfbook/addPet.dart';
+import 'package:Barfbook/Screens/Barfbook/pet_controller.dart';
+import 'package:Barfbook/Screens/Mehr/profile.dart';
+import 'package:Barfbook/Screens/Barfbook/petDetailPage.dart';
 import 'package:Barfbook/Screens/explore/explore.dart';
 import 'package:Barfbook/Screens/explore/recipeDetailPage.dart';
 import 'package:Barfbook/controller.dart';
@@ -53,12 +57,12 @@ class _ScreenBarfbookState extends State<ScreenBarfbook> {
     return;
   }
 
-  int tabIndex = 0;
+  int tabIndex = 1;
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
       initialIndex: tabIndex,
-      length: 2,
+      length: 3,
       child: Scaffold(
         body: NestedScrollView(
           headerSliverBuilder: (_, innerBoxIsScrolled) => [
@@ -71,249 +75,380 @@ class _ScreenBarfbookState extends State<ScreenBarfbook> {
               floating: true,
               forceElevated: innerBoxIsScrolled,
               bottom: TabBar(labelStyle: TextStyle(fontSize: 12), tabs: [
-                Tab(
-                    child: Column(
-                  children: [
-                    Image.asset("assets/icons/recipe.png", width: 32),
-                    Text("Rezepte")
-                  ],
-                )),
-                Tab(
-                    child: Column(
-                  children: [
-                    Image.asset("assets/icons/favorite.png", width: 32),
-                    Text("Favoriten")
-                  ],
-                )),
+                Tab(child: Image.asset("assets/icons/pet.png", width: 48)),
+                Tab(child: Image.asset("assets/icons/recipe.png", width: 32)),
+                Tab(child: Image.asset("assets/icons/favorite.png", width: 32)),
               ]),
             ),
           ],
-          body: SafeArea(
-            child: TabBarView(children: [
-              // // Schedule
-              // SingleChildScrollView(
-              //   child: Padding(
-              //       padding: EdgeInsets.all(20.0),
-              //       child: ElevatedButton(
-              //         onPressed: () => Get.to(() => ScreenCreateSchedule()),
-              //         child: Text("Wochenplan erstellen"),
-              //       )),
-              // ),
-              //Recipe
-              Scaffold(
-                  floatingActionButtonLocation:
-                      FloatingActionButtonLocation.centerFloat,
-                  floatingActionButton: FloatingActionButton.large(
-                    onPressed: () {
-                      controller.userProfile['user'].name == 'Gast'
-                          ? Get.snackbar("Registrierung",
-                              "Du musst angemeldet sein, um ein Rezept zu erstellen.")
-                          : Get.to(() => ScreenCreateRecipe());
-                    },
-                    child: Icon(Icons.add),
-                  ),
-                  body: CustomScrollView(slivers: [
-                    SliverFillRemaining(
-                      child: controller.userRecipeListDB.isEmpty
-                          ? noRecipeCreatedCard(context)
-                          : Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 20),
-                              child: Obx(() {
+          body: TabBarView(children: [
+            // // Schedule
+            Scaffold(
+              floatingActionButtonLocation:
+                  FloatingActionButtonLocation.centerFloat,
+              floatingActionButton: FloatingActionButton.large(
+                onPressed: () {
+                  controller.userProfile['user'].name == 'Gast'
+                      ? Get.snackbar("Registrierung",
+                          "Du musst angemeldet sein, um ein Haustier hinzuzufügen.")
+                      : Get.to(() => ScreenAddPet());
+                },
+                child: Icon(Icons.add),
+              ),
+              body: CustomScrollView(slivers: [
+                SliverFillRemaining(
+                    child: controller.userPetListDB.isEmpty
+                        ? addPetCard(context)
+                        : Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 20),
+                            child: Column(children: [
+                              Padding(
+                                padding: EdgeInsets.symmetric(vertical: 15),
+                                child: Text(
+                                  "Hunde",
+                                  style: TextStyle(
+                                      fontSize: 24,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                              ),
+                              Obx(() {
                                 List<Widget> list = [];
-                                for (Recipe recipe
-                                    in controller.userRecipeList) {
-                                  list.add(GestureDetector(
+                                for (Pet pet in controller.userPetList) {
+                                  list.add(
+                                      //   SizedBox(
+                                      //   height: 40,
+                                      //   child:
+                                      //   ElevatedButton.icon(
+                                      //       onPressed: () {
+                                      // Get.to(() => ScreenPetDetailPage(pet: pet));
+                                      //       },
+                                      //       icon: Image.asset(
+                                      //           "assets/images/recipe/icons/beef.png"),
+                                      //       label: Text(pet.name)),
+                                      // ));
+                                      GestureDetector(
                                     onTap: () {
-                                      Get.to(() => RecipeDetailPage(
-                                          recipe: recipe, favorite: true));
+                                      Get.to(
+                                          () => ScreenPetDetailPage(pet: pet));
                                     },
                                     child: Card(
-                                      elevation: 4,
                                       child: Padding(
-                                          padding: EdgeInsets.only(
-                                              bottom: 15, top: 10),
-                                          child: Row(
-                                            children: [
-                                              Padding(
-                                                padding: EdgeInsets.symmetric(
-                                                    horizontal: 10),
-                                                child: Card(
-                                                  child: Padding(
-                                                    padding: EdgeInsets.all(10),
-                                                    child: Container(
-                                                      height: 128,
-                                                      width: 128,
-                                                      decoration: BoxDecoration(
-                                                          border: Border.all(
-                                                              color: Theme.of(
-                                                                      context)
-                                                                  .colorScheme
-                                                                  .primary),
-                                                          shape: BoxShape
-                                                              .rectangle,
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(20),
-                                                          image: DecorationImage(
-                                                              fit: BoxFit.cover,
-                                                              image: Image.memory(
-                                                                      recipe
-                                                                          .avatar)
-                                                                  .image)),
-                                                    ),
-                                                  ),
-                                                ),
+                                        padding: const EdgeInsets.all(15),
+                                        child: Column(
+                                          children: [
+                                            CircleAvatar(
+                                              backgroundColor: Theme.of(context)
+                                                  .colorScheme
+                                                  .surface,
+                                              radius: 64,
+                                              child: Container(
+                                                decoration: BoxDecoration(
+                                                    border: Border.all(
+                                                        color: Theme.of(context)
+                                                            .colorScheme
+                                                            .primary),
+                                                    shape: BoxShape.circle,
+                                                    image: DecorationImage(
+                                                        image: Image.memory(
+                                                                pet.avatar)
+                                                            .image)),
                                               ),
-                                              Row(
-                                                children: [
-                                                  SizedBox(
-                                                    height: 100,
-                                                    width: 150,
-                                                    child: Column(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .spaceBetween,
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .start,
-                                                      children: [
-                                                        Column(
-                                                          crossAxisAlignment:
-                                                              CrossAxisAlignment
-                                                                  .start,
-                                                          children: [
-                                                            Text(
-                                                              recipe.name,
-                                                              style: TextStyle(
-                                                                  fontSize: 24,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .bold),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                ],
-                                              )
-                                            ],
-                                          )),
+                                            ),
+                                            Text(
+                                              pet.name,
+                                              style: TextStyle(
+                                                  fontSize: 21,
+                                                  fontWeight: FontWeight.bold),
+                                            ),
+                                            Text('${pet.age} Jahre'),
+                                            Text('${pet.breed}'),
+                                            Text(
+                                                '${(pet.weight / 1000).toStringAsFixed(1)}kg'),
+                                            Text(
+                                                '${pet.ration}% tägliche Ration'),
+                                            Text('${pet.gender}')
+                                          ],
+                                        ),
+                                      ),
                                     ),
                                   ));
                                 }
                                 return Wrap(children: list);
                               }),
-                            ),
-                    )
-                  ])),
-              // Favorite
-              Scaffold(
-                  floatingActionButtonLocation:
-                      FloatingActionButtonLocation.centerFloat,
-                  floatingActionButton: FloatingActionButton.large(
-                    onPressed: () {
-                      Get.offAll(() => Home());
-                    },
-                    child: Icon(Icons.search),
-                  ),
-                  body: CustomScrollView(slivers: [
-                    SliverFillRemaining(
-                      child: controller.userLikedRecipe.isEmpty
-                          ? noFavoriteRecipeCard(context)
-                          : Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 20),
-                              child: Obx(() {
-                                List<Widget> list = [];
-                                for (Recipe recipe
-                                    in controller.userLikedRecipe) {
-                                  list.add(GestureDetector(
-                                    onTap: () {
-                                      Get.to(() => RecipeDetailPage(
-                                          recipe: recipe, favorite: true));
-                                    },
-                                    child: Card(
-                                      elevation: 4,
-                                      child: Padding(
-                                          padding: EdgeInsets.only(
-                                              bottom: 15, top: 10),
-                                          child: Row(
-                                            children: [
-                                              Padding(
-                                                padding: EdgeInsets.symmetric(
-                                                    horizontal: 10),
-                                                child: Card(
-                                                  child: Padding(
-                                                    padding: EdgeInsets.all(10),
-                                                    child: Container(
-                                                      height: 128,
-                                                      width: 128,
-                                                      decoration: BoxDecoration(
-                                                          border: Border.all(
-                                                              color: Theme.of(
-                                                                      context)
-                                                                  .colorScheme
-                                                                  .primary),
-                                                          shape: BoxShape
-                                                              .rectangle,
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(20),
-                                                          image: DecorationImage(
-                                                              fit: BoxFit.cover,
-                                                              image: Image.memory(
-                                                                      recipe
-                                                                          .avatar)
-                                                                  .image)),
+                            ])))
+              ]),
+            ),
+
+            //Recipe
+            Scaffold(
+                floatingActionButtonLocation:
+                    FloatingActionButtonLocation.centerFloat,
+                floatingActionButton: FloatingActionButton.large(
+                  onPressed: () {
+                    controller.userProfile['user'].name == 'Gast'
+                        ? Get.snackbar("Registrierung",
+                            "Du musst angemeldet sein, um ein Rezept zu erstellen.")
+                        : Get.to(() => ScreenCreateRecipe());
+                  },
+                  child: Icon(Icons.add),
+                ),
+                body: CustomScrollView(slivers: [
+                  SliverFillRemaining(
+                    child: controller.userRecipeListDB.isEmpty
+                        ? noRecipeCreatedCard(context)
+                        : Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 20),
+                            child: Column(
+                              children: [
+                                Padding(
+                                  padding: EdgeInsets.symmetric(vertical: 15),
+                                  child: Text(
+                                    "Rezepte",
+                                    style: TextStyle(
+                                        fontSize: 24,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                                Obx(() {
+                                  List<Widget> list = [];
+                                  for (Recipe recipe
+                                      in controller.userRecipeList) {
+                                    list.add(GestureDetector(
+                                      onTap: () {
+                                        Get.to(() => RecipeDetailPage(
+                                            recipe: recipe, favorite: true));
+                                      },
+                                      child: Card(
+                                        elevation: 4,
+                                        child: Padding(
+                                            padding: EdgeInsets.only(
+                                                bottom: 15, top: 10),
+                                            child: Row(
+                                              children: [
+                                                Padding(
+                                                  padding: EdgeInsets.symmetric(
+                                                      horizontal: 10),
+                                                  child: Card(
+                                                    child: Padding(
+                                                      padding:
+                                                          EdgeInsets.all(10),
+                                                      child: Container(
+                                                        height: 128,
+                                                        width: 128,
+                                                        decoration: BoxDecoration(
+                                                            border: Border.all(
+                                                                color: Theme.of(
+                                                                        context)
+                                                                    .colorScheme
+                                                                    .primary),
+                                                            shape: BoxShape
+                                                                .rectangle,
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        20),
+                                                            image: DecorationImage(
+                                                                fit: BoxFit
+                                                                    .cover,
+                                                                image: Image.memory(
+                                                                        recipe
+                                                                            .avatar)
+                                                                    .image)),
+                                                      ),
                                                     ),
                                                   ),
                                                 ),
-                                              ),
-                                              Row(
-                                                children: [
-                                                  SizedBox(
-                                                    height: 100,
-                                                    width: 150,
-                                                    child: Column(
+                                                Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    Text(
+                                                      recipe.name,
+                                                      style: TextStyle(
+                                                          fontSize: 21),
+                                                    ),
+                                                    TextButton.icon(
+                                                        onPressed: () {},
+                                                        icon: Image.asset(
+                                                          'assets/icons/paw.png',
+                                                          width: 48,
+                                                        ),
+                                                        label: Text(
+                                                          '${recipe.paws}',
+                                                          style: TextStyle(
+                                                              fontSize: 21,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold),
+                                                        ))
+                                                  ],
+                                                )
+                                              ],
+                                            )),
+                                      ),
+                                    ));
+                                  }
+                                  return Wrap(children: list);
+                                }),
+                              ],
+                            ),
+                          ),
+                  )
+                ])),
+            // Favorite
+            Scaffold(
+                floatingActionButtonLocation:
+                    FloatingActionButtonLocation.centerFloat,
+                floatingActionButton: FloatingActionButton.large(
+                  onPressed: () {
+                    Get.offAll(() => Home());
+                  },
+                  child: Icon(Icons.search),
+                ),
+                body: CustomScrollView(slivers: [
+                  SliverFillRemaining(
+                    child: controller.userLikedRecipe.isEmpty
+                        ? noFavoriteRecipeCard(context)
+                        : Column(
+                            children: [
+                              Padding(
+                                padding: EdgeInsets.symmetric(vertical: 15),
+                                child: Text(
+                                  "Favoriten",
+                                  style: TextStyle(
+                                      fontSize: 24,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                              ),
+                              Padding(
+                                padding: EdgeInsets.symmetric(horizontal: 20),
+                                child: Obx(() {
+                                  List<Widget> list = [];
+                                  for (Recipe recipe
+                                      in controller.userLikedRecipe) {
+                                    list.add(GestureDetector(
+                                      onTap: () {
+                                        Get.to(() => RecipeDetailPage(
+                                            recipe: recipe, favorite: true));
+                                      },
+                                      child: Card(
+                                        elevation: 4,
+                                        child: Padding(
+                                            padding: EdgeInsets.only(
+                                                bottom: 15, top: 10),
+                                            child: Row(
+                                              children: [
+                                                Padding(
+                                                  padding: EdgeInsets.symmetric(
+                                                      horizontal: 10),
+                                                  child: Card(
+                                                    child: Padding(
+                                                      padding:
+                                                          EdgeInsets.all(10),
+                                                      child: Container(
+                                                        height: 128,
+                                                        width: 128,
+                                                        decoration: BoxDecoration(
+                                                            border: Border.all(
+                                                                color: Theme.of(
+                                                                        context)
+                                                                    .colorScheme
+                                                                    .primary),
+                                                            shape: BoxShape
+                                                                .rectangle,
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        20),
+                                                            image: DecorationImage(
+                                                                fit: BoxFit
+                                                                    .cover,
+                                                                image: Image.memory(
+                                                                        recipe
+                                                                            .avatar)
+                                                                    .image)),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                                Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
+                                                  children: [
+                                                    Text(
+                                                      recipe.name,
+                                                      style: TextStyle(
+                                                          fontSize: 21),
+                                                    ),
+                                                    Row(
                                                       mainAxisAlignment:
                                                           MainAxisAlignment
                                                               .spaceBetween,
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .start,
                                                       children: [
-                                                        Column(
-                                                          crossAxisAlignment:
-                                                              CrossAxisAlignment
-                                                                  .start,
-                                                          children: [
-                                                            Text(
-                                                              recipe.name,
+                                                        TextButton.icon(
+                                                            onPressed: () {
+                                                              Get.to(() =>
+                                                                  ScreenProfile(
+                                                                      profile:
+                                                                          recipe
+                                                                              .user!));
+                                                            },
+                                                            icon: CircleAvatar(
+                                                              backgroundColor:
+                                                                  Colors
+                                                                      .transparent,
+                                                              radius: 14,
+                                                              child: Container(
+                                                                decoration: BoxDecoration(
+                                                                    border: Border.all(
+                                                                        color: Theme.of(context)
+                                                                            .colorScheme
+                                                                            .primary),
+                                                                    shape: BoxShape
+                                                                        .circle,
+                                                                    image: DecorationImage(
+                                                                        fit: BoxFit
+                                                                            .cover,
+                                                                        image: Image.memory(recipe.userAvatar)
+                                                                            .image)),
+                                                              ),
+                                                            ),
+                                                            label: Text(recipe
+                                                                .user!.name)),
+                                                        TextButton.icon(
+                                                            onPressed: () {},
+                                                            icon: Image.asset(
+                                                              'assets/icons/paw.png',
+                                                              width: 48,
+                                                            ),
+                                                            label: Text(
+                                                              '${recipe.paws}',
                                                               style: TextStyle(
-                                                                  fontSize: 24,
+                                                                  fontSize: 21,
                                                                   fontWeight:
                                                                       FontWeight
                                                                           .bold),
-                                                            ),
-                                                          ],
-                                                        ),
+                                                            ))
                                                       ],
                                                     ),
-                                                  ),
-                                                ],
-                                              )
-                                            ],
-                                          )),
-                                    ),
-                                  ));
-                                }
-                                return Wrap(children: list);
-                              }),
-                            ),
-                    ),
-                  ])),
-            ]),
-          ),
+                                                  ],
+                                                )
+                                              ],
+                                            )),
+                                      ),
+                                    ));
+                                  }
+                                  return Wrap(children: list);
+                                }),
+                              ),
+                            ],
+                          ),
+                  ),
+                ])),
+          ]),
         ),
       ),
     );
@@ -372,5 +507,30 @@ class _ScreenBarfbookState extends State<ScreenBarfbook> {
         ),
       ],
     );
+  }
+
+  Widget addPetCard(BuildContext context) {
+    return Card(
+        elevation: 10,
+        child: Padding(
+          padding: const EdgeInsets.all(15.0),
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: Image.asset(
+                  'assets/icons/petCard.png',
+                  width: MediaQuery.of(context).size.width * 0.2,
+                ),
+              ),
+              Column(
+                children: [
+                  Text("Du hast noch keine Haustiere hinzugefügt."),
+                  Text("Trage jetzt einen ein!"),
+                ],
+              ),
+            ],
+          ),
+        ));
   }
 }

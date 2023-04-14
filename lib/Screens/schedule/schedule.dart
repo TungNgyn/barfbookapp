@@ -1,39 +1,28 @@
-import 'package:Barfbook/Screens/calculator/addPet.dart';
-import 'package:Barfbook/Screens/calculator/calculator.dart';
-import 'package:Barfbook/Screens/calculator/editPet.dart';
-import 'package:Barfbook/Screens/calculator/petDetailPage.dart';
-import 'package:Barfbook/Screens/calculator/pet_controller.dart';
+import 'package:Barfbook/Screens/Barfbook/addPet.dart';
+import 'package:Barfbook/Screens/Barfbook/editPet.dart';
+import 'package:Barfbook/Screens/Barfbook/petDetailPage.dart';
+import 'package:Barfbook/Screens/Barfbook/pet_controller.dart';
 import 'package:Barfbook/controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class ScreenCalculator extends StatefulWidget {
+class ScreenSchedule extends StatefulWidget {
   @override
-  State<ScreenCalculator> createState() => _ScreenCalculatorState();
+  State<ScreenSchedule> createState() => _ScreenScheduleState();
 }
 
-class _ScreenCalculatorState extends State<ScreenCalculator> {
+class _ScreenScheduleState extends State<ScreenSchedule> {
   final Controller controller = Get.find();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      floatingActionButton: FloatingActionButton.large(
-        onPressed: () {
-          controller.userProfile['user'].name == 'Gast'
-              ? Get.snackbar("Registrierung",
-                  "Du musst angemeldet sein, um ein Haustier hinzuzufügen.")
-              : Get.to(() => ScreenAddPet());
-        },
-        child: Icon(Icons.add),
-      ),
       body: NestedScrollView(
           headerSliverBuilder: (context, innerBoxIsScrolled) {
             return [
               SliverAppBar(
                   title: Text(
-                "Barfrechner",
+                "Planer",
                 style: TextStyle(fontSize: 31),
               ))
             ];

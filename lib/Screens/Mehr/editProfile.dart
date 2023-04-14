@@ -4,7 +4,7 @@ import 'dart:typed_data';
 import 'package:path_provider/path_provider.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:Barfbook/Screens/Mehr/profile_controller.dart';
-import 'package:Barfbook/Screens/calculator/pet_controller.dart';
+import 'package:Barfbook/Screens/Barfbook/pet_controller.dart';
 import 'package:Barfbook/controller.dart';
 import 'package:Barfbook/util/Supabase/AuthController.dart';
 import 'package:file_picker/file_picker.dart';

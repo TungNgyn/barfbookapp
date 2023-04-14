@@ -1,7 +1,7 @@
 import 'package:Barfbook/Screens/Barfbook/barfbook_controller.dart';
 import 'package:Barfbook/Screens/Mehr/editProfile.dart';
 import 'package:Barfbook/Screens/Mehr/profile_controller.dart';
-import 'package:Barfbook/Screens/calculator/pet_controller.dart';
+import 'package:Barfbook/Screens/Barfbook/pet_controller.dart';
 import 'package:Barfbook/controller.dart';
 import 'package:Barfbook/loading.dart';
 import 'package:Barfbook/util/Supabase/AuthController.dart';
@@ -242,7 +242,6 @@ class _ScreenProfileState extends State<ScreenProfile>
       final petDB =
           await supabase.from('pet').select('*').eq('owner', widget.profile.id);
       for (var pet in petDB) {
-        print(pet['id']);
         final avatar =
             await supabase.storage.from('pet').download('${pet['id']}');
         petList.add(Pet(
