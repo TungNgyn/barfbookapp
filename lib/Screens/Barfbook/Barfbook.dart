@@ -22,28 +22,28 @@ class ScreenBarfbook extends StatefulWidget {
 class _ScreenBarfbookState extends State<ScreenBarfbook> {
   final Controller controller = Get.find();
 
-  updateRecipeList() async {
-    controller.userRecipeListDB = await supabase
-        .from('recipe')
-        .select('id, created_at, modified_at, name, description')
-        .eq('user_id', user!.id);
-    controller.userRecipeList.clear();
-    for (var recipe in controller.userRecipeListDB) {
-      controller.userRecipeList.add(Recipe(
-          name: (recipe as Map)['name'],
-          id: recipe['id'],
-          created_at: recipe['created_at'],
-          paws: 0,
-          description: recipe['description'],
-          modified_at: recipe['modified_at'],
-          user_id: user!.id));
-    }
-  }
+  // updateRecipeList() async {
+  //   controller.userRecipeListDB = await supabase
+  //       .from('recipe')
+  //       .select('id, created_at, modified_at, name, description')
+  //       .eq('user_id', user!.id);
+  //   controller.userRecipeList.clear();
+  //   for (var recipe in controller.userRecipeListDB) {
+  //     controller.userRecipeList.add(Recipe(
+  //         name: (recipe as Map)['name'],
+  //         id: recipe['id'],
+  //         created_at: recipe['created_at'],
+  //         paws: 0,
+  //         description: recipe['description'],
+  //         modified_at: recipe['modified_at'],
+  //         user_id: user!.id));
+  //   }
+  // }
 
   @override
   void initState() {
     super.initState();
-    updateRecipeList();
+    // updateRecipeList();
   }
 
   Future<void> _pullRefresh() async {
@@ -124,8 +124,8 @@ class _ScreenBarfbookState extends State<ScreenBarfbook> {
                                     in controller.userRecipeList) {
                                   list.add(GestureDetector(
                                     onTap: () {
-                                      Get.to(() =>
-                                          ScreenEditRecipe(recipe: recipe));
+                                      Get.to(() => RecipeDetailPage(
+                                          recipe: recipe, favorite: true));
                                     },
                                     child: Card(
                                       elevation: 4,
@@ -140,8 +140,26 @@ class _ScreenBarfbookState extends State<ScreenBarfbook> {
                                                 child: Card(
                                                   child: Padding(
                                                     padding: EdgeInsets.all(10),
-                                                    child: FlutterLogo(
-                                                      size: 100,
+                                                    child: Container(
+                                                      height: 128,
+                                                      width: 128,
+                                                      decoration: BoxDecoration(
+                                                          border: Border.all(
+                                                              color: Theme.of(
+                                                                      context)
+                                                                  .colorScheme
+                                                                  .primary),
+                                                          shape: BoxShape
+                                                              .rectangle,
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(20),
+                                                          image: DecorationImage(
+                                                              fit: BoxFit.cover,
+                                                              image: Image.memory(
+                                                                      recipe
+                                                                          .avatar)
+                                                                  .image)),
                                                     ),
                                                   ),
                                                 ),
@@ -166,9 +184,6 @@ class _ScreenBarfbookState extends State<ScreenBarfbook> {
                                                           children: [
                                                             Text(
                                                               recipe.name,
-                                                              overflow:
-                                                                  TextOverflow
-                                                                      .ellipsis,
                                                               style: TextStyle(
                                                                   fontSize: 24,
                                                                   fontWeight:
@@ -187,10 +202,10 @@ class _ScreenBarfbookState extends State<ScreenBarfbook> {
                                     ),
                                   ));
                                 }
-                                return Column(children: list);
+                                return Wrap(children: list);
                               }),
                             ),
-                    ),
+                    )
                   ])),
               // Favorite
               Scaffold(
@@ -230,8 +245,26 @@ class _ScreenBarfbookState extends State<ScreenBarfbook> {
                                                 child: Card(
                                                   child: Padding(
                                                     padding: EdgeInsets.all(10),
-                                                    child: FlutterLogo(
-                                                      size: 100,
+                                                    child: Container(
+                                                      height: 128,
+                                                      width: 128,
+                                                      decoration: BoxDecoration(
+                                                          border: Border.all(
+                                                              color: Theme.of(
+                                                                      context)
+                                                                  .colorScheme
+                                                                  .primary),
+                                                          shape: BoxShape
+                                                              .rectangle,
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(20),
+                                                          image: DecorationImage(
+                                                              fit: BoxFit.cover,
+                                                              image: Image.memory(
+                                                                      recipe
+                                                                          .avatar)
+                                                                  .image)),
                                                     ),
                                                   ),
                                                 ),
@@ -256,9 +289,6 @@ class _ScreenBarfbookState extends State<ScreenBarfbook> {
                                                           children: [
                                                             Text(
                                                               recipe.name,
-                                                              overflow:
-                                                                  TextOverflow
-                                                                      .ellipsis,
                                                               style: TextStyle(
                                                                   fontSize: 24,
                                                                   fontWeight:
@@ -277,7 +307,7 @@ class _ScreenBarfbookState extends State<ScreenBarfbook> {
                                     ),
                                   ));
                                 }
-                                return Column(children: list);
+                                return Wrap(children: list);
                               }),
                             ),
                     ),

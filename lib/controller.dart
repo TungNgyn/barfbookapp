@@ -7,13 +7,13 @@ class Controller extends GetxController {
   late Map<String, dynamic> userProfile;
 
   List userScheduleList = [].obs;
-  List userRecipeListDB = [].obs;
+  List userRecipeListDB = [];
   List userRecipeList = [].obs;
 
   List userLikedRecipeDB = [].obs;
   List userLikedRecipeXrefDB = [].obs;
   List userLikedRecipe = [].obs;
-  List userFavoriteList = [].obs;
+  List userFavoriteList = [];
 
   List databaseRecipeList = [].obs;
   List exploreRecipeList = [].obs;

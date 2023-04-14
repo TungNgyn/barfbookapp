@@ -76,173 +76,114 @@ class _ScreenExploreState extends State<ScreenExplore>
               children: [
                 _searchBar(),
                 sortPopularRecipe(),
-                SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Row(children: [
-                    for (var recipe in controller.exploreRecipeList)
-                      GestureDetector(
-                        onTap: () {
-                          for (var map in controller.userLikedRecipeXrefDB) {
-                            if (map?.containsKey("recipe") ?? false) {
-                              if (map['recipe'] == recipe.id) {
-                                Get.to(() => RecipeDetailPage(
-                                      recipe: recipe,
-                                      favorite: true,
-                                    ));
-                                return;
-                              }
-                            }
-                          }
-                          Get.to(() => RecipeDetailPage(
-                                recipe: recipe,
-                                favorite: false,
-                              ));
-                          return;
-                        },
-                        child: Card(
-                          child: Container(
-                            height: 200,
-                            child: Padding(
-                                padding: EdgeInsets.all(15),
-                                child: Row(
-                                  children: [
-                                    Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceAround,
-                                      children: [
-                                        Text(
-                                          recipe.name,
-                                          style: TextStyle(fontSize: 18),
-                                        ),
-                                        TextButton.icon(
-                                            onPressed: () {
-                                              Get.to(() => ScreenProfile(
-                                                  profile: recipe.user));
-                                            },
-                                            icon: CircleAvatar(
-                                              backgroundColor:
-                                                  Colors.transparent,
-                                              radius: 14,
-                                              child: Container(
-                                                decoration: BoxDecoration(
-                                                    border: Border.all(
-                                                        color: Theme.of(context)
-                                                            .colorScheme
-                                                            .primary),
-                                                    shape: BoxShape.circle,
-                                                    image: DecorationImage(
-                                                        fit: BoxFit.cover,
-                                                        image: Image.memory(
-                                                                recipe
-                                                                    .userAvatar)
-                                                            .image)),
-                                              ),
-                                            ),
-                                            label: Text(recipe.user.name)),
-                                      ],
-                                    ),
-                                    TextButton.icon(
-                                        onPressed: () {},
-                                        icon: Image.asset(
-                                          'assets/icons/paw.png',
-                                          width: 48,
-                                        ),
-                                        label: Text(
-                                          '${recipe.paws}',
-                                          style: TextStyle(
-                                              fontSize: 21,
-                                              fontWeight: FontWeight.bold),
-                                        ))
-                                  ],
-                                )),
-                          ),
-                        ),
-                      )
-                  ]),
-                ),
+                exploreRecipeRow(context),
                 sortNewRecipe(),
-                SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Row(children: [
-                    for (var recipe in controller.exploreRecipeList)
-                      GestureDetector(
-                        onTap: () {
-                          for (var map in controller.userLikedRecipeXrefDB) {
-                            if (map?.containsKey("recipe") ?? false) {
-                              if (map['recipe'] == recipe.id) {
-                                Get.to(() => RecipeDetailPage(
-                                      recipe: recipe,
-                                      favorite: true,
-                                    ));
-                                return;
-                              }
-                            }
-                          }
-                          Get.to(() => RecipeDetailPage(
-                                recipe: recipe,
-                                favorite: false,
-                              ));
-                          return;
-                        },
-                        child: Card(
-                          child: Padding(
-                              padding: EdgeInsets.all(15),
-                              child: Row(
-                                children: [
-                                  Column(
-                                    children: [
-                                      Text(
-                                        recipe.name,
-                                        style: TextStyle(fontSize: 18),
-                                      ),
-                                      TextButton.icon(
-                                          onPressed: () {
-                                            Get.to(() => ScreenProfile(
-                                                profile: recipe.user));
-                                          },
-                                          icon: CircleAvatar(
-                                            backgroundColor: Colors.transparent,
-                                            radius: 14,
-                                            child: Container(
-                                              decoration: BoxDecoration(
-                                                  border: Border.all(
-                                                      color: Theme.of(context)
-                                                          .colorScheme
-                                                          .primary),
-                                                  shape: BoxShape.circle,
-                                                  image: DecorationImage(
-                                                      fit: BoxFit.cover,
-                                                      image: Image.memory(
-                                                              recipe.userAvatar)
-                                                          .image)),
-                                            ),
-                                          ),
-                                          label: Text(recipe.user.name)),
-                                    ],
-                                  ),
-                                  TextButton.icon(
-                                      onPressed: () {},
-                                      icon: Image.asset(
-                                        'assets/icons/paw.png',
-                                        width: 48,
-                                      ),
-                                      label: Text(
-                                        '${recipe.paws}',
-                                        style: TextStyle(
-                                            fontSize: 21,
-                                            fontWeight: FontWeight.bold),
-                                      ))
-                                ],
-                              )),
-                        ),
-                      )
-                  ]),
-                ),
+                exploreRecipeRow(context),
               ],
             ),
           ),
         ),
       ),
+    );
+  }
+
+  SingleChildScrollView exploreRecipeRow(BuildContext context) {
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Row(children: [
+        for (var recipe in controller.exploreRecipeList)
+          GestureDetector(
+            onTap: () {
+              for (var map in controller.userLikedRecipeXrefDB) {
+                if (map?.containsKey("recipe") ?? false) {
+                  if (map['recipe'] == recipe.id) {
+                    Get.to(() => RecipeDetailPage(
+                          recipe: recipe,
+                          favorite: true,
+                        ));
+                    return;
+                  }
+                }
+              }
+              Get.to(() => RecipeDetailPage(
+                    recipe: recipe,
+                    favorite: false,
+                  ));
+              return;
+            },
+            child: Card(
+              child: Container(
+                height: 250,
+                width: 250,
+                child: Padding(
+                    padding: EdgeInsets.all(15),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          recipe.name,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(fontSize: 24),
+                        ),
+                        Container(
+                          height: 128,
+                          width: 128,
+                          decoration: BoxDecoration(
+                              border: Border.all(
+                                  color: Theme.of(context).colorScheme.primary),
+                              shape: BoxShape.rectangle,
+                              borderRadius: BorderRadius.circular(20),
+                              image: DecorationImage(
+                                  fit: BoxFit.cover,
+                                  image: Image.memory(recipe.avatar).image)),
+                        ),
+                        Spacer(),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            TextButton.icon(
+                                onPressed: () {
+                                  Get.to(() =>
+                                      ScreenProfile(profile: recipe.user));
+                                },
+                                icon: CircleAvatar(
+                                  backgroundColor: Colors.transparent,
+                                  radius: 14,
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                        border: Border.all(
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .primary),
+                                        shape: BoxShape.circle,
+                                        image: DecorationImage(
+                                            fit: BoxFit.cover,
+                                            image:
+                                                Image.memory(recipe.userAvatar)
+                                                    .image)),
+                                  ),
+                                ),
+                                label: Text(recipe.user.name)),
+                            TextButton.icon(
+                                onPressed: () {},
+                                icon: Image.asset(
+                                  'assets/icons/paw.png',
+                                  width: 48,
+                                ),
+                                label: Text(
+                                  '${recipe.paws}',
+                                  style: TextStyle(
+                                      fontSize: 21,
+                                      fontWeight: FontWeight.bold),
+                                ))
+                          ],
+                        ),
+                      ],
+                    )),
+              ),
+            ),
+          )
+      ]),
     );
   }
 

@@ -18,81 +18,94 @@ class _ScreenPetDetailPageState extends State<ScreenPetDetailPage> {
   Widget build(BuildContext context) {
     return FutureBuilder(
         future: loadOwner(),
-        builder: (context, snapshot) => snapshot.connectionState ==
-                ConnectionState.done
-            ? Scaffold(
-                extendBodyBehindAppBar: true,
-                appBar: AppBar(
-                  backgroundColor: Colors.transparent,
-                  actions: [
-                    Padding(
-                      padding: const EdgeInsets.only(right: 10),
-                      child: IconButton(
-                        icon: Icon(Icons.create),
-                        onPressed: () {
-                          Get.to(() => ScreenEditPet(pet: widget.pet));
-                        },
-                      ),
-                    )
-                  ],
-                ),
-                body: Stack(children: [
-                  Opacity(
-                    opacity: 0.4,
-                    child: Container(
-                      decoration: BoxDecoration(
-                          image: DecorationImage(
-                              image:
-                                  AssetImage("assets/images/barfbookapp.png"),
-                              fit: BoxFit.cover)),
+        builder: (context, snapshot) =>
+            snapshot.connectionState == ConnectionState.done
+                ? Scaffold(
+                    extendBodyBehindAppBar: true,
+                    appBar: AppBar(
+                      backgroundColor: Colors.transparent,
+                      actions: [
+                        Padding(
+                          padding: const EdgeInsets.only(right: 10),
+                          child: IconButton(
+                            icon: Icon(Icons.create),
+                            onPressed: () {
+                              Get.to(() => ScreenEditPet(pet: widget.pet));
+                            },
+                          ),
+                        )
+                      ],
                     ),
-                  ),
-                  Center(
-                    child: Column(children: [
-                      SafeArea(
-                        child: Column(
-                          children: [
-                            CircleAvatar(
-                              backgroundImage:
-                                  AssetImage("assets/images/defaultAvatar.png"),
-                              radius: 65,
-                            ),
-                            Padding(
-                              padding: EdgeInsets.only(top: 24),
-                              child: Text(
-                                "${widget.pet.name}",
-                                style: TextStyle(
-                                    fontWeight: FontWeight.w600, fontSize: 21),
-                              ),
-                            ),
-                          ],
+                    body: Stack(children: [
+                      Opacity(
+                        opacity: 0.4,
+                        child: Container(
+                          decoration: BoxDecoration(
+                              image: DecorationImage(
+                                  image: AssetImage(
+                                      "assets/images/splash/background.png"),
+                                  fit: BoxFit.cover)),
                         ),
                       ),
-                      Expanded(
-                        child: Container(
-                          color: Theme.of(context).colorScheme.onSecondary,
-                          child: Center(
-                              child: Padding(
-                            padding: EdgeInsets.all(20),
+                      Center(
+                        child: Column(children: [
+                          SafeArea(
                             child: Column(
                               children: [
-                                PetInfo(owner: owner, pet: widget.pet),
-                                SizedBox(height: 30),
-                                FeedingCard(
-                                  pet: widget.pet,
-                                  days: 1,
-                                  meat: 80,
-                                  vegetables: 20,
+                                CircleAvatar(
+                                  backgroundColor:
+                                      Theme.of(context).colorScheme.surface,
+                                  radius: 64,
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                        border: Border.all(
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .primary),
+                                        shape: BoxShape.circle,
+                                        image: DecorationImage(
+                                            image:
+                                                Image.memory(widget.pet.avatar)
+                                                    .image)),
+                                  ),
+                                ),
+                                Padding(
+                                  padding: EdgeInsets.only(top: 24),
+                                  child: Text(
+                                    "${widget.pet.name}",
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 21),
+                                  ),
                                 ),
                               ],
                             ),
-                          )),
-                        ),
-                      ),
-                    ]),
-                  )
-                ]))
-            : Center(child: CircularProgressIndicator()));
+                          ),
+                          Expanded(
+                            child: Container(
+                              color: Theme.of(context).colorScheme.surface,
+                              child: Center(
+                                  child: Padding(
+                                padding: EdgeInsets.all(20),
+                                child: Column(
+                                  children: [
+                                    PetInfo(owner: owner, pet: widget.pet),
+                                    SizedBox(height: 30),
+                                    FeedingCard(
+                                      pet: widget.pet,
+                                      days: 1,
+                                      meat: 80,
+                                      vegetables: 20,
+                                    ),
+                                  ],
+                                ),
+                              )),
+                            ),
+                          ),
+                        ]),
+                      )
+                    ]))
+                : Center(child: CircularProgressIndicator()));
   }
 
   loadOwner() async {

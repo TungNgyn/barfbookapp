@@ -252,7 +252,7 @@ class _ScreenProfileState extends State<ScreenProfile>
             age: pet['age'],
             weight: pet['weight'],
             gender: pet['gender'],
-            ration: pet['ration'],
+            ration: pet['ration'].toDouble(),
             avatar: avatar));
       }
     } catch (error) {

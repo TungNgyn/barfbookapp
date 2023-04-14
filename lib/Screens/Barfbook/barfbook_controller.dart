@@ -41,6 +41,7 @@ class Recipe {
       required this.created_at,
       required this.modified_at,
       required this.user_id,
+      this.avatar,
       this.user,
       this.userAvatar});
 
@@ -52,21 +53,8 @@ class Recipe {
   final String modified_at;
   final String user_id;
   final Profile? user;
+  final avatar;
   final userAvatar;
-}
-
-getRecipeIcon(final category) {
-  switch (category) {
-    case 'Rind':
-      return Image.asset("assets/icons/recipe/beef.png");
-    case 'Geflügel':
-    case 'Huhn':
-    case 'Truthahn':
-    case 'Pute':
-      return Image.asset("assets/icons/recipe/beef.png");
-    default:
-      return Icon(Icons.animation);
-  }
 }
 
 class CustomFilterChip {

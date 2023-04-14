@@ -1,7 +1,11 @@
+import 'dart:io';
+
 import 'package:Barfbook/Screens/calculator/pet_controller.dart';
 import 'package:Barfbook/util/Supabase/AuthController.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:flutter/services.dart' show rootBundle;
 
 class ScreenAddPet extends StatefulWidget {
   @override
@@ -19,6 +23,7 @@ class _ScreenAddPetState extends State<ScreenAddPet> {
   String? _genderController;
   RxDouble _rationController = 3.0.obs;
   int? pageIndex;
+  late final dogId;
 
   @override
   Widget build(BuildContext context) {
@@ -238,7 +243,9 @@ class _ScreenAddPetState extends State<ScreenAddPet> {
                       ElevatedButton(
                           onPressed: (filledInput == false)
                               ? (pageIndex == 2)
-                                  ? () => _addPet().then((value) => Get.back())
+                                  ? () => _addPet().then((value) =>
+                                      _createDogAvatar()
+                                          .then((value) => Get.back()))
                                   : null
                               : () {
                                   pageController.nextPage(
@@ -283,11 +290,35 @@ class _ScreenAddPetState extends State<ScreenAddPet> {
         'ration': pet.ration,
         'gender': pet.gender
       });
+
+      dogId = await supabase.from('pet').select('id').match({
+        'name': _nameController.text,
+        'owner': pet.owner,
+        'breed': pet.breed,
+        'age': pet.age,
+        'weight': pet.weight,
+        'ration': pet.ration,
+        'gender': pet.gender
+      });
     } catch (error) {
       print(error);
     }
     try {
       print(await supabase.from('pet').select('*').eq('owner', user?.id));
+    } catch (error) {
+      print(error);
+    }
+  }
+
+  Future _createDogAvatar() async {
+    try {
+      final bytes = await rootBundle.load('assets/images/defaultDogAvatar.png');
+      final tempDir = await getTemporaryDirectory();
+      final file = File('${tempDir.path}/defaultDogAvatar.png');
+      await file.writeAsBytes(
+          bytes.buffer.asUint8List(bytes.offsetInBytes, bytes.lengthInBytes));
+
+      await supabase.storage.from('pet').upload('${dogId}', file);
     } catch (error) {
       print(error);
     }

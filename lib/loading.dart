@@ -76,12 +76,21 @@ initData() async {
     controller.exploreRecipeList.clear();
     controller.exploreProfileList.clear();
     for (var recipe in controller.databaseRecipeList) {
+      var recipeAvatar;
+      try {
+        recipeAvatar =
+            await supabase.storage.from('recipe').download('${recipe['id']}');
+      } catch (error) {
+        recipeAvatar = await supabase.storage
+            .from('recipe')
+            .download('defaultRecipeAvatar');
+      }
       List userName = await supabase
           .from('profile')
           .select('name')
           .eq('id', recipe['user_id']);
 
-      final avatar = await supabase.storage
+      final userAvatar = await supabase.storage
           .from('profile')
           .download('${recipe['user_id']}');
       List userdata = await supabase
@@ -94,7 +103,7 @@ initData() async {
           email: userdata[0]['email'],
           name: userdata[0]['name'],
           description: userdata[0]['description'],
-          avatar: avatar));
+          avatar: userAvatar));
 
       final paws = await supabase
           .from('profile_liked_recipe')
@@ -111,7 +120,8 @@ initData() async {
               modified_at: recipe['modified_at'].substring(0, 10),
               user_id: recipe['user_id'],
               user: profile,
-              userAvatar: avatar));
+              userAvatar: userAvatar,
+              avatar: recipeAvatar));
         }
       }
     }
@@ -125,6 +135,15 @@ initData() async {
         .eq('user_id', user!.id);
     controller.userRecipeList.clear();
     for (var recipe in controller.userRecipeListDB) {
+      var recipeAvatar;
+      try {
+        recipeAvatar =
+            await supabase.storage.from('recipe').download('${recipe['id']}');
+      } catch (error) {
+        recipeAvatar = await supabase.storage
+            .from('recipe')
+            .download('defaultRecipeAvatar');
+      }
       controller.userRecipeList.add(Recipe(
           name: (recipe as Map)['name'],
           id: recipe['id'],
@@ -132,7 +151,8 @@ initData() async {
           paws: 0,
           description: recipe['description'],
           modified_at: recipe['modified_at'],
-          user_id: user!.id));
+          user_id: user!.id,
+          avatar: recipeAvatar));
     }
   } catch (error) {
     print(error);
@@ -152,6 +172,16 @@ initData() async {
             await supabase.from('recipe').select('*').eq('id', map['recipe']);
 
         for (var recipe in tempRecipe) {
+          var recipeAvatar;
+          try {
+            recipeAvatar = await supabase.storage
+                .from('recipe')
+                .download('${recipe['id']}');
+          } catch (error) {
+            recipeAvatar = await supabase.storage
+                .from('recipe')
+                .download('defaultRecipeAvatar');
+          }
           controller.userLikedRecipe.add(Recipe(
               name: (recipe as Map)['name'],
               id: recipe['id'],
@@ -159,7 +189,8 @@ initData() async {
               paws: 0,
               description: recipe['description'],
               modified_at: recipe['modified_at'],
-              user_id: recipe['user_id']));
+              user_id: recipe['user_id'],
+              avatar: recipeAvatar));
         }
       }
     }
@@ -173,19 +204,35 @@ initData() async {
     controller.userPetListDB =
         await supabase.from('pet').select('*').eq('owner', user?.id);
 
-    final avatar = await supabase.storage.from('pet').download('defaultDog');
     controller.userPetList.clear();
     for (var pet in controller.userPetListDB) {
-      controller.userPetList.add(Pet(
-          id: (pet as Map)['id'],
-          owner: pet['owner'],
-          name: pet['name'],
-          breed: pet['breed'],
-          age: pet['age'],
-          weight: pet['weight'],
-          gender: pet['gender'],
-          ration: pet['ration'],
-          avatar: avatar));
+      try {
+        final avatar =
+            await supabase.storage.from('pet').download('${pet['id']}');
+        controller.userPetList.add(Pet(
+            id: (pet as Map)['id'],
+            owner: pet['owner'],
+            name: pet['name'],
+            breed: pet['breed'],
+            age: pet['age'],
+            weight: pet['weight'],
+            gender: pet['gender'],
+            ration: pet['ration'],
+            avatar: avatar));
+      } catch (error) {
+        final avatar =
+            await supabase.storage.from('pet').download('defaultDogAvatar');
+        controller.userPetList.add(Pet(
+            id: (pet as Map)['id'],
+            owner: pet['owner'],
+            name: pet['name'],
+            breed: pet['breed'],
+            age: pet['age'],
+            weight: pet['weight'],
+            gender: pet['gender'],
+            ration: pet['ration'].toDouble(),
+            avatar: avatar));
+      }
     }
   } catch (error) {
     print(error);

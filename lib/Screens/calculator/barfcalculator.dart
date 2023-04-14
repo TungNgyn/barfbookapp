@@ -42,7 +42,7 @@ class _ScreenCalculatorState extends State<ScreenCalculator> {
               child: Column(
             children: [
               controller.userPetListDB.isEmpty
-                  ? AddPetCard(context)
+                  ? addPetCard(context)
                   : Obx(() {
                       List<Widget> list = [];
                       for (Pet pet in controller.userPetList) {
@@ -62,11 +62,27 @@ class _ScreenCalculatorState extends State<ScreenCalculator> {
                           onTap: () {
                             Get.to(() => ScreenPetDetailPage(pet: pet));
                           },
-                          child: Padding(
-                            padding: EdgeInsets.all(15),
-                            child: Card(
+                          child: Card(
+                            child: Padding(
+                              padding: const EdgeInsets.all(15),
                               child: Column(
                                 children: [
+                                  CircleAvatar(
+                                    backgroundColor:
+                                        Theme.of(context).colorScheme.surface,
+                                    radius: 64,
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                          border: Border.all(
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .primary),
+                                          shape: BoxShape.circle,
+                                          image: DecorationImage(
+                                              image: Image.memory(pet.avatar)
+                                                  .image)),
+                                    ),
+                                  ),
                                   Text(
                                     pet.name,
                                     style: TextStyle(
@@ -85,14 +101,14 @@ class _ScreenCalculatorState extends State<ScreenCalculator> {
                           ),
                         ));
                       }
-                      return Column(children: list);
+                      return Wrap(children: list);
                     }),
             ],
           ))),
     );
   }
 
-  Widget AddPetCard(BuildContext context) {
+  Widget addPetCard(BuildContext context) {
     return Card(
         elevation: 10,
         child: Padding(
