@@ -56,18 +56,9 @@ class _settingsStartState extends State<ScreenSettings>
                       }
                     },
                     child: CircleAvatar(
-                      backgroundColor: Colors.transparent,
-                      radius: 64,
-                      child: Container(
-                        decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            image: DecorationImage(
-                                fit: BoxFit.cover,
-                                image: Image.memory(
-                                        controller.userProfile['user'].avatar)
-                                    .image)),
-                      ),
-                    ),
+                        backgroundColor: Colors.transparent,
+                        radius: 64,
+                        child: controller.userProfile['user'].avatar),
                   ),
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 15),

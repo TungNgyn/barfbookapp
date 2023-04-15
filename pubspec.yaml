@@ -25,6 +25,7 @@ dependencies:
   keyboard_actions: ^4.2.0
   table_calendar: ^3.0.9
   intl: ^0.18.0
+  cached_network_image: ^3.2.3
 
 dev_dependencies:
   flutter_test:

@@ -1,11 +1,10 @@
-import 'dart:async';
-
 import 'package:Barfbook/Screens/Barfbook/barfbook_controller.dart';
 import 'package:Barfbook/Screens/Mehr/profile_controller.dart';
 import 'package:Barfbook/Screens/Barfbook/pet_controller.dart';
 import 'package:Barfbook/controller.dart';
 import 'package:Barfbook/home.dart';
 import 'package:Barfbook/util/Supabase/AuthController.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -32,8 +31,8 @@ initData() async {
   final Controller controller = Get.find();
   // init userdata
   try {
-    final avatar =
-        await supabase.storage.from('profile').download('${user?.id}');
+    // final avatar =
+    //     await supabase.storage.from('profile').download('${user?.id}');
     final userdata = await supabase
         .from('profile')
         .select("*")
@@ -45,7 +44,26 @@ initData() async {
           email: userdata['email'],
           name: userdata['name'],
           description: userdata['description'],
-          avatar: avatar)
+          avatar: CachedNetworkImage(
+            imageUrl:
+                'https://wokqzyqvqztmyzhhuqqh.supabase.co/storage/v1/object/public/profile/${user!.id}',
+            progressIndicatorBuilder: (context, url, downloadProgress) =>
+                CircularProgressIndicator(value: downloadProgress.progress),
+            errorWidget: (context, url, error) => Icon(Icons.error),
+            imageBuilder: (context, imageProvider) {
+              return Container(
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border:
+                      Border.all(color: Theme.of(context).colorScheme.primary),
+                  image: DecorationImage(
+                    image: imageProvider,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              );
+            },
+          ))
     };
   } catch (error) {
     final avatar =
@@ -79,16 +97,77 @@ initData() async {
       var recipeAvatar;
       try {
         recipeAvatar =
-            await supabase.storage.from('recipe').download('${recipe['id']}');
+            // await supabase.storage.from('recipe').download('${recipe['id']}');
+            CachedNetworkImage(
+          imageUrl:
+              'https://wokqzyqvqztmyzhhuqqh.supabase.co/storage/v1/object/public/recipe/${recipe['id']}',
+          progressIndicatorBuilder: (context, url, downloadProgress) =>
+              CircularProgressIndicator(value: downloadProgress.progress),
+          errorWidget: (context, url, error) => Icon(Icons.error),
+          imageBuilder: (context, imageProvider) {
+            return Container(
+              decoration: BoxDecoration(
+                shape: BoxShape.rectangle,
+                border:
+                    Border.all(color: Theme.of(context).colorScheme.primary),
+                borderRadius: BorderRadius.circular(20),
+                image: DecorationImage(
+                  image: imageProvider,
+                  fit: BoxFit.cover,
+                ),
+              ),
+            );
+          },
+        );
       } catch (error) {
-        recipeAvatar = await supabase.storage
-            .from('recipe')
-            .download('defaultRecipeAvatar');
+        // recipeAvatar = await supabase.storage
+        //     .from('recipe')
+        //     .download('defaultRecipeAvatar');
+        recipeAvatar = CachedNetworkImage(
+          imageUrl:
+              'https://wokqzyqvqztmyzhhuqqh.supabase.co/storage/v1/object/public/recipe/defaultRecipeAvatar',
+          progressIndicatorBuilder: (context, url, downloadProgress) =>
+              CircularProgressIndicator(value: downloadProgress.progress),
+          errorWidget: (context, url, error) => Icon(Icons.error),
+          imageBuilder: (context, imageProvider) {
+            return Container(
+              decoration: BoxDecoration(
+                shape: BoxShape.rectangle,
+                border:
+                    Border.all(color: Theme.of(context).colorScheme.primary),
+                borderRadius: BorderRadius.circular(20),
+                image: DecorationImage(
+                  image: imageProvider,
+                  fit: BoxFit.cover,
+                ),
+              ),
+            );
+          },
+        );
       }
 
-      final userAvatar = await supabase.storage
-          .from('profile')
-          .download('${recipe['user_id']}');
+      // final userAvatar = await supabase.storage
+      //     .from('profile')
+      //     .download('${recipe['user_id']}');
+      final userAvatar = CachedNetworkImage(
+        imageUrl:
+            'https://wokqzyqvqztmyzhhuqqh.supabase.co/storage/v1/object/public/profile/${recipe['user_id']}',
+        progressIndicatorBuilder: (context, url, downloadProgress) =>
+            CircularProgressIndicator(value: downloadProgress.progress),
+        errorWidget: (context, url, error) => Icon(Icons.error),
+        imageBuilder: (context, imageProvider) {
+          return Container(
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              border: Border.all(color: Theme.of(context).colorScheme.primary),
+              image: DecorationImage(
+                image: imageProvider,
+                fit: BoxFit.cover,
+              ),
+            ),
+          );
+        },
+      );
       List userdata = await supabase
           .from('profile')
           .select("*")
@@ -132,13 +211,63 @@ initData() async {
     controller.userRecipeList.clear();
     for (var recipe in controller.userRecipeListDB) {
       var recipeAvatar;
+      // try {
+      //   recipeAvatar =
+      //       await supabase.storage.from('recipe').download('${recipe['id']}');
+      // } catch (error) {
+      //   recipeAvatar = await supabase.storage
+      //       .from('recipe')
+      //       .download('defaultRecipeAvatar');
+      // }
       try {
         recipeAvatar =
-            await supabase.storage.from('recipe').download('${recipe['id']}');
+            // await supabase.storage.from('recipe').download('${recipe['id']}');
+            CachedNetworkImage(
+          imageUrl:
+              'https://wokqzyqvqztmyzhhuqqh.supabase.co/storage/v1/object/public/recipe/${recipe['id']}',
+          progressIndicatorBuilder: (context, url, downloadProgress) =>
+              CircularProgressIndicator(value: downloadProgress.progress),
+          errorWidget: (context, url, error) => Icon(Icons.error),
+          imageBuilder: (context, imageProvider) {
+            return Container(
+              decoration: BoxDecoration(
+                shape: BoxShape.rectangle,
+                border:
+                    Border.all(color: Theme.of(context).colorScheme.primary),
+                borderRadius: BorderRadius.circular(20),
+                image: DecorationImage(
+                  image: imageProvider,
+                  fit: BoxFit.cover,
+                ),
+              ),
+            );
+          },
+        );
       } catch (error) {
-        recipeAvatar = await supabase.storage
-            .from('recipe')
-            .download('defaultRecipeAvatar');
+        // recipeAvatar = await supabase.storage
+        //     .from('recipe')
+        //     .download('defaultRecipeAvatar');
+        recipeAvatar = CachedNetworkImage(
+          imageUrl:
+              'https://wokqzyqvqztmyzhhuqqh.supabase.co/storage/v1/object/public/recipe/defaultRecipeAvatar',
+          progressIndicatorBuilder: (context, url, downloadProgress) =>
+              CircularProgressIndicator(value: downloadProgress.progress),
+          errorWidget: (context, url, error) => Icon(Icons.error),
+          imageBuilder: (context, imageProvider) {
+            return Container(
+              decoration: BoxDecoration(
+                shape: BoxShape.rectangle,
+                border:
+                    Border.all(color: Theme.of(context).colorScheme.primary),
+                borderRadius: BorderRadius.circular(20),
+                image: DecorationImage(
+                  image: imageProvider,
+                  fit: BoxFit.cover,
+                ),
+              ),
+            );
+          },
+        );
       }
 
       final paws = await supabase
@@ -175,19 +304,88 @@ initData() async {
 
         for (var recipe in tempRecipe) {
           var recipeAvatar;
+          // try {
+          //   recipeAvatar = await supabase.storage
+          //       .from('recipe')
+          //       .download('${recipe['id']}');
+          // } catch (error) {
+          //   recipeAvatar = await supabase.storage
+          //       .from('recipe')
+          //       .download('defaultRecipeAvatar');
+          // }
           try {
-            recipeAvatar = await supabase.storage
-                .from('recipe')
-                .download('${recipe['id']}');
+            recipeAvatar =
+                // await supabase.storage.from('recipe').download('${recipe['id']}');
+                CachedNetworkImage(
+              imageUrl:
+                  'https://wokqzyqvqztmyzhhuqqh.supabase.co/storage/v1/object/public/recipe/${recipe['id']}',
+              progressIndicatorBuilder: (context, url, downloadProgress) =>
+                  CircularProgressIndicator(value: downloadProgress.progress),
+              errorWidget: (context, url, error) => Icon(Icons.error),
+              imageBuilder: (context, imageProvider) {
+                return Container(
+                  decoration: BoxDecoration(
+                    shape: BoxShape.rectangle,
+                    border: Border.all(
+                        color: Theme.of(context).colorScheme.primary),
+                    borderRadius: BorderRadius.circular(20),
+                    image: DecorationImage(
+                      image: imageProvider,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                );
+              },
+            );
           } catch (error) {
-            recipeAvatar = await supabase.storage
-                .from('recipe')
-                .download('defaultRecipeAvatar');
+            // recipeAvatar = await supabase.storage
+            //     .from('recipe')
+            //     .download('defaultRecipeAvatar');
+            recipeAvatar = CachedNetworkImage(
+              imageUrl:
+                  'https://wokqzyqvqztmyzhhuqqh.supabase.co/storage/v1/object/public/profile/defaultAvatar',
+              progressIndicatorBuilder: (context, url, downloadProgress) =>
+                  CircularProgressIndicator(value: downloadProgress.progress),
+              errorWidget: (context, url, error) => Icon(Icons.error),
+              imageBuilder: (context, imageProvider) {
+                return Container(
+                  decoration: BoxDecoration(
+                    shape: BoxShape.rectangle,
+                    border: Border.all(
+                        color: Theme.of(context).colorScheme.primary),
+                    borderRadius: BorderRadius.circular(20),
+                    image: DecorationImage(
+                      image: imageProvider,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                );
+              },
+            );
           }
-
-          final userAvatar = await supabase.storage
-              .from('profile')
-              .download('${recipe['user_id']}');
+          // final userAvatar = await supabase.storage
+          //     .from('profile')
+          //     .download('${recipe['user_id']}');
+          final userAvatar = CachedNetworkImage(
+            imageUrl:
+                'https://wokqzyqvqztmyzhhuqqh.supabase.co/storage/v1/object/public/profile/${recipe['user_id']}',
+            progressIndicatorBuilder: (context, url, downloadProgress) =>
+                CircularProgressIndicator(value: downloadProgress.progress),
+            errorWidget: (context, url, error) => Icon(Icons.error),
+            imageBuilder: (context, imageProvider) {
+              return Container(
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border:
+                      Border.all(color: Theme.of(context).colorScheme.primary),
+                  image: DecorationImage(
+                    image: imageProvider,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              );
+            },
+          );
 
           List userdata = await supabase
               .from('profile')
@@ -228,36 +426,66 @@ initData() async {
   try {
     controller.userPetListDB =
         await supabase.from('pet').select('*').eq('owner', user?.id);
-
     controller.userPetList.clear();
     for (var pet in controller.userPetListDB) {
+      var avatar;
       try {
-        final avatar =
-            await supabase.storage.from('pet').download('${pet['id']}');
-        controller.userPetList.add(Pet(
-            id: (pet as Map)['id'],
-            owner: pet['owner'],
-            name: pet['name'],
-            breed: pet['breed'],
-            age: pet['age'],
-            weight: pet['weight'],
-            gender: pet['gender'],
-            ration: pet['ration'],
-            avatar: avatar));
+        // final avatar =
+        //     await supabase.storage.from('pet').download('${pet['id']}');
+        avatar = CachedNetworkImage(
+          imageUrl:
+              'https://wokqzyqvqztmyzhhuqqh.supabase.co/storage/v1/object/public/pet/${pet['id']}',
+          progressIndicatorBuilder: (context, url, downloadProgress) =>
+              CircularProgressIndicator(value: downloadProgress.progress),
+          errorWidget: (context, url, error) => Icon(Icons.error),
+          imageBuilder: (context, imageProvider) {
+            return Container(
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border:
+                    Border.all(color: Theme.of(context).colorScheme.primary),
+                image: DecorationImage(
+                  image: imageProvider,
+                  fit: BoxFit.cover,
+                ),
+              ),
+            );
+          },
+        );
       } catch (error) {
-        final avatar =
-            await supabase.storage.from('pet').download('defaultDogAvatar');
-        controller.userPetList.add(Pet(
-            id: (pet as Map)['id'],
-            owner: pet['owner'],
-            name: pet['name'],
-            breed: pet['breed'],
-            age: pet['age'],
-            weight: pet['weight'],
-            gender: pet['gender'],
-            ration: pet['ration'].toDouble(),
-            avatar: avatar));
+        avatar =
+            // await supabase.storage.from('pet').download('defaultDogAvatar');
+            CachedNetworkImage(
+          imageUrl:
+              'https://wokqzyqvqztmyzhhuqqh.supabase.co/storage/v1/object/public/pet/defaultDogAvatar',
+          progressIndicatorBuilder: (context, url, downloadProgress) =>
+              CircularProgressIndicator(value: downloadProgress.progress),
+          errorWidget: (context, url, error) => Icon(Icons.error),
+          imageBuilder: (context, imageProvider) {
+            return Container(
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border:
+                    Border.all(color: Theme.of(context).colorScheme.primary),
+                image: DecorationImage(
+                  image: imageProvider,
+                  fit: BoxFit.cover,
+                ),
+              ),
+            );
+          },
+        );
       }
+      controller.userPetList.add(Pet(
+          id: (pet as Map)['id'],
+          owner: pet['owner'],
+          name: pet['name'],
+          breed: pet['breed'],
+          age: pet['age'].toDouble(),
+          weight: pet['weight'],
+          gender: pet['gender'],
+          ration: pet['ration'].toDouble(),
+          avatar: avatar));
     }
   } catch (error) {
     print(error);
@@ -281,9 +509,28 @@ loadExplorePage() async {
           .select('name')
           .eq('id', recipe['user_id']);
 
-      final avatar = await supabase.storage
-          .from('profile')
-          .download('${recipe['user_id']}');
+      // final avatar = await supabase.storage
+      //     .from('profile')
+      //     .download('${recipe['user_id']}');
+      final avatar = CachedNetworkImage(
+        imageUrl:
+            'https://wokqzyqvqztmyzhhuqqh.supabase.co/storage/v1/object/public/profile/${recipe['user_id']}',
+        progressIndicatorBuilder: (context, url, downloadProgress) =>
+            CircularProgressIndicator(value: downloadProgress.progress),
+        errorWidget: (context, url, error) => Icon(Icons.error),
+        imageBuilder: (context, imageProvider) {
+          return Container(
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              border: Border.all(color: Theme.of(context).colorScheme.primary),
+              image: DecorationImage(
+                image: imageProvider,
+                fit: BoxFit.cover,
+              ),
+            ),
+          );
+        },
+      );
       List userdata = await supabase
           .from('profile')
           .select("*")

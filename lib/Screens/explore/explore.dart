@@ -54,15 +54,7 @@ class _ScreenExploreState extends State<ScreenExplore>
                       child: CircleAvatar(
                         backgroundColor: Colors.transparent,
                         radius: 32,
-                        child: Container(
-                          decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              image: DecorationImage(
-                                  fit: BoxFit.cover,
-                                  image: Image.memory(
-                                          controller.userProfile['user'].avatar)
-                                      .image)),
-                        ),
+                        child: controller.userProfile['user'].avatar,
                       ),
                     ),
                   ],
@@ -92,97 +84,7 @@ class _ScreenExploreState extends State<ScreenExplore>
       scrollDirection: Axis.horizontal,
       child: Row(children: [
         for (var recipe in controller.exploreRecipeList)
-          GestureDetector(
-            onTap: () {
-              for (var map in controller.userLikedRecipeXrefDB) {
-                if (map?.containsKey("recipe") ?? false) {
-                  if (map['recipe'] == recipe.id) {
-                    Get.to(() => RecipeDetailPage(
-                          recipe: recipe,
-                          favorite: true,
-                        ));
-                    return;
-                  }
-                }
-              }
-              Get.to(() => RecipeDetailPage(
-                    recipe: recipe,
-                    favorite: false,
-                  ));
-              return;
-            },
-            child: Card(
-              child: Container(
-                height: 250,
-                width: 250,
-                child: Padding(
-                    padding: EdgeInsets.all(15),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          recipe.name,
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(fontSize: 24),
-                        ),
-                        Container(
-                          height: 128,
-                          width: 128,
-                          decoration: BoxDecoration(
-                              border: Border.all(
-                                  color: Theme.of(context).colorScheme.primary),
-                              shape: BoxShape.rectangle,
-                              borderRadius: BorderRadius.circular(20),
-                              image: DecorationImage(
-                                  fit: BoxFit.cover,
-                                  image: Image.memory(recipe.avatar).image)),
-                        ),
-                        Spacer(),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            TextButton.icon(
-                                onPressed: () {
-                                  Get.to(() =>
-                                      ScreenProfile(profile: recipe.user));
-                                },
-                                icon: CircleAvatar(
-                                  backgroundColor: Colors.transparent,
-                                  radius: 14,
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                        border: Border.all(
-                                            color: Theme.of(context)
-                                                .colorScheme
-                                                .primary),
-                                        shape: BoxShape.circle,
-                                        image: DecorationImage(
-                                            fit: BoxFit.cover,
-                                            image:
-                                                Image.memory(recipe.userAvatar)
-                                                    .image)),
-                                  ),
-                                ),
-                                label: Text(recipe.user.name)),
-                            TextButton.icon(
-                                onPressed: () {},
-                                icon: Image.asset(
-                                  'assets/icons/paw.png',
-                                  width: 48,
-                                ),
-                                label: Text(
-                                  '${recipe.paws}',
-                                  style: TextStyle(
-                                      fontSize: 21,
-                                      fontWeight: FontWeight.bold),
-                                ))
-                          ],
-                        ),
-                      ],
-                    )),
-              ),
-            ),
-          )
+          RecipeCard(controller: controller, recipe: recipe)
       ]),
     );
   }
@@ -243,6 +145,90 @@ class _ScreenExploreState extends State<ScreenExplore>
             contentPadding: EdgeInsets.all(20),
             border:
                 OutlineInputBorder(borderRadius: BorderRadius.circular(12))),
+      ),
+    );
+  }
+}
+
+class RecipeCard extends StatelessWidget {
+  const RecipeCard({
+    super.key,
+    required this.controller,
+    required this.recipe,
+  });
+
+  final Controller controller;
+  final recipe;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        for (var map in controller.userLikedRecipeXrefDB) {
+          if (map?.containsKey("recipe") ?? false) {
+            if (map['recipe'] == recipe.id) {
+              Get.to(() => RecipeDetailPage(
+                    recipe: recipe,
+                    favorite: true,
+                  ));
+              return;
+            }
+          }
+        }
+        Get.to(() => RecipeDetailPage(
+              recipe: recipe,
+              favorite: false,
+            ));
+        return;
+      },
+      child: Card(
+        child: Container(
+          height: 250,
+          width: 250,
+          child: Padding(
+              padding: EdgeInsets.all(15),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    recipe.name,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(fontSize: 24),
+                  ),
+                  Container(
+                    height: 128,
+                    width: 128,
+                    child: recipe.avatar,
+                  ),
+                  Spacer(),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      TextButton.icon(
+                          onPressed: () {
+                            Get.to(() => ScreenProfile(profile: recipe.user));
+                          },
+                          icon: CircleAvatar(
+                              backgroundColor: Colors.transparent,
+                              radius: 14,
+                              child: recipe.userAvatar),
+                          label: Text(recipe.user.name)),
+                      TextButton.icon(
+                          onPressed: () {},
+                          icon: Image.asset(
+                            'assets/icons/paw.png',
+                            width: 48,
+                          ),
+                          label: Text(
+                            '${recipe.paws}',
+                            style: TextStyle(
+                                fontSize: 21, fontWeight: FontWeight.bold),
+                          ))
+                    ],
+                  ),
+                ],
+              )),
+        ),
       ),
     );
   }

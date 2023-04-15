@@ -5,6 +5,7 @@ import 'package:Barfbook/Screens/Barfbook/pet_controller.dart';
 import 'package:Barfbook/controller.dart';
 import 'package:Barfbook/loading.dart';
 import 'package:Barfbook/util/Supabase/AuthController.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -104,22 +105,9 @@ class _ScreenProfileState extends State<ScreenProfile>
                         child: Column(
                           children: [
                             CircleAvatar(
-                              backgroundColor: Colors.transparent,
-                              radius: 64,
-                              child: Container(
-                                decoration: BoxDecoration(
-                                    border: Border.all(
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .primary),
-                                    shape: BoxShape.circle,
-                                    image: DecorationImage(
-                                        fit: BoxFit.cover,
-                                        image:
-                                            Image.memory(widget.profile.avatar)
-                                                .image)),
-                              ),
-                            ),
+                                backgroundColor: Colors.transparent,
+                                radius: 64,
+                                child: Container(child: widget.profile.avatar)),
                             Padding(
                               padding: EdgeInsets.only(top: 16),
                               child: Text(
@@ -177,21 +165,11 @@ class _ScreenProfileState extends State<ScreenProfile>
                                     children: [
                                       for (var pet in petList)
                                         CircleAvatar(
-                                          backgroundColor: Colors.transparent,
-                                          radius: 64,
-                                          child: Container(
-                                            decoration: BoxDecoration(
-                                                border: Border.all(
-                                                    color: Theme.of(context)
-                                                        .colorScheme
-                                                        .primary),
-                                                shape: BoxShape.circle,
-                                                image: DecorationImage(
-                                                    image:
-                                                        Image.memory(pet.avatar)
-                                                            .image)),
-                                          ),
-                                        ),
+                                            backgroundColor: Theme.of(context)
+                                                .colorScheme
+                                                .surface,
+                                            radius: 64,
+                                            child: pet.avatar),
                                     ],
                                   ),
                             (recipeList.isEmpty)
@@ -242,8 +220,28 @@ class _ScreenProfileState extends State<ScreenProfile>
       final petDB =
           await supabase.from('pet').select('*').eq('owner', widget.profile.id);
       for (var pet in petDB) {
-        final avatar =
-            await supabase.storage.from('pet').download('${pet['id']}');
+        // final avatar =
+        //     await supabase.storage.from('pet').download('${pet['id']}');
+        final avatar = CachedNetworkImage(
+          imageUrl:
+              'https://wokqzyqvqztmyzhhuqqh.supabase.co/storage/v1/object/public/pet/${pet['id']}',
+          progressIndicatorBuilder: (context, url, downloadProgress) =>
+              CircularProgressIndicator(value: downloadProgress.progress),
+          errorWidget: (context, url, error) => Icon(Icons.error),
+          imageBuilder: (context, imageProvider) {
+            return Container(
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border:
+                    Border.all(color: Theme.of(context).colorScheme.primary),
+                image: DecorationImage(
+                  image: imageProvider,
+                  fit: BoxFit.cover,
+                ),
+              ),
+            );
+          },
+        );
         petList.add(Pet(
             owner: pet['owner'],
             name: pet['name'],

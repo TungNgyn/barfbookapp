@@ -26,7 +26,7 @@ class AboutUsPage extends StatelessWidget {
                 padding: EdgeInsets.only(top: 5),
                 child: Text.rich(TextSpan(
                     text:
-                        "Das Projekt entstand durch eine einzige Person, mit dem Gedanken eine ",
+                        "Das Projekt entstand für einen Hund, mit dem Gedanken eine ",
                     children: [
                       TextSpan(
                         text: "Barf-Kalkulation und Rationierung",

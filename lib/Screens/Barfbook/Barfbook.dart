@@ -137,23 +137,12 @@ class _ScreenBarfbookState extends State<ScreenBarfbook> {
                                         child: Column(
                                           children: [
                                             CircleAvatar(
-                                              backgroundColor: Theme.of(context)
-                                                  .colorScheme
-                                                  .surface,
-                                              radius: 64,
-                                              child: Container(
-                                                decoration: BoxDecoration(
-                                                    border: Border.all(
-                                                        color: Theme.of(context)
-                                                            .colorScheme
-                                                            .primary),
-                                                    shape: BoxShape.circle,
-                                                    image: DecorationImage(
-                                                        image: Image.memory(
-                                                                pet.avatar)
-                                                            .image)),
-                                              ),
-                                            ),
+                                                backgroundColor:
+                                                    Theme.of(context)
+                                                        .colorScheme
+                                                        .surface,
+                                                radius: 64,
+                                                child: pet.avatar),
                                             Text(
                                               pet.name,
                                               style: TextStyle(
@@ -235,25 +224,7 @@ class _ScreenBarfbookState extends State<ScreenBarfbook> {
                                                       child: Container(
                                                         height: 128,
                                                         width: 128,
-                                                        decoration: BoxDecoration(
-                                                            border: Border.all(
-                                                                color: Theme.of(
-                                                                        context)
-                                                                    .colorScheme
-                                                                    .primary),
-                                                            shape: BoxShape
-                                                                .rectangle,
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        20),
-                                                            image: DecorationImage(
-                                                                fit: BoxFit
-                                                                    .cover,
-                                                                image: Image.memory(
-                                                                        recipe
-                                                                            .avatar)
-                                                                    .image)),
+                                                        child: recipe.avatar,
                                                       ),
                                                     ),
                                                   ),
@@ -321,129 +292,17 @@ class _ScreenBarfbookState extends State<ScreenBarfbook> {
                                 ),
                               ),
                               Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 20),
-                                child: Obx(() {
-                                  List<Widget> list = [];
-                                  for (Recipe recipe
-                                      in controller.userLikedRecipe) {
-                                    list.add(GestureDetector(
-                                      onTap: () {
-                                        Get.to(() => RecipeDetailPage(
-                                            recipe: recipe, favorite: true));
-                                      },
-                                      child: Card(
-                                        elevation: 4,
-                                        child: Padding(
-                                            padding: EdgeInsets.only(
-                                                bottom: 15, top: 10),
-                                            child: Row(
-                                              children: [
-                                                Padding(
-                                                  padding: EdgeInsets.symmetric(
-                                                      horizontal: 10),
-                                                  child: Card(
-                                                    child: Padding(
-                                                      padding:
-                                                          EdgeInsets.all(10),
-                                                      child: Container(
-                                                        height: 128,
-                                                        width: 128,
-                                                        decoration: BoxDecoration(
-                                                            border: Border.all(
-                                                                color: Theme.of(
-                                                                        context)
-                                                                    .colorScheme
-                                                                    .primary),
-                                                            shape: BoxShape
-                                                                .rectangle,
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        20),
-                                                            image: DecorationImage(
-                                                                fit: BoxFit
-                                                                    .cover,
-                                                                image: Image.memory(
-                                                                        recipe
-                                                                            .avatar)
-                                                                    .image)),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ),
-                                                Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .spaceBetween,
-                                                  children: [
-                                                    Text(
-                                                      recipe.name,
-                                                      style: TextStyle(
-                                                          fontSize: 21),
-                                                    ),
-                                                    Row(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .spaceBetween,
-                                                      children: [
-                                                        TextButton.icon(
-                                                            onPressed: () {
-                                                              Get.to(() =>
-                                                                  ScreenProfile(
-                                                                      profile:
-                                                                          recipe
-                                                                              .user!));
-                                                            },
-                                                            icon: CircleAvatar(
-                                                              backgroundColor:
-                                                                  Colors
-                                                                      .transparent,
-                                                              radius: 14,
-                                                              child: Container(
-                                                                decoration: BoxDecoration(
-                                                                    border: Border.all(
-                                                                        color: Theme.of(context)
-                                                                            .colorScheme
-                                                                            .primary),
-                                                                    shape: BoxShape
-                                                                        .circle,
-                                                                    image: DecorationImage(
-                                                                        fit: BoxFit
-                                                                            .cover,
-                                                                        image: Image.memory(recipe.userAvatar)
-                                                                            .image)),
-                                                              ),
-                                                            ),
-                                                            label: Text(recipe
-                                                                .user!.name)),
-                                                        TextButton.icon(
-                                                            onPressed: () {},
-                                                            icon: Image.asset(
-                                                              'assets/icons/paw.png',
-                                                              width: 48,
-                                                            ),
-                                                            label: Text(
-                                                              '${recipe.paws}',
-                                                              style: TextStyle(
-                                                                  fontSize: 21,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .bold),
-                                                            ))
-                                                      ],
-                                                    ),
-                                                  ],
-                                                )
-                                              ],
-                                            )),
-                                      ),
-                                    ));
-                                  }
-                                  return Wrap(children: list);
-                                }),
-                              ),
+                                  padding: EdgeInsets.symmetric(horizontal: 20),
+                                  child: Obx(() {
+                                    List<Widget> list = [];
+                                    for (Recipe recipe
+                                        in controller.userLikedRecipe) {
+                                      list.add(RecipeCard(
+                                          controller: controller,
+                                          recipe: recipe));
+                                    }
+                                    return Wrap(children: list);
+                                  })),
                             ],
                           ),
                   ),

@@ -100,17 +100,9 @@ class _ScreenEditProfileState extends State<ScreenEditProfile> {
                   }
                 },
                 child: CircleAvatar(
-                  backgroundColor: Colors.transparent,
-                  radius: 64,
-                  child: Container(
-                    decoration: BoxDecoration(
-                        border: Border.all(
-                            color: Theme.of(context).colorScheme.primary),
-                        shape: BoxShape.circle,
-                        image:
-                            DecorationImage(image: Image.memory(avatar).image)),
-                  ),
-                ),
+                    backgroundColor: Colors.transparent,
+                    radius: 64,
+                    child: avatar),
               ),
               SizedBox(height: 24),
               Column(
