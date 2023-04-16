@@ -59,6 +59,214 @@ class _ScreenScheduleState extends State<ScreenSchedule> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+        floatingActionButton: FloatingActionButton.large(
+          onPressed: () {
+            Get.defaultDialog(
+                title: "Rezepte",
+                content: Container(
+                  height: MediaQuery.of(context).size.height * 0.6,
+                  width: MediaQuery.of(context).size.width * 0.8,
+                  child: Column(
+                    children: [
+                      Obx(() {
+                        List<Widget> list = [];
+                        for (Recipe recipe in controller.userLikedRecipe) {
+                          list.add(Stack(
+                            children: [
+                              GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    final userAvatar =
+                                        loadUserAvatar(recipe.user_id);
+                                    final recipeAvatar =
+                                        loadRecipeAvatar(recipe.id);
+                                    final day = DateTime(_selectedDay!.year,
+                                        _selectedDay!.month, _selectedDay!.day);
+                                    addValueToMap(
+                                        kEventSource,
+                                        day,
+                                        Recipe(
+                                            id: recipe.id,
+                                            name: recipe.name,
+                                            description: recipe.description,
+                                            paws: recipe.paws,
+                                            created_at: recipe.created_at,
+                                            modified_at: recipe.modified_at,
+                                            user_id: recipe.user_id,
+                                            user: Profile(
+                                                id: recipe.user!.id,
+                                                createdAt:
+                                                    recipe.user!.createdAt,
+                                                email: recipe.user!.email,
+                                                name: recipe.user!.name,
+                                                description:
+                                                    recipe.user!.description,
+                                                avatar: userAvatar),
+                                            userAvatar: userAvatar,
+                                            avatar: recipeAvatar));
+
+                                    kEvents = LinkedHashMap<DateTime, List>(
+                                      equals: isSameDay,
+                                      hashCode: getHashCode,
+                                    )..addAll(kEventSource);
+
+                                    _selectedEvents.value =
+                                        _getEventsForDay(_selectedDay!);
+                                  });
+                                  Get.back();
+                                },
+                                child: Card(
+                                  child: Container(
+                                    height: 250,
+                                    width: 250,
+                                    child: Padding(
+                                        padding: EdgeInsets.all(15),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              recipe.name,
+                                              overflow: TextOverflow.ellipsis,
+                                              style: TextStyle(fontSize: 24),
+                                            ),
+                                            Container(
+                                              height: 128,
+                                              width: 128,
+                                              child: recipe.avatar,
+                                            ),
+                                            Spacer(),
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                TextButton.icon(
+                                                    onPressed: () {
+                                                      Get.to(() =>
+                                                          ScreenProfile(
+                                                              profile: recipe
+                                                                  .user!));
+                                                    },
+                                                    icon: CircleAvatar(
+                                                        backgroundColor:
+                                                            Colors.transparent,
+                                                        radius: 14,
+                                                        child:
+                                                            recipe.userAvatar),
+                                                    label: Text(
+                                                        recipe.user!.name)),
+                                                TextButton.icon(
+                                                    onPressed: () {},
+                                                    icon: Image.asset(
+                                                      'assets/icons/paw.png',
+                                                      width: 48,
+                                                    ),
+                                                    label: Text(
+                                                      '${recipe.paws}',
+                                                      style: TextStyle(
+                                                          fontSize: 21,
+                                                          fontWeight:
+                                                              FontWeight.bold),
+                                                    ))
+                                              ],
+                                            ),
+                                          ],
+                                        )),
+                                  ),
+                                ),
+                              ),
+                              Positioned(
+                                  right: 6,
+                                  child: IconButton(
+                                    icon: Icon(Icons.info_rounded),
+                                    onPressed: () {
+                                      for (var map
+                                          in controller.userLikedRecipeXrefDB) {
+                                        if (map?.containsKey("recipe") ??
+                                            false) {
+                                          if (map['recipe'] == recipe.id) {
+                                            Get.to(() => RecipeDetailPage(
+                                                  recipe: recipe,
+                                                  favorite: true,
+                                                ));
+                                            return;
+                                          }
+                                        }
+                                      }
+                                      Get.to(() => RecipeDetailPage(
+                                            recipe: recipe,
+                                            favorite: false,
+                                          ));
+                                      return;
+                                    },
+                                  ))
+                            ],
+                          ));
+                        }
+                        for (Recipe recipe in controller.userRecipeList) {
+                          list.add(GestureDetector(
+                            onTap: () {
+                              Get.to(() => RecipeDetailPage(
+                                  recipe: recipe, favorite: true));
+                            },
+                            child: Card(
+                              elevation: 4,
+                              child: Padding(
+                                  padding: EdgeInsets.only(bottom: 15, top: 10),
+                                  child: Row(
+                                    children: [
+                                      Padding(
+                                        padding: EdgeInsets.symmetric(
+                                            horizontal: 10),
+                                        child: Card(
+                                          child: Padding(
+                                            padding: EdgeInsets.all(10),
+                                            child: Container(
+                                              height: 128,
+                                              width: 128,
+                                              child: recipe.avatar,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            recipe.name,
+                                            style: TextStyle(fontSize: 21),
+                                          ),
+                                          TextButton.icon(
+                                              onPressed: () {},
+                                              icon: Image.asset(
+                                                'assets/icons/paw.png',
+                                                width: 48,
+                                              ),
+                                              label: Text(
+                                                '${recipe.paws}',
+                                                style: TextStyle(
+                                                    fontSize: 21,
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                              ))
+                                        ],
+                                      )
+                                    ],
+                                  )),
+                            ),
+                          ));
+                        }
+                        return Column(children: list);
+                      }),
+                    ],
+                  ),
+                ));
+          },
+          child: Icon(Icons.add),
+        ),
         appBar: AppBar(
           title: Text(
             "Planer",
@@ -83,183 +291,60 @@ class _ScreenScheduleState extends State<ScreenSchedule> {
                   onPageChanged: (focusedDay) {
                     _focusedDay = focusedDay;
                   },
+                  rowHeight: 40,
                   eventLoader: (day) => _getEventsForDay(day)),
-              Text(
-                "Rezepte",
-                style: TextStyle(fontSize: 24),
+              Padding(
+                padding: EdgeInsets.symmetric(vertical: 15),
+                child: Text(
+                  "Mahlzeiten",
+                  style: TextStyle(fontSize: 24),
+                ),
               ),
-              Expanded(
-                  child: ValueListenableBuilder(
-                valueListenable: _selectedEvents,
-                builder: (context, value, child) {
-                  return Column(
-                    children: [
-                      Expanded(
-                        child: SingleChildScrollView(
-                          scrollDirection: Axis.horizontal,
-                          child: Row(
-                            children: [
-                              for (var recipe in value)
-                                Stack(
-                                  children: [
-                                    RecipeCard(
-                                        controller: controller, recipe: recipe),
-                                    Positioned(
-                                        right: 5,
-                                        child: IconButton(
-                                          iconSize: 32,
-                                          icon:
-                                              Icon(Icons.remove_circle_outline),
-                                          onPressed: () {
-                                            setState(() {
-                                              // for (var valueRecipe in value) {
-                                              //   if (valueRecipe.id ==
-                                              //       recipe.id) {
-                                              final day = DateTime(
-                                                  _selectedDay!.year,
-                                                  _selectedDay!.month,
-                                                  _selectedDay!.day);
-                                              //     kEventSource[day]
-                                              //         ?.remove(recipe);
-                                              //   }
-                                              // }
-                                              removeValueFromMap(
-                                                  kEventSource, day, recipe);
-                                            });
-                                          },
-                                        )),
-                                  ],
-                                ),
-                              Center(
-                                child: FloatingActionButton.large(
-                                  onPressed: () {
-                                    final userAvatar = loadUserAvatar(
-                                        'a6e4e653-f505-4290-8f3d-3aa328c50acb');
-                                    final recipeAvatar = loadRecipeAvatar(5);
-                                    setState(() {
-                                      addValueToMap(
-                                          kEventSource,
-                                          DateTime(2023, 4, 16),
-                                          Recipe(
-                                              id: 5,
-                                              name: "name",
-                                              description: "description",
-                                              paws: 20,
-                                              created_at: "created_at",
-                                              modified_at: "modified_at",
-                                              user_id: "user_id",
-                                              user: Profile(
-                                                  id: "id",
-                                                  createdAt: "createdAt",
-                                                  email: "email",
-                                                  name: "name",
-                                                  description: "description",
-                                                  avatar: userAvatar),
-                                              userAvatar: userAvatar,
-                                              avatar: recipeAvatar));
-
-                                      // kEvents = LinkedHashMap<DateTime, List>(
-                                      //   equals: isSameDay,
-                                      //   hashCode: getHashCode,
-                                      // )..addAll(kEventSource);
-                                    });
-                                  },
-                                  child: Icon(Icons.add),
-                                ),
-                              )
-
-                              // ListTile(
-                              //     title: GestureDetector(
-                              //   onTap: () {
-                              //     for (var map
-                              //         in controller.userLikedRecipeXrefDB) {
-                              //       if (map?.containsKey("recipe") ?? false) {
-                              //         if (map['recipe'] == value[index].id) {
-                              //           Get.to(() => RecipeDetailPage(
-                              //                 recipe: value[index],
-                              //                 favorite: true,
-                              //               ));
-                              //           return;
-                              //         }
-                              //       }
-                              //     }
-                              //     Get.to(() => RecipeDetailPage(
-                              //           recipe: value[index],
-                              //           favorite: false,
-                              //         ));
-                              //     return;
-                              //   },
-                              //   child: Card(
-                              //     child: Container(
-                              //       height: 250,
-                              //       width: 250,
-                              //       child: Padding(
-                              //           padding: EdgeInsets.all(15),
-                              //           child: Column(
-                              //             crossAxisAlignment:
-                              //                 CrossAxisAlignment.start,
-                              //             children: [
-                              //               Text(
-                              //                 value[index].name,
-                              //                 overflow: TextOverflow.ellipsis,
-                              //                 style: TextStyle(fontSize: 24),
-                              //               ),
-                              //               Container(
-                              //                 height: 128,
-                              //                 width: 128,
-                              //                 child: value[index].avatar,
-                              //               ),
-                              //               Spacer(),
-                              //               Row(
-                              //                 mainAxisAlignment:
-                              //                     MainAxisAlignment
-                              //                         .spaceBetween,
-                              //                 children: [
-                              //                   TextButton.icon(
-                              //                       onPressed: () {
-                              //                         Get.to(() =>
-                              //                             ScreenProfile(
-                              //                                 profile:
-                              //                                     value[index]
-                              //                                         .user));
-                              //                       },
-                              //                       icon: CircleAvatar(
-                              //                           backgroundColor:
-                              //                               Colors.transparent,
-                              //                           radius: 14,
-                              //                           child: value[index]
-                              //                               .userAvatar),
-                              //                       label: Text(value[index]
-                              //                           .user
-                              //                           .name)),
-                              //                   TextButton.icon(
-                              //                       onPressed: () {},
-                              //                       icon: Image.asset(
-                              //                         'assets/icons/paw.png',
-                              //                         width: 48,
-                              //                       ),
-                              //                       label: Text(
-                              //                         '${value[index].paws}',
-                              //                         style: TextStyle(
-                              //                             fontSize: 21,
-                              //                             fontWeight:
-                              //                                 FontWeight.bold),
-                              //                       ))
-                              //                 ],
-                              //               ),
-                              //             ],
-                              //           )),
-                              //     ),
-                              //   ),
-                              // )),
-                            ],
+              Column(
+                children: [
+                  ValueListenableBuilder(
+                    valueListenable: _selectedEvents,
+                    builder: (context, value, child) {
+                      return Wrap(
+                        children: [
+                          SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Row(
+                              children: [
+                                for (var recipe in value)
+                                  Stack(
+                                    children: [
+                                      RecipeCard(
+                                          controller: controller,
+                                          recipe: recipe),
+                                      Positioned(
+                                          right: 5,
+                                          child: IconButton(
+                                            iconSize: 32,
+                                            icon: Icon(
+                                                Icons.remove_circle_outline),
+                                            onPressed: () {
+                                              setState(() {
+                                                final day = DateTime(
+                                                    _selectedDay!.year,
+                                                    _selectedDay!.month,
+                                                    _selectedDay!.day);
+                                                removeValueFromMap(
+                                                    kEventSource, day, recipe);
+                                              });
+                                            },
+                                          )),
+                                    ],
+                                  ),
+                              ],
+                            ),
                           ),
-                        ),
-                      ),
-                    ],
-                  );
-                },
-              )),
+                        ],
+                      );
+                    },
+                  ),
+                ],
+              ),
             ],
           ),
         ));
