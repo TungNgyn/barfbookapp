@@ -12,6 +12,9 @@ int getHashCode(DateTime key) {
   return key.day * 1000000 + key.month * 10000 + key.year;
 }
 
+var kEvents;
+final kEventSource = <DateTime, List>{};
+
 class Schedule {
   final String user;
   final int recipe;
@@ -19,5 +22,3 @@ class Schedule {
 
   const Schedule(this.user, this.recipe, this.date);
 }
-
-final Controller controller = Get.find();

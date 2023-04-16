@@ -75,14 +75,14 @@ class _ScreenBarfbookState extends State<ScreenBarfbook> {
               floating: true,
               forceElevated: innerBoxIsScrolled,
               bottom: TabBar(labelStyle: TextStyle(fontSize: 12), tabs: [
-                Tab(child: Image.asset("assets/icons/pet.png", width: 48)),
-                Tab(child: Image.asset("assets/icons/recipe.png", width: 32)),
-                Tab(child: Image.asset("assets/icons/favorite.png", width: 32)),
+                Tab(child: Image.asset("assets/icons/pet.png", width: 44)),
+                Tab(child: Image.asset("assets/icons/recipe.png", width: 42)),
+                Tab(child: Image.asset("assets/icons/favorite.png", width: 42)),
               ]),
             ),
           ],
           body: TabBarView(children: [
-            // // Schedule
+            // Pets
             Scaffold(
               floatingActionButtonLocation:
                   FloatingActionButtonLocation.centerFloat,

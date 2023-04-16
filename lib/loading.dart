@@ -492,6 +492,128 @@ initData() async {
       controller.scheduleRecipeList.add(Schedule(
           schedule['user'], schedule['recipe'], DateTime(year, month, day)));
     }
+    kEventSource.clear();
+    try {
+      for (var schedule in controller.scheduleRecipeList) {
+        var recipeAvatar;
+        try {
+          recipeAvatar = CachedNetworkImage(
+            imageUrl:
+                'https://wokqzyqvqztmyzhhuqqh.supabase.co/storage/v1/object/public/recipe/${schedule.recipe}',
+            progressIndicatorBuilder: (context, url, downloadProgress) =>
+                CircularProgressIndicator(value: downloadProgress.progress),
+            errorWidget: (context, url, error) => Icon(Icons.error),
+            imageBuilder: (context, imageProvider) {
+              return Container(
+                decoration: BoxDecoration(
+                  shape: BoxShape.rectangle,
+                  border:
+                      Border.all(color: Theme.of(context).colorScheme.primary),
+                  borderRadius: BorderRadius.circular(20),
+                  image: DecorationImage(
+                    image: imageProvider,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              );
+            },
+          );
+        } catch (error) {
+          recipeAvatar = CachedNetworkImage(
+            imageUrl:
+                'https://wokqzyqvqztmyzhhuqqh.supabase.co/storage/v1/object/public/recipe/defaultRecipeAvatar',
+            progressIndicatorBuilder: (context, url, downloadProgress) =>
+                CircularProgressIndicator(value: downloadProgress.progress),
+            errorWidget: (context, url, error) => Icon(Icons.error),
+            imageBuilder: (context, imageProvider) {
+              return Container(
+                decoration: BoxDecoration(
+                  shape: BoxShape.rectangle,
+                  border:
+                      Border.all(color: Theme.of(context).colorScheme.primary),
+                  borderRadius: BorderRadius.circular(20),
+                  image: DecorationImage(
+                    image: imageProvider,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              );
+            },
+          );
+        }
+        final userAvatar = CachedNetworkImage(
+          imageUrl:
+              'https://wokqzyqvqztmyzhhuqqh.supabase.co/storage/v1/object/public/profile/${schedule.user}',
+          progressIndicatorBuilder: (context, url, downloadProgress) =>
+              CircularProgressIndicator(value: downloadProgress.progress),
+          errorWidget: (context, url, error) => Icon(Icons.error),
+          imageBuilder: (context, imageProvider) {
+            return Container(
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border:
+                    Border.all(color: Theme.of(context).colorScheme.primary),
+                image: DecorationImage(
+                  image: imageProvider,
+                  fit: BoxFit.cover,
+                ),
+              ),
+            );
+          },
+        );
+
+        final recipe = await supabase
+            .from('recipe')
+            .select('*')
+            .eq('id', schedule.recipe)
+            .single();
+        final user = await supabase
+            .from('profile')
+            .select('*')
+            .eq('id', recipe['user_id'])
+            .single();
+        kEventSource[schedule.date] = [
+          Recipe(
+              id: recipe['id'],
+              name: recipe['name'],
+              description: recipe['description'],
+              paws: 0,
+              created_at: recipe['created_at'],
+              modified_at: recipe['modified_at'],
+              user_id: recipe['user_id'],
+              avatar: recipeAvatar,
+              user: Profile(
+                  id: user['id'],
+                  createdAt: user['created_at'],
+                  email: user['email'],
+                  name: user['name'],
+                  description: user['description'],
+                  avatar: userAvatar),
+              userAvatar: userAvatar)
+        ];
+        kEventSource[DateTime(2023, 04, 18)] = [
+          Recipe(
+              id: recipe['id'],
+              name: recipe['name'],
+              description: recipe['description'],
+              paws: 4,
+              created_at: recipe['created_at'],
+              modified_at: recipe['modified_at'],
+              user_id: recipe['user_id'],
+              avatar: recipeAvatar,
+              user: Profile(
+                  id: user['id'],
+                  createdAt: user['created_at'],
+                  email: user['email'],
+                  name: user['name'],
+                  description: user['description'],
+                  avatar: userAvatar),
+              userAvatar: userAvatar)
+        ];
+      }
+    } catch (error) {
+      print(error);
+    }
   } catch (error) {
     print(error);
   }
