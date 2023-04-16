@@ -481,7 +481,7 @@ initData() async {
   //init schedule
   try {
     controller.scheduleRecipeListDB =
-        await supabase.from('schedule').select('*').eq('user', user?.id);
+        await supabase.from('schedule').select('*').eq('user_id', user?.id);
     controller.scheduleRecipeList.clear();
     for (var schedule in controller.scheduleRecipeListDB) {
       List<String> dateParts = schedule['date'].split('-');
@@ -489,8 +489,8 @@ initData() async {
       int month = int.parse(dateParts[1]);
       int day = int.parse(dateParts[2].substring(0, 2));
 
-      controller.scheduleRecipeList.add(Schedule(
-          schedule['user'], schedule['recipe'], DateTime(year, month, day)));
+      controller.scheduleRecipeList.add(Schedule(schedule['id'],
+          schedule['user_id'], schedule['recipe'], DateTime(year, month, day)));
     }
     kEventSource.clear();
     try {
@@ -541,9 +541,19 @@ initData() async {
             },
           );
         }
+        var userTemp = await supabase
+            .from('recipe')
+            .select('user_id')
+            .eq('id', schedule.recipe)
+            .single();
+        userTemp = await supabase
+            .from('profile')
+            .select('*')
+            .eq('id', userTemp['user_id'])
+            .single();
         final userAvatar = CachedNetworkImage(
           imageUrl:
-              'https://wokqzyqvqztmyzhhuqqh.supabase.co/storage/v1/object/public/profile/${schedule.user}',
+              'https://wokqzyqvqztmyzhhuqqh.supabase.co/storage/v1/object/public/profile/${userTemp['id']}',
           progressIndicatorBuilder: (context, url, downloadProgress) =>
               CircularProgressIndicator(value: downloadProgress.progress),
           errorWidget: (context, url, error) => Icon(Icons.error),
@@ -570,7 +580,7 @@ initData() async {
         final user = await supabase
             .from('profile')
             .select('*')
-            .eq('id', recipe['user_id'])
+            .eq('id', userTemp['id'])
             .single();
         kEventSource[schedule.date] = [
           Recipe(
@@ -581,25 +591,7 @@ initData() async {
               created_at: recipe['created_at'],
               modified_at: recipe['modified_at'],
               user_id: recipe['user_id'],
-              avatar: recipeAvatar,
-              user: Profile(
-                  id: user['id'],
-                  createdAt: user['created_at'],
-                  email: user['email'],
-                  name: user['name'],
-                  description: user['description'],
-                  avatar: userAvatar),
-              userAvatar: userAvatar)
-        ];
-        kEventSource[DateTime(2023, 04, 18)] = [
-          Recipe(
-              id: recipe['id'],
-              name: recipe['name'],
-              description: recipe['description'],
-              paws: 4,
-              created_at: recipe['created_at'],
-              modified_at: recipe['modified_at'],
-              user_id: recipe['user_id'],
+              scheduleID: schedule.id,
               avatar: recipeAvatar,
               user: Profile(
                   id: user['id'],

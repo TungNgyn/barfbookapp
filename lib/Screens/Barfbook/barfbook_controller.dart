@@ -45,7 +45,8 @@ class Recipe {
       required this.user_id,
       this.avatar,
       this.user,
-      this.userAvatar});
+      this.userAvatar,
+      this.scheduleID});
 
   final int id;
   final String name;
@@ -57,6 +58,7 @@ class Recipe {
   final Profile? user;
   final avatar;
   final userAvatar;
+  final int? scheduleID;
 }
 
 class CustomFilterChip {

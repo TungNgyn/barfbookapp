@@ -77,42 +77,7 @@ class _ScreenScheduleState extends State<ScreenSchedule> {
                               GestureDetector(
                                 onTap: () {
                                   setState(() {
-                                    final userAvatar =
-                                        loadUserAvatar(recipe.user_id);
-                                    final recipeAvatar =
-                                        loadRecipeAvatar(recipe.id);
-                                    final day = DateTime(_selectedDay!.year,
-                                        _selectedDay!.month, _selectedDay!.day);
-                                    addValueToMap(
-                                        kEventSource,
-                                        day,
-                                        Recipe(
-                                            id: recipe.id,
-                                            name: recipe.name,
-                                            description: recipe.description,
-                                            paws: recipe.paws,
-                                            created_at: recipe.created_at,
-                                            modified_at: recipe.modified_at,
-                                            user_id: recipe.user_id,
-                                            user: Profile(
-                                                id: recipe.user!.id,
-                                                createdAt:
-                                                    recipe.user!.createdAt,
-                                                email: recipe.user!.email,
-                                                name: recipe.user!.name,
-                                                description:
-                                                    recipe.user!.description,
-                                                avatar: userAvatar),
-                                            userAvatar: userAvatar,
-                                            avatar: recipeAvatar));
-
-                                    kEvents = LinkedHashMap<DateTime, List>(
-                                      equals: isSameDay,
-                                      hashCode: getHashCode,
-                                    )..addAll(kEventSource);
-
-                                    _selectedEvents.value =
-                                        _getEventsForDay(_selectedDay!);
+                                    insertSchedule(recipe);
                                   });
                                   Get.back();
                                 },
@@ -332,6 +297,8 @@ class _ScreenScheduleState extends State<ScreenSchedule> {
                                                 removeValueFromMap(
                                                     kEventSource, day, recipe);
                                               });
+                                              print(recipe.scheduleID);
+                                              removeSchedule(recipe.scheduleID);
                                             },
                                           )),
                                     ],
@@ -359,6 +326,59 @@ class _ScreenScheduleState extends State<ScreenSchedule> {
       if (map[key]!.isEmpty) {
         map.remove(key);
       }
+    }
+  }
+
+  void insertSchedule(var recipe) async {
+    try {
+      final scheduleID = await supabase.rpc('insert_schedule', params: {
+        'datevalue': _selectedDay!.toIso8601String(),
+        'uservalue': user!.id,
+        'recipevalue': recipe.id
+      });
+      final userAvatar = loadUserAvatar(recipe.user_id);
+      final recipeAvatar = loadRecipeAvatar(recipe.id);
+      final day =
+          DateTime(_selectedDay!.year, _selectedDay!.month, _selectedDay!.day);
+      print(scheduleID);
+      addValueToMap(
+          kEventSource,
+          day,
+          Recipe(
+              id: recipe.id,
+              name: recipe.name,
+              description: recipe.description,
+              paws: recipe.paws,
+              created_at: recipe.created_at,
+              modified_at: recipe.modified_at,
+              user_id: recipe.user_id,
+              user: Profile(
+                  id: recipe.user!.id,
+                  createdAt: recipe.user!.createdAt,
+                  email: recipe.user!.email,
+                  name: recipe.user!.name,
+                  description: recipe.user!.description,
+                  avatar: userAvatar),
+              userAvatar: userAvatar,
+              avatar: recipeAvatar,
+              scheduleID: scheduleID));
+
+      kEvents = LinkedHashMap<DateTime, List>(
+        equals: isSameDay,
+        hashCode: getHashCode,
+      )..addAll(kEventSource);
+
+      _selectedEvents.value = _getEventsForDay(_selectedDay!);
+    } catch (error) {
+      print(error);
+    }
+  }
+
+  void removeSchedule(var schedule) async {
+    try {
+      await supabase.from('schedule').delete().eq('id', schedule);
+    } catch (error) {
+      print(error);
     }
   }
 }
