@@ -1,12 +1,14 @@
 import 'package:Barfbook/Screens/Barfbook/barfbook_controller.dart';
 import 'package:Barfbook/Screens/Mehr/profile_controller.dart';
 import 'package:Barfbook/Screens/Barfbook/pet_controller.dart';
+import 'package:Barfbook/Screens/schedule/schedule_controller.dart';
 import 'package:Barfbook/controller.dart';
 import 'package:Barfbook/home.dart';
 import 'package:Barfbook/util/Supabase/AuthController.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class ScreenLoading extends StatefulWidget {
@@ -304,15 +306,6 @@ initData() async {
 
         for (var recipe in tempRecipe) {
           var recipeAvatar;
-          // try {
-          //   recipeAvatar = await supabase.storage
-          //       .from('recipe')
-          //       .download('${recipe['id']}');
-          // } catch (error) {
-          //   recipeAvatar = await supabase.storage
-          //       .from('recipe')
-          //       .download('defaultRecipeAvatar');
-          // }
           try {
             recipeAvatar =
                 // await supabase.storage.from('recipe').download('${recipe['id']}');
@@ -338,9 +331,6 @@ initData() async {
               },
             );
           } catch (error) {
-            // recipeAvatar = await supabase.storage
-            //     .from('recipe')
-            //     .download('defaultRecipeAvatar');
             recipeAvatar = CachedNetworkImage(
               imageUrl:
                   'https://wokqzyqvqztmyzhhuqqh.supabase.co/storage/v1/object/public/profile/defaultAvatar',
@@ -363,9 +353,6 @@ initData() async {
               },
             );
           }
-          // final userAvatar = await supabase.storage
-          //     .from('profile')
-          //     .download('${recipe['user_id']}');
           final userAvatar = CachedNetworkImage(
             imageUrl:
                 'https://wokqzyqvqztmyzhhuqqh.supabase.co/storage/v1/object/public/profile/${recipe['user_id']}',
@@ -481,11 +468,29 @@ initData() async {
           owner: pet['owner'],
           name: pet['name'],
           breed: pet['breed'],
-          age: pet['age'].toDouble(),
+          age: pet['age'],
           weight: pet['weight'],
           gender: pet['gender'],
           ration: pet['ration'].toDouble(),
           avatar: avatar));
+    }
+  } catch (error) {
+    print(error);
+  }
+
+  //init schedule
+  try {
+    controller.scheduleRecipeListDB =
+        await supabase.from('schedule').select('*').eq('user', user?.id);
+    controller.scheduleRecipeList.clear();
+    for (var schedule in controller.scheduleRecipeListDB) {
+      List<String> dateParts = schedule['date'].split('-');
+      int year = int.parse(dateParts[0]);
+      int month = int.parse(dateParts[1]);
+      int day = int.parse(dateParts[2].substring(0, 2));
+
+      controller.scheduleRecipeList.add(Schedule(
+          schedule['user'], schedule['recipe'], DateTime(year, month, day)));
     }
   } catch (error) {
     print(error);
