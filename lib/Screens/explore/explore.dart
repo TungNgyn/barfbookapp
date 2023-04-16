@@ -7,6 +7,7 @@ import 'package:Barfbook/controller.dart';
 import 'package:Barfbook/loading.dart';
 import 'package:Barfbook/util/Supabase/AuthController.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:get/get.dart';
 
 class ScreenExplore extends StatefulWidget {
@@ -44,6 +45,13 @@ class _ScreenExploreState extends State<ScreenExplore>
                         ),
                       ],
                     ),
+                    ElevatedButton(
+                        onPressed: () {
+                          setState(() {
+                            DefaultCacheManager().emptyCache();
+                          });
+                        },
+                        child: Text("CLEAR CACHE")),
                     GestureDetector(
                       onTap: () {
                         if (controller.userProfile['user'].name != 'Gast') {
@@ -184,7 +192,7 @@ class RecipeCard extends StatelessWidget {
       child: Card(
         child: Container(
           height: 250,
-          width: 250,
+          width: 400,
           child: Padding(
               padding: EdgeInsets.all(15),
               child: Column(

@@ -1,5 +1,6 @@
 import 'dart:collection';
 
+import 'package:Barfbook/Screens/Barfbook/Barfbook.dart';
 import 'package:Barfbook/Screens/Barfbook/barfbook_controller.dart';
 import 'package:Barfbook/Screens/Mehr/profile.dart';
 import 'package:Barfbook/Screens/Mehr/profile_controller.dart';
@@ -65,8 +66,8 @@ class _ScreenScheduleState extends State<ScreenSchedule> {
             Get.defaultDialog(
                 title: "Rezepte",
                 content: Container(
-                  height: MediaQuery.of(context).size.height * 0.6,
-                  width: MediaQuery.of(context).size.width * 0.8,
+                  height: MediaQuery.of(context).size.height * 0.7,
+                  width: MediaQuery.of(context).size.width * 0.9,
                   child: Column(
                     children: [
                       Obx(() {
@@ -74,74 +75,8 @@ class _ScreenScheduleState extends State<ScreenSchedule> {
                         for (Recipe recipe in controller.userLikedRecipe) {
                           list.add(Stack(
                             children: [
-                              GestureDetector(
-                                onTap: () {
-                                  setState(() {
-                                    insertSchedule(recipe);
-                                  });
-                                  Get.back();
-                                },
-                                child: Card(
-                                  child: Container(
-                                    height: 250,
-                                    width: 250,
-                                    child: Padding(
-                                        padding: EdgeInsets.all(15),
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              recipe.name,
-                                              overflow: TextOverflow.ellipsis,
-                                              style: TextStyle(fontSize: 24),
-                                            ),
-                                            Container(
-                                              height: 128,
-                                              width: 128,
-                                              child: recipe.avatar,
-                                            ),
-                                            Spacer(),
-                                            Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                              children: [
-                                                TextButton.icon(
-                                                    onPressed: () {
-                                                      Get.to(() =>
-                                                          ScreenProfile(
-                                                              profile: recipe
-                                                                  .user!));
-                                                    },
-                                                    icon: CircleAvatar(
-                                                        backgroundColor:
-                                                            Colors.transparent,
-                                                        radius: 14,
-                                                        child:
-                                                            recipe.userAvatar),
-                                                    label: Text(
-                                                        recipe.user!.name)),
-                                                TextButton.icon(
-                                                    onPressed: () {},
-                                                    icon: Image.asset(
-                                                      'assets/icons/paw.png',
-                                                      width: 48,
-                                                    ),
-                                                    label: Text(
-                                                      '${recipe.paws}',
-                                                      style: TextStyle(
-                                                          fontSize: 21,
-                                                          fontWeight:
-                                                              FontWeight.bold),
-                                                    ))
-                                              ],
-                                            ),
-                                          ],
-                                        )),
-                                  ),
-                                ),
-                              ),
+                              RecipeCard(
+                                  controller: controller, recipe: recipe),
                               Positioned(
                                   right: 6,
                                   child: IconButton(
@@ -171,58 +106,8 @@ class _ScreenScheduleState extends State<ScreenSchedule> {
                           ));
                         }
                         for (Recipe recipe in controller.userRecipeList) {
-                          list.add(GestureDetector(
-                            onTap: () {
-                              Get.to(() => RecipeDetailPage(
-                                  recipe: recipe, favorite: true));
-                            },
-                            child: Card(
-                              elevation: 4,
-                              child: Padding(
-                                  padding: EdgeInsets.only(bottom: 15, top: 10),
-                                  child: Row(
-                                    children: [
-                                      Padding(
-                                        padding: EdgeInsets.symmetric(
-                                            horizontal: 10),
-                                        child: Card(
-                                          child: Padding(
-                                            padding: EdgeInsets.all(10),
-                                            child: Container(
-                                              height: 128,
-                                              width: 128,
-                                              child: recipe.avatar,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                      Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            recipe.name,
-                                            style: TextStyle(fontSize: 21),
-                                          ),
-                                          TextButton.icon(
-                                              onPressed: () {},
-                                              icon: Image.asset(
-                                                'assets/icons/paw.png',
-                                                width: 48,
-                                              ),
-                                              label: Text(
-                                                '${recipe.paws}',
-                                                style: TextStyle(
-                                                    fontSize: 21,
-                                                    fontWeight:
-                                                        FontWeight.bold),
-                                              ))
-                                        ],
-                                      )
-                                    ],
-                                  )),
-                            ),
-                          ));
+                          list.add(OwnRecipeCard(
+                              controller: controller, recipe: recipe));
                         }
                         return Column(children: list);
                       }),

@@ -62,6 +62,11 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
                 appBar: AppBar(
                   title: Text(widget.recipe.name),
                   actions: [
+                    IconButton(
+                        onPressed: () {
+                          print(controller.userLikedRecipe);
+                        },
+                        icon: Icon(Icons.access_alarm)),
                     if (widget.recipe.user_id != user!.id)
                       IconButton(
                           onPressed: () {
@@ -483,8 +488,8 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
           .from('profile_liked_recipe')
           .insert({'recipe': widget.recipe.id, 'profile': user?.id});
       widget.favorite = true;
-      initFavorite();
-      updateLikedRecipe();
+      // initFavorite();
+      controller.userLikedRecipe.add(widget.recipe);
       setState(() {});
     } else {
       await supabase
@@ -492,8 +497,8 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
           .delete()
           .match({'recipe': widget.recipe.id, 'profile': user?.id});
       widget.favorite = false;
-      initFavorite();
-      updateLikedRecipe();
+      // initFavorite();
+      controller.userLikedRecipe.remove(widget.recipe);
       setState(() {});
     }
   }

@@ -202,62 +202,9 @@ class _ScreenBarfbookState extends State<ScreenBarfbook> {
                                   List<Widget> list = [];
                                   for (Recipe recipe
                                       in controller.userRecipeList) {
-                                    list.add(GestureDetector(
-                                      onTap: () {
-                                        Get.to(() => RecipeDetailPage(
-                                            recipe: recipe, favorite: true));
-                                      },
-                                      child: Card(
-                                        elevation: 4,
-                                        child: Padding(
-                                            padding: EdgeInsets.only(
-                                                bottom: 15, top: 10),
-                                            child: Row(
-                                              children: [
-                                                Padding(
-                                                  padding: EdgeInsets.symmetric(
-                                                      horizontal: 10),
-                                                  child: Card(
-                                                    child: Padding(
-                                                      padding:
-                                                          EdgeInsets.all(10),
-                                                      child: Container(
-                                                        height: 128,
-                                                        width: 128,
-                                                        child: recipe.avatar,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ),
-                                                Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  children: [
-                                                    Text(
-                                                      recipe.name,
-                                                      style: TextStyle(
-                                                          fontSize: 21),
-                                                    ),
-                                                    TextButton.icon(
-                                                        onPressed: () {},
-                                                        icon: Image.asset(
-                                                          'assets/icons/paw.png',
-                                                          width: 48,
-                                                        ),
-                                                        label: Text(
-                                                          '${recipe.paws}',
-                                                          style: TextStyle(
-                                                              fontSize: 21,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .bold),
-                                                        ))
-                                                  ],
-                                                )
-                                              ],
-                                            )),
-                                      ),
-                                    ));
+                                    list.add(OwnRecipeCard(
+                                        controller: controller,
+                                        recipe: recipe));
                                   }
                                   return Wrap(children: list);
                                 }),
@@ -391,5 +338,80 @@ class _ScreenBarfbookState extends State<ScreenBarfbook> {
             ],
           ),
         ));
+  }
+}
+
+class OwnRecipeCard extends StatelessWidget {
+  const OwnRecipeCard({
+    super.key,
+    required this.controller,
+    required this.recipe,
+  });
+
+  final Controller controller;
+  final Recipe recipe;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        for (var map in controller.userLikedRecipeXrefDB) {
+          if (map?.containsKey("recipe") ?? false) {
+            if (map['recipe'] == recipe.id) {
+              Get.to(() => RecipeDetailPage(
+                    recipe: recipe,
+                    favorite: true,
+                  ));
+              return;
+            }
+          }
+        }
+        Get.to(() => RecipeDetailPage(
+              recipe: recipe,
+              favorite: false,
+            ));
+        return;
+      },
+      child: Card(
+        child: Container(
+          height: 250,
+          width: 400,
+          child: Padding(
+              padding: EdgeInsets.all(15),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    recipe.name,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(fontSize: 24),
+                  ),
+                  Container(
+                    height: 128,
+                    width: 128,
+                    child: recipe.avatar,
+                  ),
+                  Spacer(),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      TextButton.icon(
+                          onPressed: () {},
+                          icon: Image.asset(
+                            'assets/icons/paw.png',
+                            width: 48,
+                          ),
+                          label: Text(
+                            '${recipe.paws}',
+                            style: TextStyle(
+                                fontSize: 21, fontWeight: FontWeight.bold),
+                          ))
+                    ],
+                  ),
+                ],
+              )),
+        ),
+      ),
+    );
   }
 }

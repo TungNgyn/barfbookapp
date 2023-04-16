@@ -53,22 +53,10 @@ class _ScreenPetDetailPageState extends State<ScreenPetDetailPage> {
                             child: Column(
                               children: [
                                 CircleAvatar(
-                                  backgroundColor:
-                                      Theme.of(context).colorScheme.surface,
-                                  radius: 64,
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                        border: Border.all(
-                                            color: Theme.of(context)
-                                                .colorScheme
-                                                .primary),
-                                        shape: BoxShape.circle,
-                                        image: DecorationImage(
-                                            image:
-                                                Image.memory(widget.pet.avatar)
-                                                    .image)),
-                                  ),
-                                ),
+                                    backgroundColor:
+                                        Theme.of(context).colorScheme.surface,
+                                    radius: 64,
+                                    child: widget.pet.avatar),
                                 Padding(
                                   padding: EdgeInsets.only(top: 24),
                                   child: Text(

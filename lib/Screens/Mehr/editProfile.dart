@@ -65,8 +65,7 @@ class _ScreenEditProfileState extends State<ScreenEditProfile> {
         ),
         body: Padding(
           padding: EdgeInsets.symmetric(horizontal: 32),
-          child: ListView(
-            physics: BouncingScrollPhysics(),
+          child: Column(
             children: [
               GestureDetector(
                 onTap: () async {
@@ -75,24 +74,22 @@ class _ScreenEditProfileState extends State<ScreenEditProfile> {
 
                   if (result != null) {
                     try {
-                      // File avatarFile2 = File(result.files.single.path!);
                       avatarFile = result!.files.first;
-                      // PlatformFile file = result.files.first;
                       Uint8List fileBytes = result!.files.first.bytes!;
 
                       final tempDir = await getTemporaryDirectory();
                       file = File('${tempDir.path}/${user?.id}');
 
-                      // await file.writeAsBytes(bytes.buffer.asUint8List(
-                      //     bytes.offsetInBytes, bytes.lengthInBytes));
-
-                      // await supabase.storage.from('profile').update(
-                      //     '${user?.id}', file,
-                      //     fileOptions: const FileOptions(
-                      //         cacheControl: '3600', upsert: false));
-
                       setState(() {
-                        avatar = fileBytes;
+                        avatar = Container(
+                          decoration: BoxDecoration(
+                              border: Border.all(
+                                  color: Theme.of(context).colorScheme.primary),
+                              shape: BoxShape.circle,
+                              image: DecorationImage(
+                                  fit: BoxFit.cover,
+                                  image: Image.memory(fileBytes).image)),
+                        );
                       });
                     } catch (error) {
                       print(error);
@@ -102,7 +99,7 @@ class _ScreenEditProfileState extends State<ScreenEditProfile> {
                 child: CircleAvatar(
                     backgroundColor: Colors.transparent,
                     radius: 64,
-                    child: avatar),
+                    child: Container(child: avatar)),
               ),
               SizedBox(height: 24),
               Column(
