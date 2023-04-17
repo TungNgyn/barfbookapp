@@ -122,11 +122,9 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
                                             maxLines: 8,
                                             decoration: InputDecoration(
                                               border: OutlineInputBorder(
-                                                  borderSide: BorderSide(
-                                                      width: 1,
-                                                      color: Theme.of(context)
-                                                          .colorScheme
-                                                          .primary)),
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          12)),
                                               hintText:
                                                   "Schreib was dir gefällt!",
                                             ),
@@ -543,10 +541,14 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
               int.parse(comment['created_at'].substring(0, 4)),
               int.parse(comment['created_at'].substring(5, 7)),
               int.parse(comment['created_at'].substring(8, 10)));
+          DateTime modifiedTime = DateTime(
+              int.parse(comment['modified_at'].substring(0, 4)),
+              int.parse(comment['modified_at'].substring(5, 7)),
+              int.parse(comment['modified_at'].substring(8, 10)));
           commentList.add(Comment(
               id: comment['id'],
               created_at: createdTime,
-              modified_at: comment['modified_at'].substring(0, 10),
+              modified_at: modifiedTime,
               recipeID: comment['recipe'],
               profileID: comment['profile'],
               comment: comment['comment'],
@@ -963,56 +965,103 @@ class CommentCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(20),
-        side: BorderSide(
-          color: Colors.grey.withOpacity(0.2),
-          width: 1,
+    bool editable = false;
+    TextEditingController _commentController =
+        TextEditingController(text: comment.comment);
+    String _comment = comment.comment;
+    DateTime _modifiedTime = comment.modified_at;
+    return StatefulBuilder(
+      builder: (context, setState) => Card(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+          side: BorderSide(
+            color: Colors.grey.withOpacity(0.2),
+            width: 1,
+          ),
         ),
-      ),
-      child: Container(
-        color: Colors.white,
-        width: MediaQuery.of(context).size.width,
-        height: 200,
-        child: Padding(
-          padding: const EdgeInsets.all(15),
-          child: Column(
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  GestureDetector(
-                    onTap: () {
-                      Get.to(() => ScreenProfile(profile: comment.profile));
-                    },
-                    child: Row(
-                      children: [
-                        CircleAvatar(
-                            backgroundColor: Colors.transparent,
-                            radius: 32,
-                            child: comment.profile.avatar),
-                        Padding(
-                          padding: const EdgeInsets.all(10),
-                          child: Text(
-                            comment.profile.name,
-                            style: TextStyle(fontSize: 18),
+        child: Container(
+          color: Colors.white,
+          width: MediaQuery.of(context).size.width,
+          height: 200,
+          child: Padding(
+            padding: const EdgeInsets.all(10),
+            child: Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        Get.to(() => ScreenProfile(profile: comment.profile));
+                      },
+                      child: Row(
+                        children: [
+                          CircleAvatar(
+                              backgroundColor: Colors.transparent,
+                              radius: 32,
+                              child: comment.profile.avatar),
+                          Padding(
+                            padding: const EdgeInsets.all(10),
+                            child: Text(
+                              comment.profile.name,
+                              style: TextStyle(fontSize: 21),
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
-                  Text(
-                      '${comment.created_at.day}.${comment.created_at.month}.${comment.created_at.year}')
-                ],
-              ),
-              Divider(),
-              Text(comment.comment)
-            ],
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Text(
+                            '${comment.created_at.day}.${comment.created_at.month}.${comment.created_at.year}'),
+                        Text((comment.created_at != comment.modified_at)
+                            ? 'bearbeitet am ${comment.modified_at.day}.${comment.modified_at.month}.${comment.modified_at.year}'
+                            : ''),
+                      ],
+                    )
+                  ],
+                ),
+                Divider(),
+                Expanded(
+                  child: editable
+                      ? TextField(
+                          controller: _commentController,
+                          maxLines: 3,
+                          decoration: InputDecoration(
+                              suffixIcon: IconButton(
+                                  onPressed: () {
+                                    _comment = _commentController.text;
+                                    setState(() => editable = false);
+                                    updateComment(comment.id, _comment);
+                                  },
+                                  icon: Icon(Icons.edit)),
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12))),
+                        )
+                      : GestureDetector(
+                          onTap: () {
+                            if (comment.profile.id == user?.id) {
+                              setState(() => editable = true);
+                            }
+                          },
+                          child: Text(_comment)),
+                )
+              ],
+            ),
           ),
         ),
       ),
     );
+  }
+
+  void updateComment(id, value) async {
+    try {
+      await supabase.rpc('update_recipe_comment',
+          params: {'commentid': id, 'commentvalue': value});
+    } catch (error) {
+      print(error);
+    }
   }
 }
 
@@ -1031,6 +1080,6 @@ class Comment {
   final modified_at;
   final recipeID;
   final profileID;
-  final comment;
+  final String comment;
   final Profile profile;
 }
