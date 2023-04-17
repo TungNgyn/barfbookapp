@@ -1,7 +1,9 @@
 import 'package:Barfbook/Screens/Account/Login.dart';
 import 'package:Barfbook/Screens/Account/SignUp.dart';
 import 'package:Barfbook/Screens/Mehr/AGB.dart';
+import 'package:Barfbook/Screens/Mehr/DataPage.dart';
 import 'package:Barfbook/Screens/Mehr/aboutUsPage.dart';
+import 'package:Barfbook/Screens/Mehr/contactPage.dart';
 import 'package:Barfbook/Screens/Mehr/editProfile.dart';
 import 'package:Barfbook/Screens/Mehr/profile.dart';
 import 'package:Barfbook/controller.dart';
@@ -28,6 +30,8 @@ class _settingsStartState extends State<ScreenSettings>
   bool isPressedDark = false;
   bool isPressedAbout = false;
   bool isPressedAGB = false;
+  bool isPressedData = false;
+  bool isPressedContact = false;
 
   @override
   Widget build(BuildContext context) {
@@ -296,6 +300,100 @@ class _settingsStartState extends State<ScreenSettings>
                                                       .labelMedium!
                                                       .color),
                                             )),
+                                      ),
+                                    ),
+                                  ),
+                                  Divider(
+                                    height: 0,
+                                    thickness: 0.7,
+                                  ),
+                                  GestureDetector(
+                                    onTapDown: (details) {
+                                      setState(() {
+                                        isPressedData = true;
+                                      });
+                                    },
+                                    onTapCancel: () {
+                                      setState(() {
+                                        isPressedData = false;
+                                      });
+                                    },
+                                    onTap: () => {
+                                      Get.to(() => DataPage()),
+                                      setState(() {
+                                        isPressedData = false;
+                                      })
+                                    },
+                                    child: Container(
+                                      color: isPressedData
+                                          ? Colors.transparent.withOpacity(0.1)
+                                          : Colors.transparent,
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Align(
+                                          alignment: Alignment.centerLeft,
+                                          child: Text(
+                                            "Datenschutzerklärung",
+                                            style: TextStyle(
+                                                letterSpacing: 0.5,
+                                                fontSize: 16,
+                                                fontFamily:
+                                                    DefaultTextStyle.of(context)
+                                                        .style
+                                                        .fontFamily,
+                                                color: Theme.of(context)
+                                                    .textTheme
+                                                    .labelMedium!
+                                                    .color),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  Divider(
+                                    height: 0,
+                                    thickness: 0.7,
+                                  ),
+                                  GestureDetector(
+                                    onTapDown: (details) {
+                                      setState(() {
+                                        isPressedContact = true;
+                                      });
+                                    },
+                                    onTapCancel: () {
+                                      setState(() {
+                                        isPressedContact = false;
+                                      });
+                                    },
+                                    onTap: () => {
+                                      Get.to(() => ContactPage()),
+                                      setState(() {
+                                        isPressedContact = false;
+                                      })
+                                    },
+                                    child: Container(
+                                      color: isPressedContact
+                                          ? Colors.transparent.withOpacity(0.1)
+                                          : Colors.transparent,
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Align(
+                                          alignment: Alignment.centerLeft,
+                                          child: Text(
+                                            "Kontaktiere uns",
+                                            style: TextStyle(
+                                                letterSpacing: 0.5,
+                                                fontSize: 16,
+                                                fontFamily:
+                                                    DefaultTextStyle.of(context)
+                                                        .style
+                                                        .fontFamily,
+                                                color: Theme.of(context)
+                                                    .textTheme
+                                                    .labelMedium!
+                                                    .color),
+                                          ),
+                                        ),
                                       ),
                                     ),
                                   ),
