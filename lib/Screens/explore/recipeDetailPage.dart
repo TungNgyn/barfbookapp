@@ -4,6 +4,7 @@ import 'package:Barfbook/Screens/Mehr/profile_controller.dart';
 import 'package:Barfbook/controller.dart';
 import 'package:Barfbook/loading.dart';
 import 'package:Barfbook/util/Supabase/AuthController.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -35,6 +36,7 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
   double carbohydratesSum = 0;
   double mineralsSum = 0;
   double moistureSum = 0;
+  List commentList = [];
 
   late List recipeIngredients = [];
   final Controller controller = Get.find();
@@ -134,9 +136,8 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
                                               onPressed: () {},
                                               child: Text("Kommentieren")),
                                           SizedBox(height: 20),
-                                          Obx(() => ListView(
-                                                children: [Text("data")],
-                                              ))
+                                          for (Comment comment in commentList)
+                                            CommentCard(comment: comment),
                                         ],
                                       ),
                                     ),
@@ -503,6 +504,68 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
     }
   }
 
+  loadComments() async {
+    try {
+      final commentListDB = await supabase
+          .from('recipe_comment')
+          .select('*')
+          .eq('recipe', widget.recipe.id)
+          .order('created_at');
+      commentList.clear();
+      for (var comment in commentListDB) {
+        try {
+          final userAvatar = CachedNetworkImage(
+            imageUrl:
+                'https://wokqzyqvqztmyzhhuqqh.supabase.co/storage/v1/object/public/profile/${comment['profile']}',
+            progressIndicatorBuilder: (context, url, downloadProgress) =>
+                CircularProgressIndicator(value: downloadProgress.progress),
+            errorWidget: (context, url, error) => Icon(Icons.error),
+            imageBuilder: (context, imageProvider) {
+              return Container(
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border:
+                      Border.all(color: Theme.of(context).colorScheme.primary),
+                  image: DecorationImage(
+                    image: imageProvider,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              );
+            },
+          );
+          final profile = await supabase
+              .from('profile')
+              .select('*')
+              .eq('id', comment['profile'])
+              .single();
+          DateTime createdTime = DateTime(
+              int.parse(comment['created_at'].substring(0, 4)),
+              int.parse(comment['created_at'].substring(5, 7)),
+              int.parse(comment['created_at'].substring(8, 10)));
+          commentList.add(Comment(
+              id: comment['id'],
+              created_at: createdTime,
+              modified_at: comment['modified_at'].substring(0, 10),
+              recipeID: comment['recipe'],
+              profileID: comment['profile'],
+              comment: comment['comment'],
+              profile: Profile(
+                  id: profile['id'],
+                  createdAt: profile['created_at'],
+                  email: profile['email'],
+                  name: profile['name'],
+                  description: profile['description'],
+                  avatar: userAvatar)));
+        } catch (error) {
+          print(error);
+        }
+      }
+    } catch (error) {
+      print(error);
+    }
+  }
+
   loadData() async {
     // load ingredient
     recipeIngredients.clear();
@@ -563,6 +626,7 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
           weightSum += gram;
         }
       }
+      loadComments();
     } catch (error) {
       print(error);
     }
@@ -888,4 +952,85 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
       ],
     );
   }
+}
+
+class CommentCard extends StatelessWidget {
+  final Comment comment;
+  const CommentCard({
+    required this.comment,
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(20),
+        side: BorderSide(
+          color: Colors.grey.withOpacity(0.2),
+          width: 1,
+        ),
+      ),
+      child: Container(
+        color: Colors.white,
+        width: MediaQuery.of(context).size.width,
+        height: 200,
+        child: Padding(
+          padding: const EdgeInsets.all(15),
+          child: Column(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  GestureDetector(
+                    onTap: () {
+                      Get.to(() => ScreenProfile(profile: comment.profile));
+                    },
+                    child: Row(
+                      children: [
+                        CircleAvatar(
+                            backgroundColor: Colors.transparent,
+                            radius: 32,
+                            child: comment.profile.avatar),
+                        Padding(
+                          padding: const EdgeInsets.all(10),
+                          child: Text(
+                            comment.profile.name,
+                            style: TextStyle(fontSize: 18),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Text(
+                      '${comment.created_at.day}.${comment.created_at.month}.${comment.created_at.year}')
+                ],
+              ),
+              Divider(),
+              Text(comment.comment)
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class Comment {
+  const Comment(
+      {required this.id,
+      required this.created_at,
+      required this.modified_at,
+      required this.recipeID,
+      required this.profileID,
+      required this.comment,
+      required this.profile});
+
+  final id;
+  final created_at;
+  final modified_at;
+  final recipeID;
+  final profileID;
+  final comment;
+  final Profile profile;
 }
