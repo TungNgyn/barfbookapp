@@ -45,13 +45,6 @@ class _ScreenExploreState extends State<ScreenExplore>
                         ),
                       ],
                     ),
-                    ElevatedButton(
-                        onPressed: () {
-                          setState(() {
-                            DefaultCacheManager().emptyCache();
-                          });
-                        },
-                        child: Text("CLEAR CACHE")),
                     GestureDetector(
                       onTap: () {
                         if (controller.userProfile['user'].name != 'Gast') {

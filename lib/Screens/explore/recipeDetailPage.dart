@@ -1,4 +1,5 @@
 import 'package:Barfbook/Screens/Barfbook/barfbook_controller.dart';
+import 'package:Barfbook/Screens/Barfbook/editRecipe.dart';
 import 'package:Barfbook/Screens/Mehr/profile.dart';
 import 'package:Barfbook/Screens/Mehr/profile_controller.dart';
 import 'package:Barfbook/controller.dart';
@@ -63,21 +64,22 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
                 appBar: AppBar(
                   title: Text(widget.recipe.name),
                   actions: [
-                    IconButton(
-                        onPressed: () {
-                          print(controller.userLikedRecipe);
-                        },
-                        icon: Icon(Icons.access_alarm)),
-                    if (widget.recipe.user_id != user!.id)
-                      IconButton(
-                          onPressed: () {
-                            setState(() {
-                              toggleFavorite();
-                            });
-                          },
-                          icon: (widget.favorite == true
-                              ? Icon(Icons.favorite)
-                              : Icon(Icons.favorite_border))),
+                    widget.recipe.user_id != user!.id
+                        ? IconButton(
+                            onPressed: () {
+                              setState(() {
+                                toggleFavorite();
+                              });
+                            },
+                            icon: (widget.favorite == true
+                                ? Icon(Icons.favorite)
+                                : Icon(Icons.favorite_border)))
+                        : IconButton(
+                            onPressed: () {
+                              Get.to(() =>
+                                  ScreenEditRecipe(recipe: widget.recipe));
+                            },
+                            icon: (Icon(Icons.edit))),
                     IconButton(
                         onPressed: () {
                           Get.defaultDialog(

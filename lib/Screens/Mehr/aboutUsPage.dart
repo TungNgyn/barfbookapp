@@ -11,12 +11,6 @@ class AboutUsPage extends StatelessWidget {
         padding: EdgeInsets.symmetric(horizontal: 15),
         child: ListView(
           children: [
-            Align(
-                alignment: Alignment.topCenter,
-                child: Text(
-                  "Willkommen bei Barfbook!",
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                )),
             Padding(
               padding: EdgeInsets.only(top: 10),
               child: Text(
