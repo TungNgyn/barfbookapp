@@ -36,7 +36,6 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
   double carbohydratesSum = 0;
   double mineralsSum = 0;
   double moistureSum = 0;
-  List commentList = [];
 
   late List recipeIngredients = [];
   final Controller controller = Get.find();
@@ -96,6 +95,8 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
                         icon: Icon(Icons.info)),
                     IconButton(
                         onPressed: () {
+                          TextEditingController _commentController =
+                              TextEditingController();
                           Get.bottomSheet(
                               isScrollControlled: true,
                               Container(
@@ -119,6 +120,7 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
                                           ),
                                           SizedBox(height: 35),
                                           TextField(
+                                            controller: _commentController,
                                             maxLines: 8,
                                             decoration: InputDecoration(
                                               border: OutlineInputBorder(
@@ -131,11 +133,67 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
                                           ),
                                           SizedBox(height: 5),
                                           ElevatedButton(
-                                              onPressed: () {},
+                                              onPressed: () {
+                                                setState(() {
+                                                  controller.commentList.add(Comment(
+                                                      created_at: DateTime(
+                                                          DateTime.now().year,
+                                                          DateTime.now().month,
+                                                          DateTime.now().day),
+                                                      modified_at: DateTime(
+                                                          DateTime.now().year,
+                                                          DateTime.now().month,
+                                                          DateTime.now().day),
+                                                      recipeID:
+                                                          widget.recipe.id,
+                                                      profileID: user?.id,
+                                                      comment:
+                                                          _commentController
+                                                              .text,
+                                                      profile: Profile(
+                                                          id: controller
+                                                              .userProfile[
+                                                                  'user']
+                                                              .id,
+                                                          createdAt: controller
+                                                              .userProfile[
+                                                                  'user']
+                                                              .createdAt,
+                                                          email: controller
+                                                              .userProfile[
+                                                                  'user']
+                                                              .email,
+                                                          name: controller
+                                                              .userProfile['user']
+                                                              .name,
+                                                          description: controller.userProfile['user'].description,
+                                                          avatar: controller.userProfile['user'].avatar)));
+                                                  insertComment(
+                                                      widget.recipe.id,
+                                                      _commentController.text);
+                                                });
+                                              },
                                               child: Text("Kommentieren")),
                                           SizedBox(height: 20),
-                                          for (Comment comment in commentList)
-                                            CommentCard(comment: comment),
+                                          Obx(() {
+                                            List<Widget> list = [];
+                                            if (controller
+                                                .commentList.isEmpty) {
+                                              list.add(
+                                                  Text("Keine Kommentare"));
+                                            }
+
+                                            for (Comment comment
+                                                in controller.commentList) {
+                                              list.insert(
+                                                  0,
+                                                  CommentCard(
+                                                      comment: comment));
+                                            }
+                                            return Column(
+                                              children: list,
+                                            );
+                                          })
                                         ],
                                       ),
                                     ),
@@ -508,8 +566,8 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
           .from('recipe_comment')
           .select('*')
           .eq('recipe', widget.recipe.id)
-          .order('created_at');
-      commentList.clear();
+          .order('created_at', ascending: true);
+      controller.commentList.clear();
       for (var comment in commentListDB) {
         try {
           final userAvatar = CachedNetworkImage(
@@ -545,7 +603,7 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
               int.parse(comment['modified_at'].substring(0, 4)),
               int.parse(comment['modified_at'].substring(5, 7)),
               int.parse(comment['modified_at'].substring(8, 10)));
-          commentList.add(Comment(
+          controller.commentList.add(Comment(
               id: comment['id'],
               created_at: createdTime,
               modified_at: modifiedTime,
@@ -1065,9 +1123,21 @@ class CommentCard extends StatelessWidget {
   }
 }
 
+void insertComment(recipe, comment) async {
+  try {
+    await supabase.rpc('insert_comment', params: {
+      'recipevalue': recipe,
+      'profilevalue': user?.id,
+      'commentvalue': comment
+    });
+  } catch (error) {
+    print(error);
+  }
+}
+
 class Comment {
   const Comment(
-      {required this.id,
+      {this.id,
       required this.created_at,
       required this.modified_at,
       required this.recipeID,
