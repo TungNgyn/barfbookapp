@@ -311,8 +311,8 @@ class _editRecipeState extends State<ScreenEditRecipe> {
                                                                               .toDouble(),
                                                                           moisture: suggestion['moisture']
                                                                               .toDouble(),
-                                                                          path:
-                                                                              suggestion['path']));
+                                                                          avatar:
+                                                                              suggestion['avatar']));
                                                                       //         Get.back();
                                                                       //         setState(() {});
                                                                       //       },
@@ -505,12 +505,12 @@ class _editRecipeState extends State<ScreenEditRecipe> {
                                                                                 EdgeInsets.only(right: 10),
                                                                             child: Card(
                                                                                 child: Padding(
-                                                                              padding: EdgeInsets.all(10),
-                                                                              child: Image.network(
-                                                                                ingredient.path,
-                                                                                width: 64,
-                                                                              ),
-                                                                            )),
+                                                                                    padding: EdgeInsets.all(10),
+                                                                                    child: Image.asset(
+                                                                                      'assets/icons/ingredient/${ingredient.avatar}.png',
+                                                                                      width: 64,
+                                                                                      height: 64,
+                                                                                    ))),
                                                                           ),
                                                                           Flexible(
                                                                             flex:
@@ -1027,7 +1027,7 @@ class _editRecipeState extends State<ScreenEditRecipe> {
               carbohydrates: ingredient['carbohydrates'].toDouble(),
               minerals: ingredient['minerals'].toDouble(),
               moisture: ingredient['moisture'].toDouble(),
-              path: ingredient['path'],
+              avatar: ingredient['avatar'],
               gram: gram));
           caloriesSum.add(ingredient['calories'].toDouble() / 100 * gram);
           proteinSum.add(ingredient['protein'].toDouble() / 100 * gram);

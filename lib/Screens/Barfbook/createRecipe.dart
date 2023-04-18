@@ -41,7 +41,7 @@ class _newRecipeState extends State<ScreenCreateRecipe> {
     CustomFilterChip("Geflügel", false),
     CustomFilterChip("Lamm", false),
     CustomFilterChip("Pferd", false),
-    CustomFilterChip("Vegetarisch", false),
+    CustomFilterChip("Vegan", false),
   ];
 
   int touchedIndex = -1;
@@ -214,8 +214,13 @@ class _newRecipeState extends State<ScreenCreateRecipe> {
                                                                 ? [
                                                                     'Rind',
                                                                     'Lamm',
-                                                                    'Vegetarisch',
-                                                                    'Geflügel',
+                                                                    'Vegan',
+                                                                    'Huhn',
+                                                                    'Ente',
+                                                                    'Pute',
+                                                                    'Strauß',
+                                                                    'Gans',
+                                                                    'Truthahn',
                                                                     'Pferd',
                                                                   ]
                                                                 : typeFilter);
@@ -243,45 +248,6 @@ class _newRecipeState extends State<ScreenCreateRecipe> {
                                                   onSuggestionSelected:
                                                       (suggestion) {
                                                     suggestion as Map;
-                                                    // Get.bottomSheet(
-                                                    //   Container(
-                                                    //     decoration: BoxDecoration(
-                                                    //         color: Theme.of(context)
-                                                    //             .colorScheme
-                                                    //             .onPrimary,
-                                                    //         borderRadius:
-                                                    //             BorderRadius.only(
-                                                    //                 topLeft: Radius
-                                                    //                     .circular(
-                                                    //                         25),
-                                                    //                 topRight: Radius
-                                                    //                     .circular(
-                                                    //                         25))),
-                                                    //     child: Padding(
-                                                    //       padding:
-                                                    //           EdgeInsets.all(10),
-                                                    //       child: Column(
-                                                    //         children: [
-                                                    //           Text(
-                                                    //             "${(suggestion)['name']}",
-                                                    //             style: TextStyle(
-                                                    //                 fontSize: 28),
-                                                    //           ),
-                                                    //           SizedBox(height: 30),
-                                                    // TextField(
-                                                    //   controller:
-                                                    //       _recipeGramController,
-                                                    //   keyboardType:
-                                                    //       TextInputType
-                                                    //           .number,
-                                                    //   decoration: InputDecoration(
-                                                    //       border:
-                                                    //           OutlineInputBorder(),
-                                                    //       labelText:
-                                                    //           "Gewicht in Gramm"),
-                                                    // ),
-                                                    //           ElevatedButton(
-                                                    //               onPressed: () {
                                                     recipeIngredient.add(Ingredient(
                                                         id: suggestion['id'],
                                                         name:
@@ -307,18 +273,8 @@ class _newRecipeState extends State<ScreenCreateRecipe> {
                                                         moisture: suggestion[
                                                                 'moisture']
                                                             .toDouble(),
-                                                        path: suggestion[
-                                                            'path']));
-                                                    //         Get.back();
-                                                    //         setState(() {});
-                                                    //       },
-                                                    //       child: Text(
-                                                    //           "Hinzufügen"))
-                                                    // ],
-                                                    // ),
-                                                    // ),
-                                                    // ),
-                                                    // );
+                                                        avatar: suggestion[
+                                                            'avatar']));
                                                   },
                                                   noItemsFoundBuilder:
                                                       (BuildContext context) {
@@ -463,19 +419,15 @@ class _newRecipeState extends State<ScreenCreateRecipe> {
                                                                       right:
                                                                           10),
                                                               child: Card(
-                                                                  child:
-                                                                      Padding(
-                                                                padding:
-                                                                    EdgeInsets
-                                                                        .all(
-                                                                            10),
-                                                                child: Image
-                                                                    .network(
-                                                                  ingredient
-                                                                      .path,
-                                                                  width: 64,
-                                                                ),
-                                                              )),
+                                                                  child: Padding(
+                                                                      padding: EdgeInsets.all(10),
+                                                                      child: Image.asset(
+                                                                        'assets/icons/ingredient/${ingredient.avatar}.png',
+                                                                        width:
+                                                                            64,
+                                                                        height:
+                                                                            64,
+                                                                      ))),
                                                             ),
                                                             Flexible(
                                                               flex: 7,
@@ -838,7 +790,7 @@ class _newRecipeState extends State<ScreenCreateRecipe> {
                             children: [
                               _indicator(
                                   Colors.green,
-                                  "Vegetarisch",
+                                  "Vegan",
                                   vegSum.fold<double>(0, (p, c) => p + c) +
                                       fruitSum.fold<double>(
                                           0, (p, c) => p + c)),

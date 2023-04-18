@@ -654,7 +654,7 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
               carbohydrates: ingredient['carbohydrates'].toDouble(),
               minerals: ingredient['minerals'].toDouble(),
               moisture: ingredient['moisture'].toDouble(),
-              path: ingredient['path'],
+              avatar: ingredient['avatar'],
               gram: gram));
           caloriesSum += (ingredient['calories'].toDouble() / 100 * gram);
           proteinSum += (ingredient['protein'].toDouble() / 100 * gram);

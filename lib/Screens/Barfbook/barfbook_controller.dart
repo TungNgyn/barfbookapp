@@ -17,7 +17,7 @@ class Ingredient {
       required this.carbohydrates,
       required this.minerals,
       required this.moisture,
-      required this.path,
+      required this.avatar,
       this.gram = 0});
 
   final int id;
@@ -30,7 +30,7 @@ class Ingredient {
   final double carbohydrates;
   final double minerals;
   final double moisture;
-  final String path;
+  final avatar;
   double gram;
 }
 
