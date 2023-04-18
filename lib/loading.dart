@@ -98,9 +98,7 @@ initData() async {
     for (var recipe in controller.databaseRecipeList) {
       var recipeAvatar;
       try {
-        recipeAvatar =
-            // await supabase.storage.from('recipe').download('${recipe['id']}');
-            CachedNetworkImage(
+        recipeAvatar = CachedNetworkImage(
           imageUrl:
               'https://wokqzyqvqztmyzhhuqqh.supabase.co/storage/v1/object/public/recipe/${recipe['id']}',
           progressIndicatorBuilder: (context, url, downloadProgress) =>

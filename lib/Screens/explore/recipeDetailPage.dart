@@ -21,7 +21,6 @@ class RecipeDetailPage extends StatefulWidget {
 }
 
 class _RecipeDetailPageState extends State<RecipeDetailPage> {
-  late Profile profile;
   Future? _future;
   int touchedIndex = -1;
   double vegSum = 0;
@@ -87,12 +86,12 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
                               textConfirm: "Profil ansehen",
                               confirm: ElevatedButton(
                                   onPressed: () {
-                                    Get.to(
-                                        () => ScreenProfile(profile: profile));
+                                    Get.to(() => ScreenProfile(
+                                        profile: widget.recipe.user!));
                                   },
                                   child: Text("Profil anzeigen")),
                               middleText:
-                                  "Erstellt am ${widget.recipe.created_at} \nZuletzt bearbeitet am ${widget.recipe.modified_at}\nvon ${widget.recipe.user}");
+                                  "Erstellt am ${widget.recipe.created_at} \nZuletzt bearbeitet am ${widget.recipe.modified_at}\nvon ${widget.recipe.user!.name}");
                         },
                         icon: Icon(Icons.info)),
                     IconButton(
@@ -689,23 +688,6 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
         }
       }
       loadComments();
-    } catch (error) {
-      print(error);
-    }
-
-    //load profile
-    try {
-      final profileDB = await supabase
-          .from('profile')
-          .select('*')
-          .eq('id', widget.recipe.user_id);
-      profile = Profile(
-          id: profileDB[0]['id'],
-          createdAt: profileDB[0]['created_at'],
-          email: profileDB[0]['email'],
-          name: profileDB[0]['name'],
-          description: profileDB[0]['description'],
-          avatar: 0);
     } catch (error) {
       print(error);
     }

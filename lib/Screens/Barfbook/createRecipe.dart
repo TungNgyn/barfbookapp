@@ -202,7 +202,8 @@ class _newRecipeState extends State<ScreenCreateRecipe> {
                                                                 ? [
                                                                     'Muskelfleisch',
                                                                     'Pansen',
-                                                                    'Knochen',
+                                                                    'Magen'
+                                                                        'Knochen',
                                                                     'Innereien',
                                                                     'Gemüse',
                                                                     'Obst'
@@ -568,6 +569,7 @@ class _newRecipeState extends State<ScreenCreateRecipe> {
                                                                               meatSum.remove(ingredient.gram);
                                                                               break;
                                                                             case 'Pansen':
+                                                                            case 'Magen':
                                                                               rumenSum.remove(ingredient.gram);
                                                                               break;
                                                                             case 'Knochen':
@@ -616,6 +618,7 @@ class _newRecipeState extends State<ScreenCreateRecipe> {
                                                                               meatSum.add(double.parse(_recipeGramController.value.text));
                                                                               break;
                                                                             case 'Pansen':
+                                                                            case 'Magen':
                                                                               rumenSum.add(double.parse(_recipeGramController.value.text));
                                                                               break;
                                                                             case 'Knochen':
@@ -749,6 +752,7 @@ class _newRecipeState extends State<ScreenCreateRecipe> {
                             meatSum.remove(ingredient.gram);
                             break;
                           case 'Pansen':
+                          case 'Magen':
                             rumenSum.remove(ingredient.gram);
                             break;
                           case 'Knochen':

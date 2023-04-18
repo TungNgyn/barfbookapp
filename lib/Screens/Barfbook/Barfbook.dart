@@ -86,7 +86,7 @@ class _ScreenBarfbookState extends State<ScreenBarfbook> {
             Scaffold(
               floatingActionButtonLocation:
                   FloatingActionButtonLocation.centerFloat,
-              floatingActionButton: FloatingActionButton.large(
+              floatingActionButton: FloatingActionButton(
                 onPressed: () {
                   controller.userProfile['user'].name == 'Gast'
                       ? Get.snackbar("Registrierung",
@@ -114,53 +114,7 @@ class _ScreenBarfbookState extends State<ScreenBarfbook> {
                               Obx(() {
                                 List<Widget> list = [];
                                 for (Pet pet in controller.userPetList) {
-                                  list.add(
-                                      //   SizedBox(
-                                      //   height: 40,
-                                      //   child:
-                                      //   ElevatedButton.icon(
-                                      //       onPressed: () {
-                                      // Get.to(() => ScreenPetDetailPage(pet: pet));
-                                      //       },
-                                      //       icon: Image.asset(
-                                      //           "assets/images/recipe/icons/beef.png"),
-                                      //       label: Text(pet.name)),
-                                      // ));
-                                      GestureDetector(
-                                    onTap: () {
-                                      Get.to(
-                                          () => ScreenPetDetailPage(pet: pet));
-                                    },
-                                    child: Card(
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(15),
-                                        child: Column(
-                                          children: [
-                                            CircleAvatar(
-                                                backgroundColor:
-                                                    Theme.of(context)
-                                                        .colorScheme
-                                                        .surface,
-                                                radius: 64,
-                                                child: pet.avatar),
-                                            Text(
-                                              pet.name,
-                                              style: TextStyle(
-                                                  fontSize: 21,
-                                                  fontWeight: FontWeight.bold),
-                                            ),
-                                            Text('${pet.age} Jahre'),
-                                            Text('${pet.breed}'),
-                                            Text(
-                                                '${(pet.weight / 1000).toStringAsFixed(1)}kg'),
-                                            Text(
-                                                '${pet.ration}% tägliche Ration'),
-                                            Text('${pet.gender}')
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  ));
+                                  list.add(PetCard(pet: pet));
                                 }
                                 return Wrap(children: list);
                               }),
@@ -172,7 +126,7 @@ class _ScreenBarfbookState extends State<ScreenBarfbook> {
             Scaffold(
                 floatingActionButtonLocation:
                     FloatingActionButtonLocation.centerFloat,
-                floatingActionButton: FloatingActionButton.large(
+                floatingActionButton: FloatingActionButton(
                   onPressed: () {
                     controller.userProfile['user'].name == 'Gast'
                         ? Get.snackbar("Registrierung",
@@ -217,7 +171,7 @@ class _ScreenBarfbookState extends State<ScreenBarfbook> {
             Scaffold(
                 floatingActionButtonLocation:
                     FloatingActionButtonLocation.centerFloat,
-                floatingActionButton: FloatingActionButton.large(
+                floatingActionButton: FloatingActionButton(
                   onPressed: () {
                     Get.offAll(() => Home());
                   },
@@ -338,6 +292,46 @@ class _ScreenBarfbookState extends State<ScreenBarfbook> {
             ],
           ),
         ));
+  }
+}
+
+class PetCard extends StatelessWidget {
+  const PetCard({
+    super.key,
+    required this.pet,
+  });
+
+  final Pet pet;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        Get.to(() => ScreenPetDetailPage(pet: pet));
+      },
+      child: Card(
+        child: Padding(
+          padding: const EdgeInsets.all(15),
+          child: Column(
+            children: [
+              CircleAvatar(
+                  backgroundColor: Theme.of(context).colorScheme.surface,
+                  radius: 64,
+                  child: pet.avatar),
+              Text(
+                pet.name,
+                style: TextStyle(fontSize: 21, fontWeight: FontWeight.bold),
+              ),
+              Text('${pet.age} Jahre'),
+              Text('${pet.breed}'),
+              Text('${(pet.weight / 1000).toStringAsFixed(1)}kg'),
+              Text('${pet.ration}% tägliche Ration'),
+              Text('${pet.gender}')
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }
 

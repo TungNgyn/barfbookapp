@@ -11,7 +11,7 @@ class ThankPage extends StatelessWidget {
             children: [
               Text('An dieser Stelle möchte ich meinen Dank aussprechen.'),
               Text(
-                  "\nIch bedanke mich bei Nikita Golubev aus flaticon.com für die bereitgestellten Grafiken."),
+                  "\nIch bedanke mich bei Nikita Golubev und Freepik aus flaticon.com für die bereitgestellten Grafiken und Icons."),
               Text.rich(
                   TextSpan(text: '\nEin besonderer Dank geht an ', children: [
                 TextSpan(
@@ -23,16 +23,16 @@ class ThankPage extends StatelessWidget {
                     style: TextStyle(fontWeight: FontWeight.bold)),
                 TextSpan(
                     text:
-                        ', die mich bei der Entwicklung von Barfbook tatkräftig unterstützt und an das Thema Barf herangeführt haben. Ohne sie wäre die Idee gar nicht erst entstanden.'),
+                        ', die mich bei der Entwicklung von Barfbook tatkräftig unterstützt und an das Thema Barf herangeführt haben. Ohne sie wäre das Projekt gar nicht erst entstanden.'),
               ])),
               Text(
-                  '\nZuletzt möchten wir uns bei allen bedanken, die dazu beigetragen haben, dass Barfbook zu dem geworden ist, was es heute ist.'),
+                  '\nZuletzt möchte ich mich bei allen bedanken, die dazu beigetragen haben, dass Barfbook zu dem geworden ist, was es heute ist.'),
               Text(
-                '\nVielen Dank, dass ihr uns auf dieser Reise begleitet!',
+                '\nVielen Dank, dass ihr mich auf dieser Reise begleitet!',
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
               Text(
-                  '\nWir sind stolz darauf, Teil einer Gemeinschaft zu sein, die sich für die artgerechte und gesunde Ernährung von Hunden einsetzt. Wir sind bestrebt, weiterhin eine nützliche Ressource für Hundebesitzer bereitzustellen und freuen uns darauf, euch auf dieser Reise begleiten zu dürfen.'),
+                  '\nIch bin stolz darauf, Teil einer Gemeinschaft zu sein, die sich für die artgerechte und gesunde Ernährung von Hunden einsetzt. Ich bin bestrebt, weiterhin eine nützliche Ressource für Hundebesitzer bereitzustellen und freue mich darauf, euch auf dieser Reise begleiten zu dürfen.'),
             ],
           ),
         ));

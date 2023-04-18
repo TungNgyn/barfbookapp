@@ -61,7 +61,7 @@ class _ScreenScheduleState extends State<ScreenSchedule> {
   Widget build(BuildContext context) {
     return Scaffold(
         floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-        floatingActionButton: FloatingActionButton.large(
+        floatingActionButton: FloatingActionButton(
           onPressed: () {
             Get.defaultDialog(
                 title: "Rezepte",

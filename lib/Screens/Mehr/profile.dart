@@ -1,13 +1,16 @@
+import 'package:Barfbook/Screens/Barfbook/Barfbook.dart';
 import 'package:Barfbook/Screens/Barfbook/barfbook_controller.dart';
 import 'package:Barfbook/Screens/Mehr/editProfile.dart';
 import 'package:Barfbook/Screens/Mehr/profile_controller.dart';
 import 'package:Barfbook/Screens/Barfbook/pet_controller.dart';
+import 'package:Barfbook/Screens/explore/explore.dart';
 import 'package:Barfbook/controller.dart';
 import 'package:Barfbook/loading.dart';
 import 'package:Barfbook/util/Supabase/AuthController.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class ScreenProfile extends StatefulWidget {
   ScreenProfile({required this.profile});
@@ -161,35 +164,24 @@ class _ScreenProfileState extends State<ScreenProfile>
                             ),
                             (petList.isEmpty)
                                 ? Text("Noch keine Haustiere hinzugefügt.")
-                                : Column(
+                                : Wrap(
                                     children: [
-                                      for (var pet in petList)
-                                        CircleAvatar(
-                                            backgroundColor: Theme.of(context)
-                                                .colorScheme
-                                                .surface,
-                                            radius: 64,
-                                            child: pet.avatar),
+                                      for (var pet in petList) PetCard(pet: pet)
                                     ],
                                   ),
                             (recipeList.isEmpty)
                                 ? Text("Noch keine Rezepte erstellt.")
-                                : Column(
+                                : Wrap(
                                     children: [
                                       for (var recipe in recipeList)
-                                        Text('${recipe.name}')
+                                        RecipeCard(
+                                            controller: controller,
+                                            recipe: recipe)
                                     ],
                                   ),
                           ],
                         ),
                       ),
-                      SafeArea(
-                        child: ElevatedButton(
-                            onPressed: () {
-                              print(petList);
-                            },
-                            child: Text("Pet")),
-                      )
                     ],
                   ),
                 ),
@@ -204,14 +196,71 @@ class _ScreenProfileState extends State<ScreenProfile>
           .select('*')
           .eq('user_id', widget.profile.id);
       for (var recipe in recipeDB) {
+        List userdata = await supabase
+            .from('profile')
+            .select("*")
+            .match({'id': recipe['user_id']});
+        final userAvatar = CachedNetworkImage(
+          imageUrl:
+              'https://wokqzyqvqztmyzhhuqqh.supabase.co/storage/v1/object/public/profile/${recipe['user_id']}',
+          progressIndicatorBuilder: (context, url, downloadProgress) =>
+              CircularProgressIndicator(value: downloadProgress.progress),
+          errorWidget: (context, url, error) => Icon(Icons.error),
+          imageBuilder: (context, imageProvider) {
+            return Container(
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border:
+                    Border.all(color: Theme.of(context).colorScheme.primary),
+                image: DecorationImage(
+                  image: imageProvider,
+                  fit: BoxFit.cover,
+                ),
+              ),
+            );
+          },
+        );
+        final paws = await supabase
+            .from('profile_liked_recipe')
+            .select('*', FetchOptions(count: CountOption.exact))
+            .eq('recipe', recipe['id']);
         recipeList.add(Recipe(
             id: recipe['id'],
             name: recipe['name'],
             description: recipe['description'],
-            paws: 0,
+            paws: paws.count,
             created_at: recipe['created_at'],
             modified_at: recipe['modified_at'],
-            user_id: recipe['user_id']));
+            user_id: recipe['user_id'],
+            avatar: CachedNetworkImage(
+              imageUrl:
+                  'https://wokqzyqvqztmyzhhuqqh.supabase.co/storage/v1/object/public/recipe/${recipe['id']}',
+              progressIndicatorBuilder: (context, url, downloadProgress) =>
+                  CircularProgressIndicator(value: downloadProgress.progress),
+              errorWidget: (context, url, error) => Icon(Icons.error),
+              imageBuilder: (context, imageProvider) {
+                return Container(
+                  decoration: BoxDecoration(
+                    shape: BoxShape.rectangle,
+                    border: Border.all(
+                        color: Theme.of(context).colorScheme.primary),
+                    borderRadius: BorderRadius.circular(20),
+                    image: DecorationImage(
+                      image: imageProvider,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                );
+              },
+            ),
+            user: Profile(
+                id: userdata[0]['id'],
+                createdAt: userdata[0]['created_at'],
+                email: userdata[0]['email'],
+                name: userdata[0]['name'],
+                description: userdata[0]['description'],
+                avatar: userAvatar),
+            userAvatar: userAvatar));
       }
     } catch (error) {
       print(error);
