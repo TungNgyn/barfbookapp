@@ -64,40 +64,39 @@ class _SignUpState extends State<ScreenSignUp> {
           child: Container(
             decoration: BoxDecoration(
                 image: DecorationImage(
-                    image: AssetImage("assets/images/barfbookapp.png"),
+                    image: AssetImage("assets/images/splash/background.png"),
                     fit: BoxFit.fill)),
           ),
         ),
-        Column(
-          children: [
-            Padding(
-              padding:
-                  EdgeInsets.only(top: 100.0, right: 40, left: 40, bottom: 40),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Center(
-                      child: FlutterLogo(
-                    size: _media.height * 0.1,
-                  )),
-                  SizedBox(
-                    height: 30,
+        SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              children: [
+                Center(
+                    child: Image.asset(
+                  'assets/icons/icon.png',
+                  width: MediaQuery.of(context).size.height * 0.1,
+                )),
+                SizedBox(
+                  height: 30,
+                ),
+                Text(
+                  "Willkommen",
+                  style: TextStyle(
+                    letterSpacing: 3,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 35,
                   ),
-                  Text(
-                    "Willkommen",
-                    style: TextStyle(
-                      letterSpacing: 3,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 35,
-                    ),
-                  ),
-                  SizedBox(height: 30),
-                  Text(
-                    'Registrierung',
-                    style: TextStyle(fontWeight: FontWeight.w200, fontSize: 33),
-                  ),
-                  SizedBox(height: 50),
-                  Container(
+                ),
+                Text(
+                  'Registrierung',
+                  style: TextStyle(fontWeight: FontWeight.w200, fontSize: 33),
+                ),
+                SizedBox(height: 40),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Container(
                     height: _media.height / 3.5,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(20),
@@ -110,7 +109,7 @@ class _SignUpState extends State<ScreenSignUp> {
                       ],
                     ),
                     child: Padding(
-                      padding: const EdgeInsets.all(30.0),
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
                       child: Column(
                         children: [
                           inputText("Benutzername", _usernameController, false),
@@ -118,51 +117,50 @@ class _SignUpState extends State<ScreenSignUp> {
                           inputText("Email", _emailController, false),
                           Divider(height: 5, color: Colors.black),
                           inputText("Passwort", _passwordController, true),
+                          Center(
+                              child: ElevatedButton(
+                                  onPressed: () {
+                                    GetUtils.isEmail(email)
+                                        ? password.length >= 8
+                                            ? _signUp().then(
+                                                (value) => _createAvatar())
+                                            : Get.snackbar(
+                                                "Etwas ist schief gelaufen",
+                                                "Dein Passwort ist zu kurz!")
+                                        : Get.snackbar(
+                                            "Etwas ist schief gelaufen",
+                                            "Deine Email hat ein falsches Format!");
+                                  },
+                                  child: Text("Registrieren"))),
                         ],
                       ),
                     ),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 20.0),
-                    child: Center(
-                        child: ElevatedButton(
-                            onPressed: () {
-                              GetUtils.isEmail(email)
-                                  ? password.length >= 8
-                                      ? _signUp()
-                                          .then((value) => _createAvatar())
-                                      : Get.snackbar(
-                                          "Etwas ist schief gelaufen",
-                                          "Dein Passwort ist zu kurz!")
-                                  : Get.snackbar("Etwas ist schief gelaufen",
-                                      "Deine Email hat ein falsches Format!");
-                            },
-                            child: Text("Registrieren"))),
-                  )
-                ],
-              ),
+                ),
+                SizedBox(
+                  height: _media.height * 0.1,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    GestureDetector(
+                        onTap: () {
+                          _isLoading ? null : _loginGuest();
+                        },
+                        child: Text("Als Gast fortfahren")),
+                    VerticalDivider(
+                      width: 10,
+                      thickness: 0.5,
+                    ),
+                    GestureDetector(
+                      onTap: () => Get.offAll(() => ScreenLogin()),
+                      child: Text("Anmelden"),
+                    ),
+                  ],
+                ),
+              ],
             ),
-            IntrinsicHeight(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  GestureDetector(
-                      onTap: () {
-                        _isLoading ? null : _loginGuest();
-                      },
-                      child: Text("Als Gast fortfahren")),
-                  VerticalDivider(
-                    width: 10,
-                    thickness: 0.5,
-                  ),
-                  GestureDetector(
-                    onTap: () => Get.offAll(() => ScreenLogin()),
-                    child: Text("Anmelden"),
-                  ),
-                ],
-              ),
-            ),
-          ],
+          ),
         ),
       ]),
     );
@@ -176,6 +174,15 @@ class _SignUpState extends State<ScreenSignUp> {
     return TextField(
       style: TextStyle(height: 1.5),
       controller: controller,
+      onSubmitted: (value) {
+        GetUtils.isEmail(email)
+            ? password.length >= 8
+                ? _signUp().then((value) => _createAvatar())
+                : Get.snackbar(
+                    "Etwas ist schief gelaufen", "Dein Passwort ist zu kurz!")
+            : Get.snackbar("Etwas ist schief gelaufen",
+                "Deine Email hat ein falsches Format!");
+      },
       decoration: InputDecoration(
         labelText: fieldName,
         labelStyle: TextStyle(

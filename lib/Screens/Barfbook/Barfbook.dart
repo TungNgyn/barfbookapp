@@ -100,7 +100,7 @@ class _ScreenBarfbookState extends State<ScreenBarfbook> {
                     child: controller.userPetListDB.isEmpty
                         ? addPetCard(context)
                         : Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 20),
+                            padding: EdgeInsets.symmetric(horizontal: 10),
                             child: Column(children: [
                               Padding(
                                 padding: EdgeInsets.symmetric(vertical: 15),
@@ -116,7 +116,13 @@ class _ScreenBarfbookState extends State<ScreenBarfbook> {
                                 for (Pet pet in controller.userPetList) {
                                   list.add(PetCard(pet: pet));
                                 }
-                                return Wrap(children: list);
+                                return SingleChildScrollView(
+                                  child: Column(
+                                    children: [
+                                      Wrap(children: list),
+                                    ],
+                                  ),
+                                );
                               }),
                             ])))
               ]),
@@ -160,7 +166,13 @@ class _ScreenBarfbookState extends State<ScreenBarfbook> {
                                         controller: controller,
                                         recipe: recipe));
                                   }
-                                  return Wrap(children: list);
+                                  return SingleChildScrollView(
+                                    child: Column(
+                                      children: [
+                                        Wrap(children: list),
+                                      ],
+                                    ),
+                                  );
                                 }),
                               ],
                             ),
@@ -202,7 +214,13 @@ class _ScreenBarfbookState extends State<ScreenBarfbook> {
                                           controller: controller,
                                           recipe: recipe));
                                     }
-                                    return Wrap(children: list);
+                                    return SingleChildScrollView(
+                                      child: Column(
+                                        children: [
+                                          Wrap(children: list),
+                                        ],
+                                      ),
+                                    );
                                   })),
                             ],
                           ),
@@ -369,7 +387,7 @@ class OwnRecipeCard extends StatelessWidget {
       child: Card(
         child: Container(
           height: 250,
-          width: 400,
+          width: MediaQuery.of(context).size.width * 0.8,
           child: Padding(
               padding: EdgeInsets.all(15),
               child: Column(

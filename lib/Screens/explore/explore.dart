@@ -65,7 +65,7 @@ class _ScreenExploreState extends State<ScreenExplore>
           },
           body: Padding(
             padding: EdgeInsets.symmetric(horizontal: 15),
-            child: Column(
+            child: ListView(
               children: [
                 _searchBar(),
                 sortPopularRecipe(),
@@ -185,7 +185,7 @@ class RecipeCard extends StatelessWidget {
       child: Card(
         child: Container(
           height: 250,
-          width: MediaQuery.of(context).size.width * 0.7,
+          width: MediaQuery.of(context).size.width * 0.8,
           child: Padding(
               padding: EdgeInsets.all(15),
               child: Column(

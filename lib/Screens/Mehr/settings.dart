@@ -219,8 +219,6 @@ class _settingsStartState extends State<ScreenSettings>
                                         setState(() {
                                           isPressedLogIn = false;
                                         }),
-                                        authController.signOut().then((value) =>
-                                            Get.offAll(() => ScreenLogin()))
                                       },
                                       child: Container(
                                         color: isPressedLogIn
@@ -451,7 +449,7 @@ class _settingsStartState extends State<ScreenSettings>
                                                 Expanded(
                                                   flex: 8,
                                                   child: Text(
-                                                    "Allgemeine Geschäftsbedingungen",
+                                                    "Allg. Geschäftsbedingungen",
                                                     style: TextStyle(
                                                         letterSpacing: 0.5,
                                                         fontSize: 16,
