@@ -275,6 +275,30 @@ initData() async {
           .select('*', FetchOptions(count: CountOption.exact))
           .eq('recipe', recipe['id']);
 
+      final userdata = await supabase
+          .from('profile')
+          .select("*")
+          .match({'id': user?.id}).single();
+      final userAvatar = CachedNetworkImage(
+        imageUrl:
+            'https://wokqzyqvqztmyzhhuqqh.supabase.co/storage/v1/object/public/profile/${recipe['user_id']}',
+        progressIndicatorBuilder: (context, url, downloadProgress) =>
+            CircularProgressIndicator(value: downloadProgress.progress),
+        errorWidget: (context, url, error) => Icon(Icons.error),
+        imageBuilder: (context, imageProvider) {
+          return Container(
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              border: Border.all(color: Theme.of(context).colorScheme.primary),
+              image: DecorationImage(
+                image: imageProvider,
+                fit: BoxFit.cover,
+              ),
+            ),
+          );
+        },
+      );
+
       controller.userRecipeList.add(Recipe(
           name: (recipe as Map)['name'],
           id: recipe['id'],
@@ -283,6 +307,13 @@ initData() async {
           description: recipe['description'],
           modified_at: recipe['modified_at'],
           user_id: user!.id,
+          user: Profile(
+              id: user!.id,
+              createdAt: userdata['created_at'].substring(0, 10),
+              email: userdata['email'],
+              name: userdata['name'],
+              description: userdata['description'],
+              avatar: userAvatar),
           avatar: recipeAvatar));
     }
   } catch (error) {

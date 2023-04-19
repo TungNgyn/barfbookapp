@@ -1,4 +1,5 @@
 import 'dart:collection';
+import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
@@ -10,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:keyboard_actions/keyboard_actions.dart';
+import 'package:path_provider/path_provider.dart';
 
 class ScreenCreateRecipe extends StatefulWidget {
   const ScreenCreateRecipe({super.key});
@@ -25,6 +27,7 @@ class _newRecipeState extends State<ScreenCreateRecipe> {
       TextEditingController();
 
   final List selectedIngredients = [];
+  late final recipeID;
 
   final categoryFilter = [];
   final typeFilter = [];
@@ -83,17 +86,32 @@ class _newRecipeState extends State<ScreenCreateRecipe> {
   // }
 
   Future<dynamic> _createRecipe() async {
-    var recipeId = await supabase.rpc('insert_recipe', params: {
+    recipeID = await supabase.rpc('insert_recipe', params: {
       'recipename': _recipeNameController.text,
       'recipedescription': _recipeDescriptionController.text,
       'userid': user?.id
     });
     for (Ingredient ingredient in recipeIngredient) {
       await supabase.rpc('insert_ingredients', params: {
-        'recipeid': recipeId,
+        'recipeid': recipeID,
         'ingredientid': ingredient.id,
         'grams': ingredient.gram
       });
+    }
+  }
+
+  Future _createRecipeAvatar() async {
+    try {
+      final bytes =
+          await rootBundle.load('assets/images/defaultRecipeAvatar.png');
+      final tempDir = await getTemporaryDirectory();
+      final file = File('${tempDir.path}/defaultRecipeAvatar.png');
+      await file.writeAsBytes(
+          bytes.buffer.asUint8List(bytes.offsetInBytes, bytes.lengthInBytes));
+
+      await supabase.storage.from('recipe').upload('${recipeID}', file);
+    } catch (error) {
+      print(error);
     }
   }
 
@@ -109,7 +127,9 @@ class _newRecipeState extends State<ScreenCreateRecipe> {
               child: IconButton(
                 icon: Icon(Icons.add),
                 onPressed: () async {
-                  await _createRecipe().then((value) => Get.back());
+                  await _createRecipe()
+                      .whenComplete(() => _createRecipeAvatar())
+                      .whenComplete(() => Get.back());
                 },
               ),
             )

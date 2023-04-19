@@ -68,7 +68,7 @@ class _ScreenScheduleState extends State<ScreenSchedule> {
                 content: Container(
                   height: MediaQuery.of(context).size.height * 0.7,
                   width: MediaQuery.of(context).size.width * 0.9,
-                  child: Column(
+                  child: ListView(
                     children: [
                       Obx(() {
                         List<Widget> list = [];
@@ -80,34 +80,35 @@ class _ScreenScheduleState extends State<ScreenSchedule> {
                               Positioned(
                                   right: 6,
                                   child: IconButton(
-                                    icon: Icon(Icons.info_rounded),
+                                    icon: Icon(Icons.add),
                                     onPressed: () {
-                                      for (var map
-                                          in controller.userLikedRecipeXrefDB) {
-                                        if (map?.containsKey("recipe") ??
-                                            false) {
-                                          if (map['recipe'] == recipe.id) {
-                                            Get.to(() => RecipeDetailPage(
-                                                  recipe: recipe,
-                                                  favorite: true,
-                                                ));
-                                            return;
-                                          }
-                                        }
-                                      }
-                                      Get.to(() => RecipeDetailPage(
-                                            recipe: recipe,
-                                            favorite: false,
-                                          ));
-                                      return;
+                                      setState(() {
+                                        insertSchedule(recipe);
+                                      });
+                                      Get.back();
                                     },
                                   ))
                             ],
                           ));
                         }
                         for (Recipe recipe in controller.userRecipeList) {
-                          list.add(OwnRecipeCard(
-                              controller: controller, recipe: recipe));
+                          list.add(Stack(
+                            children: [
+                              OwnRecipeCard(
+                                  controller: controller, recipe: recipe),
+                              Positioned(
+                                  right: 6,
+                                  child: IconButton(
+                                    icon: Icon(Icons.add),
+                                    onPressed: () {
+                                      setState(() {
+                                        insertSchedule(recipe);
+                                      });
+                                      Get.back();
+                                    },
+                                  ))
+                            ],
+                          ));
                         }
                         return Column(children: list);
                       }),
@@ -225,7 +226,6 @@ class _ScreenScheduleState extends State<ScreenSchedule> {
       final recipeAvatar = loadRecipeAvatar(recipe.id);
       final day =
           DateTime(_selectedDay!.year, _selectedDay!.month, _selectedDay!.day);
-      print(scheduleID);
       addValueToMap(
           kEventSource,
           day,

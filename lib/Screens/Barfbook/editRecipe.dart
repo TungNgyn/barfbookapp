@@ -980,15 +980,21 @@ class _editRecipeState extends State<ScreenEditRecipe> {
                                               children: [
                                                 ElevatedButton(
                                                     onPressed: () {
-                                                      deleteRecipe();
-                                                      Get.offAll(() => Home());
+                                                      deleteRecipe()
+                                                          .whenComplete(() =>
+                                                              Get.offAll(() =>
+                                                                  Home()));
                                                     },
-                                                    child: Text("Bestätigen")),
+                                                    child: Text(
+                                                      "Bestätigen",
+                                                      style: TextStyle(
+                                                          color: Colors.red),
+                                                    )),
                                                 ElevatedButton(
                                                     onPressed: () {
                                                       Get.back();
                                                     },
-                                                    child: Text("Abbrechen"))
+                                                    child: Text("Abbrechen")),
                                               ],
                                             )
                                           ],
