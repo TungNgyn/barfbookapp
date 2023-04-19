@@ -28,6 +28,8 @@ class _ScreenEditProfileState extends State<ScreenEditProfile> {
       TextEditingController(text: widget.profile.email);
   late TextEditingController _descriptionController =
       TextEditingController(text: widget.profile.description);
+  TextEditingController _passwordController = TextEditingController();
+
   var avatar;
   var file;
   Future? _future;
@@ -65,7 +67,7 @@ class _ScreenEditProfileState extends State<ScreenEditProfile> {
         ),
         body: Padding(
           padding: EdgeInsets.symmetric(horizontal: 32),
-          child: Column(
+          child: ListView(
             children: [
               GestureDetector(
                 onTap: () async {
@@ -101,7 +103,7 @@ class _ScreenEditProfileState extends State<ScreenEditProfile> {
                     radius: 64,
                     child: Container(child: avatar)),
               ),
-              SizedBox(height: 24),
+              SizedBox(height: 16),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -111,21 +113,28 @@ class _ScreenEditProfileState extends State<ScreenEditProfile> {
                     controller: _nameController,
                     onChanged: (name) {},
                   ),
-                  SizedBox(height: 24),
+                  SizedBox(height: 16),
                   CustomTextField(
                     label: 'Email',
                     text: widget.profile.email,
                     controller: _emailController,
-                    onChanged: (age) {},
+                    onChanged: (email) {},
                   ),
-                  SizedBox(height: 24),
+                  SizedBox(height: 16),
+                  CustomTextField(
+                    label: 'Passwort',
+                    obscurred: true,
+                    text: '',
+                    controller: _passwordController,
+                    onChanged: (password) {},
+                  ),
+                  SizedBox(height: 16),
                   CustomTextField(
                       label: 'Biografie',
                       text: widget.profile.description,
                       controller: _descriptionController,
-                      maxLines: 12,
-                      onChanged: (breed) {}),
-                  SizedBox(height: 24),
+                      maxLines: 10,
+                      onChanged: (description) {}),
                 ],
               ),
             ],
@@ -152,6 +161,18 @@ class _ScreenEditProfileState extends State<ScreenEditProfile> {
         'profiledescription': _descriptionController.text,
         'profileid': widget.profile.id
       });
+
+      final UserResponse res = await supabase.auth.updateUser(
+        UserAttributes(
+          email: _emailController.text,
+          password: _passwordController.text,
+          data: {
+            'name': _nameController.text,
+            'description': _descriptionController.text
+          },
+        ),
+      );
+      final User? updatedUser = res.user;
     } catch (error) {
       print(error);
       Get.snackbar("Fehler!", "Etwas hat nicht funktioniert");

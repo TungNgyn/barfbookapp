@@ -38,13 +38,20 @@ class _editRecipeState extends State<ScreenEditRecipe> {
     CustomFilterChip("Innereien", false),
     CustomFilterChip("Gemüse", false),
     CustomFilterChip("Obst", false),
+    CustomFilterChip("Zusatz", false),
   ];
   final List<CustomFilterChip> typeList = [
     CustomFilterChip("Rind", false),
     CustomFilterChip("Geflügel", false),
     CustomFilterChip("Lamm", false),
     CustomFilterChip("Pferd", false),
-    CustomFilterChip("Vegetarisch", false),
+    CustomFilterChip("Fisch", false),
+    CustomFilterChip("Hirsch", false),
+    CustomFilterChip("Kaninchen", false),
+    CustomFilterChip("Känguru", false),
+    CustomFilterChip("Ziege", false),
+    CustomFilterChip("Vegan", false),
+    CustomFilterChip("Öl", false),
   ];
 
   int touchedIndex = -1;
@@ -206,21 +213,29 @@ class _editRecipeState extends State<ScreenEditRecipe> {
                                                                                   ? [
                                                                                       'Muskelfleisch',
                                                                                       'Pansen',
+                                                                                      'Magen',
                                                                                       'Knochen',
                                                                                       'Innereien',
                                                                                       'Gemüse',
-                                                                                      'Obst'
+                                                                                      'Obst',
+                                                                                      'Zusatz',
                                                                                     ]
                                                                                   : categoryFilter)
                                                                           .in_(
                                                                               'type',
                                                                               typeFilter.isEmpty
                                                                                   ? [
-                                                                                      'Rind',
-                                                                                      'Lamm',
-                                                                                      'Vegetarisch',
-                                                                                      'Geflügel',
-                                                                                      'Pferd',
+                                                                                      "Rind",
+                                                                                      "Geflügel",
+                                                                                      "Lamm",
+                                                                                      "Pferd",
+                                                                                      "Fisch",
+                                                                                      "Hirsch",
+                                                                                      "Kaninchen",
+                                                                                      "Känguru",
+                                                                                      "Ziege",
+                                                                                      "Vegan",
+                                                                                      "Öl",
                                                                                     ]
                                                                                   : typeFilter);
                                                                     },

@@ -38,13 +38,20 @@ class _newRecipeState extends State<ScreenCreateRecipe> {
     CustomFilterChip("Innereien", false),
     CustomFilterChip("Gemüse", false),
     CustomFilterChip("Obst", false),
+    CustomFilterChip("Zusatz", false),
   ];
   final List<CustomFilterChip> typeList = [
     CustomFilterChip("Rind", false),
     CustomFilterChip("Geflügel", false),
     CustomFilterChip("Lamm", false),
     CustomFilterChip("Pferd", false),
+    CustomFilterChip("Fisch", false),
+    CustomFilterChip("Hirsch", false),
+    CustomFilterChip("Kaninchen", false),
+    CustomFilterChip("Känguru", false),
+    CustomFilterChip("Ziege", false),
     CustomFilterChip("Vegan", false),
+    CustomFilterChip("Öl", false),
   ];
 
   int touchedIndex = -1;
@@ -222,27 +229,29 @@ class _newRecipeState extends State<ScreenCreateRecipe> {
                                                                 ? [
                                                                     'Muskelfleisch',
                                                                     'Pansen',
-                                                                    'Magen'
-                                                                        'Knochen',
+                                                                    'Magen',
+                                                                    'Knochen',
                                                                     'Innereien',
                                                                     'Gemüse',
-                                                                    'Obst'
+                                                                    'Obst',
+                                                                    'Zusatz',
                                                                   ]
                                                                 : categoryFilter)
                                                         .in_(
                                                             'type',
                                                             typeFilter.isEmpty
                                                                 ? [
-                                                                    'Rind',
-                                                                    'Lamm',
-                                                                    'Vegan',
-                                                                    'Huhn',
-                                                                    'Ente',
-                                                                    'Pute',
-                                                                    'Strauß',
-                                                                    'Gans',
-                                                                    'Truthahn',
-                                                                    'Pferd',
+                                                                    "Rind",
+                                                                    "Geflügel",
+                                                                    "Lamm",
+                                                                    "Pferd",
+                                                                    "Fisch",
+                                                                    "Hirsch",
+                                                                    "Kaninchen",
+                                                                    "Känguru",
+                                                                    "Ziege",
+                                                                    "Vegan",
+                                                                    "Öl",
                                                                   ]
                                                                 : typeFilter);
                                                   },

@@ -29,6 +29,7 @@ class CustomTextField extends StatefulWidget {
   final String text;
   final TextEditingController controller;
   final ValueChanged<String> onChanged;
+  final bool obscurred;
 
   const CustomTextField(
       {super.key,
@@ -36,7 +37,8 @@ class CustomTextField extends StatefulWidget {
       required this.label,
       required this.text,
       required this.controller,
-      required this.onChanged});
+      required this.onChanged,
+      this.obscurred = false});
 
   @override
   State<StatefulWidget> createState() => _CustomTextFieldState();
@@ -55,6 +57,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
         ),
         SizedBox(height: 8),
         TextField(
+          obscureText: widget.obscurred,
           onChanged: (value) => widget.onChanged,
           controller: widget.controller,
           decoration: InputDecoration(
