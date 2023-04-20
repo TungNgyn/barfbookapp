@@ -41,6 +41,7 @@ flutter:
     - assets/images/splash/
     - assets/images/
     - assets/icons/
+    - assets/icons/dog/
     - assets/icons/recipe/
     - assets/icons/ingredient/
     - assets/fonts/lexend/

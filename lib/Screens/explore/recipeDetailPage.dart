@@ -391,7 +391,7 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
                                     ],
                                   ),
                                   Padding(
-                                    padding: EdgeInsets.symmetric(vertical: 25),
+                                    padding: EdgeInsets.symmetric(vertical: 10),
                                     child: SizedBox(
                                       height: 200,
                                       child: PieChart(PieChartData(

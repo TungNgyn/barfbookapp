@@ -66,137 +66,143 @@ class _ScreenEditPetState extends State<ScreenEditPet> {
         ),
         body: Padding(
           padding: EdgeInsets.symmetric(horizontal: 32),
-          child: Column(
+          child: ListView(
             children: [
-              GestureDetector(
-                onTap: () async {
-                  result = await FilePicker.platform
-                      .pickFiles(type: FileType.image, withData: true);
-
-                  if (result != null) {
-                    try {
-                      avatarFile = result!.files.first;
-                      Uint8List fileBytes = result!.files.first.bytes!;
-
-                      final tempDir = await getTemporaryDirectory();
-                      file = File('${tempDir.path}/${widget.pet.id}');
-
-                      setState(() {
-                        avatar = Container(
-                          decoration: BoxDecoration(
-                              border: Border.all(
-                                  color: Theme.of(context).colorScheme.primary),
-                              shape: BoxShape.circle,
-                              image: DecorationImage(
-                                  fit: BoxFit.cover,
-                                  image: Image.memory(fileBytes).image)),
-                        );
-                      });
-                    } catch (error) {
-                      print(error);
-                    }
-                  }
-                },
-                child: CircleAvatar(
-                    backgroundColor: Colors.transparent,
-                    radius: 64,
-                    child: avatar),
-              ),
-              SizedBox(height: 24),
               Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  CustomTextField(
-                    label: 'Name',
-                    text: widget.pet.name,
-                    controller: _nameController,
-                    onChanged: (name) {},
-                  ),
-                  SizedBox(height: 24),
-                  CustomTextField(
-                    label: 'Alter (Jahre)',
-                    text: '${widget.pet.age}',
-                    controller: _ageController,
-                    onChanged: (age) {},
-                  ),
-                  SizedBox(height: 24),
-                  CustomTextField(
-                      label: 'Rasse',
-                      text: widget.pet.breed,
-                      controller: _breedController,
-                      onChanged: (breed) {}),
-                  SizedBox(height: 24),
-                  Padding(
-                    padding: EdgeInsets.only(left: 20, bottom: 4),
-                    child: Text('Geschlecht',
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 16)),
-                  ),
-                  SizedBox(height: 8),
-                  DropdownButtonFormField(
-                      value: widget.pet.gender,
-                      decoration: InputDecoration(
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12))),
-                      items: ['Rüde', 'Hündin', 'keine Angabe']
-                          .map(
-                              (e) => DropdownMenuItem(value: e, child: Text(e)))
-                          .toList(),
-                      onChanged: (String? newValue) {
-                        setState(() {
-                          _genderController = newValue!;
-                        });
-                      }),
-                  SizedBox(height: 24),
-                  Padding(
-                    padding: EdgeInsets.only(left: 20),
-                    child: Text('Gewicht (Gramm)',
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 16)),
-                  ),
-                  SizedBox(height: 8),
-                  Obx(() => TextField(
-                        onChanged: (value) {
-                          setState(() {});
-                        },
-                        keyboardType: TextInputType.number,
-                        controller: _weightController.value,
-                        decoration: InputDecoration(
-                            border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(12)),
-                            suffix: Text(
-                                "${(double.parse(_weightController.value.text) / 1000).toStringAsFixed(1)}kg")),
-                      )),
-                  SizedBox(height: 24),
-                  Padding(
-                    padding: EdgeInsets.only(left: 20),
-                    child: Text('Tägliche Ration',
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 16)),
-                  ),
-                  Slider(
-                    value: _rationController.value,
-                    min: 1,
-                    max: 5,
-                    divisions: 8,
-                    onChanged: (double value) {
-                      setState(() {
-                        _rationController.value = value;
-                      });
+                  GestureDetector(
+                    onTap: () async {
+                      result = await FilePicker.platform
+                          .pickFiles(type: FileType.image, withData: true);
+
+                      if (result != null) {
+                        try {
+                          avatarFile = result!.files.first;
+                          Uint8List fileBytes = result!.files.first.bytes!;
+
+                          final tempDir = await getTemporaryDirectory();
+                          file = File('${tempDir.path}/${widget.pet.id}');
+
+                          setState(() {
+                            avatar = Container(
+                              decoration: BoxDecoration(
+                                  border: Border.all(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .primary),
+                                  shape: BoxShape.circle,
+                                  image: DecorationImage(
+                                      fit: BoxFit.cover,
+                                      image: Image.memory(fileBytes).image)),
+                            );
+                          });
+                        } catch (error) {
+                          print(error);
+                        }
+                      }
                     },
+                    child: CircleAvatar(
+                        backgroundColor: Colors.transparent,
+                        radius: 64,
+                        child: avatar),
                   ),
-                  Center(
-                    child: Obx(() {
-                      return Column(children: [
-                        Text(
-                          '${_rationController.toStringAsFixed(1)}%',
-                          style: TextStyle(
-                              fontSize: 21, fontWeight: FontWeight.bold),
-                        ),
-                        Text(
-                            "Entspricht ${double.parse(_weightController.value.text) * double.parse(_rationController.toStringAsFixed(1)) ~/ 100} Gramm")
-                      ]);
-                    }),
+                  SizedBox(height: 16),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      CustomTextField(
+                        label: 'Name',
+                        text: widget.pet.name,
+                        controller: _nameController,
+                        onChanged: (name) {},
+                      ),
+                      SizedBox(height: 16),
+                      CustomTextField(
+                        label: 'Alter (Jahre)',
+                        text: '${widget.pet.age}',
+                        controller: _ageController,
+                        onChanged: (age) {},
+                      ),
+                      SizedBox(height: 16),
+                      CustomTextField(
+                          label: 'Rasse',
+                          text: widget.pet.breed,
+                          controller: _breedController,
+                          onChanged: (breed) {}),
+                      SizedBox(height: 16),
+                      Padding(
+                        padding: EdgeInsets.only(left: 20, bottom: 4),
+                        child: Text('Geschlecht',
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 16)),
+                      ),
+                      SizedBox(height: 8),
+                      DropdownButtonFormField(
+                          value: widget.pet.gender,
+                          decoration: InputDecoration(
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12))),
+                          items: ['Rüde', 'Hündin', 'keine Angabe']
+                              .map((e) =>
+                                  DropdownMenuItem(value: e, child: Text(e)))
+                              .toList(),
+                          onChanged: (String? newValue) {
+                            setState(() {
+                              _genderController = newValue!;
+                            });
+                          }),
+                      SizedBox(height: 24),
+                      Padding(
+                        padding: EdgeInsets.only(left: 20),
+                        child: Text('Gewicht (Gramm)',
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 16)),
+                      ),
+                      SizedBox(height: 8),
+                      Obx(() => TextField(
+                            onChanged: (value) {
+                              setState(() {});
+                            },
+                            keyboardType: TextInputType.number,
+                            controller: _weightController.value,
+                            decoration: InputDecoration(
+                                border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(12)),
+                                suffix: Text(
+                                    "${(double.parse(_weightController.value.text) / 1000).toStringAsFixed(1)}kg")),
+                          )),
+                      SizedBox(height: 24),
+                      Padding(
+                        padding: EdgeInsets.only(left: 20),
+                        child: Text('Tägliche Ration',
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 16)),
+                      ),
+                      Slider(
+                        value: _rationController.value,
+                        min: 1,
+                        max: 5,
+                        divisions: 8,
+                        onChanged: (double value) {
+                          setState(() {
+                            _rationController.value = value;
+                          });
+                        },
+                      ),
+                      Center(
+                        child: Obx(() {
+                          return Column(children: [
+                            Text(
+                              '${_rationController.toStringAsFixed(1)}%',
+                              style: TextStyle(
+                                  fontSize: 21, fontWeight: FontWeight.bold),
+                            ),
+                            Text(
+                                "Entspricht ${double.parse(_weightController.value.text) * double.parse(_rationController.toStringAsFixed(1)) ~/ 100} Gramm")
+                          ]);
+                        }),
+                      ),
+                    ],
                   ),
                 ],
               ),

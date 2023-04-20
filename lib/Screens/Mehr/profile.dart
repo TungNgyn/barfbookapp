@@ -101,7 +101,7 @@ class _ScreenProfileState extends State<ScreenProfile>
                 //   ),
                 // ),
                 body: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 20),
+                  padding: EdgeInsets.symmetric(horizontal: 10),
                   child: Column(
                     children: [
                       SafeArea(
@@ -146,38 +146,45 @@ class _ScreenProfileState extends State<ScreenProfile>
                         child: TabBarView(
                           controller: tabController,
                           children: [
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  "Über mich",
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: 21),
-                                ),
-                                SizedBox(height: 20),
-                                Text(
-                                  widget.profile.description,
-                                  style: TextStyle(fontSize: 18),
-                                )
-                              ],
+                            SingleChildScrollView(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    "Über mich",
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 21),
+                                  ),
+                                  SizedBox(height: 20),
+                                  Text(
+                                    widget.profile.description,
+                                    style: TextStyle(fontSize: 18),
+                                  )
+                                ],
+                              ),
                             ),
                             (petList.isEmpty)
                                 ? Text("Noch keine Haustiere hinzugefügt.")
-                                : Wrap(
-                                    children: [
-                                      for (var pet in petList) PetCard(pet: pet)
-                                    ],
+                                : SingleChildScrollView(
+                                    child: Wrap(
+                                      children: [
+                                        for (var pet in petList)
+                                          PetCard(pet: pet)
+                                      ],
+                                    ),
                                   ),
                             (recipeList.isEmpty)
                                 ? Text("Noch keine Rezepte erstellt.")
-                                : Wrap(
-                                    children: [
-                                      for (var recipe in recipeList)
-                                        RecipeCard(
-                                            controller: controller,
-                                            recipe: recipe)
-                                    ],
+                                : SingleChildScrollView(
+                                    child: Column(
+                                      children: [
+                                        for (var recipe in recipeList)
+                                          RecipeCard(
+                                              controller: controller,
+                                              recipe: recipe)
+                                      ],
+                                    ),
                                   ),
                           ],
                         ),

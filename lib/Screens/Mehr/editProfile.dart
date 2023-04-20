@@ -69,72 +69,78 @@ class _ScreenEditProfileState extends State<ScreenEditProfile> {
           padding: EdgeInsets.symmetric(horizontal: 32),
           child: ListView(
             children: [
-              GestureDetector(
-                onTap: () async {
-                  result = await FilePicker.platform
-                      .pickFiles(type: FileType.image, withData: true);
-
-                  if (result != null) {
-                    try {
-                      avatarFile = result!.files.first;
-                      Uint8List fileBytes = result!.files.first.bytes!;
-
-                      final tempDir = await getTemporaryDirectory();
-                      file = File('${tempDir.path}/${user?.id}');
-
-                      setState(() {
-                        avatar = Container(
-                          decoration: BoxDecoration(
-                              border: Border.all(
-                                  color: Theme.of(context).colorScheme.primary),
-                              shape: BoxShape.circle,
-                              image: DecorationImage(
-                                  fit: BoxFit.cover,
-                                  image: Image.memory(fileBytes).image)),
-                        );
-                      });
-                    } catch (error) {
-                      print(error);
-                    }
-                  }
-                },
-                child: CircleAvatar(
-                    backgroundColor: Colors.transparent,
-                    radius: 64,
-                    child: Container(child: avatar)),
-              ),
-              SizedBox(height: 16),
               Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  CustomTextField(
-                    label: 'Name',
-                    text: widget.profile.name,
-                    controller: _nameController,
-                    onChanged: (name) {},
+                  GestureDetector(
+                    onTap: () async {
+                      result = await FilePicker.platform
+                          .pickFiles(type: FileType.image, withData: true);
+
+                      if (result != null) {
+                        try {
+                          avatarFile = result!.files.first;
+                          Uint8List fileBytes = result!.files.first.bytes!;
+
+                          final tempDir = await getTemporaryDirectory();
+                          file = File('${tempDir.path}/${user?.id}');
+
+                          setState(() {
+                            avatar = Container(
+                              decoration: BoxDecoration(
+                                  border: Border.all(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .primary),
+                                  shape: BoxShape.circle,
+                                  image: DecorationImage(
+                                      fit: BoxFit.cover,
+                                      image: Image.memory(fileBytes).image)),
+                            );
+                          });
+                        } catch (error) {
+                          print(error);
+                        }
+                      }
+                    },
+                    child: CircleAvatar(
+                        backgroundColor: Colors.transparent,
+                        radius: 64,
+                        child: Container(child: avatar)),
                   ),
                   SizedBox(height: 16),
-                  CustomTextField(
-                    label: 'Email',
-                    text: widget.profile.email,
-                    controller: _emailController,
-                    onChanged: (email) {},
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      CustomTextField(
+                        label: 'Name',
+                        text: widget.profile.name,
+                        controller: _nameController,
+                        onChanged: (name) {},
+                      ),
+                      SizedBox(height: 16),
+                      CustomTextField(
+                        label: 'Email',
+                        text: widget.profile.email,
+                        controller: _emailController,
+                        onChanged: (email) {},
+                      ),
+                      SizedBox(height: 16),
+                      CustomTextField(
+                        label: 'Passwort',
+                        obscurred: true,
+                        text: '',
+                        controller: _passwordController,
+                        onChanged: (password) {},
+                      ),
+                      SizedBox(height: 16),
+                      CustomTextField(
+                          label: 'Biografie',
+                          text: widget.profile.description,
+                          controller: _descriptionController,
+                          maxLines: 10,
+                          onChanged: (description) {}),
+                    ],
                   ),
-                  SizedBox(height: 16),
-                  CustomTextField(
-                    label: 'Passwort',
-                    obscurred: true,
-                    text: '',
-                    controller: _passwordController,
-                    onChanged: (password) {},
-                  ),
-                  SizedBox(height: 16),
-                  CustomTextField(
-                      label: 'Biografie',
-                      text: widget.profile.description,
-                      controller: _descriptionController,
-                      maxLines: 10,
-                      onChanged: (description) {}),
                 ],
               ),
             ],

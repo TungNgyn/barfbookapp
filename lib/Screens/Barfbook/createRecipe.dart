@@ -79,19 +79,6 @@ class _newRecipeState extends State<ScreenCreateRecipe> {
     super.dispose();
   }
 
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   numberFocusNode.addListener(() {
-  //     bool hasFocus = numberFocusNode.hasFocus;
-  //     if (hasFocus) {
-  //       KeyboardOverlay.showOverlay(context);
-  //     } else {
-  //       KeyboardOverlay.removeOverlay();
-  //     }
-  //   });
-  // }
-
   Future<dynamic> _createRecipe() async {
     recipeID = await supabase.rpc('insert_recipe', params: {
       'recipename': _recipeNameController.text,
@@ -149,7 +136,9 @@ class _newRecipeState extends State<ScreenCreateRecipe> {
               TextField(
                 controller: _recipeNameController,
                 decoration: InputDecoration(
-                    border: OutlineInputBorder(), labelText: "Rezeptname"),
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12)),
+                    labelText: "Rezeptname"),
               ),
               SizedBox(
                   height: MediaQuery.of(context).size.height * 0.4,
@@ -259,10 +248,19 @@ class _newRecipeState extends State<ScreenCreateRecipe> {
                                                       (context, suggestion) {
                                                     suggestion as Map;
                                                     return ListTile(
-                                                      title: Text(
-                                                        (suggestion)['name'],
-                                                        style: TextStyle(
-                                                            fontSize: 24),
+                                                      title: Row(
+                                                        children: [
+                                                          Image.asset(
+                                                            'assets/icons/ingredient/${suggestion['avatar']}.png',
+                                                            width: 32,
+                                                          ),
+                                                          Text(
+                                                            (suggestion)[
+                                                                'name'],
+                                                            style: TextStyle(
+                                                                fontSize: 16),
+                                                          ),
+                                                        ],
                                                       ),
                                                       subtitle: Row(
                                                         children: [
@@ -811,7 +809,7 @@ class _newRecipeState extends State<ScreenCreateRecipe> {
               Padding(
                 padding: EdgeInsets.symmetric(vertical: 10),
                 child: SizedBox(
-                    height: MediaQuery.of(context).size.height * 0.36,
+                    height: MediaQuery.of(context).size.height * 0.4,
                     child: Card(
                         child: Padding(
                       padding: EdgeInsets.symmetric(horizontal: 15),
@@ -955,9 +953,11 @@ class _newRecipeState extends State<ScreenCreateRecipe> {
               ),
               TextField(
                   controller: _recipeDescriptionController,
-                  maxLines: 20,
-                  decoration:
-                      InputDecoration(hintText: "Beschreibe dein Rezept!")),
+                  maxLines: 10,
+                  decoration: InputDecoration(
+                      hintText: "Beschreibe dein Rezept!",
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12)))),
             ]),
           ),
         ));

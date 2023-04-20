@@ -902,7 +902,7 @@ class _editRecipeState extends State<ScreenEditRecipe> {
                                         ),
                                         Padding(
                                           padding: EdgeInsets.symmetric(
-                                              vertical: 25),
+                                              vertical: 10),
                                           child: SizedBox(
                                             height: 200,
                                             child: PieChart(PieChartData(

@@ -14,6 +14,7 @@ class ScreenPetDetailPage extends StatefulWidget {
 
 class _ScreenPetDetailPageState extends State<ScreenPetDetailPage> {
   late String owner;
+  TextEditingController _dayController = TextEditingController(text: '1');
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
@@ -74,12 +75,14 @@ class _ScreenPetDetailPageState extends State<ScreenPetDetailPage> {
                               color: Theme.of(context).colorScheme.surface,
                               child: Center(
                                   child: Padding(
-                                padding: EdgeInsets.all(20),
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: 10, vertical: 10),
                                 child: Column(
                                   children: [
                                     PetInfo(owner: owner, pet: widget.pet),
                                     SizedBox(height: 30),
                                     FeedingCard(
+                                      dayController: _dayController,
                                       pet: widget.pet,
                                       days: 1,
                                       meat: 80,
@@ -202,142 +205,167 @@ class FeedingCard extends StatelessWidget {
       required this.pet,
       required this.days,
       required this.meat,
-      required this.vegetables});
+      required this.vegetables,
+      required this.dayController});
 
   final Pet pet;
   final int days;
   final int meat;
   final int vegetables;
+  final TextEditingController dayController;
 
   @override
   Widget build(BuildContext context) {
     final double ration = pet.weight * pet.ration / 100;
     return Card(
-      elevation: 10,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(12),
-                      topRight: Radius.circular(12))),
-              child: Padding(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(20),
+        side: BorderSide(
+          color: Colors.grey.withOpacity(0.2),
+          width: 1,
+        ),
+      ),
+      child: Container(
+        color: Theme.of(context).colorScheme.surface,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 5),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(12),
+                        topRight: Radius.circular(12))),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        "Bedarf für ",
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 26),
+                      ),
+                      Container(
+                        width: 40,
+                        height: 45,
+                        child: TextField(
+                          onSubmitted: (value) {
+                            // setState(() {});
+                          },
+                          controller: dayController,
+                          decoration: InputDecoration(
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12))),
+                        ),
+                      ),
+                      Text(
+                        " Tage",
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 26),
+                      )
+                    ],
+                  ),
+                ),
+              ),
+              Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 10),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      "Täglicher Bedarf",
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 26),
+                    Divider(),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'Fleisch ($meat%)',
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 21),
+                        ),
+                        Text(
+                            '${((ration / 100 * meat) * int.parse(dayController.text)).toStringAsFixed(2)}g',
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 21))
+                      ],
                     ),
-                    Text(
-                      '${ration * days}g',
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 26),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text('Muskelfleisch (50%)'),
+                        Text(
+                            '${(((ration / 100 * meat) * 0.5) * int.parse(dayController.text)).toStringAsFixed(1)}g')
+                      ],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text('Pansen/Magen (20%)'),
+                        Text(
+                            '${(((ration / 100 * meat) * 0.2) * int.parse(dayController.text)).toStringAsFixed(1)}g')
+                      ],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text('fleischige Knochen (15%)'),
+                        Text(
+                            '${(((ration / 100 * meat) * 0.15) * int.parse(dayController.text)).toStringAsFixed(1)}g')
+                      ],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text('Organe (15%)'),
+                        Text(
+                            '${(((ration / 100 * meat) * 0.15) * int.parse(dayController.text)).toStringAsFixed(1)}g')
+                      ],
+                    ),
+                    SizedBox(height: 16),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'Vegetarisch ($vegetables%)',
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 21),
+                        ),
+                        Text(
+                            '${((ration / 100 * vegetables) * int.parse(dayController.text)).toStringAsFixed(2)}g',
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 21))
+                      ],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text('Gemüse (80%)'),
+                        Text(
+                            '${(((ration / 100 * vegetables) * 0.8) * int.parse(dayController.text)).toStringAsFixed(1)}g')
+                      ],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text('Obst (20%)'),
+                        Text(
+                            '${(((ration / 100 * vegetables) * 0.2) * int.parse(dayController.text)).toStringAsFixed(1)}g')
+                      ],
+                    ),
+                    Divider(),
+                    Align(
+                      alignment: Alignment.bottomRight,
+                      child: Text(
+                        '${ration * int.parse(dayController.text)}g',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 26),
+                      ),
                     )
                   ],
                 ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Divider(),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        'Fleisch ($meat%)',
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 21),
-                      ),
-                      Text(
-                          '${((ration / 100 * meat) * days).toStringAsFixed(2)}g',
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 21))
-                    ],
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text('Muskelfleisch (50%)'),
-                      Text(
-                          '${(((ration / 100 * meat) * 0.5) * days).toStringAsFixed(1)}g')
-                    ],
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text('Pansen/Magen (20%)'),
-                      Text(
-                          '${(((ration / 100 * meat) * 0.2) * days).toStringAsFixed(1)}g')
-                    ],
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text('fleischige Knochen (15%)'),
-                      Text(
-                          '${(((ration / 100 * meat) * 0.15) * days).toStringAsFixed(1)}g')
-                    ],
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text('Organe (15%)'),
-                      Text(
-                          '${(((ration / 100 * meat) * 0.15) * days).toStringAsFixed(1)}g')
-                    ],
-                  ),
-                  SizedBox(height: 16),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        'Vegetarisch ($vegetables%)',
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 21),
-                      ),
-                      Text(
-                          '${((ration / 100 * vegetables) * days).toStringAsFixed(2)}g',
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 21))
-                    ],
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text('Gemüse (80%)'),
-                      Text(
-                          '${(((ration / 100 * vegetables) * 0.8) * days).toStringAsFixed(1)}g')
-                    ],
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text('Obst (20%)'),
-                      Text(
-                          '${(((ration / 100 * vegetables) * 0.2) * days).toStringAsFixed(1)}g')
-                    ],
-                  ),
-                  // Divider(),
-                  // Container(
-                  //   height: 20,
-                  //   child: TextButton(
-                  //     child: Text("Details"),
-                  //     onPressed: () {},
-                  //   ),
-                  // )
-                ],
-              ),
-            )
-          ],
+              )
+            ],
+          ),
         ),
       ),
     );
