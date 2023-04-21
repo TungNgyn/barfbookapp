@@ -119,6 +119,7 @@ class _ScreenScheduleState extends State<ScreenSchedule> {
           child: Icon(Icons.add),
         ),
         appBar: AppBar(
+          centerTitle: true,
           title: Text(
             "Planer",
             style: TextStyle(fontSize: 31),

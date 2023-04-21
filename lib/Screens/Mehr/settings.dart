@@ -64,7 +64,7 @@ class _settingsStartState extends State<ScreenSettings>
                       }
                     },
                     child: CircleAvatar(
-                        backgroundColor: Colors.transparent,
+                        backgroundColor: Theme.of(context).colorScheme.surface,
                         radius: 64,
                         child: controller.userProfile['user'].avatar),
                   ),

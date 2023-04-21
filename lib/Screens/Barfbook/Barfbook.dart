@@ -26,24 +26,6 @@ class ScreenBarfbook extends StatefulWidget {
 class _ScreenBarfbookState extends State<ScreenBarfbook> {
   final Controller controller = Get.find();
 
-  // updateRecipeList() async {
-  //   controller.userRecipeListDB = await supabase
-  //       .from('recipe')
-  //       .select('id, created_at, modified_at, name, description')
-  //       .eq('user_id', user!.id);
-  //   controller.userRecipeList.clear();
-  //   for (var recipe in controller.userRecipeListDB) {
-  //     controller.userRecipeList.add(Recipe(
-  //         name: (recipe as Map)['name'],
-  //         id: recipe['id'],
-  //         created_at: recipe['created_at'],
-  //         paws: 0,
-  //         description: recipe['description'],
-  //         modified_at: recipe['modified_at'],
-  //         user_id: user!.id));
-  //   }
-  // }
-
   @override
   void initState() {
     super.initState();
@@ -67,6 +49,7 @@ class _ScreenBarfbookState extends State<ScreenBarfbook> {
         body: NestedScrollView(
           headerSliverBuilder: (_, innerBoxIsScrolled) => [
             SliverAppBar(
+              centerTitle: true,
               title: Text(
                 "Barfbook",
                 style: TextStyle(fontSize: 31),
@@ -343,8 +326,6 @@ class PetCard extends StatelessWidget {
               Text('${pet.age} Jahre'),
               Text('${pet.breed}'),
               Text('${(pet.weight / 1000).toStringAsFixed(1)}kg'),
-              Text('${pet.ration}% tägliche Ration'),
-              Text('${pet.gender}')
             ],
           ),
         ),

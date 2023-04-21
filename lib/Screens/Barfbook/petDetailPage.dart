@@ -19,86 +19,89 @@ class _ScreenPetDetailPageState extends State<ScreenPetDetailPage> {
   Widget build(BuildContext context) {
     return FutureBuilder(
         future: loadOwner(),
-        builder: (context, snapshot) =>
-            snapshot.connectionState == ConnectionState.done
-                ? Scaffold(
-                    extendBodyBehindAppBar: true,
-                    appBar: AppBar(
-                      backgroundColor: Colors.transparent,
-                      actions: [
-                        Padding(
-                          padding: const EdgeInsets.only(right: 10),
-                          child: IconButton(
-                            icon: Icon(Icons.create),
-                            onPressed: () {
-                              Get.to(() => ScreenEditPet(pet: widget.pet));
-                            },
-                          ),
-                        )
-                      ],
-                    ),
-                    body: Stack(children: [
-                      Opacity(
-                        opacity: 0.4,
-                        child: Container(
-                          decoration: BoxDecoration(
-                              image: DecorationImage(
-                                  image: AssetImage(
-                                      "assets/images/splash/background.png"),
-                                  fit: BoxFit.cover)),
-                        ),
+        builder: (context, snapshot) => snapshot.connectionState ==
+                ConnectionState.done
+            ? Scaffold(
+                extendBodyBehindAppBar: true,
+                appBar: AppBar(
+                  backgroundColor: Colors.transparent,
+                  actions: [
+                    Padding(
+                      padding: const EdgeInsets.only(right: 10),
+                      child: IconButton(
+                        icon: Icon(Icons.create),
+                        onPressed: () {
+                          Get.to(() => ScreenEditPet(pet: widget.pet));
+                        },
                       ),
-                      Center(
-                        child: Column(children: [
-                          SafeArea(
-                            child: Column(
-                              children: [
-                                CircleAvatar(
-                                    backgroundColor:
-                                        Theme.of(context).colorScheme.surface,
-                                    radius: 64,
-                                    child: widget.pet.avatar),
-                                Padding(
-                                  padding: EdgeInsets.only(top: 24),
-                                  child: Text(
-                                    "${widget.pet.name}",
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.w600,
-                                        fontSize: 21),
-                                  ),
+                    )
+                  ],
+                ),
+                body: GestureDetector(
+                  onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+                  child: Stack(children: [
+                    Opacity(
+                      opacity: 0.4,
+                      child: Container(
+                        decoration: BoxDecoration(
+                            image: DecorationImage(
+                                image: AssetImage(
+                                    "assets/images/splash/background.png"),
+                                fit: BoxFit.cover)),
+                      ),
+                    ),
+                    Center(
+                      child: Column(children: [
+                        SafeArea(
+                          child: Column(
+                            children: [
+                              CircleAvatar(
+                                  backgroundColor:
+                                      Theme.of(context).colorScheme.surface,
+                                  radius: 64,
+                                  child: widget.pet.avatar),
+                              Padding(
+                                padding: EdgeInsets.only(top: 24),
+                                child: Text(
+                                  "${widget.pet.name}",
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 21),
                                 ),
-                              ],
-                            ),
+                              ),
+                            ],
                           ),
-                          Expanded(
-                            child: Container(
-                              color: Theme.of(context).colorScheme.surface,
-                              child: Center(
-                                  child: Padding(
-                                padding: EdgeInsets.symmetric(
-                                    horizontal: 10, vertical: 10),
-                                child: SingleChildScrollView(
-                                  child: Column(
-                                    children: [
-                                      PetInfo(owner: owner, pet: widget.pet),
-                                      SizedBox(height: 30),
-                                      FeedingCard(
-                                        dayController: _dayController,
-                                        pet: widget.pet,
-                                        days: 1,
-                                        meat: 80,
-                                        vegetables: 20,
-                                      ),
-                                    ],
-                                  ),
+                        ),
+                        Expanded(
+                          child: Container(
+                            color: Theme.of(context).colorScheme.surface,
+                            child: Center(
+                                child: Padding(
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 10, vertical: 10),
+                              child: SingleChildScrollView(
+                                child: Column(
+                                  children: [
+                                    PetInfo(owner: owner, pet: widget.pet),
+                                    SizedBox(height: 30),
+                                    FeedingCard(
+                                      dayController: _dayController,
+                                      pet: widget.pet,
+                                      days: 1,
+                                      meat: 80,
+                                      vegetables: 20,
+                                    ),
+                                  ],
                                 ),
-                              )),
-                            ),
+                              ),
+                            )),
                           ),
-                        ]),
-                      )
-                    ]))
-                : Center(child: CircularProgressIndicator()));
+                        ),
+                      ]),
+                    )
+                  ]),
+                ))
+            : Center(child: CircularProgressIndicator()));
   }
 
   loadOwner() async {
@@ -260,9 +263,18 @@ class _FeedingCardState extends State<FeedingCard> {
                         child: TextField(
                           keyboardType: TextInputType.number,
                           textAlign: TextAlign.center,
+                          onChanged: (value) {
+                            setState(() {
+                              value.isEmpty
+                                  ? widget.dayController.text = '0'
+                                  : widget.dayController.text = value;
+                            });
+                          },
                           onSubmitted: (value) {
                             setState(() {
-                              widget.dayController.text = value;
+                              value.isEmpty
+                                  ? widget.dayController.text = '0'
+                                  : widget.dayController.text = value;
                             });
                           },
                           controller: widget.dayController,

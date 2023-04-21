@@ -59,47 +59,6 @@ class _ScreenProfileState extends State<ScreenProfile>
                       )
                   ],
                 ),
-                // body: Stack(children: [
-                //   Opacity(
-                //     opacity: 0.4,
-                //     child: Container(
-                //       decoration: BoxDecoration(
-                //           image: DecorationImage(
-                //               image:
-                //                   AssetImage("assets/images/barfbookapp.png"),
-                //               fit: BoxFit.cover)),
-                //     ),
-                //   ),
-                //   Column(
-                //     children: [
-                // SafeArea(
-                //   child: Column(
-                //     children: [
-                //       CircleAvatar(
-                //         radius: 67,
-                //         child: CircleAvatar(
-                //             backgroundColor:
-                //                 Theme.of(context).colorScheme.surface,
-                //             radius: 64,
-                //             child: Image.asset(
-                //                 'assets/images/defaultAvatar.png')
-
-                //             // FlutterLogo(
-                //             //   size: 64,
-                //             // ),
-                //             ),
-                //       ),
-                //       Padding(
-                //         padding: EdgeInsets.only(top: 24),
-                //         child: Text(
-                //           "${widget.profile.name}",
-                //           style: TextStyle(
-                //               fontWeight: FontWeight.w600, fontSize: 21),
-                //         ),
-                //       ),
-                //     ],
-                //   ),
-                // ),
                 body: Padding(
                   padding: EdgeInsets.symmetric(horizontal: 10),
                   child: Column(
@@ -148,7 +107,6 @@ class _ScreenProfileState extends State<ScreenProfile>
                           children: [
                             SingleChildScrollView(
                               child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
                                     "Über mich",
@@ -167,10 +125,14 @@ class _ScreenProfileState extends State<ScreenProfile>
                             (petList.isEmpty)
                                 ? Text("Noch keine Haustiere hinzugefügt.")
                                 : SingleChildScrollView(
-                                    child: Wrap(
+                                    child: Column(
                                       children: [
-                                        for (var pet in petList)
-                                          PetCard(pet: pet)
+                                        Wrap(
+                                          children: [
+                                            for (var pet in petList)
+                                              PetCard(pet: pet)
+                                          ],
+                                        ),
                                       ],
                                     ),
                                   ),

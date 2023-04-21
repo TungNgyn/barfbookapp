@@ -251,17 +251,44 @@ class _editRecipeState extends State<ScreenEditRecipe> {
                                                                             as Map;
                                                                         return ListTile(
                                                                           title:
-                                                                              Text(
-                                                                            (suggestion)['name'],
-                                                                            style:
-                                                                                TextStyle(fontSize: 24),
-                                                                          ),
-                                                                          subtitle:
                                                                               Row(
                                                                             children: [
-                                                                              Text(suggestion['category']),
-                                                                              Spacer(),
-                                                                              Text(suggestion['type'])
+                                                                              Padding(
+                                                                                padding: EdgeInsets.only(right: 10),
+                                                                                child: Image.asset(
+                                                                                  'assets/icons/ingredient/${suggestion['avatar']}.png',
+                                                                                  width: 32,
+                                                                                ),
+                                                                              ),
+                                                                              Expanded(
+                                                                                child: Row(
+                                                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                                                  children: [
+                                                                                    Column(
+                                                                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                      children: [
+                                                                                        Text(
+                                                                                          (suggestion)['name'],
+                                                                                          style: TextStyle(overflow: TextOverflow.ellipsis, fontSize: 20),
+                                                                                        ),
+                                                                                        Text(
+                                                                                          suggestion['category'],
+                                                                                          style: TextStyle(fontSize: 14),
+                                                                                        ),
+                                                                                      ],
+                                                                                    ),
+                                                                                    Column(
+                                                                                      crossAxisAlignment: CrossAxisAlignment.end,
+                                                                                      children: [
+                                                                                        Text(
+                                                                                          suggestion['type'],
+                                                                                          style: TextStyle(fontSize: 14),
+                                                                                        ),
+                                                                                      ],
+                                                                                    )
+                                                                                  ],
+                                                                                ),
+                                                                              ),
                                                                             ],
                                                                           ),
                                                                         );
@@ -393,18 +420,16 @@ class _editRecipeState extends State<ScreenEditRecipe> {
                                                                   list = [];
                                                               for (Ingredient ingredient
                                                                   in recipeIngredients) {
-                                                                final TextEditingController
-                                                                    _recipeGramController =
-                                                                    TextEditingController();
+                                                                final _recipeGramController =
+                                                                    TextEditingController()
+                                                                        .obs;
 
                                                                 list.add(
                                                                     GestureDetector(
-                                                                  onTap: () {
-                                                                    FocusManager
-                                                                        .instance
-                                                                        .primaryFocus
-                                                                        ?.unfocus();
-                                                                  },
+                                                                  onTap: () => FocusManager
+                                                                      .instance
+                                                                      .primaryFocus
+                                                                      ?.unfocus(),
                                                                   child: Card(
                                                                     elevation:
                                                                         4,
@@ -419,21 +444,18 @@ class _editRecipeState extends State<ScreenEditRecipe> {
                                                                       child:
                                                                           Padding(
                                                                         padding:
-                                                                            EdgeInsets.symmetric(horizontal: 10),
+                                                                            EdgeInsets.symmetric(horizontal: 3),
                                                                         child:
                                                                             Row(
                                                                           children: [
-                                                                            Padding(
-                                                                              padding: EdgeInsets.only(right: 10),
-                                                                              child: Card(
-                                                                                  child: Padding(
-                                                                                      padding: EdgeInsets.all(10),
-                                                                                      child: Image.asset(
-                                                                                        'assets/icons/ingredient/${ingredient.avatar}.png',
-                                                                                        width: 64,
-                                                                                        height: 64,
-                                                                                      ))),
-                                                                            ),
+                                                                            Card(
+                                                                                child: Padding(
+                                                                                    padding: EdgeInsets.all(10),
+                                                                                    child: Image.asset(
+                                                                                      'assets/icons/ingredient/${ingredient.avatar}.png',
+                                                                                      width: 64,
+                                                                                      height: 64,
+                                                                                    ))),
                                                                             Flexible(
                                                                               flex: 7,
                                                                               child: SizedBox(
@@ -501,88 +523,88 @@ class _editRecipeState extends State<ScreenEditRecipe> {
                                                                                       },
                                                                                       icon: Icon(Icons.close)),
                                                                                   TextField(
-                                                                                      onChanged:
-                                                                                          (value) {
-                                                                                        setState(() {
-                                                                                          //remove old value
-                                                                                          caloriesSum.remove(ingredient.calories.toDouble() / 100 * ingredient.gram);
-                                                                                          proteinSum.remove(ingredient.protein.toDouble() / 100 * ingredient.gram);
+                                                                                    onChanged: (value) {
+                                                                                      setState(() {
+                                                                                        //remove old value
+                                                                                        caloriesSum.remove(ingredient.calories.toDouble() / 100 * ingredient.gram);
+                                                                                        proteinSum.remove(ingredient.protein.toDouble() / 100 * ingredient.gram);
 
-                                                                                          fatSum.remove(ingredient.fat.toDouble() / 100 * ingredient.gram);
-                                                                                          carbohydratesSum.remove(ingredient.carbohydrates.toDouble() / 100 * ingredient.gram);
-                                                                                          mineralsSum.remove(ingredient.minerals.toDouble() / 100 * ingredient.gram);
-                                                                                          moistureSum.remove(ingredient.moisture.toDouble() / 100 * ingredient.gram);
-                                                                                          switch (ingredient.category) {
-                                                                                            case 'Muskelfleisch':
-                                                                                              meatSum.remove(ingredient.gram);
-                                                                                              break;
-                                                                                            case 'Pansen':
-                                                                                              rumenSum.remove(ingredient.gram);
-                                                                                              break;
-                                                                                            case 'Knochen':
-                                                                                              boneSum.remove(ingredient.gram);
-                                                                                              break;
-                                                                                            case 'Innereien':
-                                                                                              organSum.remove(ingredient.gram);
-                                                                                              break;
-                                                                                            case 'Gemüse':
-                                                                                              vegSum.remove(ingredient.gram);
-                                                                                              break;
-                                                                                            case 'Obst':
-                                                                                              fruitSum.remove(ingredient.gram);
-                                                                                              break;
-                                                                                            default:
-                                                                                              throw Error();
-                                                                                          }
-                                                                                          weightSum.remove(ingredient.gram);
-                                                                                          //update new value
-                                                                                          ingredient.gram = double.parse(value);
-                                                                                          caloriesSum.add(ingredient.calories.toDouble() / 100 * double.parse(_recipeGramController.text));
-                                                                                          proteinSum.add(ingredient.protein.toDouble() / 100 * double.parse(_recipeGramController.text));
+                                                                                        fatSum.remove(ingredient.fat.toDouble() / 100 * ingredient.gram);
+                                                                                        carbohydratesSum.remove(ingredient.carbohydrates.toDouble() / 100 * ingredient.gram);
+                                                                                        mineralsSum.remove(ingredient.minerals.toDouble() / 100 * ingredient.gram);
+                                                                                        moistureSum.remove(ingredient.moisture.toDouble() / 100 * ingredient.gram);
+                                                                                        switch (ingredient.category) {
+                                                                                          case 'Muskelfleisch':
+                                                                                            meatSum.remove(ingredient.gram);
+                                                                                            break;
+                                                                                          case 'Pansen':
+                                                                                            rumenSum.remove(ingredient.gram);
+                                                                                            break;
+                                                                                          case 'Knochen':
+                                                                                            boneSum.remove(ingredient.gram);
+                                                                                            break;
+                                                                                          case 'Innereien':
+                                                                                            organSum.remove(ingredient.gram);
+                                                                                            break;
+                                                                                          case 'Gemüse':
+                                                                                            vegSum.remove(ingredient.gram);
+                                                                                            break;
+                                                                                          case 'Obst':
+                                                                                            fruitSum.remove(ingredient.gram);
+                                                                                            break;
+                                                                                          default:
+                                                                                            throw Error();
+                                                                                        }
+                                                                                        weightSum.remove(ingredient.gram);
+                                                                                        //update new value
+                                                                                        ingredient.gram = double.parse(value);
+                                                                                        caloriesSum.add(ingredient.calories.toDouble() / 100 * double.parse(_recipeGramController.value.text));
+                                                                                        proteinSum.add(ingredient.protein.toDouble() / 100 * double.parse(_recipeGramController.value.text));
 
-                                                                                          fatSum.add(ingredient.fat.toDouble() / 100 * double.parse(_recipeGramController.text));
-                                                                                          carbohydratesSum.add(ingredient.carbohydrates.toDouble() / 100 * double.parse(_recipeGramController.text));
-                                                                                          mineralsSum.add(ingredient.minerals.toDouble() / 100 * double.parse(_recipeGramController.text));
-                                                                                          moistureSum.add(ingredient.moisture.toDouble() / 100 * double.parse(_recipeGramController.text));
-                                                                                          switch (ingredient.category) {
-                                                                                            case 'Muskelfleisch':
-                                                                                              meatSum.add(double.parse(_recipeGramController.text));
-                                                                                              break;
-                                                                                            case 'Pansen':
-                                                                                              rumenSum.add(double.parse(_recipeGramController.text));
-                                                                                              break;
-                                                                                            case 'Knochen':
-                                                                                              boneSum.add(double.parse(_recipeGramController.text));
-                                                                                              break;
-                                                                                            case 'Innereien':
-                                                                                              organSum.add(double.parse(_recipeGramController.text));
-                                                                                              break;
-                                                                                            case 'Gemüse':
-                                                                                              vegSum.add(double.parse(_recipeGramController.text));
-                                                                                              break;
-                                                                                            case 'Obst':
-                                                                                              fruitSum.add(double.parse(_recipeGramController.text));
-                                                                                              break;
-                                                                                            default:
-                                                                                              throw Error();
-                                                                                          }
-                                                                                          weightSum.add(double.parse(_recipeGramController.text));
-                                                                                        });
-                                                                                      },
-                                                                                      inputFormatters: [
-                                                                                        FilteringTextInputFormatter.digitsOnly
-                                                                                      ],
-                                                                                      keyboardType: TextInputType.number,
-                                                                                      textInputAction: TextInputAction.done,
-                                                                                      controller: _recipeGramController,
-                                                                                      decoration: InputDecoration(
-                                                                                          suffixIcon: Padding(
-                                                                                            padding: EdgeInsets.only(right: 5),
-                                                                                            child: Text('Gramm'),
-                                                                                          ),
-                                                                                          suffixIconConstraints: BoxConstraints(minWidth: 0, minHeight: 0),
-                                                                                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-                                                                                          hintText: '${ingredient.gram}')),
+                                                                                        fatSum.add(ingredient.fat.toDouble() / 100 * double.parse(_recipeGramController.value.text));
+                                                                                        carbohydratesSum.add(ingredient.carbohydrates.toDouble() / 100 * double.parse(_recipeGramController.value.text));
+                                                                                        mineralsSum.add(ingredient.minerals.toDouble() / 100 * double.parse(_recipeGramController.value.text));
+                                                                                        moistureSum.add(ingredient.moisture.toDouble() / 100 * double.parse(_recipeGramController.value.text));
+                                                                                        switch (ingredient.category) {
+                                                                                          case 'Muskelfleisch':
+                                                                                            meatSum.add(double.parse(_recipeGramController.value.text));
+                                                                                            break;
+                                                                                          case 'Pansen':
+                                                                                            rumenSum.add(double.parse(_recipeGramController.value.text));
+                                                                                            break;
+                                                                                          case 'Knochen':
+                                                                                            boneSum.add(double.parse(_recipeGramController.value.text));
+                                                                                            break;
+                                                                                          case 'Innereien':
+                                                                                            organSum.add(double.parse(_recipeGramController.value.text));
+                                                                                            break;
+                                                                                          case 'Gemüse':
+                                                                                            vegSum.add(double.parse(_recipeGramController.value.text));
+                                                                                            break;
+                                                                                          case 'Obst':
+                                                                                            fruitSum.add(double.parse(_recipeGramController.value.text));
+                                                                                            break;
+                                                                                          default:
+                                                                                            throw Error();
+                                                                                        }
+                                                                                        weightSum.add(double.parse(_recipeGramController.value.text));
+                                                                                      });
+                                                                                    },
+                                                                                    inputFormatters: [
+                                                                                      FilteringTextInputFormatter.digitsOnly
+                                                                                    ],
+                                                                                    keyboardType: TextInputType.number,
+                                                                                    textInputAction: TextInputAction.done,
+                                                                                    controller: _recipeGramController.value,
+                                                                                    decoration: InputDecoration(
+                                                                                        label: Text('${(ingredient.gram).toInt()}'),
+                                                                                        suffixIcon: Padding(
+                                                                                          padding: EdgeInsets.only(right: 5),
+                                                                                          child: Text('Gramm'),
+                                                                                        ),
+                                                                                        suffixIconConstraints: BoxConstraints(minWidth: 0, minHeight: 0),
+                                                                                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12))),
+                                                                                  ),
                                                                                 ],
                                                                               ),
                                                                             )

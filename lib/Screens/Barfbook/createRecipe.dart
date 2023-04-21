@@ -140,13 +140,11 @@ class _newRecipeState extends State<ScreenCreateRecipe> {
                     labelText: "Rezeptname"),
               ),
               SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.4,
+                  height: MediaQuery.of(context).size.height * 0.3,
                   width: MediaQuery.of(context).size.width,
-                  child: Center(
-                      child: Card(
-                          child: FlutterLogo(
-                    size: 350,
-                  )))),
+                  child: Card(
+                    child: Image.asset('assets/images/defaultRecipeAvatar.png'),
+                  )),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -254,15 +252,22 @@ class _newRecipeState extends State<ScreenCreateRecipe> {
                                                       return ListTile(
                                                         title: Row(
                                                           children: [
-                                                            Image.asset(
-                                                              'assets/icons/ingredient/${suggestion['avatar']}.png',
-                                                              width: 32,
+                                                            Padding(
+                                                              padding: EdgeInsets
+                                                                  .only(
+                                                                      right:
+                                                                          10),
+                                                              child:
+                                                                  Image.asset(
+                                                                'assets/icons/ingredient/${suggestion['avatar']}.png',
+                                                                width: 32,
+                                                              ),
                                                             ),
                                                             Expanded(
                                                               child: Row(
                                                                 mainAxisAlignment:
                                                                     MainAxisAlignment
-                                                                        .end,
+                                                                        .spaceBetween,
                                                                 children: [
                                                                   Column(
                                                                     crossAxisAlignment:
@@ -273,11 +278,17 @@ class _newRecipeState extends State<ScreenCreateRecipe> {
                                                                         (suggestion)[
                                                                             'name'],
                                                                         style: TextStyle(
-                                                                            fontSize:
-                                                                                16),
+                                                                            overflow:
+                                                                                TextOverflow.ellipsis,
+                                                                            fontSize: 20),
                                                                       ),
-                                                                      Text(suggestion[
-                                                                          'category']),
+                                                                      Text(
+                                                                        suggestion[
+                                                                            'category'],
+                                                                        style: TextStyle(
+                                                                            fontSize:
+                                                                                14),
+                                                                      ),
                                                                     ],
                                                                   ),
                                                                   Column(
@@ -285,8 +296,13 @@ class _newRecipeState extends State<ScreenCreateRecipe> {
                                                                         CrossAxisAlignment
                                                                             .end,
                                                                     children: [
-                                                                      Text(suggestion[
-                                                                          'type']),
+                                                                      Text(
+                                                                        suggestion[
+                                                                            'type'],
+                                                                        style: TextStyle(
+                                                                            fontSize:
+                                                                                14),
+                                                                      ),
                                                                     ],
                                                                   )
                                                                 ],
@@ -435,25 +451,19 @@ class _newRecipeState extends State<ScreenCreateRecipe> {
                                                           padding: EdgeInsets
                                                               .symmetric(
                                                                   horizontal:
-                                                                      10),
+                                                                      3),
                                                           child: Row(
                                                             children: [
-                                                              Padding(
-                                                                padding: EdgeInsets
-                                                                    .only(
-                                                                        right:
-                                                                            10),
-                                                                child: Card(
-                                                                    child: Padding(
-                                                                        padding: EdgeInsets.all(10),
-                                                                        child: Image.asset(
-                                                                          'assets/icons/ingredient/${ingredient.avatar}.png',
-                                                                          width:
-                                                                              64,
-                                                                          height:
-                                                                              64,
-                                                                        ))),
-                                                              ),
+                                                              Card(
+                                                                  child: Padding(
+                                                                      padding: EdgeInsets.all(10),
+                                                                      child: Image.asset(
+                                                                        'assets/icons/ingredient/${ingredient.avatar}.png',
+                                                                        width:
+                                                                            64,
+                                                                        height:
+                                                                            64,
+                                                                      ))),
                                                               Flexible(
                                                                 flex: 7,
                                                                 child: SizedBox(
@@ -669,6 +679,7 @@ class _newRecipeState extends State<ScreenCreateRecipe> {
                                                                           _recipeGramController
                                                                               .value,
                                                                       decoration: InputDecoration(
+                                                                          label: Text('${(ingredient.gram).toInt()}'),
                                                                           suffixIcon: Padding(
                                                                             padding:
                                                                                 EdgeInsets.only(right: 5),
@@ -676,8 +687,7 @@ class _newRecipeState extends State<ScreenCreateRecipe> {
                                                                                 Text('Gramm'),
                                                                           ),
                                                                           suffixIconConstraints: BoxConstraints(minWidth: 0, minHeight: 0),
-                                                                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-                                                                          hintText: '${ingredient.gram}'),
+                                                                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(12))),
                                                                     ),
                                                                   ],
                                                                 ),
