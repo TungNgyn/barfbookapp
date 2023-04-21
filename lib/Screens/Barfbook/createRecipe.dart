@@ -10,7 +10,6 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
-import 'package:keyboard_actions/keyboard_actions.dart';
 import 'package:path_provider/path_provider.dart';
 
 class ScreenCreateRecipe extends StatefulWidget {
@@ -164,349 +163,337 @@ class _newRecipeState extends State<ScreenCreateRecipe> {
                                 StatefulBuilder(
                                   builder: (BuildContext context,
                                           StateSetter setModalState) =>
-                                      Container(
-                                    height: MediaQuery.of(context).size.height *
-                                        0.8,
-                                    decoration: BoxDecoration(
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .surface,
-                                        borderRadius: BorderRadius.only(
-                                            topLeft: Radius.circular(25),
-                                            topRight: Radius.circular(25))),
-                                    child: ListView(
-                                      children: [
-                                        Column(
-                                          children: [
-                                            Padding(
-                                              padding: EdgeInsets.symmetric(
-                                                  vertical: 15),
-                                              child: Text(
-                                                "Zutatensuche",
-                                                style: TextStyle(
-                                                    fontSize: 21,
-                                                    fontWeight:
-                                                        FontWeight.bold),
+                                      GestureDetector(
+                                    onTap: () => FocusManager
+                                        .instance.primaryFocus
+                                        ?.unfocus(),
+                                    child: Container(
+                                      height:
+                                          MediaQuery.of(context).size.height *
+                                              0.8,
+                                      decoration: BoxDecoration(
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .surface,
+                                          borderRadius: BorderRadius.only(
+                                              topLeft: Radius.circular(25),
+                                              topRight: Radius.circular(25))),
+                                      child: ListView(
+                                        children: [
+                                          Column(
+                                            children: [
+                                              Padding(
+                                                padding: EdgeInsets.symmetric(
+                                                    vertical: 15),
+                                                child: Text(
+                                                  "Zutaten",
+                                                  style: TextStyle(
+                                                      fontSize: 21,
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                ),
                                               ),
-                                            ),
-                                            Padding(
-                                              padding: EdgeInsets.symmetric(
-                                                  horizontal: 10),
-                                              child: TypeAheadField(
-                                                  textFieldConfiguration: TextFieldConfiguration(
-                                                      controller:
-                                                          _ingredientController,
-                                                      decoration: InputDecoration(
-                                                          border: OutlineInputBorder(
-                                                              borderRadius:
-                                                                  BorderRadius
-                                                                      .circular(
-                                                                          12)),
-                                                          labelText:
-                                                              "Suche nach Zutaten")),
-                                                  suggestionsCallback:
-                                                      (pattern) async {
-                                                    return await supabase
-                                                        .from('ingredient')
-                                                        .select('*')
-                                                        .ilike('name',
-                                                            '%$pattern%')
-                                                        .in_(
-                                                            'category',
-                                                            categoryFilter
-                                                                    .isEmpty
-                                                                ? [
-                                                                    'Muskelfleisch',
-                                                                    'Pansen',
-                                                                    'Magen',
-                                                                    'Knochen',
-                                                                    'Innereien',
-                                                                    'Gemüse',
-                                                                    'Obst',
-                                                                    'Zusatz',
-                                                                  ]
-                                                                : categoryFilter)
-                                                        .in_(
-                                                            'type',
-                                                            typeFilter.isEmpty
-                                                                ? [
-                                                                    "Rind",
-                                                                    "Geflügel",
-                                                                    "Lamm",
-                                                                    "Pferd",
-                                                                    "Fisch",
-                                                                    "Hirsch",
-                                                                    "Kaninchen",
-                                                                    "Känguru",
-                                                                    "Ziege",
-                                                                    "Vegan",
-                                                                    "Öl",
-                                                                  ]
-                                                                : typeFilter);
-                                                  },
-                                                  itemBuilder:
-                                                      (context, suggestion) {
-                                                    suggestion as Map;
-                                                    return ListTile(
-                                                      title: Row(
-                                                        children: [
-                                                          Image.asset(
-                                                            'assets/icons/ingredient/${suggestion['avatar']}.png',
-                                                            width: 32,
-                                                          ),
-                                                          Text(
-                                                            (suggestion)[
-                                                                'name'],
-                                                            style: TextStyle(
-                                                                fontSize: 16),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                      subtitle: Row(
-                                                        children: [
-                                                          Text(suggestion[
-                                                              'category']),
-                                                          Spacer(),
-                                                          Text(suggestion[
-                                                              'type'])
-                                                        ],
-                                                      ),
-                                                    );
-                                                  },
-                                                  onSuggestionSelected:
-                                                      (suggestion) {
-                                                    suggestion as Map;
-                                                    recipeIngredient.add(Ingredient(
-                                                        id: suggestion['id'],
-                                                        name:
-                                                            suggestion['name'],
-                                                        type:
-                                                            suggestion['type'],
-                                                        category: suggestion[
-                                                            'category'],
-                                                        calories:
-                                                            suggestion['calories']
-                                                                .toDouble(),
-                                                        protein:
-                                                            suggestion['protein']
-                                                                .toDouble(),
-                                                        fat: suggestion['fat']
-                                                            .toDouble(),
-                                                        carbohydrates: suggestion[
-                                                                'carbohydrates']
-                                                            .toDouble(),
-                                                        minerals: suggestion[
-                                                                'minerals']
-                                                            .toDouble(),
-                                                        moisture: suggestion[
-                                                                'moisture']
-                                                            .toDouble(),
-                                                        avatar: suggestion[
-                                                            'avatar']));
-                                                  },
-                                                  noItemsFoundBuilder:
-                                                      (BuildContext context) {
-                                                    return Padding(
-                                                      padding:
-                                                          const EdgeInsets.all(
-                                                              20),
-                                                      child: Text(
-                                                        'Keine Zutat gefunden!',
-                                                        style: TextStyle(
-                                                            fontSize: 18),
-                                                      ),
-                                                    );
-                                                  }),
-                                            ),
-                                            Padding(
-                                              padding: EdgeInsets.all(5),
-                                              child: Text("Kategorie"),
-                                            ),
-                                            Padding(
-                                              padding: EdgeInsets.only(
-                                                  bottom: 15,
-                                                  left: 15,
-                                                  right: 15),
-                                              child: Wrap(
-                                                children: [
-                                                  for (var category
-                                                      in categoryList)
-                                                    FilterChip(
-                                                      label:
-                                                          Text(category.label),
-                                                      selected:
-                                                          category.isSelected,
-                                                      showCheckmark: false,
-                                                      onSelected: (value) {
-                                                        value == true
-                                                            ? categoryFilter
-                                                                .add(category
-                                                                    .label)
-                                                            : categoryFilter
-                                                                .remove(category
-                                                                    .label);
-
-                                                        setModalState(() {
-                                                          category.isSelected =
-                                                              value;
-                                                        });
-                                                      },
-                                                    )
-                                                ],
-                                              ),
-                                            ),
-                                            Padding(
-                                              padding: EdgeInsets.all(5),
-                                              child: Text("Art"),
-                                            ),
-                                            Padding(
-                                              padding: EdgeInsets.only(
-                                                  bottom: 15,
-                                                  left: 15,
-                                                  right: 15),
-                                              child: Wrap(
-                                                children: [
-                                                  for (var type in typeList)
-                                                    FilterChip(
-                                                      label: Text(type.label),
-                                                      selected: type.isSelected,
-                                                      showCheckmark: false,
-                                                      onSelected: (value) {
-                                                        value == true
-                                                            ? typeFilter
-                                                                .add(type.label)
-                                                            : typeFilter.remove(
-                                                                type.label);
-
-                                                        setModalState(() {
-                                                          type.isSelected =
-                                                              value;
-                                                        });
-                                                      },
-                                                    )
-                                                ],
-                                              ),
-                                            ),
-                                            Obx(() {
-                                              List<Widget> list = [];
-                                              for (Ingredient ingredient
-                                                  in recipeIngredient) {
-                                                final _recipeGramController =
-                                                    TextEditingController().obs;
-                                                final _gramFocus = FocusNode();
-                                                KeyboardActionsConfig
-                                                    _buildKeyboardActionsConfig(
-                                                        BuildContext context,
-                                                        value) {
-                                                  return KeyboardActionsConfig(
-                                                    nextFocus: true,
-                                                    keyboardActionsPlatform:
-                                                        KeyboardActionsPlatform
-                                                            .ALL,
-                                                    keyboardBarColor:
-                                                        Colors.grey[200],
-                                                    actions: [
-                                                      KeyboardActionsItem(
-                                                        focusNode: _gramFocus,
-                                                        toolbarButtons: [
-                                                          (node) {
-                                                            return GestureDetector(
-                                                              onTap: () {
-                                                                node.unfocus();
-                                                              },
-                                                              child: Icon(
-                                                                  Icons.check),
-                                                            );
-                                                          }
-                                                        ],
-                                                      ),
-                                                    ],
-                                                  );
-                                                }
-
-                                                list.add(GestureDetector(
-                                                  onTap: () {
-                                                    // recipeIngredient.remove(ingredient);
-                                                  },
-                                                  child: Card(
-                                                    elevation: 4,
-                                                    color: Theme.of(context)
-                                                        .colorScheme
-                                                        .background,
-                                                    child: SizedBox(
-                                                      height: 100,
-                                                      child: Padding(
-                                                        padding: EdgeInsets
-                                                            .symmetric(
-                                                                horizontal: 10),
-                                                        child: Row(
+                                              Padding(
+                                                padding: EdgeInsets.symmetric(
+                                                    horizontal: 10),
+                                                child: TypeAheadField(
+                                                    textFieldConfiguration: TextFieldConfiguration(
+                                                        controller:
+                                                            _ingredientController,
+                                                        decoration: InputDecoration(
+                                                            border: OutlineInputBorder(
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            12)),
+                                                            labelText:
+                                                                "Suche nach Zutaten")),
+                                                    suggestionsCallback:
+                                                        (pattern) async {
+                                                      return await supabase
+                                                          .from('ingredient')
+                                                          .select('*')
+                                                          .ilike('name',
+                                                              '%$pattern%')
+                                                          .in_(
+                                                              'category',
+                                                              categoryFilter
+                                                                      .isEmpty
+                                                                  ? [
+                                                                      'Muskelfleisch',
+                                                                      'Pansen',
+                                                                      'Magen',
+                                                                      'Knochen',
+                                                                      'Innereien',
+                                                                      'Gemüse',
+                                                                      'Obst',
+                                                                      'Zusatz',
+                                                                    ]
+                                                                  : categoryFilter)
+                                                          .in_(
+                                                              'type',
+                                                              typeFilter.isEmpty
+                                                                  ? [
+                                                                      "Rind",
+                                                                      "Geflügel",
+                                                                      "Lamm",
+                                                                      "Pferd",
+                                                                      "Fisch",
+                                                                      "Hirsch",
+                                                                      "Kaninchen",
+                                                                      "Känguru",
+                                                                      "Ziege",
+                                                                      "Vegan",
+                                                                      "Öl",
+                                                                    ]
+                                                                  : typeFilter);
+                                                    },
+                                                    itemBuilder:
+                                                        (context, suggestion) {
+                                                      suggestion as Map;
+                                                      return ListTile(
+                                                        title: Row(
                                                           children: [
-                                                            Padding(
-                                                              padding: EdgeInsets
-                                                                  .only(
-                                                                      right:
-                                                                          10),
-                                                              child: Card(
-                                                                  child: Padding(
-                                                                      padding: EdgeInsets.all(10),
-                                                                      child: Image.asset(
-                                                                        'assets/icons/ingredient/${ingredient.avatar}.png',
-                                                                        width:
-                                                                            64,
-                                                                        height:
-                                                                            64,
-                                                                      ))),
+                                                            Image.asset(
+                                                              'assets/icons/ingredient/${suggestion['avatar']}.png',
+                                                              width: 32,
                                                             ),
-                                                            Flexible(
-                                                              flex: 7,
-                                                              child: SizedBox(
-                                                                width: MediaQuery.of(
-                                                                        context)
-                                                                    .size
-                                                                    .width,
-                                                                child: Column(
-                                                                  mainAxisAlignment:
-                                                                      MainAxisAlignment
-                                                                          .center,
-                                                                  crossAxisAlignment:
-                                                                      CrossAxisAlignment
-                                                                          .start,
-                                                                  children: [
-                                                                    Tooltip(
-                                                                      waitDuration:
-                                                                          Duration
-                                                                              .zero,
-                                                                      message:
-                                                                          ingredient
-                                                                              .name,
-                                                                      child:
-                                                                          Text(
-                                                                        ingredient
-                                                                            .name,
+                                                            Expanded(
+                                                              child: Row(
+                                                                mainAxisAlignment:
+                                                                    MainAxisAlignment
+                                                                        .end,
+                                                                children: [
+                                                                  Column(
+                                                                    crossAxisAlignment:
+                                                                        CrossAxisAlignment
+                                                                            .start,
+                                                                    children: [
+                                                                      Text(
+                                                                        (suggestion)[
+                                                                            'name'],
                                                                         style: TextStyle(
                                                                             fontSize:
-                                                                                18),
-                                                                        overflow:
-                                                                            TextOverflow.ellipsis,
+                                                                                16),
                                                                       ),
-                                                                    ),
-                                                                    Text(ingredient
-                                                                        .category),
-                                                                    Text(ingredient
-                                                                        .type)
-                                                                  ],
-                                                                ),
+                                                                      Text(suggestion[
+                                                                          'category']),
+                                                                    ],
+                                                                  ),
+                                                                  Column(
+                                                                    crossAxisAlignment:
+                                                                        CrossAxisAlignment
+                                                                            .end,
+                                                                    children: [
+                                                                      Text(suggestion[
+                                                                          'type']),
+                                                                    ],
+                                                                  )
+                                                                ],
                                                               ),
                                                             ),
-                                                            Flexible(
-                                                              flex: 5,
-                                                              child:
-                                                                  KeyboardActions(
-                                                                config: _buildKeyboardActionsConfig(
-                                                                    context,
-                                                                    _recipeGramController
-                                                                        .value
-                                                                        .text),
+                                                          ],
+                                                        ),
+                                                      );
+                                                    },
+                                                    onSuggestionSelected:
+                                                        (suggestion) {
+                                                      suggestion as Map;
+                                                      recipeIngredient.add(Ingredient(
+                                                          id: suggestion['id'],
+                                                          name: suggestion[
+                                                              'name'],
+                                                          type: suggestion[
+                                                              'type'],
+                                                          category: suggestion[
+                                                              'category'],
+                                                          calories: suggestion[
+                                                                  'calories']
+                                                              .toDouble(),
+                                                          protein:
+                                                              suggestion['protein']
+                                                                  .toDouble(),
+                                                          fat: suggestion['fat']
+                                                              .toDouble(),
+                                                          carbohydrates:
+                                                              suggestion['carbohydrates']
+                                                                  .toDouble(),
+                                                          minerals: suggestion[
+                                                                  'minerals']
+                                                              .toDouble(),
+                                                          moisture:
+                                                              suggestion['moisture']
+                                                                  .toDouble(),
+                                                          avatar: suggestion[
+                                                              'avatar']));
+                                                    },
+                                                    noItemsFoundBuilder:
+                                                        (BuildContext context) {
+                                                      return Padding(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .all(20),
+                                                        child: Text(
+                                                          'Keine Zutat gefunden!',
+                                                          style: TextStyle(
+                                                              fontSize: 18),
+                                                        ),
+                                                      );
+                                                    }),
+                                              ),
+                                              Padding(
+                                                padding: EdgeInsets.all(5),
+                                                child: Text("Kategorie"),
+                                              ),
+                                              Padding(
+                                                padding: EdgeInsets.only(
+                                                    bottom: 15,
+                                                    left: 15,
+                                                    right: 15),
+                                                child: Wrap(
+                                                  children: [
+                                                    for (var category
+                                                        in categoryList)
+                                                      FilterChip(
+                                                        label: Text(
+                                                            category.label),
+                                                        selected:
+                                                            category.isSelected,
+                                                        showCheckmark: false,
+                                                        onSelected: (value) {
+                                                          value == true
+                                                              ? categoryFilter
+                                                                  .add(category
+                                                                      .label)
+                                                              : categoryFilter
+                                                                  .remove(category
+                                                                      .label);
+
+                                                          setModalState(() {
+                                                            category.isSelected =
+                                                                value;
+                                                          });
+                                                        },
+                                                      )
+                                                  ],
+                                                ),
+                                              ),
+                                              Padding(
+                                                padding: EdgeInsets.all(5),
+                                                child: Text("Art"),
+                                              ),
+                                              Padding(
+                                                padding: EdgeInsets.only(
+                                                    bottom: 15,
+                                                    left: 15,
+                                                    right: 15),
+                                                child: Wrap(
+                                                  children: [
+                                                    for (var type in typeList)
+                                                      FilterChip(
+                                                        label: Text(type.label),
+                                                        selected:
+                                                            type.isSelected,
+                                                        showCheckmark: false,
+                                                        onSelected: (value) {
+                                                          value == true
+                                                              ? typeFilter.add(
+                                                                  type.label)
+                                                              : typeFilter
+                                                                  .remove(type
+                                                                      .label);
+
+                                                          setModalState(() {
+                                                            type.isSelected =
+                                                                value;
+                                                          });
+                                                        },
+                                                      )
+                                                  ],
+                                                ),
+                                              ),
+                                              Obx(() {
+                                                List<Widget> list = [];
+                                                for (Ingredient ingredient
+                                                    in recipeIngredient) {
+                                                  final _recipeGramController =
+                                                      TextEditingController()
+                                                          .obs;
+
+                                                  list.add(GestureDetector(
+                                                    onTap: () => FocusManager
+                                                        .instance.primaryFocus
+                                                        ?.unfocus(),
+                                                    child: Card(
+                                                      elevation: 4,
+                                                      color: Theme.of(context)
+                                                          .colorScheme
+                                                          .background,
+                                                      child: SizedBox(
+                                                        height: 100,
+                                                        child: Padding(
+                                                          padding: EdgeInsets
+                                                              .symmetric(
+                                                                  horizontal:
+                                                                      10),
+                                                          child: Row(
+                                                            children: [
+                                                              Padding(
+                                                                padding: EdgeInsets
+                                                                    .only(
+                                                                        right:
+                                                                            10),
+                                                                child: Card(
+                                                                    child: Padding(
+                                                                        padding: EdgeInsets.all(10),
+                                                                        child: Image.asset(
+                                                                          'assets/icons/ingredient/${ingredient.avatar}.png',
+                                                                          width:
+                                                                              64,
+                                                                          height:
+                                                                              64,
+                                                                        ))),
+                                                              ),
+                                                              Flexible(
+                                                                flex: 7,
+                                                                child: SizedBox(
+                                                                  width: MediaQuery.of(
+                                                                          context)
+                                                                      .size
+                                                                      .width,
+                                                                  child: Column(
+                                                                    mainAxisAlignment:
+                                                                        MainAxisAlignment
+                                                                            .center,
+                                                                    crossAxisAlignment:
+                                                                        CrossAxisAlignment
+                                                                            .start,
+                                                                    children: [
+                                                                      Tooltip(
+                                                                        waitDuration:
+                                                                            Duration.zero,
+                                                                        message:
+                                                                            ingredient.name,
+                                                                        child:
+                                                                            Text(
+                                                                          ingredient
+                                                                              .name,
+                                                                          style:
+                                                                              TextStyle(fontSize: 18),
+                                                                          overflow:
+                                                                              TextOverflow.ellipsis,
+                                                                        ),
+                                                                      ),
+                                                                      Text(ingredient
+                                                                          .category),
+                                                                      Text(ingredient
+                                                                          .type)
+                                                                    ],
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                              Flexible(
+                                                                flex: 5,
                                                                 child: Column(
                                                                   crossAxisAlignment:
                                                                       CrossAxisAlignment
@@ -691,31 +678,26 @@ class _newRecipeState extends State<ScreenCreateRecipe> {
                                                                           suffixIconConstraints: BoxConstraints(minWidth: 0, minHeight: 0),
                                                                           border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
                                                                           hintText: '${ingredient.gram}'),
-                                                                      focusNode:
-                                                                          _gramFocus,
                                                                     ),
                                                                   ],
                                                                 ),
-                                                              ),
-                                                            ),
-                                                          ],
+                                                              )
+                                                            ],
+                                                          ),
                                                         ),
                                                       ),
                                                     ),
-                                                  ),
-                                                ));
-                                              }
-                                              return Wrap(
-                                                  alignment:
-                                                      WrapAlignment.spaceEvenly,
-                                                  direction: Axis.horizontal,
-                                                  spacing: 5,
-                                                  runSpacing: 5,
-                                                  children: list);
-                                            }),
-                                          ],
-                                        ),
-                                      ],
+                                                  ));
+                                                }
+                                                list.add(SizedBox(height: 150));
+                                                return Column(
+                                                  children: list,
+                                                );
+                                              }),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                   ),
                                 ));

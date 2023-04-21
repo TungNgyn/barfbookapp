@@ -9,7 +9,6 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:keyboard_actions/keyboard_actions.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 
 class ScreenEditRecipe extends StatefulWidget {
@@ -147,458 +146,363 @@ class _editRecipeState extends State<ScreenEditRecipe> {
                                                 builder: (BuildContext context,
                                                         StateSetter
                                                             setModalState) =>
-                                                    Container(
-                                                  height: MediaQuery.of(context)
-                                                          .size
-                                                          .height *
-                                                      0.8,
-                                                  decoration: BoxDecoration(
-                                                      color: Theme.of(context)
-                                                          .colorScheme
-                                                          .surface,
-                                                      borderRadius:
-                                                          BorderRadius.only(
-                                                              topLeft: Radius
-                                                                  .circular(25),
-                                                              topRight: Radius
-                                                                  .circular(
-                                                                      25))),
-                                                  child: ListView(
-                                                    children: [
-                                                      Column(
-                                                        children: [
-                                                          Padding(
-                                                            padding: EdgeInsets
-                                                                .symmetric(
-                                                                    vertical:
-                                                                        15),
-                                                            child: Text(
-                                                              "Zutatensuche",
-                                                              style: TextStyle(
-                                                                  fontSize: 21,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .bold),
+                                                    GestureDetector(
+                                                  onTap: () => FocusManager
+                                                      .instance.primaryFocus
+                                                      ?.unfocus(),
+                                                  child: Container(
+                                                    height:
+                                                        MediaQuery.of(context)
+                                                                .size
+                                                                .height *
+                                                            0.8,
+                                                    decoration: BoxDecoration(
+                                                        color: Theme.of(context)
+                                                            .colorScheme
+                                                            .surface,
+                                                        borderRadius:
+                                                            BorderRadius.only(
+                                                                topLeft: Radius
+                                                                    .circular(
+                                                                        25),
+                                                                topRight: Radius
+                                                                    .circular(
+                                                                        25))),
+                                                    child: ListView(
+                                                      children: [
+                                                        Column(
+                                                          children: [
+                                                            Padding(
+                                                              padding: EdgeInsets
+                                                                  .symmetric(
+                                                                      vertical:
+                                                                          15),
+                                                              child: Text(
+                                                                "Zutaten",
+                                                                style: TextStyle(
+                                                                    fontSize:
+                                                                        21,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .bold),
+                                                              ),
                                                             ),
-                                                          ),
-                                                          Padding(
-                                                            padding: EdgeInsets
-                                                                .symmetric(
-                                                                    horizontal:
-                                                                        10),
-                                                            child:
-                                                                TypeAheadField(
-                                                                    textFieldConfiguration: TextFieldConfiguration(
-                                                                        controller:
-                                                                            _ingredientController,
-                                                                        decoration: InputDecoration(
-                                                                            border: OutlineInputBorder(
-                                                                                borderRadius: BorderRadius.circular(
-                                                                                    12)),
-                                                                            labelText:
-                                                                                "Suche nach Zutaten")),
-                                                                    suggestionsCallback:
-                                                                        (pattern) async {
-                                                                      return await supabase
-                                                                          .from(
-                                                                              'ingredient')
-                                                                          .select(
-                                                                              '*')
-                                                                          .ilike(
-                                                                              'name',
-                                                                              '%$pattern%')
-                                                                          .in_(
-                                                                              'category',
-                                                                              categoryFilter.isEmpty
-                                                                                  ? [
-                                                                                      'Muskelfleisch',
-                                                                                      'Pansen',
-                                                                                      'Magen',
-                                                                                      'Knochen',
-                                                                                      'Innereien',
-                                                                                      'Gemüse',
-                                                                                      'Obst',
-                                                                                      'Zusatz',
-                                                                                    ]
-                                                                                  : categoryFilter)
-                                                                          .in_(
-                                                                              'type',
-                                                                              typeFilter.isEmpty
-                                                                                  ? [
-                                                                                      "Rind",
-                                                                                      "Geflügel",
-                                                                                      "Lamm",
-                                                                                      "Pferd",
-                                                                                      "Fisch",
-                                                                                      "Hirsch",
-                                                                                      "Kaninchen",
-                                                                                      "Känguru",
-                                                                                      "Ziege",
-                                                                                      "Vegan",
-                                                                                      "Öl",
-                                                                                    ]
-                                                                                  : typeFilter);
-                                                                    },
-                                                                    itemBuilder:
-                                                                        (context,
-                                                                            suggestion) {
-                                                                      suggestion
-                                                                          as Map;
-                                                                      return ListTile(
-                                                                        title:
-                                                                            Text(
-                                                                          (suggestion)[
-                                                                              'name'],
-                                                                          style:
-                                                                              TextStyle(fontSize: 24),
-                                                                        ),
-                                                                        subtitle:
+                                                            Padding(
+                                                              padding: EdgeInsets
+                                                                  .symmetric(
+                                                                      horizontal:
+                                                                          10),
+                                                              child:
+                                                                  TypeAheadField(
+                                                                      textFieldConfiguration: TextFieldConfiguration(
+                                                                          controller:
+                                                                              _ingredientController,
+                                                                          decoration: InputDecoration(
+                                                                              border: OutlineInputBorder(
+                                                                                  borderRadius: BorderRadius.circular(
+                                                                                      12)),
+                                                                              labelText:
+                                                                                  "Suche nach Zutaten")),
+                                                                      suggestionsCallback:
+                                                                          (pattern) async {
+                                                                        return await supabase
+                                                                            .from(
+                                                                                'ingredient')
+                                                                            .select(
+                                                                                '*')
+                                                                            .ilike('name',
+                                                                                '%$pattern%')
+                                                                            .in_(
+                                                                                'category',
+                                                                                categoryFilter.isEmpty
+                                                                                    ? [
+                                                                                        'Muskelfleisch',
+                                                                                        'Pansen',
+                                                                                        'Magen',
+                                                                                        'Knochen',
+                                                                                        'Innereien',
+                                                                                        'Gemüse',
+                                                                                        'Obst',
+                                                                                        'Zusatz',
+                                                                                      ]
+                                                                                    : categoryFilter)
+                                                                            .in_(
+                                                                                'type',
+                                                                                typeFilter.isEmpty
+                                                                                    ? [
+                                                                                        "Rind",
+                                                                                        "Geflügel",
+                                                                                        "Lamm",
+                                                                                        "Pferd",
+                                                                                        "Fisch",
+                                                                                        "Hirsch",
+                                                                                        "Kaninchen",
+                                                                                        "Känguru",
+                                                                                        "Ziege",
+                                                                                        "Vegan",
+                                                                                        "Öl",
+                                                                                      ]
+                                                                                    : typeFilter);
+                                                                      },
+                                                                      itemBuilder:
+                                                                          (context,
+                                                                              suggestion) {
+                                                                        suggestion
+                                                                            as Map;
+                                                                        return ListTile(
+                                                                          title:
+                                                                              Text(
+                                                                            (suggestion)['name'],
+                                                                            style:
+                                                                                TextStyle(fontSize: 24),
+                                                                          ),
+                                                                          subtitle:
+                                                                              Row(
+                                                                            children: [
+                                                                              Text(suggestion['category']),
+                                                                              Spacer(),
+                                                                              Text(suggestion['type'])
+                                                                            ],
+                                                                          ),
+                                                                        );
+                                                                      },
+                                                                      onSuggestionSelected:
+                                                                          (suggestion) {
+                                                                        suggestion
+                                                                            as Map;
+                                                                        recipeIngredients.add(Ingredient(
+                                                                            id: suggestion[
+                                                                                'id'],
+                                                                            name:
+                                                                                suggestion['name'],
+                                                                            type: suggestion['type'],
+                                                                            category: suggestion['category'],
+                                                                            calories: suggestion['calories'].toDouble(),
+                                                                            protein: suggestion['protein'].toDouble(),
+                                                                            fat: suggestion['fat'].toDouble(),
+                                                                            carbohydrates: suggestion['carbohydrates'].toDouble(),
+                                                                            minerals: suggestion['minerals'].toDouble(),
+                                                                            moisture: suggestion['moisture'].toDouble(),
+                                                                            avatar: suggestion['avatar']));
+                                                                      },
+                                                                      noItemsFoundBuilder:
+                                                                          (BuildContext
+                                                                              context) {
+                                                                        return Padding(
+                                                                          padding:
+                                                                              const EdgeInsets.all(20),
+                                                                          child:
+                                                                              Text(
+                                                                            'Keine Zutat gefunden!',
+                                                                            style:
+                                                                                TextStyle(fontSize: 18),
+                                                                          ),
+                                                                        );
+                                                                      }),
+                                                            ),
+                                                            Padding(
+                                                              padding:
+                                                                  EdgeInsets
+                                                                      .all(5),
+                                                              child: Text(
+                                                                  "Kategorie"),
+                                                            ),
+                                                            Padding(
+                                                              padding: EdgeInsets
+                                                                  .only(
+                                                                      bottom:
+                                                                          15,
+                                                                      left: 15,
+                                                                      right:
+                                                                          15),
+                                                              child: Wrap(
+                                                                children: [
+                                                                  for (var category
+                                                                      in categoryList)
+                                                                    FilterChip(
+                                                                      label: Text(
+                                                                          category
+                                                                              .label),
+                                                                      selected:
+                                                                          category
+                                                                              .isSelected,
+                                                                      showCheckmark:
+                                                                          false,
+                                                                      onSelected:
+                                                                          (value) {
+                                                                        value ==
+                                                                                true
+                                                                            ? categoryFilter.add(category.label)
+                                                                            : categoryFilter.remove(category.label);
+
+                                                                        setModalState(
+                                                                            () {
+                                                                          category.isSelected =
+                                                                              value;
+                                                                        });
+                                                                      },
+                                                                    )
+                                                                ],
+                                                              ),
+                                                            ),
+                                                            Padding(
+                                                              padding:
+                                                                  EdgeInsets
+                                                                      .all(5),
+                                                              child:
+                                                                  Text("Art"),
+                                                            ),
+                                                            Padding(
+                                                              padding: EdgeInsets
+                                                                  .only(
+                                                                      bottom:
+                                                                          15,
+                                                                      left: 15,
+                                                                      right:
+                                                                          15),
+                                                              child: Wrap(
+                                                                children: [
+                                                                  for (var type
+                                                                      in typeList)
+                                                                    FilterChip(
+                                                                      label: Text(
+                                                                          type.label),
+                                                                      selected:
+                                                                          type.isSelected,
+                                                                      showCheckmark:
+                                                                          false,
+                                                                      onSelected:
+                                                                          (value) {
+                                                                        value ==
+                                                                                true
+                                                                            ? typeFilter.add(type.label)
+                                                                            : typeFilter.remove(type.label);
+
+                                                                        setModalState(
+                                                                            () {
+                                                                          type.isSelected =
+                                                                              value;
+                                                                        });
+                                                                      },
+                                                                    )
+                                                                ],
+                                                              ),
+                                                            ),
+                                                            Obx(() {
+                                                              List<Widget>
+                                                                  list = [];
+                                                              for (Ingredient ingredient
+                                                                  in recipeIngredients) {
+                                                                final TextEditingController
+                                                                    _recipeGramController =
+                                                                    TextEditingController();
+
+                                                                list.add(
+                                                                    GestureDetector(
+                                                                  onTap: () {
+                                                                    FocusManager
+                                                                        .instance
+                                                                        .primaryFocus
+                                                                        ?.unfocus();
+                                                                  },
+                                                                  child: Card(
+                                                                    elevation:
+                                                                        4,
+                                                                    color: Theme.of(
+                                                                            context)
+                                                                        .colorScheme
+                                                                        .background,
+                                                                    child:
+                                                                        SizedBox(
+                                                                      height:
+                                                                          100,
+                                                                      child:
+                                                                          Padding(
+                                                                        padding:
+                                                                            EdgeInsets.symmetric(horizontal: 10),
+                                                                        child:
                                                                             Row(
                                                                           children: [
-                                                                            Text(suggestion['category']),
-                                                                            Spacer(),
-                                                                            Text(suggestion['type'])
-                                                                          ],
-                                                                        ),
-                                                                      );
-                                                                    },
-                                                                    onSuggestionSelected:
-                                                                        (suggestion) {
-                                                                      suggestion
-                                                                          as Map;
-                                                                      // Get.bottomSheet(
-                                                                      //   Container(
-                                                                      //     decoration: BoxDecoration(
-                                                                      //         color: Theme.of(context)
-                                                                      //             .colorScheme
-                                                                      //             .onPrimary,
-                                                                      //         borderRadius:
-                                                                      //             BorderRadius.only(
-                                                                      //                 topLeft: Radius
-                                                                      //                     .circular(
-                                                                      //                         25),
-                                                                      //                 topRight: Radius
-                                                                      //                     .circular(
-                                                                      //                         25))),
-                                                                      //     child: Padding(
-                                                                      //       padding:
-                                                                      //           EdgeInsets.all(10),
-                                                                      //       child: Column(
-                                                                      //         children: [
-                                                                      //           Text(
-                                                                      //             "${(suggestion)['name']}",
-                                                                      //             style: TextStyle(
-                                                                      //                 fontSize: 28),
-                                                                      //           ),
-                                                                      //           SizedBox(height: 30),
-                                                                      // TextField(
-                                                                      //   controller:
-                                                                      //       _recipeGramController,
-                                                                      //   keyboardType:
-                                                                      //       TextInputType
-                                                                      //           .number,
-                                                                      //   decoration: InputDecoration(
-                                                                      //       border:
-                                                                      //           OutlineInputBorder(),
-                                                                      //       labelText:
-                                                                      //           "Gewicht in Gramm"),
-                                                                      // ),
-                                                                      //           ElevatedButton(
-                                                                      //               onPressed: () {
-                                                                      recipeIngredients.add(Ingredient(
-                                                                          id: suggestion[
-                                                                              'id'],
-                                                                          name: suggestion[
-                                                                              'name'],
-                                                                          type: suggestion[
-                                                                              'type'],
-                                                                          category: suggestion[
-                                                                              'category'],
-                                                                          calories: suggestion['calories']
-                                                                              .toDouble(),
-                                                                          protein: suggestion['protein']
-                                                                              .toDouble(),
-                                                                          fat: suggestion['fat']
-                                                                              .toDouble(),
-                                                                          carbohydrates: suggestion['carbohydrates']
-                                                                              .toDouble(),
-                                                                          minerals: suggestion['minerals']
-                                                                              .toDouble(),
-                                                                          moisture: suggestion['moisture']
-                                                                              .toDouble(),
-                                                                          avatar:
-                                                                              suggestion['avatar']));
-                                                                      //         Get.back();
-                                                                      //         setState(() {});
-                                                                      //       },
-                                                                      //       child: Text(
-                                                                      //           "Hinzufügen"))
-                                                                      // ],
-                                                                      // ),
-                                                                      // ),
-                                                                      // ),
-                                                                      // );
-                                                                    },
-                                                                    noItemsFoundBuilder:
-                                                                        (BuildContext
-                                                                            context) {
-                                                                      return Padding(
-                                                                        padding:
-                                                                            const EdgeInsets.all(20),
-                                                                        child:
-                                                                            Text(
-                                                                          'Keine Zutat gefunden!',
-                                                                          style:
-                                                                              TextStyle(fontSize: 18),
-                                                                        ),
-                                                                      );
-                                                                    }),
-                                                          ),
-                                                          Padding(
-                                                            padding:
-                                                                EdgeInsets.all(
-                                                                    5),
-                                                            child: Text(
-                                                                "Kategorie"),
-                                                          ),
-                                                          Padding(
-                                                            padding:
-                                                                EdgeInsets.only(
-                                                                    bottom: 15,
-                                                                    left: 15,
-                                                                    right: 15),
-                                                            child: Wrap(
-                                                              children: [
-                                                                for (var category
-                                                                    in categoryList)
-                                                                  FilterChip(
-                                                                    label: Text(
-                                                                        category
-                                                                            .label),
-                                                                    selected:
-                                                                        category
-                                                                            .isSelected,
-                                                                    showCheckmark:
-                                                                        false,
-                                                                    onSelected:
-                                                                        (value) {
-                                                                      value ==
-                                                                              true
-                                                                          ? categoryFilter.add(category
-                                                                              .label)
-                                                                          : categoryFilter
-                                                                              .remove(category.label);
-
-                                                                      setModalState(
-                                                                          () {
-                                                                        category.isSelected =
-                                                                            value;
-                                                                      });
-                                                                    },
-                                                                  )
-                                                              ],
-                                                            ),
-                                                          ),
-                                                          Padding(
-                                                            padding:
-                                                                EdgeInsets.all(
-                                                                    5),
-                                                            child: Text("Art"),
-                                                          ),
-                                                          Padding(
-                                                            padding:
-                                                                EdgeInsets.only(
-                                                                    bottom: 15,
-                                                                    left: 15,
-                                                                    right: 15),
-                                                            child: Wrap(
-                                                              children: [
-                                                                for (var type
-                                                                    in typeList)
-                                                                  FilterChip(
-                                                                    label: Text(
-                                                                        type.label),
-                                                                    selected: type
-                                                                        .isSelected,
-                                                                    showCheckmark:
-                                                                        false,
-                                                                    onSelected:
-                                                                        (value) {
-                                                                      value ==
-                                                                              true
-                                                                          ? typeFilter.add(type
-                                                                              .label)
-                                                                          : typeFilter
-                                                                              .remove(type.label);
-
-                                                                      setModalState(
-                                                                          () {
-                                                                        type.isSelected =
-                                                                            value;
-                                                                      });
-                                                                    },
-                                                                  )
-                                                              ],
-                                                            ),
-                                                          ),
-                                                          Obx(() {
-                                                            List<Widget> list =
-                                                                [];
-                                                            for (Ingredient ingredient
-                                                                in recipeIngredients) {
-                                                              final TextEditingController
-                                                                  _recipeGramController =
-                                                                  TextEditingController();
-
-                                                              final _gramFocus =
-                                                                  FocusNode();
-                                                              KeyboardActionsConfig
-                                                                  _buildKeyboardActionsConfig(
-                                                                      BuildContext
-                                                                          context,
-                                                                      value) {
-                                                                return KeyboardActionsConfig(
-                                                                  nextFocus:
-                                                                      true,
-                                                                  keyboardActionsPlatform:
-                                                                      KeyboardActionsPlatform
-                                                                          .ALL,
-                                                                  keyboardBarColor:
-                                                                      Colors.grey[
-                                                                          200],
-                                                                  actions: [
-                                                                    KeyboardActionsItem(
-                                                                      focusNode:
-                                                                          _gramFocus,
-                                                                      toolbarButtons: [
-                                                                        (node) {
-                                                                          return GestureDetector(
-                                                                            onTap:
-                                                                                () {
-                                                                              node.unfocus();
-                                                                            },
-                                                                            child:
-                                                                                Padding(
-                                                                              padding: EdgeInsets.only(right: 15),
-                                                                              child: Icon(
-                                                                                Icons.check,
-                                                                                size: 28,
-                                                                              ),
+                                                                            Padding(
+                                                                              padding: EdgeInsets.only(right: 10),
+                                                                              child: Card(
+                                                                                  child: Padding(
+                                                                                      padding: EdgeInsets.all(10),
+                                                                                      child: Image.asset(
+                                                                                        'assets/icons/ingredient/${ingredient.avatar}.png',
+                                                                                        width: 64,
+                                                                                        height: 64,
+                                                                                      ))),
                                                                             ),
-                                                                          );
-                                                                        }
-                                                                      ],
-                                                                    ),
-                                                                  ],
-                                                                );
-                                                              }
-
-                                                              list.add(
-                                                                  GestureDetector(
-                                                                onTap: () {
-                                                                  // recipeIngredient.remove(ingredient);
-                                                                },
-                                                                child: Card(
-                                                                  elevation: 4,
-                                                                  color: Theme.of(
-                                                                          context)
-                                                                      .colorScheme
-                                                                      .background,
-                                                                  child:
-                                                                      SizedBox(
-                                                                    height: 100,
-                                                                    child:
-                                                                        Padding(
-                                                                      padding: EdgeInsets.symmetric(
-                                                                          horizontal:
-                                                                              10),
-                                                                      child:
-                                                                          Row(
-                                                                        children: [
-                                                                          Padding(
-                                                                            padding:
-                                                                                EdgeInsets.only(right: 10),
-                                                                            child: Card(
-                                                                                child: Padding(
-                                                                                    padding: EdgeInsets.all(10),
-                                                                                    child: Image.asset(
-                                                                                      'assets/icons/ingredient/${ingredient.avatar}.png',
-                                                                                      width: 64,
-                                                                                      height: 64,
-                                                                                    ))),
-                                                                          ),
-                                                                          Flexible(
-                                                                            flex:
-                                                                                7,
-                                                                            child:
-                                                                                SizedBox(
-                                                                              width: MediaQuery.of(context).size.width,
-                                                                              child: Column(
-                                                                                mainAxisAlignment: MainAxisAlignment.center,
-                                                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                                                children: [
-                                                                                  Tooltip(
-                                                                                    waitDuration: Duration.zero,
-                                                                                    message: ingredient.name,
-                                                                                    child: Text(
-                                                                                      ingredient.name,
-                                                                                      style: TextStyle(fontSize: 18),
-                                                                                      overflow: TextOverflow.ellipsis,
-                                                                                    ),
-                                                                                  ),
-                                                                                  Text(ingredient.category),
-                                                                                  Text(ingredient.type)
-                                                                                ],
-                                                                              ),
-                                                                            ),
-                                                                          ),
-                                                                          Flexible(
-                                                                              flex: 5,
-                                                                              child: KeyboardActions(
-                                                                                config: _buildKeyboardActionsConfig(context, _recipeGramController.value.text),
+                                                                            Flexible(
+                                                                              flex: 7,
+                                                                              child: SizedBox(
+                                                                                width: MediaQuery.of(context).size.width,
                                                                                 child: Column(
-                                                                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                                                                  mainAxisAlignment: MainAxisAlignment.center,
+                                                                                  crossAxisAlignment: CrossAxisAlignment.start,
                                                                                   children: [
-                                                                                    IconButton(
-                                                                                        onPressed: () {
-                                                                                          setState(() {
-                                                                                            recipeIngredients.remove(ingredient);
+                                                                                    Tooltip(
+                                                                                      waitDuration: Duration.zero,
+                                                                                      message: ingredient.name,
+                                                                                      child: Text(
+                                                                                        ingredient.name,
+                                                                                        style: TextStyle(fontSize: 18),
+                                                                                        overflow: TextOverflow.ellipsis,
+                                                                                      ),
+                                                                                    ),
+                                                                                    Text(ingredient.category),
+                                                                                    Text(ingredient.type)
+                                                                                  ],
+                                                                                ),
+                                                                              ),
+                                                                            ),
+                                                                            Flexible(
+                                                                              flex: 5,
+                                                                              child: Column(
+                                                                                crossAxisAlignment: CrossAxisAlignment.end,
+                                                                                children: [
+                                                                                  IconButton(
+                                                                                      onPressed: () {
+                                                                                        setState(() {
+                                                                                          recipeIngredients.remove(ingredient);
 
-                                                                                            caloriesSum.remove(ingredient.calories.toDouble() / 100 * ingredient.gram);
-                                                                                            proteinSum.remove(ingredient.protein.toDouble() / 100 * ingredient.gram);
+                                                                                          caloriesSum.remove(ingredient.calories.toDouble() / 100 * ingredient.gram);
+                                                                                          proteinSum.remove(ingredient.protein.toDouble() / 100 * ingredient.gram);
 
-                                                                                            fatSum.remove(ingredient.fat.toDouble() / 100 * ingredient.gram);
-                                                                                            carbohydratesSum.remove(ingredient.carbohydrates.toDouble() / 100 * ingredient.gram);
-                                                                                            mineralsSum.remove(ingredient.minerals.toDouble() / 100 * ingredient.gram);
-                                                                                            moistureSum.remove(ingredient.moisture.toDouble() / 100 * ingredient.gram);
-                                                                                            switch (ingredient.category) {
-                                                                                              case 'Muskelfleisch':
-                                                                                                meatSum.remove(ingredient.gram);
-                                                                                                break;
-                                                                                              case 'Pansen':
-                                                                                                rumenSum.remove(ingredient.gram);
-                                                                                                break;
-                                                                                              case 'Knochen':
-                                                                                                boneSum.remove(ingredient.gram);
-                                                                                                break;
-                                                                                              case 'Innereien':
-                                                                                                organSum.remove(ingredient.gram);
-                                                                                                break;
-                                                                                              case 'Gemüse':
-                                                                                                vegSum.remove(ingredient.gram);
-                                                                                                break;
-                                                                                              case 'Obst':
-                                                                                                fruitSum.remove(ingredient.gram);
-                                                                                                break;
-                                                                                              default:
-                                                                                                throw Error();
-                                                                                            }
-                                                                                            weightSum.remove(ingredient.gram);
-                                                                                          });
-                                                                                        },
-                                                                                        icon: Icon(Icons.close)),
-                                                                                    TextField(
-                                                                                      onChanged: (value) {
+                                                                                          fatSum.remove(ingredient.fat.toDouble() / 100 * ingredient.gram);
+                                                                                          carbohydratesSum.remove(ingredient.carbohydrates.toDouble() / 100 * ingredient.gram);
+                                                                                          mineralsSum.remove(ingredient.minerals.toDouble() / 100 * ingredient.gram);
+                                                                                          moistureSum.remove(ingredient.moisture.toDouble() / 100 * ingredient.gram);
+                                                                                          switch (ingredient.category) {
+                                                                                            case 'Muskelfleisch':
+                                                                                              meatSum.remove(ingredient.gram);
+                                                                                              break;
+                                                                                            case 'Pansen':
+                                                                                              rumenSum.remove(ingredient.gram);
+                                                                                              break;
+                                                                                            case 'Knochen':
+                                                                                              boneSum.remove(ingredient.gram);
+                                                                                              break;
+                                                                                            case 'Innereien':
+                                                                                              organSum.remove(ingredient.gram);
+                                                                                              break;
+                                                                                            case 'Gemüse':
+                                                                                              vegSum.remove(ingredient.gram);
+                                                                                              break;
+                                                                                            case 'Obst':
+                                                                                              fruitSum.remove(ingredient.gram);
+                                                                                              break;
+                                                                                            default:
+                                                                                              throw Error();
+                                                                                          }
+                                                                                          weightSum.remove(ingredient.gram);
+                                                                                        });
+                                                                                      },
+                                                                                      icon: Icon(Icons.close)),
+                                                                                  TextField(
+                                                                                      onChanged:
+                                                                                          (value) {
                                                                                         setState(() {
                                                                                           //remove old value
                                                                                           caloriesSum.remove(ingredient.calories.toDouble() / 100 * ingredient.gram);
@@ -678,32 +582,32 @@ class _editRecipeState extends State<ScreenEditRecipe> {
                                                                                           ),
                                                                                           suffixIconConstraints: BoxConstraints(minWidth: 0, minHeight: 0),
                                                                                           border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-                                                                                          hintText: '${ingredient.gram}'),
-                                                                                      focusNode: _gramFocus,
-                                                                                    ),
-                                                                                  ],
-                                                                                ),
-                                                                              )),
-                                                                        ],
+                                                                                          hintText: '${ingredient.gram}')),
+                                                                                ],
+                                                                              ),
+                                                                            )
+                                                                          ],
+                                                                        ),
                                                                       ),
                                                                     ),
                                                                   ),
-                                                                ),
-                                                              ));
-                                                            }
-                                                            return Wrap(
-                                                                alignment:
-                                                                    WrapAlignment
-                                                                        .spaceEvenly,
-                                                                direction: Axis
-                                                                    .horizontal,
-                                                                spacing: 5,
-                                                                runSpacing: 5,
-                                                                children: list);
-                                                          }),
-                                                        ],
-                                                      ),
-                                                    ],
+                                                                ));
+                                                              }
+                                                              return Wrap(
+                                                                  alignment:
+                                                                      WrapAlignment
+                                                                          .spaceEvenly,
+                                                                  direction: Axis
+                                                                      .horizontal,
+                                                                  spacing: 5,
+                                                                  runSpacing: 5,
+                                                                  children:
+                                                                      list);
+                                                            }),
+                                                          ],
+                                                        ),
+                                                      ],
+                                                    ),
                                                   ),
                                                 ),
                                               ));

@@ -77,18 +77,20 @@ class _ScreenPetDetailPageState extends State<ScreenPetDetailPage> {
                                   child: Padding(
                                 padding: EdgeInsets.symmetric(
                                     horizontal: 10, vertical: 10),
-                                child: Column(
-                                  children: [
-                                    PetInfo(owner: owner, pet: widget.pet),
-                                    SizedBox(height: 30),
-                                    FeedingCard(
-                                      dayController: _dayController,
-                                      pet: widget.pet,
-                                      days: 1,
-                                      meat: 80,
-                                      vegetables: 20,
-                                    ),
-                                  ],
+                                child: SingleChildScrollView(
+                                  child: Column(
+                                    children: [
+                                      PetInfo(owner: owner, pet: widget.pet),
+                                      SizedBox(height: 30),
+                                      FeedingCard(
+                                        dayController: _dayController,
+                                        pet: widget.pet,
+                                        days: 1,
+                                        meat: 80,
+                                        vegetables: 20,
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               )),
                             ),
@@ -199,7 +201,7 @@ class PetInfo extends StatelessWidget {
   }
 }
 
-class FeedingCard extends StatelessWidget {
+class FeedingCard extends StatefulWidget {
   const FeedingCard(
       {super.key,
       required this.pet,
@@ -215,8 +217,13 @@ class FeedingCard extends StatelessWidget {
   final TextEditingController dayController;
 
   @override
+  State<FeedingCard> createState() => _FeedingCardState();
+}
+
+class _FeedingCardState extends State<FeedingCard> {
+  @override
   Widget build(BuildContext context) {
-    final double ration = pet.weight * pet.ration / 100;
+    final double ration = widget.pet.weight * widget.pet.ration / 100;
     return Card(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(20),
@@ -248,13 +255,17 @@ class FeedingCard extends StatelessWidget {
                             fontWeight: FontWeight.bold, fontSize: 26),
                       ),
                       Container(
-                        width: 40,
-                        height: 45,
+                        width: 45,
+                        height: 50,
                         child: TextField(
+                          keyboardType: TextInputType.number,
+                          textAlign: TextAlign.center,
                           onSubmitted: (value) {
-                            // setState(() {});
+                            setState(() {
+                              widget.dayController.text = value;
+                            });
                           },
-                          controller: dayController,
+                          controller: widget.dayController,
                           decoration: InputDecoration(
                               border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(12))),
@@ -279,12 +290,12 @@ class FeedingCard extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          'Fleisch ($meat%)',
+                          'Fleisch (${widget.meat}%)',
                           style: TextStyle(
                               fontWeight: FontWeight.bold, fontSize: 21),
                         ),
                         Text(
-                            '${((ration / 100 * meat) * int.parse(dayController.text)).toStringAsFixed(2)}g',
+                            '${((ration / 100 * widget.meat) * int.parse(widget.dayController.text)).toStringAsFixed(2)}g',
                             style: TextStyle(
                                 fontWeight: FontWeight.bold, fontSize: 21))
                       ],
@@ -294,7 +305,7 @@ class FeedingCard extends StatelessWidget {
                       children: [
                         Text('Muskelfleisch (50%)'),
                         Text(
-                            '${(((ration / 100 * meat) * 0.5) * int.parse(dayController.text)).toStringAsFixed(1)}g')
+                            '${(((ration / 100 * widget.meat) * 0.5) * int.parse(widget.dayController.text)).toStringAsFixed(1)}g')
                       ],
                     ),
                     Row(
@@ -302,7 +313,7 @@ class FeedingCard extends StatelessWidget {
                       children: [
                         Text('Pansen/Magen (20%)'),
                         Text(
-                            '${(((ration / 100 * meat) * 0.2) * int.parse(dayController.text)).toStringAsFixed(1)}g')
+                            '${(((ration / 100 * widget.meat) * 0.2) * int.parse(widget.dayController.text)).toStringAsFixed(1)}g')
                       ],
                     ),
                     Row(
@@ -310,7 +321,7 @@ class FeedingCard extends StatelessWidget {
                       children: [
                         Text('fleischige Knochen (15%)'),
                         Text(
-                            '${(((ration / 100 * meat) * 0.15) * int.parse(dayController.text)).toStringAsFixed(1)}g')
+                            '${(((ration / 100 * widget.meat) * 0.15) * int.parse(widget.dayController.text)).toStringAsFixed(1)}g')
                       ],
                     ),
                     Row(
@@ -318,7 +329,7 @@ class FeedingCard extends StatelessWidget {
                       children: [
                         Text('Organe (15%)'),
                         Text(
-                            '${(((ration / 100 * meat) * 0.15) * int.parse(dayController.text)).toStringAsFixed(1)}g')
+                            '${(((ration / 100 * widget.meat) * 0.15) * int.parse(widget.dayController.text)).toStringAsFixed(1)}g')
                       ],
                     ),
                     SizedBox(height: 16),
@@ -326,12 +337,12 @@ class FeedingCard extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          'Vegetarisch ($vegetables%)',
+                          'Vegetarisch (${widget.vegetables}%)',
                           style: TextStyle(
                               fontWeight: FontWeight.bold, fontSize: 21),
                         ),
                         Text(
-                            '${((ration / 100 * vegetables) * int.parse(dayController.text)).toStringAsFixed(2)}g',
+                            '${((ration / 100 * widget.vegetables) * int.parse(widget.dayController.text)).toStringAsFixed(2)}g',
                             style: TextStyle(
                                 fontWeight: FontWeight.bold, fontSize: 21))
                       ],
@@ -341,7 +352,7 @@ class FeedingCard extends StatelessWidget {
                       children: [
                         Text('Gemüse (80%)'),
                         Text(
-                            '${(((ration / 100 * vegetables) * 0.8) * int.parse(dayController.text)).toStringAsFixed(1)}g')
+                            '${(((ration / 100 * widget.vegetables) * 0.8) * int.parse(widget.dayController.text)).toStringAsFixed(1)}g')
                       ],
                     ),
                     Row(
@@ -349,14 +360,14 @@ class FeedingCard extends StatelessWidget {
                       children: [
                         Text('Obst (20%)'),
                         Text(
-                            '${(((ration / 100 * vegetables) * 0.2) * int.parse(dayController.text)).toStringAsFixed(1)}g')
+                            '${(((ration / 100 * widget.vegetables) * 0.2) * int.parse(widget.dayController.text)).toStringAsFixed(1)}g')
                       ],
                     ),
                     Divider(),
                     Align(
                       alignment: Alignment.bottomRight,
                       child: Text(
-                        '${ration * int.parse(dayController.text)}g',
+                        '${ration * int.parse(widget.dayController.text == '' ? '0' : widget.dayController.text)}g',
                         style: TextStyle(
                             fontWeight: FontWeight.bold, fontSize: 26),
                       ),
