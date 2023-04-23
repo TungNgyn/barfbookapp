@@ -26,6 +26,7 @@ class _newRecipeState extends State<ScreenCreateRecipe> {
   final TextEditingController _recipeDescriptionController =
       TextEditingController();
 
+  final List ingredientList = [];
   final List selectedIngredients = [];
   late final recipeID;
 
@@ -119,7 +120,7 @@ class _newRecipeState extends State<ScreenCreateRecipe> {
       await file.writeAsBytes(
           bytes.buffer.asUint8List(bytes.offsetInBytes, bytes.lengthInBytes));
 
-      await supabase.storage.from('recipe').upload('${recipeID}', file);
+      await supabase.storage.from('recipe').upload('$recipeID', file);
     } catch (error) {
       print(error);
     }
@@ -161,27 +162,80 @@ class _newRecipeState extends State<ScreenCreateRecipe> {
                                 labelText: "Rezeptname"),
                           ),
                           GestureDetector(
-                            onTap: () async {
-                              result = await FilePicker.platform.pickFiles(
-                                  type: FileType.image, withData: true);
+                            onTap: () {
+                              Get.defaultDialog(
+                                  title: 'Bild',
+                                  content: Container(
+                                    height: MediaQuery.of(context).size.height *
+                                        0.7,
+                                    width: MediaQuery.of(context).size.width,
+                                    child: Column(
+                                      children: [
+                                        GestureDetector(
+                                          onTap: () async {
+                                            result = await FilePicker.platform
+                                                .pickFiles(
+                                                    type: FileType.image,
+                                                    withData: true);
 
-                              if (result != null) {
-                                try {
-                                  avatarFile = result!.files.first;
-                                  Uint8List fileBytes =
-                                      result!.files.first.bytes!;
+                                            if (result != null) {
+                                              try {
+                                                avatarFile =
+                                                    result!.files.first;
+                                                Uint8List fileBytes =
+                                                    result!.files.first.bytes!;
 
-                                  final tempDir = await getTemporaryDirectory();
-                                  file = File('${tempDir.path}/${user?.id}');
+                                                final tempDir =
+                                                    await getTemporaryDirectory();
+                                                file = File(
+                                                    '${tempDir.path}/${user?.id}');
 
-                                  setState(() {
-                                    avatar = Image(
-                                        image: Image.memory(fileBytes).image);
-                                  });
-                                } catch (error) {
-                                  print(error);
-                                }
-                              }
+                                                setState(() {
+                                                  avatar = Container(
+                                                      child: Image.memory(
+                                                          fileBytes));
+                                                });
+                                              } catch (error) {
+                                                print(error);
+                                              }
+                                            }
+                                          },
+                                          child: Container(
+                                            width: 256,
+                                            height: 256,
+                                            child: avatar,
+                                          ),
+                                        ),
+                                        Divider(),
+                                        Expanded(
+                                          child: ListView(
+                                            children: [
+                                              Wrap(
+                                                children: [
+                                                  for (var icon
+                                                      in ingredientList)
+                                                    IconButton(
+                                                        onPressed: () {
+                                                          setState(() {
+                                                            avatar =
+                                                                Image.asset(
+                                                              'assets/icons/ingredient/$icon.png',
+                                                            );
+                                                            Get.back();
+                                                          });
+                                                        },
+                                                        icon: Image.asset(
+                                                          'assets/icons/ingredient/$icon.png',
+                                                          width: 56,
+                                                        ))
+                                                ],
+                                              ),
+                                            ],
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                  ));
                             },
                             child: Container(
                               width: MediaQuery.of(context).size.width,
@@ -380,6 +434,12 @@ class _newRecipeState extends State<ScreenCreateRecipe> {
                                                                               .toDouble(),
                                                                           avatar:
                                                                               suggestion['avatar']));
+                                                                      if (!ingredientList
+                                                                          .contains(
+                                                                              suggestion['avatar'])) {
+                                                                        ingredientList
+                                                                            .add(suggestion['avatar']);
+                                                                      }
                                                                     },
                                                                     noItemsFoundBuilder:
                                                                         (BuildContext
@@ -727,7 +787,6 @@ class _newRecipeState extends State<ScreenCreateRecipe> {
                                   child: Text("Alles entfernen")),
                             ],
                           ),
-                          SizedBox(height: 15),
                           Obx(() {
                             List<Widget> list = [];
                             for (Ingredient ingredient in recipeIngredient) {
