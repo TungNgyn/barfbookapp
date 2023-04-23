@@ -201,43 +201,24 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
                                   )));
                         },
                         icon: Icon(Icons.comment)),
-                    SizedBox(width: 30)
                   ],
                 ),
                 body: SingleChildScrollView(
                   padding: EdgeInsets.all(15),
                   child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Container(
-                        padding:
-                            EdgeInsets.only(left: 15, right: 15, bottom: 10),
-                        height: MediaQuery.of(context).size.height * 0.5,
-                        child: Stack(
-                          alignment: Alignment.bottomCenter,
-                          children: [
-                            PageView.builder(
-                                controller: pageController,
-                                itemCount: 5,
-                                onPageChanged: (int index) {
-                                  setState(() {
-                                    _pageViewController(index);
-                                  });
-                                },
-                                itemBuilder: (_, index) {
-                                  return ClipRRect(
-                                      borderRadius: BorderRadius.circular(20),
-                                      child: Card(child: FlutterLogo()));
-                                }),
-                            Positioned(
-                              bottom: 20,
-                              child: Row(
-                                children: _buildPageIndicator(),
-                              ),
-                            )
-                          ],
-                        ),
+                      TextField(
+                        decoration: InputDecoration(
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12)),
+                            labelText: "Rezeptname"),
                       ),
+                      Container(
+                          width: 256,
+                          height: 256,
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(20)),
+                          child: widget.recipe.avatar),
                       ElevatedButton(
                           onPressed: () {
                             setState(() {});

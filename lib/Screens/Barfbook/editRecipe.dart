@@ -1,15 +1,18 @@
 import 'dart:collection';
+import 'dart:io';
 
 import 'package:Barfbook/Screens/Barfbook/Barfbook.dart';
 import 'package:Barfbook/Screens/Barfbook/barfbook_controller.dart';
 import 'package:Barfbook/controller.dart';
 import 'package:Barfbook/home.dart';
 import 'package:Barfbook/util/Supabase/AuthController.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
+import 'package:path_provider/path_provider.dart';
 
 class ScreenEditRecipe extends StatefulWidget {
   final Recipe recipe;
@@ -72,6 +75,12 @@ class _editRecipeState extends State<ScreenEditRecipe> {
   List recipeIngredient = [].obs;
   final Controller controller = Get.find();
 
+  var avatar;
+  var file;
+  FilePickerResult? result;
+  PlatformFile? avatarFile;
+  String avatarFilePath = '';
+
   @override
   void dispose() {
     // Clean up the controller when the widget is disposed.
@@ -119,16 +128,109 @@ class _editRecipeState extends State<ScreenEditRecipe> {
                                   border: OutlineInputBorder(
                                       borderRadius: BorderRadius.circular(12))),
                             ),
-                            // Text(recipeData['created_at']),
-                            SizedBox(
-                                height:
-                                    MediaQuery.of(context).size.height * 0.4,
-                                width: MediaQuery.of(context).size.width,
-                                child: Center(
-                                    child: Card(
-                                        child: FlutterLogo(
-                                  size: 350,
-                                )))),
+                            GestureDetector(
+                              onTap: () {
+                                Get.defaultDialog(
+                                    title: 'Bild',
+                                    content: Container(
+                                      height:
+                                          MediaQuery.of(context).size.height *
+                                              0.7,
+                                      width: MediaQuery.of(context).size.width,
+                                      child: Column(
+                                        children: [
+                                          GestureDetector(
+                                            onTap: () async {
+                                              result = await FilePicker.platform
+                                                  .pickFiles(
+                                                      type: FileType.image,
+                                                      withData: true);
+
+                                              if (result != null) {
+                                                try {
+                                                  avatarFile =
+                                                      result!.files.first;
+                                                  avatarFilePath =
+                                                      result!.files.first.path!;
+                                                  Uint8List fileBytes = result!
+                                                      .files.first.bytes!;
+
+                                                  final tempDir =
+                                                      await getTemporaryDirectory();
+                                                  file = File(
+                                                      '${tempDir.path}/${widget.recipe.id}');
+
+                                                  setState(() {
+                                                    avatar = Container(
+                                                        child: Image.memory(
+                                                            fileBytes));
+                                                  });
+                                                } catch (error) {
+                                                  print(error);
+                                                }
+                                              }
+                                            },
+                                            child: Container(
+                                              width: 256,
+                                              height: 256,
+                                              child: widget.recipe.avatar,
+                                            ),
+                                          ),
+                                          Divider(),
+                                          Expanded(
+                                            child: ListView(
+                                              children: [
+                                                Wrap(
+                                                  children: [
+                                                    IconButton(
+                                                        onPressed: () {
+                                                          setState(() {
+                                                            avatarFilePath =
+                                                                'assets/images/defaultRecipeAvatar.png';
+                                                            avatar =
+                                                                Image.asset(
+                                                              'assets/images/defaultRecipeAvatar.png',
+                                                            );
+                                                            Get.back();
+                                                          });
+                                                        },
+                                                        icon: Image.asset(
+                                                          'assets/images/defaultRecipeAvatar.png',
+                                                          width: 56,
+                                                        )),
+                                                    for (var icon
+                                                        in ingredientList)
+                                                      IconButton(
+                                                          onPressed: () {
+                                                            setState(() {
+                                                              avatarFilePath =
+                                                                  'assets/icons/ingredient/$icon.png';
+                                                              avatar = Image.asset(
+                                                                  'assets/icons/ingredient/$icon.png');
+                                                              Get.back();
+                                                            });
+                                                          },
+                                                          icon: Image.asset(
+                                                            'assets/icons/ingredient/$icon.png',
+                                                            width: 56,
+                                                          ))
+                                                  ],
+                                                ),
+                                              ],
+                                            ),
+                                          )
+                                        ],
+                                      ),
+                                    ));
+                              },
+                              child: Container(
+                                width: 256,
+                                height: 256,
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(20)),
+                                child: widget.recipe.avatar,
+                              ),
+                            ),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
@@ -311,6 +413,11 @@ class _editRecipeState extends State<ScreenEditRecipe> {
                                                                             minerals: suggestion['minerals'].toDouble(),
                                                                             moisture: suggestion['moisture'].toDouble(),
                                                                             avatar: suggestion['avatar']));
+                                                                        if (!ingredientList
+                                                                            .contains(suggestion['avatar'])) {
+                                                                          ingredientList
+                                                                              .add(suggestion['avatar']);
+                                                                        }
                                                                       },
                                                                       noItemsFoundBuilder:
                                                                           (BuildContext

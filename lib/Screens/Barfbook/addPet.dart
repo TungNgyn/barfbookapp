@@ -2,12 +2,13 @@ import 'dart:io';
 
 import 'package:Barfbook/Screens/Barfbook/pet_controller.dart';
 import 'package:Barfbook/util/Supabase/AuthController.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:get/get.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:flutter/services.dart'
-    show FilteringTextInputFormatter, rootBundle;
+    show FilteringTextInputFormatter, Uint8List, rootBundle;
 
 class ScreenAddPet extends StatefulWidget {
   @override
@@ -22,9 +23,14 @@ class _ScreenAddPetState extends State<ScreenAddPet> {
   final TextEditingController _weightController =
       TextEditingController(text: '0');
   bool filledInput = false;
-  String? _genderController;
+  String _genderController = 'Rüde';
   RxDouble _rationController = 3.0.obs;
   int? pageIndex;
+  var avatar;
+  var file;
+  Future? _future;
+  FilePickerResult? result;
+  PlatformFile? avatarFile;
   late final dogId;
 
   @override
@@ -38,6 +44,10 @@ class _ScreenAddPetState extends State<ScreenAddPet> {
     } else if (_breedController.text.isNotEmpty &
         _weightController.text.isNotEmpty &
         (pageIndex == 1)) {
+      setState(() {
+        filledInput = true;
+      });
+    } else if (pageIndex == 2) {
       setState(() {
         filledInput = true;
       });
@@ -81,7 +91,7 @@ class _ScreenAddPetState extends State<ScreenAddPet> {
                                       },
                                       onSubmitted: (value) {
                                         (filledInput == false)
-                                            ? (pageIndex == 2)
+                                            ? (pageIndex == 3)
                                                 ? _addPet().then((value) =>
                                                     _createDogAvatar().then(
                                                         (value) => Get.back()))
@@ -105,7 +115,7 @@ class _ScreenAddPetState extends State<ScreenAddPet> {
                                       },
                                       onSubmitted: (value) {
                                         (filledInput == false)
-                                            ? (pageIndex == 2)
+                                            ? (pageIndex == 3)
                                                 ? _addPet().then((value) =>
                                                     _createDogAvatar().then(
                                                         (value) => Get.back()))
@@ -200,7 +210,8 @@ class _ScreenAddPetState extends State<ScreenAddPet> {
                                           suggestion as Map;
                                           _breedController.text =
                                               suggestion['name'];
-                                          print(suggestion);
+                                          avatar =
+                                              'assets/icons/dog/${suggestion['avatar']}.png';
                                         });
                                       },
                                     ),
@@ -210,7 +221,7 @@ class _ScreenAddPetState extends State<ScreenAddPet> {
                                       },
                                       onSubmitted: (value) {
                                         (filledInput == false)
-                                            ? (pageIndex == 2)
+                                            ? (pageIndex == 3)
                                                 ? _addPet().then((value) =>
                                                     _createDogAvatar().then(
                                                         (value) => Get.back()))
@@ -249,7 +260,7 @@ class _ScreenAddPetState extends State<ScreenAddPet> {
                                             .toList(),
                                         onChanged: (String? newValue) {
                                           setState(() {
-                                            _genderController = newValue;
+                                            _genderController = newValue!;
                                           });
                                         })
                                   ],
@@ -308,6 +319,80 @@ class _ScreenAddPetState extends State<ScreenAddPet> {
                       ],
                     ),
                   ),
+                  Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        Card(
+                          elevation: 10,
+                          child: Container(
+                              color: Theme.of(context).colorScheme.onPrimary,
+                              width: MediaQuery.of(context).size.width * 0.8,
+                              height: MediaQuery.of(context).size.height * 0.3,
+                              child: Center(
+                                  child: Padding(
+                                padding: const EdgeInsets.all(15),
+                                child: Column(
+                                  children: [
+                                    Text(
+                                      "Foto",
+                                      style: TextStyle(fontSize: 24),
+                                    ),
+                                    GestureDetector(
+                                      onTap: () async {
+                                        result = await FilePicker.platform
+                                            .pickFiles(
+                                                type: FileType.image,
+                                                withData: true);
+
+                                        if (result != null) {
+                                          try {
+                                            avatarFile = result!.files.first;
+                                            final avatarFilePath =
+                                                result!.files.first.path!;
+
+                                            setState(() {
+                                              avatar = avatarFilePath;
+                                            });
+                                          } catch (error) {
+                                            print(error);
+                                          }
+                                        }
+                                      },
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(20),
+                                        child: CircleAvatar(
+                                          radius: 64,
+                                          backgroundColor: Theme.of(context)
+                                              .colorScheme
+                                              .surface,
+                                          child: Container(
+                                            decoration: BoxDecoration(
+                                              shape: BoxShape.circle,
+                                              border: Border.all(
+                                                  color: Theme.of(context)
+                                                      .colorScheme
+                                                      .primary),
+                                              image: DecorationImage(
+                                                image: Image.asset(avatar ??
+                                                        'assets/images/defaultDogAvatar.png')
+                                                    .image,
+                                                fit: BoxFit.cover,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    Text(
+                                        'Lade ein Foto von ${_nameController.text} hoch!')
+                                  ],
+                                ),
+                              ))),
+                        ),
+                      ],
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -334,7 +419,7 @@ class _ScreenAddPetState extends State<ScreenAddPet> {
                     ),
                     ElevatedButton(
                         onPressed: (filledInput == false)
-                            ? (pageIndex == 2)
+                            ? (pageIndex == 3)
                                 ? () => _addPet().then((value) =>
                                     _createDogAvatar()
                                         .then((value) => Get.back()))
@@ -344,9 +429,8 @@ class _ScreenAddPetState extends State<ScreenAddPet> {
                                     duration: Duration(seconds: 1),
                                     curve: Curves.fastLinearToSlowEaseIn);
                               },
-                        child: (pageIndex == 2)
-                            ? Text('Hinzufügen')
-                            : Text("Weiter"))
+                        child:
+                            (pageIndex == 3) ? Text('Fertig') : Text("Weiter"))
                   ],
                 ))
           ],
@@ -368,7 +452,7 @@ class _ScreenAddPetState extends State<ScreenAddPet> {
         age: int.parse(_ageController.text),
         weight: int.parse(_weightController.text),
         ration: double.parse(_rationController.toStringAsFixed(1)),
-        gender: _genderController!,
+        gender: _genderController,
         avatar: '');
     print(pet.name);
     try {
@@ -390,7 +474,7 @@ class _ScreenAddPetState extends State<ScreenAddPet> {
         'weight': pet.weight,
         'ration': pet.ration,
         'gender': pet.gender
-      });
+      }).single();
     } catch (error) {
       print(error);
     }
@@ -403,13 +487,13 @@ class _ScreenAddPetState extends State<ScreenAddPet> {
 
   Future _createDogAvatar() async {
     try {
-      final bytes = await rootBundle.load('assets/images/defaultDogAvatar.png');
+      final bytes = await rootBundle.load('$avatar');
       final tempDir = await getTemporaryDirectory();
-      final file = File('${tempDir.path}/defaultDogAvatar.png');
+      final file = File('${tempDir.path}/${dogId['id']}');
       await file.writeAsBytes(
           bytes.buffer.asUint8List(bytes.offsetInBytes, bytes.lengthInBytes));
 
-      await supabase.storage.from('pet').upload('${dogId}', file);
+      await supabase.storage.from('pet').upload('${dogId['id']}', file);
     } catch (error) {
       print(error);
     }

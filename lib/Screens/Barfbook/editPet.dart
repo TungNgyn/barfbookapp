@@ -9,6 +9,8 @@ import 'package:get/get.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import '../../home.dart';
+
 class ScreenEditPet extends StatefulWidget {
   const ScreenEditPet({required this.pet});
   final Pet pet;
@@ -202,6 +204,44 @@ class _ScreenEditPetState extends State<ScreenEditPet> {
                           ]);
                         }),
                       ),
+                      Padding(
+                        padding: const EdgeInsets.all(20),
+                        child: Center(
+                          child: ElevatedButton(
+                              onPressed: () {
+                                Get.defaultDialog(
+                                    title: 'Achtung',
+                                    content: Column(
+                                      children: [
+                                        Text(
+                                            "Das Löschen kann nicht rückgängig gemacht werden!"),
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceAround,
+                                          children: [
+                                            ElevatedButton(
+                                                onPressed: () {
+                                                  deletePet().whenComplete(() =>
+                                                      Get.offAll(() => Home()));
+                                                },
+                                                child: Text(
+                                                  "Bestätigen",
+                                                  style: TextStyle(
+                                                      color: Colors.red),
+                                                )),
+                                            ElevatedButton(
+                                                onPressed: () {
+                                                  Get.back();
+                                                },
+                                                child: Text("Abbrechen")),
+                                          ],
+                                        )
+                                      ],
+                                    ));
+                              },
+                              child: Text("Hund entfernen")),
+                        ),
+                      )
                     ],
                   ),
                 ],
@@ -236,6 +276,14 @@ class _ScreenEditPetState extends State<ScreenEditPet> {
     } catch (error) {
       print(error);
       Get.snackbar("Fehler!", "Etwas hat nicht funktioniert");
+    }
+  }
+
+  Future deletePet() async {
+    try {
+      await supabase.from('pet').delete().eq('id', widget.pet.id);
+    } catch (error) {
+      print(error);
     }
   }
 }

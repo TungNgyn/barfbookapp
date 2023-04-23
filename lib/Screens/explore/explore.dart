@@ -184,8 +184,8 @@ class RecipeCard extends StatelessWidget {
       },
       child: Card(
         child: Container(
-          height: 250,
-          width: MediaQuery.of(context).size.width * 0.8,
+          height: 256,
+          width: 256,
           child: Padding(
               padding: EdgeInsets.all(15),
               child: Column(

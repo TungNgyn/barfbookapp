@@ -67,6 +67,7 @@ class _ScreenBarfbookState extends State<ScreenBarfbook> {
           body: TabBarView(children: [
             // Pets
             Scaffold(
+              resizeToAvoidBottomInset: false,
               floatingActionButtonLocation:
                   FloatingActionButtonLocation.centerFloat,
               floatingActionButton: FloatingActionButton(
@@ -79,7 +80,7 @@ class _ScreenBarfbookState extends State<ScreenBarfbook> {
                 child: Icon(Icons.add),
               ),
               body: CustomScrollView(slivers: [
-                SliverFillRemaining(
+                SliverToBoxAdapter(
                     child: controller.userPetListDB.isEmpty
                         ? addPetCard(context)
                         : Padding(
@@ -99,13 +100,7 @@ class _ScreenBarfbookState extends State<ScreenBarfbook> {
                                 for (Pet pet in controller.userPetList) {
                                   list.add(PetCard(pet: pet));
                                 }
-                                return SingleChildScrollView(
-                                  child: Column(
-                                    children: [
-                                      Wrap(children: list),
-                                    ],
-                                  ),
-                                );
+                                return Wrap(children: list);
                               }),
                             ])))
               ]),
@@ -125,7 +120,7 @@ class _ScreenBarfbookState extends State<ScreenBarfbook> {
                   child: Icon(Icons.add),
                 ),
                 body: CustomScrollView(slivers: [
-                  SliverFillRemaining(
+                  SliverToBoxAdapter(
                     child: controller.userRecipeListDB.isEmpty
                         ? noRecipeCreatedCard(context)
                         : Padding(
@@ -149,13 +144,7 @@ class _ScreenBarfbookState extends State<ScreenBarfbook> {
                                         controller: controller,
                                         recipe: recipe));
                                   }
-                                  return SingleChildScrollView(
-                                    child: Column(
-                                      children: [
-                                        Wrap(children: list),
-                                      ],
-                                    ),
-                                  );
+                                  return Wrap(children: list);
                                 }),
                               ],
                             ),
@@ -164,6 +153,7 @@ class _ScreenBarfbookState extends State<ScreenBarfbook> {
                 ])),
             // Favorite
             Scaffold(
+                resizeToAvoidBottomInset: false,
                 floatingActionButtonLocation:
                     FloatingActionButtonLocation.centerFloat,
                 floatingActionButton: FloatingActionButton(
@@ -173,7 +163,7 @@ class _ScreenBarfbookState extends State<ScreenBarfbook> {
                   child: Icon(Icons.search),
                 ),
                 body: CustomScrollView(slivers: [
-                  SliverFillRemaining(
+                  SliverToBoxAdapter(
                     child: controller.userLikedRecipe.isEmpty
                         ? noFavoriteRecipeCard(context)
                         : Column(
@@ -197,13 +187,7 @@ class _ScreenBarfbookState extends State<ScreenBarfbook> {
                                           controller: controller,
                                           recipe: recipe));
                                     }
-                                    return SingleChildScrollView(
-                                      child: Column(
-                                        children: [
-                                          Wrap(children: list),
-                                        ],
-                                      ),
-                                    );
+                                    return Wrap(children: list);
                                   })),
                             ],
                           ),

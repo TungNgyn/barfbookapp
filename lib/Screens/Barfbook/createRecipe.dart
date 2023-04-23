@@ -35,6 +35,7 @@ class _newRecipeState extends State<ScreenCreateRecipe> {
   Future? _future;
   FilePickerResult? result;
   PlatformFile? avatarFile;
+  String avatarFilePath = 'assets/images/defaultRecipeAvatar.png';
 
   _loadAvatar() async {
     avatar = Image.asset('assets/images/defaultRecipeAvatar.png');
@@ -113,10 +114,9 @@ class _newRecipeState extends State<ScreenCreateRecipe> {
 
   Future _createRecipeAvatar() async {
     try {
-      final bytes =
-          await rootBundle.load('assets/images/defaultRecipeAvatar.png');
+      final bytes = await rootBundle.load(avatarFilePath);
       final tempDir = await getTemporaryDirectory();
-      final file = File('${tempDir.path}/defaultRecipeAvatar.png');
+      final file = File('${tempDir.path}/$recipeID');
       await file.writeAsBytes(
           bytes.buffer.asUint8List(bytes.offsetInBytes, bytes.lengthInBytes));
 
@@ -182,13 +182,15 @@ class _newRecipeState extends State<ScreenCreateRecipe> {
                                               try {
                                                 avatarFile =
                                                     result!.files.first;
+                                                avatarFilePath =
+                                                    result!.files.first.path!;
                                                 Uint8List fileBytes =
                                                     result!.files.first.bytes!;
 
                                                 final tempDir =
                                                     await getTemporaryDirectory();
                                                 file = File(
-                                                    '${tempDir.path}/${user?.id}');
+                                                    '${tempDir.path}/$recipeID');
 
                                                 setState(() {
                                                   avatar = Container(
@@ -212,15 +214,30 @@ class _newRecipeState extends State<ScreenCreateRecipe> {
                                             children: [
                                               Wrap(
                                                 children: [
+                                                  IconButton(
+                                                      onPressed: () {
+                                                        setState(() {
+                                                          avatarFilePath =
+                                                              'assets/images/defaultRecipeAvatar.png';
+                                                          avatar = Image.asset(
+                                                            'assets/images/defaultRecipeAvatar.png',
+                                                          );
+                                                          Get.back();
+                                                        });
+                                                      },
+                                                      icon: Image.asset(
+                                                        'assets/images/defaultRecipeAvatar.png',
+                                                        width: 56,
+                                                      )),
                                                   for (var icon
                                                       in ingredientList)
                                                     IconButton(
                                                         onPressed: () {
                                                           setState(() {
-                                                            avatar =
-                                                                Image.asset(
-                                                              'assets/icons/ingredient/$icon.png',
-                                                            );
+                                                            avatarFilePath =
+                                                                'assets/icons/ingredient/$icon.png';
+                                                            avatar = Image.asset(
+                                                                'assets/icons/ingredient/$icon.png');
                                                             Get.back();
                                                           });
                                                         },
@@ -238,8 +255,8 @@ class _newRecipeState extends State<ScreenCreateRecipe> {
                                   ));
                             },
                             child: Container(
-                              width: MediaQuery.of(context).size.width,
-                              height: 250,
+                              width: 256,
+                              height: 256,
                               decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(20)),
                               child: avatar,
