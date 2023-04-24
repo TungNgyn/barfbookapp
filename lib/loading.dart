@@ -307,6 +307,7 @@ initData() async {
           description: recipe['description'],
           modified_at: recipe['modified_at'],
           user_id: user!.id,
+          userAvatar: userAvatar,
           user: Profile(
               id: user!.id,
               createdAt: userdata['created_at'].substring(0, 10),

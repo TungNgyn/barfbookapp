@@ -8,6 +8,7 @@ import 'package:Barfbook/loading.dart';
 import 'package:Barfbook/util/Supabase/AuthController.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 
 class ScreenExplore extends StatefulWidget {
@@ -183,52 +184,68 @@ class RecipeCard extends StatelessWidget {
         return;
       },
       child: Card(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+          side: BorderSide(
+            color: Colors.grey.withOpacity(0.2),
+            width: 1,
+          ),
+        ),
         child: Container(
-          height: 256,
-          width: 256,
-          child: Padding(
-              padding: EdgeInsets.all(15),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    recipe.name,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(fontSize: 24),
-                  ),
-                  Container(
-                    height: 128,
-                    width: 128,
-                    child: recipe.avatar,
-                  ),
-                  Spacer(),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      TextButton.icon(
-                          onPressed: () {
-                            Get.to(() => ScreenProfile(profile: recipe.user));
-                          },
-                          icon: CircleAvatar(
-                              backgroundColor: Colors.transparent,
-                              radius: 14,
-                              child: recipe.userAvatar),
-                          label: Text(recipe.user.name)),
-                      TextButton.icon(
-                          onPressed: () {},
-                          icon: Image.asset(
-                            'assets/icons/paw.png',
-                            width: 48,
+          color: Theme.of(context).colorScheme.surface,
+          height: 200,
+          width: 168,
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(top: 10, right: 10, left: 10),
+                child: Container(height: 96, child: recipe.avatar),
+              ),
+              Expanded(
+                child: Padding(
+                    padding: EdgeInsets.only(
+                        left: 15, right: 15, bottom: 10, top: 5),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          recipe.name,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            fontSize: 18,
                           ),
-                          label: Text(
-                            '${recipe.paws}',
-                            style: TextStyle(
-                                fontSize: 21, fontWeight: FontWeight.bold),
-                          ))
-                    ],
-                  ),
-                ],
-              )),
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            TextButton.icon(
+                                onPressed: () {
+                                  Get.to(() =>
+                                      ScreenProfile(profile: recipe.user));
+                                },
+                                icon: CircleAvatar(
+                                    backgroundColor: Colors.transparent,
+                                    radius: 14,
+                                    child: recipe.userAvatar),
+                                label: Text(
+                                  recipe.user.name,
+                                )),
+                            FaIcon(
+                              FontAwesomeIcons.paw,
+                            ),
+                            Text(
+                              '${recipe.paws}',
+                              style: TextStyle(fontSize: 16),
+                            ),
+                          ],
+                        ),
+                      ],
+                    )),
+              ),
+            ],
+          ),
         ),
       ),
     );

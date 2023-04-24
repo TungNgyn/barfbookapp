@@ -124,7 +124,7 @@ class _ScreenBarfbookState extends State<ScreenBarfbook> {
                     child: controller.userRecipeListDB.isEmpty
                         ? noRecipeCreatedCard(context)
                         : Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 20),
+                            padding: EdgeInsets.symmetric(horizontal: 10),
                             child: Column(
                               children: [
                                 Padding(
@@ -140,7 +140,7 @@ class _ScreenBarfbookState extends State<ScreenBarfbook> {
                                   List<Widget> list = [];
                                   for (Recipe recipe
                                       in controller.userRecipeList) {
-                                    list.add(OwnRecipeCard(
+                                    list.add(RecipeCard(
                                         controller: controller,
                                         recipe: recipe));
                                   }
@@ -169,7 +169,7 @@ class _ScreenBarfbookState extends State<ScreenBarfbook> {
                         : Column(
                             children: [
                               Padding(
-                                padding: EdgeInsets.symmetric(vertical: 15),
+                                padding: EdgeInsets.symmetric(vertical: 10),
                                 child: Text(
                                   "Favoriten",
                                   style: TextStyle(
@@ -295,98 +295,38 @@ class PetCard extends StatelessWidget {
         Get.to(() => ScreenPetDetailPage(pet: pet));
       },
       child: Card(
-        child: Padding(
-          padding: const EdgeInsets.all(15),
-          child: Column(
-            children: [
-              CircleAvatar(
-                  backgroundColor: Theme.of(context).colorScheme.surface,
-                  radius: 64,
-                  child: pet.avatar),
-              Text(
-                pet.name,
-                style: TextStyle(fontSize: 21, fontWeight: FontWeight.bold),
-              ),
-              Text('${pet.age} Jahre'),
-              Text('${pet.breed}'),
-              Text('${(pet.weight / 1000).toStringAsFixed(1)}kg'),
-            ],
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+          side: BorderSide(
+            color: Colors.grey.withOpacity(0.2),
+            width: 1,
           ),
         ),
-      ),
-    );
-  }
-}
-
-class OwnRecipeCard extends StatelessWidget {
-  const OwnRecipeCard({
-    super.key,
-    required this.controller,
-    required this.recipe,
-  });
-
-  final Controller controller;
-  final Recipe recipe;
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        for (var map in controller.userLikedRecipeXrefDB) {
-          if (map?.containsKey("recipe") ?? false) {
-            if (map['recipe'] == recipe.id) {
-              Get.to(() => RecipeDetailPage(
-                    recipe: recipe,
-                    favorite: true,
-                  ));
-              return;
-            }
-          }
-        }
-        Get.to(() => RecipeDetailPage(
-              recipe: recipe,
-              favorite: false,
-            ));
-        return;
-      },
-      child: Card(
         child: Container(
-          height: 250,
-          width: MediaQuery.of(context).size.width * 0.8,
+          color: Theme.of(context).colorScheme.surface,
+          height: 224,
+          width: 176,
           child: Padding(
-              padding: EdgeInsets.all(15),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    recipe.name,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(fontSize: 24),
-                  ),
-                  Container(
-                    height: 128,
-                    width: 128,
-                    child: recipe.avatar,
-                  ),
-                  Spacer(),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      TextButton.icon(
-                          onPressed: () {},
-                          icon: Image.asset(
-                            'assets/icons/paw.png',
-                            width: 48,
-                          ),
-                          label: Text(
-                            '${recipe.paws}',
-                            style: TextStyle(
-                                fontSize: 21, fontWeight: FontWeight.bold),
-                          ))
-                    ],
-                  ),
-                ],
-              )),
+            padding: const EdgeInsets.all(15),
+            child: Column(
+              children: [
+                CircleAvatar(
+                    backgroundColor: Theme.of(context).colorScheme.surface,
+                    radius: 56,
+                    child: pet.avatar),
+                Text(
+                  pet.name,
+                  style: TextStyle(fontSize: 21, fontWeight: FontWeight.bold),
+                ),
+                Text('${pet.age} Jahre'),
+                Text(
+                  '${pet.breed}',
+                  style: TextStyle(overflow: TextOverflow.ellipsis),
+                ),
+                Text('${(pet.weight / 1000).toStringAsFixed(1)}kg'),
+              ],
+            ),
+          ),
         ),
       ),
     );

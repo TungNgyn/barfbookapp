@@ -94,7 +94,7 @@ class _ScreenScheduleState extends State<ScreenSchedule> {
                         for (Recipe recipe in controller.userRecipeList) {
                           list.add(Stack(
                             children: [
-                              OwnRecipeCard(
+                              RecipeCard(
                                   controller: controller, recipe: recipe),
                               Positioned(
                                   right: 6,
@@ -169,25 +169,33 @@ class _ScreenScheduleState extends State<ScreenSchedule> {
                                       RecipeCard(
                                           controller: controller,
                                           recipe: recipe),
-                                      Positioned(
-                                          right: 5,
-                                          child: IconButton(
-                                            iconSize: 32,
-                                            icon: Icon(
-                                                Icons.remove_circle_outline),
-                                            onPressed: () {
-                                              setState(() {
-                                                final day = DateTime(
-                                                    _selectedDay!.year,
-                                                    _selectedDay!.month,
-                                                    _selectedDay!.day);
-                                                removeValueFromMap(
-                                                    kEventSource, day, recipe);
-                                              });
-                                              print(recipe.scheduleID);
-                                              removeSchedule(recipe.scheduleID);
-                                            },
-                                          )),
+                                      CircleAvatar(
+                                        backgroundColor: Theme.of(context)
+                                            .colorScheme
+                                            .surface,
+                                        child: Positioned(
+                                            right: 5,
+                                            child: IconButton(
+                                              iconSize: 32,
+                                              icon: Icon(
+                                                  Icons.remove_circle_outline),
+                                              onPressed: () {
+                                                setState(() {
+                                                  final day = DateTime(
+                                                      _selectedDay!.year,
+                                                      _selectedDay!.month,
+                                                      _selectedDay!.day);
+                                                  removeValueFromMap(
+                                                      kEventSource,
+                                                      day,
+                                                      recipe);
+                                                });
+                                                print(recipe.scheduleID);
+                                                removeSchedule(
+                                                    recipe.scheduleID);
+                                              },
+                                            )),
+                                      ),
                                     ],
                                   ),
                               ],

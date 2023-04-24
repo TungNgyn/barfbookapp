@@ -17,8 +17,17 @@ class ScreenPopularRecipe extends StatelessWidget {
         ),
         body: ListView(
           children: [
-            for (Recipe recipe in controller.exploreRecipeList)
-              RecipeCard(controller: controller, recipe: recipe)
+            Column(
+              children: [
+                Wrap(
+                  children: [
+                    for (Recipe recipe in controller.exploreRecipeList)
+                      // RecipeCard(controller: controller, recipe: recipe)
+                      Card()
+                  ],
+                ),
+              ],
+            ),
           ],
         ));
   }

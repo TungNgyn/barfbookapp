@@ -141,10 +141,14 @@ class _ScreenProfileState extends State<ScreenProfile>
                                 : SingleChildScrollView(
                                     child: Column(
                                       children: [
-                                        for (var recipe in recipeList)
-                                          RecipeCard(
-                                              controller: controller,
-                                              recipe: recipe)
+                                        Wrap(
+                                          children: [
+                                            for (var recipe in recipeList)
+                                              RecipeCard(
+                                                  controller: controller,
+                                                  recipe: recipe)
+                                          ],
+                                        ),
                                       ],
                                     ),
                                   ),

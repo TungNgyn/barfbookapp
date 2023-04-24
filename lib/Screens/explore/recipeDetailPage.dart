@@ -209,12 +209,6 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
                     expandedHeight: 300,
                     pinned: true,
                     flexibleSpace: FlexibleSpaceBar(
-                      title: Text(
-                        widget.recipe.name,
-                        style: TextStyle(
-                            color:
-                                Theme.of(context).textTheme.bodyLarge!.color),
-                      ),
                       background: Container(child: widget.recipe.avatar),
                     ),
                   ),
@@ -223,18 +217,164 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
                       padding: EdgeInsets.all(20),
                       child: Column(
                         children: [
-                          Container(
-                            child: Row(
-                              children: [
-                                Expanded(
-                                  child: Text(
-                                    widget.recipe.description,
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                    ),
-                                  ),
+                          Text(
+                            widget.recipe.name,
+                            style: TextStyle(fontSize: 31),
+                          ),
+                          Text(
+                            widget.recipe.description,
+                            style: TextStyle(
+                              fontSize: 14,
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(top: 20),
+                            child: Card(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(20),
+                                side: BorderSide(
+                                  color: Colors.grey.withOpacity(0.2),
+                                  width: 1,
                                 ),
-                              ],
+                              ),
+                              child: Container(
+                                  color: Theme.of(context).colorScheme.surface,
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(10),
+                                    child: Container(
+                                      height: 100,
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceAround,
+                                        children: [
+                                          Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Row(
+                                                children: [
+                                                  Padding(
+                                                    padding: EdgeInsets.only(
+                                                        right: 10),
+                                                    child: Container(
+                                                      color: Theme.of(context)
+                                                          .colorScheme
+                                                          .surface,
+                                                      child: Image.asset(
+                                                        'assets/icons/ingredient/carbohydrates.png',
+                                                        width: 40,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: [
+                                                      Text('Kohlenhydrate'),
+                                                      Text(
+                                                          '${carbohydratesSum.toStringAsFixed(1)}g'),
+                                                    ],
+                                                  ),
+                                                ],
+                                              ),
+                                              Row(
+                                                children: [
+                                                  Padding(
+                                                    padding: EdgeInsets.only(
+                                                        right: 10),
+                                                    child: Container(
+                                                      color: Theme.of(context)
+                                                          .colorScheme
+                                                          .surface,
+                                                      child: Image.asset(
+                                                        'assets/icons/ingredient/calories.png',
+                                                        width: 40,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: [
+                                                      Text('Kalorien'),
+                                                      Text(
+                                                          '${caloriesSum.toStringAsFixed(1)}kcal'),
+                                                    ],
+                                                  ),
+                                                ],
+                                              ),
+                                            ],
+                                          ),
+                                          Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Row(
+                                                children: [
+                                                  Padding(
+                                                    padding: EdgeInsets.only(
+                                                        right: 10),
+                                                    child: Container(
+                                                      color: Theme.of(context)
+                                                          .colorScheme
+                                                          .surface,
+                                                      child: Image.asset(
+                                                        'assets/icons/ingredient/protein.png',
+                                                        width: 40,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: [
+                                                      Text('Protein'),
+                                                      Text(
+                                                          '${proteinSum.toStringAsFixed(1)}g'),
+                                                    ],
+                                                  ),
+                                                ],
+                                              ),
+                                              Row(
+                                                children: [
+                                                  Padding(
+                                                    padding: EdgeInsets.only(
+                                                        right: 10),
+                                                    child: Container(
+                                                      color: Theme.of(context)
+                                                          .colorScheme
+                                                          .surface,
+                                                      child: Image.asset(
+                                                        'assets/icons/ingredient/fat.png',
+                                                        width: 40,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: [
+                                                      Text('Fett'),
+                                                      Text(
+                                                          '${fatSum.toStringAsFixed(1)}g'),
+                                                    ],
+                                                  ),
+                                                ],
+                                              ),
+                                            ],
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                  )),
                             ),
                           ),
                           Padding(
@@ -243,160 +383,178 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
                                 height:
                                     MediaQuery.of(context).size.height * 0.36,
                                 child: Card(
-                                    child: Padding(
-                                  padding: EdgeInsets.symmetric(horizontal: 15),
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          _indicator(Colors.green,
-                                              "Vegetarisch", vegSum + fruitSum),
-                                          IconButton(
-                                              onPressed: () {
-                                                Get.defaultDialog(
-                                                    title:
-                                                        'Analytische Bestandteile',
-                                                    content: Center(
-                                                      child: Padding(
-                                                        padding: EdgeInsets
-                                                            .symmetric(
-                                                                horizontal: 20),
-                                                        child: Column(
-                                                            crossAxisAlignment:
-                                                                CrossAxisAlignment
-                                                                    .start,
-                                                            children: [
-                                                              Row(
-                                                                mainAxisAlignment:
-                                                                    MainAxisAlignment
-                                                                        .spaceBetween,
-                                                                children: [
-                                                                  Text(
-                                                                      'Kalorien:'),
-                                                                  Text(
-                                                                      '${caloriesSum.toStringAsFixed(1)}kcal')
-                                                                ],
-                                                              ),
-                                                              Row(
-                                                                mainAxisAlignment:
-                                                                    MainAxisAlignment
-                                                                        .spaceBetween,
-                                                                children: [
-                                                                  Text(
-                                                                      'Protein:'),
-                                                                  Text(
-                                                                      '${proteinSum.toStringAsFixed(1)}g')
-                                                                ],
-                                                              ),
-                                                              Row(
-                                                                mainAxisAlignment:
-                                                                    MainAxisAlignment
-                                                                        .spaceBetween,
-                                                                children: [
-                                                                  Text('Fett:'),
-                                                                  Text(
-                                                                      '${fatSum.toStringAsFixed(1)}g')
-                                                                ],
-                                                              ),
-                                                              Row(
-                                                                mainAxisAlignment:
-                                                                    MainAxisAlignment
-                                                                        .spaceBetween,
-                                                                children: [
-                                                                  Text(
-                                                                      'Kohlenhydrate:'),
-                                                                  Text(
-                                                                      '${carbohydratesSum.toStringAsFixed(1)}g')
-                                                                ],
-                                                              ),
-                                                              Row(
-                                                                mainAxisAlignment:
-                                                                    MainAxisAlignment
-                                                                        .spaceBetween,
-                                                                children: [
-                                                                  Text(
-                                                                      'Mineralien:'),
-                                                                  Text(
-                                                                      '${mineralsSum.toStringAsFixed(1)}g')
-                                                                ],
-                                                              ),
-                                                            ]),
-                                                      ),
-                                                    ));
-                                              },
-                                              icon: Icon(Icons.info))
-                                        ],
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(20),
+                                      side: BorderSide(
+                                        color: Colors.grey.withOpacity(0.2),
+                                        width: 1,
                                       ),
-                                      Padding(
-                                        padding:
-                                            EdgeInsets.symmetric(vertical: 10),
-                                        child: SizedBox(
-                                          height: 200,
-                                          child: PieChart(PieChartData(
-                                              pieTouchData: PieTouchData(
-                                                  touchCallback:
-                                                      (FlTouchEvent event,
-                                                          pieTouchResponse) {
-                                                setState(() {
-                                                  if (!event
-                                                          .isInterestedForInteractions &&
-                                                      pieTouchResponse !=
-                                                          null &&
-                                                      (pieTouchResponse
-                                                              .touchedSection!
-                                                              .touchedSectionIndex !=
-                                                          -1)) {
-                                                    Get.defaultDialog(
-                                                        title: pieTouchResponse
+                                    ),
+                                    child: Container(
+                                      color:
+                                          Theme.of(context).colorScheme.surface,
+                                      child: Padding(
+                                        padding: EdgeInsets.symmetric(
+                                            horizontal: 15),
+                                        child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                _indicator(
+                                                    Colors.green,
+                                                    "Vegetarisch",
+                                                    vegSum + fruitSum),
+                                                // IconButton(
+                                                //     onPressed: () {
+                                                //       Get.defaultDialog(
+                                                //           title:
+                                                //               'Analytische Bestandteile',
+                                                //           content: Center(
+                                                //             child: Padding(
+                                                //               padding: EdgeInsets
+                                                //                   .symmetric(
+                                                //                       horizontal:
+                                                //                           20),
+                                                //               child: Column(
+                                                //                   crossAxisAlignment:
+                                                //                       CrossAxisAlignment
+                                                //                           .start,
+                                                //                   children: [
+                                                //                     Row(
+                                                //                       mainAxisAlignment:
+                                                //                           MainAxisAlignment
+                                                //                               .spaceBetween,
+                                                //                       children: [
+                                                //                         Text(
+                                                //                             'Kalorien:'),
+                                                //                         Text(
+                                                //                             '${caloriesSum.toStringAsFixed(1)}kcal')
+                                                //                       ],
+                                                //                     ),
+                                                //                     Row(
+                                                //                       mainAxisAlignment:
+                                                //                           MainAxisAlignment
+                                                //                               .spaceBetween,
+                                                //                       children: [
+                                                //                         Text(
+                                                //                             'Protein:'),
+                                                //                         Text(
+                                                //                             '${proteinSum.toStringAsFixed(1)}g')
+                                                //                       ],
+                                                //                     ),
+                                                //                     Row(
+                                                //                       mainAxisAlignment:
+                                                //                           MainAxisAlignment
+                                                //                               .spaceBetween,
+                                                //                       children: [
+                                                //                         Text(
+                                                //                             'Fett:'),
+                                                //                         Text(
+                                                //                             '${fatSum.toStringAsFixed(1)}g')
+                                                //                       ],
+                                                //                     ),
+                                                //                     Row(
+                                                //                       mainAxisAlignment:
+                                                //                           MainAxisAlignment
+                                                //                               .spaceBetween,
+                                                //                       children: [
+                                                //                         Text(
+                                                //                             'Kohlenhydrate:'),
+                                                //                         Text(
+                                                //                             '${carbohydratesSum.toStringAsFixed(1)}g')
+                                                //                       ],
+                                                //                     ),
+                                                //                     Row(
+                                                //                       mainAxisAlignment:
+                                                //                           MainAxisAlignment
+                                                //                               .spaceBetween,
+                                                //                       children: [
+                                                //                         Text(
+                                                //                             'Mineralien:'),
+                                                //                         Text(
+                                                //                             '${mineralsSum.toStringAsFixed(1)}g')
+                                                //                       ],
+                                                //                     ),
+                                                //                   ]),
+                                                //             ),
+                                                //           ));
+                                                //     },
+                                                //     icon: Icon(Icons.info))
+                                              ],
+                                            ),
+                                            Padding(
+                                              padding: EdgeInsets.symmetric(
+                                                  vertical: 10),
+                                              child: SizedBox(
+                                                height: 200,
+                                                child: PieChart(PieChartData(
+                                                    pieTouchData: PieTouchData(
+                                                        touchCallback:
+                                                            (FlTouchEvent event,
+                                                                pieTouchResponse) {
+                                                      setState(() {
+                                                        if (!event
+                                                                .isInterestedForInteractions &&
+                                                            pieTouchResponse !=
+                                                                null &&
+                                                            (pieTouchResponse
                                                                     .touchedSection!
-                                                                    .touchedSectionIndex ==
-                                                                0
-                                                            ? 'Fleischanteil'
-                                                            : 'Gemüseanteil',
-                                                        content: SizedBox(
-                                                            height: 200,
-                                                            width: 200,
-                                                            child: BarChart(pieTouchResponse
-                                                                        .touchedSection!
-                                                                        .touchedSectionIndex ==
-                                                                    0
-                                                                ? meatBarData()
-                                                                : vegBarData())));
-                                                  }
-                                                  if (!event
-                                                          .isInterestedForInteractions ||
-                                                      pieTouchResponse ==
-                                                          null ||
-                                                      pieTouchResponse
-                                                              .touchedSection ==
-                                                          null) {
-                                                    touchedIndex = -1;
-                                                    return;
-                                                  }
-                                                  touchedIndex =
-                                                      pieTouchResponse
-                                                          .touchedSection!
-                                                          .touchedSectionIndex;
-                                                });
-                                              }),
-                                              sectionsSpace: 0,
-                                              centerSpaceRadius: 60,
-                                              sections: showSection())),
+                                                                    .touchedSectionIndex !=
+                                                                -1)) {
+                                                          Get.defaultDialog(
+                                                              title: pieTouchResponse
+                                                                          .touchedSection!
+                                                                          .touchedSectionIndex ==
+                                                                      0
+                                                                  ? 'Fleischanteil'
+                                                                  : 'Gemüseanteil',
+                                                              content: SizedBox(
+                                                                  height: 200,
+                                                                  width: 200,
+                                                                  child: BarChart(pieTouchResponse
+                                                                              .touchedSection!
+                                                                              .touchedSectionIndex ==
+                                                                          0
+                                                                      ? meatBarData()
+                                                                      : vegBarData())));
+                                                        }
+                                                        if (!event
+                                                                .isInterestedForInteractions ||
+                                                            pieTouchResponse ==
+                                                                null ||
+                                                            pieTouchResponse
+                                                                    .touchedSection ==
+                                                                null) {
+                                                          touchedIndex = -1;
+                                                          return;
+                                                        }
+                                                        touchedIndex =
+                                                            pieTouchResponse
+                                                                .touchedSection!
+                                                                .touchedSectionIndex;
+                                                      });
+                                                    }),
+                                                    sectionsSpace: 0,
+                                                    centerSpaceRadius: 60,
+                                                    sections: showSection())),
+                                              ),
+                                            ),
+                                            _indicator(
+                                                Colors.red,
+                                                "Fleisch",
+                                                meatSum +
+                                                    rumenSum +
+                                                    boneSum +
+                                                    organSum)
+                                          ],
                                         ),
                                       ),
-                                      _indicator(
-                                          Colors.red,
-                                          "Fleisch",
-                                          meatSum +
-                                              rumenSum +
-                                              boneSum +
-                                              organSum)
-                                    ],
-                                  ),
-                                ))),
+                                    ))),
                           ),
                           Text(
                             '${recipeIngredients.length} Zutaten',
@@ -406,40 +564,71 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
                             children: [
                               for (Ingredient ingredient in recipeIngredients)
                                 Card(
-                                    elevation: 4,
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(10),
-                                      child: Row(
-                                        children: [
-                                          Padding(
-                                            padding: EdgeInsets.only(right: 10),
-                                            child: Card(
-                                                child: Image.asset(
-                                              'assets/icons/ingredient/${ingredient.avatar}.png',
-                                              width: 64,
-                                            )),
-                                          ),
-                                          Flexible(
-                                            flex: 10,
-                                            child: Column(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.center,
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Text(
-                                                  ingredient.name,
-                                                  style:
-                                                      TextStyle(fontSize: 18),
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
-                                                ),
-                                                Text(
-                                                    '${ingredient.gram} Gramm'),
-                                              ],
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(20),
+                                      side: BorderSide(
+                                        color: Colors.grey.withOpacity(0.2),
+                                        width: 1,
+                                      ),
+                                    ),
+                                    child: Container(
+                                      color:
+                                          Theme.of(context).colorScheme.surface,
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(10),
+                                        child: Row(
+                                          children: [
+                                            Padding(
+                                              padding:
+                                                  EdgeInsets.only(right: 10),
+                                              child: Card(
+                                                  shape: RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            20),
+                                                    side: BorderSide(
+                                                      color: Colors.grey
+                                                          .withOpacity(0.2),
+                                                      width: 1,
+                                                    ),
+                                                  ),
+                                                  child: Container(
+                                                    color: Theme.of(context)
+                                                        .colorScheme
+                                                        .surface,
+                                                    child: Padding(
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                              5),
+                                                      child: Image.asset(
+                                                        'assets/icons/ingredient/${ingredient.avatar}.png',
+                                                        width: 64,
+                                                      ),
+                                                    ),
+                                                  )),
                                             ),
-                                          ),
-                                        ],
+                                            Flexible(
+                                              flex: 10,
+                                              child: Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Text(
+                                                    ingredient.name,
+                                                    style:
+                                                        TextStyle(fontSize: 18),
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                  ),
+                                                  Text(
+                                                      '${ingredient.gram} Gramm'),
+                                                ],
+                                              ),
+                                            ),
+                                          ],
+                                        ),
                                       ),
                                     )),
                             ],
