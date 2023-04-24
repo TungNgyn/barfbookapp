@@ -31,7 +31,7 @@ class Ingredient {
   final double minerals;
   final double moisture;
   final avatar;
-  double gram;
+  int gram;
 }
 
 class Recipe {

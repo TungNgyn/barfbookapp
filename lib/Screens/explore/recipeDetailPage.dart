@@ -8,6 +8,7 @@ import 'package:Barfbook/util/Supabase/AuthController.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -21,6 +22,8 @@ class RecipeDetailPage extends StatefulWidget {
 }
 
 class _RecipeDetailPageState extends State<RecipeDetailPage> {
+  final ScrollController _sliverScrollController = ScrollController();
+  var isPinned = false;
   Future? _future;
   int touchedIndex = -1;
   double vegSum = 0;
@@ -51,6 +54,22 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
   void initState() {
     _future = loadData();
     super.initState();
+
+    _sliverScrollController.addListener(() {
+      if (!isPinned &&
+          _sliverScrollController.hasClients &&
+          _sliverScrollController.offset >= 245) {
+        setState(() {
+          isPinned = true;
+        });
+      } else if (isPinned &&
+          _sliverScrollController.hasClients &&
+          _sliverScrollController.offset < 245) {
+        setState(() {
+          isPinned = false;
+        });
+      }
+    });
   }
 
   @override
@@ -204,23 +223,195 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
                 //   ],
                 // ),
                 body: CustomScrollView(
+                controller: _sliverScrollController,
                 slivers: [
                   SliverAppBar(
                     expandedHeight: 300,
                     pinned: true,
                     flexibleSpace: FlexibleSpaceBar(
-                      background: Container(child: widget.recipe.avatar),
+                      title: Text(
+                        widget.recipe.name,
+                        style: TextStyle(
+                            color:
+                                Theme.of(context).textTheme.bodyLarge!.color),
+                      ),
+                      background: Padding(
+                          padding:
+                              EdgeInsets.only(bottom: 50, left: 35, right: 35),
+                          child: widget.recipe.avatar),
                     ),
+                    actions: [
+                      if (isPinned)
+                        widget.recipe.user_id != user!.id
+                            ? IconButton(
+                                onPressed: () {
+                                  setState(() {
+                                    toggleFavorite();
+                                  });
+                                },
+                                icon: (widget.favorite == true
+                                    ? Icon(Icons.favorite)
+                                    : Icon(Icons.favorite_border)))
+                            : IconButton(
+                                onPressed: () {
+                                  Get.to(() =>
+                                      ScreenEditRecipe(recipe: widget.recipe));
+                                },
+                                icon: (Icon(Icons.edit))),
+                      if (isPinned)
+                        IconButton(
+                            onPressed: () {
+                              Get.defaultDialog(
+                                  title: 'Details',
+                                  content: Column(
+                                    children: [
+                                      GestureDetector(
+                                        onTap: () {
+                                          Get.to(() => ScreenProfile(
+                                              profile: widget.recipe.user!));
+                                        },
+                                        child: Column(
+                                          children: [
+                                            CircleAvatar(
+                                              child: widget.recipe.userAvatar,
+                                              radius: 48,
+                                            ),
+                                            Text(
+                                              '${widget.recipe.user!.name}',
+                                              style: TextStyle(fontSize: 18),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      Text(
+                                          "Erstellt am ${widget.recipe.created_at}"),
+                                      Text(
+                                          "Bearbeitet am ${widget.recipe.modified_at}"),
+                                    ],
+                                  ));
+                            },
+                            icon: Icon(Icons.info)),
+                      if (isPinned)
+                        IconButton(
+                            onPressed: () {
+                              TextEditingController _commentController =
+                                  TextEditingController();
+                              Get.bottomSheet(
+                                  isScrollControlled: true,
+                                  Container(
+                                      decoration: BoxDecoration(
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .onPrimary,
+                                          borderRadius: BorderRadius.only(
+                                              topLeft: Radius.circular(25),
+                                              topRight: Radius.circular(25))),
+                                      height:
+                                          MediaQuery.of(context).size.height *
+                                              0.8,
+                                      child: SingleChildScrollView(
+                                        child: Padding(
+                                          padding: EdgeInsets.only(
+                                              left: 10,
+                                              right: 10,
+                                              top: 15,
+                                              bottom: 20),
+                                          child: Column(
+                                            children: [
+                                              Text(
+                                                "Kommentare",
+                                                style: TextStyle(fontSize: 31),
+                                              ),
+                                              SizedBox(height: 35),
+                                              TextField(
+                                                controller: _commentController,
+                                                maxLines: 8,
+                                                decoration: InputDecoration(
+                                                  border: OutlineInputBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              12)),
+                                                  hintText:
+                                                      "Schreib was dir gefällt!",
+                                                ),
+                                              ),
+                                              SizedBox(height: 5),
+                                              ElevatedButton(
+                                                  onPressed: () {
+                                                    setState(() {
+                                                      controller.commentList.add(Comment(
+                                                          created_at: DateTime(
+                                                              DateTime.now()
+                                                                  .year,
+                                                              DateTime.now()
+                                                                  .month,
+                                                              DateTime.now()
+                                                                  .day),
+                                                          modified_at: DateTime(
+                                                              DateTime.now()
+                                                                  .year,
+                                                              DateTime.now()
+                                                                  .month,
+                                                              DateTime.now()
+                                                                  .day),
+                                                          recipeID:
+                                                              widget.recipe.id,
+                                                          profileID: user?.id,
+                                                          comment:
+                                                              _commentController
+                                                                  .text,
+                                                          profile: Profile(
+                                                              id: controller
+                                                                  .userProfile[
+                                                                      'user']
+                                                                  .id,
+                                                              createdAt: controller
+                                                                  .userProfile['user']
+                                                                  .createdAt,
+                                                              email: controller.userProfile['user'].email,
+                                                              name: controller.userProfile['user'].name,
+                                                              description: controller.userProfile['user'].description,
+                                                              avatar: controller.userProfile['user'].avatar)));
+                                                      insertComment(
+                                                          widget.recipe.id,
+                                                          _commentController
+                                                              .text);
+                                                    });
+                                                  },
+                                                  child: Text("Kommentieren")),
+                                              SizedBox(height: 20),
+                                              Obx(() {
+                                                List<Widget> list = [];
+                                                if (controller
+                                                    .commentList.isEmpty) {
+                                                  list.add(
+                                                      Text("Keine Kommentare"));
+                                                }
+
+                                                for (Comment comment
+                                                    in controller.commentList) {
+                                                  list.insert(
+                                                      0,
+                                                      CommentCard(
+                                                          comment: comment));
+                                                }
+                                                return Column(
+                                                  children: list,
+                                                );
+                                              })
+                                            ],
+                                          ),
+                                        ),
+                                      )));
+                            },
+                            icon: Icon(Icons.comment)),
+                    ],
                   ),
                   SliverToBoxAdapter(
                     child: Padding(
-                      padding: EdgeInsets.all(20),
+                      padding: EdgeInsets.symmetric(horizontal: 15),
                       child: Column(
                         children: [
-                          Text(
-                            widget.recipe.name,
-                            style: TextStyle(fontSize: 31),
-                          ),
                           Text(
                             widget.recipe.description,
                             style: TextStyle(
@@ -623,7 +814,7 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
                                                         TextOverflow.ellipsis,
                                                   ),
                                                   Text(
-                                                      '${ingredient.gram} Gramm'),
+                                                      '${ingredient.gram} Gramm (${getPercentage(ingredient.category, ingredient.gram)}%)'),
                                                 ],
                                               ),
                                             ),
@@ -809,7 +1000,7 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
           .select('*')
           .eq('recipe', widget.recipe.id);
       for (var recipeIngredient in recipeIngredientsList) {
-        final gram = recipeIngredient['grams'].toDouble();
+        final gram = recipeIngredient['grams'];
         final ingredientsList = await supabase
             .from('ingredient')
             .select('*')
@@ -1168,6 +1359,25 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
         Text('${gram}g $text'),
       ],
     );
+  }
+
+  getPercentage(String category, int gram) {
+    final percent;
+
+    switch (category) {
+      case 'Muskelfleisch':
+      case 'Pansen':
+      case 'Knochen':
+      case 'Innereien':
+        return percent =
+            (gram / (meatSum + rumenSum + boneSum + organSum) * 100)
+                .toStringAsFixed(1);
+      case 'Gemüse':
+      case 'Obst':
+        return percent = (gram / (vegSum + fruitSum) * 100).toStringAsFixed(1);
+      default:
+        return percent = 0;
+    }
   }
 }
 

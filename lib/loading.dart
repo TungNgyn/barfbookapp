@@ -87,9 +87,7 @@ initData() async {
 
   // init explore recipe and likes and profile list
   try {
-    controller.databaseRecipeList = await supabase
-        .from('recipe')
-        .select('id, created_at, modified_at, name, description, user_id');
+    controller.databaseRecipeList = await supabase.from('recipe').select('*');
   } catch (error) {
     print(error);
   } finally {
@@ -108,8 +106,6 @@ initData() async {
             return Container(
               decoration: BoxDecoration(
                 shape: BoxShape.rectangle,
-                border:
-                    Border.all(color: Theme.of(context).colorScheme.primary),
                 borderRadius: BorderRadius.circular(20),
                 image: DecorationImage(
                   image: imageProvider,
@@ -200,6 +196,7 @@ initData() async {
         }
       }
     }
+    print(controller.exploreRecipeList.length);
   }
 
   // init user-created recipe
@@ -635,112 +632,6 @@ initData() async {
       }
     } catch (error) {
       print(error);
-    }
-  } catch (error) {
-    print(error);
-  }
-}
-
-loadExplorePage() async {
-  final Controller controller = Get.find();
-  try {
-    controller.databaseRecipeList = await supabase
-        .from('recipe')
-        .select('id, created_at, modified_at, name, description, user_id');
-  } catch (error) {
-    print(error);
-  } finally {
-    controller.exploreRecipeList.clear();
-    controller.exploreProfileList.clear();
-    for (var recipe in controller.databaseRecipeList) {
-      List userName = await supabase
-          .from('profile')
-          .select('name')
-          .eq('id', recipe['user_id']);
-
-      // final avatar = await supabase.storage
-      //     .from('profile')
-      //     .download('${recipe['user_id']}');
-      final avatar = CachedNetworkImage(
-        imageUrl:
-            'https://wokqzyqvqztmyzhhuqqh.supabase.co/storage/v1/object/public/profile/${recipe['user_id']}',
-        progressIndicatorBuilder: (context, url, downloadProgress) =>
-            CircularProgressIndicator(value: downloadProgress.progress),
-        errorWidget: (context, url, error) => Icon(Icons.error),
-        imageBuilder: (context, imageProvider) {
-          return Container(
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              border: Border.all(color: Theme.of(context).colorScheme.primary),
-              image: DecorationImage(
-                image: imageProvider,
-                fit: BoxFit.cover,
-              ),
-            ),
-          );
-        },
-      );
-      List userdata = await supabase
-          .from('profile')
-          .select("*")
-          .match({'id': recipe['user_id']});
-      controller.exploreProfileList.add(Profile(
-          id: userdata[0]['id'],
-          createdAt: userdata[0]['created_at'].substring(0, 10),
-          email: userdata[0]['email'],
-          name: userdata[0]['name'],
-          description: userdata[0]['description'],
-          avatar: avatar));
-
-      final paws = await supabase
-          .from('profile_liked_recipe')
-          .select('*', FetchOptions(count: CountOption.exact))
-          .eq('recipe', recipe['id']);
-      for (var profile in controller.exploreProfileList) {
-        if (profile.id == recipe['user_id']) {
-          controller.exploreRecipeList.add(Recipe(
-              name: (recipe as Map)['name'],
-              id: recipe['id'],
-              created_at: recipe['created_at'].substring(0, 10),
-              paws: paws.count,
-              description: recipe['description'],
-              modified_at: recipe['modified_at'].substring(0, 10),
-              user_id: recipe['user_id'],
-              user: profile,
-              userAvatar: avatar));
-        }
-      }
-    }
-  }
-}
-
-initFavorite() async {
-  final Controller controller = Get.find();
-  try {
-    controller.userLikedRecipe.clear();
-    controller.userLikedRecipeXrefDB = await supabase
-        .from('profile_liked_recipe')
-        .select('profile, recipe')
-        .eq('profile', user!.id);
-
-    for (var map in controller.userLikedRecipeXrefDB) {
-      if (map?.containsKey("recipe") ?? false) {
-        var tempRecipe = await supabase
-            .from('recipe')
-            .select('id, created_at, modified_at, name, description')
-            .eq('id', map['recipe']);
-
-        for (var recipe in tempRecipe) {
-          controller.userLikedRecipe.add(Recipe(
-              name: (recipe as Map)['name'],
-              id: recipe['id'],
-              created_at: recipe['created_at'],
-              paws: 0,
-              description: recipe['description'],
-              modified_at: recipe['modified_at'],
-              user_id: user!.id));
-        }
-      }
     }
   } catch (error) {
     print(error);

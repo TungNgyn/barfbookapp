@@ -132,7 +132,7 @@ class _ScreenExploreState extends State<ScreenExplore>
   bool get wantKeepAlive => true;
 
   Future<void> _pullRefresh() async {
-    loadExplorePage();
+    // loadExplorePage();
     setState(() {});
   }
 
@@ -238,6 +238,113 @@ class RecipeCard extends StatelessWidget {
                             Text(
                               '${recipe.paws}',
                               style: TextStyle(fontSize: 16),
+                            ),
+                          ],
+                        ),
+                      ],
+                    )),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class BigRecipeCard extends StatelessWidget {
+  const BigRecipeCard({
+    super.key,
+    required this.controller,
+    required this.recipe,
+  });
+
+  final Controller controller;
+  final recipe;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        for (var map in controller.userLikedRecipeXrefDB) {
+          if (map?.containsKey("recipe") ?? false) {
+            if (map['recipe'] == recipe.id) {
+              Get.to(() => RecipeDetailPage(
+                    recipe: recipe,
+                    favorite: true,
+                  ));
+              return;
+            }
+          }
+        }
+        Get.to(() => RecipeDetailPage(
+              recipe: recipe,
+              favorite: false,
+            ));
+        return;
+      },
+      child: Card(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+          side: BorderSide(
+            color: Colors.grey.withOpacity(0.2),
+            width: 1,
+          ),
+        ),
+        child: Container(
+          color: Theme.of(context).colorScheme.surface,
+          height: 150,
+          width: 336,
+          child: Row(
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(top: 10, right: 10, left: 10),
+                child: Container(height: 128, width: 128, child: recipe.avatar),
+              ),
+              Expanded(
+                child: Padding(
+                    padding: EdgeInsets.only(
+                        left: 15, right: 15, bottom: 10, top: 5),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          recipe.name,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            fontSize: 18,
+                          ),
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            TextButton.icon(
+                                onPressed: () {
+                                  Get.to(() =>
+                                      ScreenProfile(profile: recipe.user));
+                                },
+                                icon: CircleAvatar(
+                                    backgroundColor: Colors.transparent,
+                                    radius: 14,
+                                    child: recipe.userAvatar),
+                                label: Text(
+                                  recipe.user.name,
+                                )),
+                            Row(
+                              children: [
+                                FaIcon(
+                                  FontAwesomeIcons.paw,
+                                ),
+                                Padding(
+                                  padding: EdgeInsets.symmetric(horizontal: 10),
+                                  child: Text(
+                                    '${recipe.paws}',
+                                    style: TextStyle(fontSize: 16),
+                                  ),
+                                ),
+                              ],
                             ),
                           ],
                         ),

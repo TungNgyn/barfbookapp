@@ -22,8 +22,10 @@ class ScreenPopularRecipe extends StatelessWidget {
                 Wrap(
                   children: [
                     for (Recipe recipe in controller.exploreRecipeList)
-                      // RecipeCard(controller: controller, recipe: recipe)
-                      Card()
+                      BigRecipeCard(
+                        recipe: recipe,
+                        controller: controller,
+                      )
                   ],
                 ),
               ],

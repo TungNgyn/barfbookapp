@@ -664,7 +664,7 @@ class _editRecipeState extends State<ScreenEditRecipe> {
                                                                                         }
                                                                                         weightSum.remove(ingredient.gram);
                                                                                         //update new value
-                                                                                        ingredient.gram = double.parse(value);
+                                                                                        ingredient.gram = int.parse(value);
                                                                                         caloriesSum.add(ingredient.calories.toDouble() / 100 * double.parse(_recipeGramController.value.text));
                                                                                         proteinSum.add(ingredient.protein.toDouble() / 100 * double.parse(_recipeGramController.value.text));
 
