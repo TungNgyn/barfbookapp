@@ -200,83 +200,98 @@ class _ScreenBarfbookState extends State<ScreenBarfbook> {
   }
 
   Widget noRecipeCreatedCard(BuildContext context) {
-    return Column(
-      children: [
-        Card(
-            child: Padding(
-          padding: const EdgeInsets.all(15.0),
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: Image.asset(
-                  'assets/icons/recipe.png',
-                  width: MediaQuery.of(context).size.width * 0.2,
+    return Padding(
+      padding: const EdgeInsets.all(15.0),
+      child: Column(
+        children: [
+          Card(
+              elevation: 10,
+              child: Padding(
+                padding: const EdgeInsets.all(15.0),
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: Image.asset(
+                        'assets/icons/recipe.png',
+                        width: MediaQuery.of(context).size.width * 0.2,
+                      ),
+                    ),
+                    Column(
+                      children: [
+                        Text("Du hast noch kein eigenes Rezept erstellt."),
+                        Text("Fang jetzt damit an!"),
+                      ],
+                    ),
+                  ],
                 ),
-              ),
-              Column(
-                children: [
-                  Text("Du hast noch kein eigenes Rezept erstellt."),
-                  Text("Fang jetzt damit an!"),
-                ],
-              ),
-            ],
-          ),
-        )),
-      ],
+              )),
+        ],
+      ),
     );
   }
 
   Widget noFavoriteRecipeCard(BuildContext context) {
-    return Column(
-      children: [
-        Card(
-          child: Padding(
-            padding: const EdgeInsets.all(15),
-            child: Column(children: [
-              Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: Image.asset(
-                  'assets/icons/favorite.png',
-                  width: MediaQuery.of(context).size.width * 0.2,
+    return Padding(
+      padding: const EdgeInsets.all(15.0),
+      child: Column(
+        children: [
+          Card(
+            elevation: 10,
+            child: Padding(
+              padding: const EdgeInsets.all(15),
+              child: Column(children: [
+                Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: Image.asset(
+                    'assets/icons/favorite.png',
+                    width: MediaQuery.of(context).size.width * 0.2,
+                  ),
                 ),
-              ),
-              Column(
-                children: [
-                  Text('Du hast noch keine Rezepte gespeichert.'),
-                  Text('Finde die besten Rezepte!'),
-                ],
-              ),
-            ]),
+                Column(
+                  children: [
+                    Text('Du hast noch keine Rezepte gespeichert.'),
+                    Text('Finde die besten Rezepte!'),
+                  ],
+                ),
+              ]),
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
   Widget addPetCard(BuildContext context) {
-    return Card(
-        elevation: 10,
-        child: Padding(
-          padding: const EdgeInsets.all(15.0),
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: Image.asset(
-                  'assets/icons/petCard.png',
-                  width: MediaQuery.of(context).size.width * 0.2,
+    return Padding(
+      padding: const EdgeInsets.all(15.0),
+      child: Column(
+        children: [
+          Card(
+              elevation: 10,
+              child: Padding(
+                padding: const EdgeInsets.all(15.0),
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: Image.asset(
+                        'assets/icons/petCard.png',
+                        width: MediaQuery.of(context).size.width * 0.2,
+                      ),
+                    ),
+                    Column(
+                      children: [
+                        Text("Du hast noch keine Haustiere hinzugefügt."),
+                        Text("Trage jetzt einen ein!"),
+                      ],
+                    ),
+                  ],
                 ),
-              ),
-              Column(
-                children: [
-                  Text("Du hast noch keine Haustiere hinzugefügt."),
-                  Text("Trage jetzt einen ein!"),
-                ],
-              ),
-            ],
-          ),
-        ));
+              )),
+        ],
+      ),
+    );
   }
 }
 

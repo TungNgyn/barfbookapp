@@ -10,7 +10,8 @@ class ScreenPopularRecipe extends StatelessWidget {
   final Controller controller = Get.find();
   @override
   Widget build(BuildContext context) {
-    controller.exploreRecipeList.sort(((a, b) => b.paws.compareTo(a.paws)));
+    // controller.explorePopularProfileList
+    //     .sort(((a, b) => b.paws.compareTo(a.paws)));
     return Scaffold(
         appBar: AppBar(
           title: Text("Beliebte Rezepte"),
@@ -21,7 +22,7 @@ class ScreenPopularRecipe extends StatelessWidget {
               children: [
                 Wrap(
                   children: [
-                    for (Recipe recipe in controller.exploreRecipeList)
+                    for (Recipe recipe in controller.explorePopularRecipeList)
                       BigRecipeCard(
                         recipe: recipe,
                         controller: controller,

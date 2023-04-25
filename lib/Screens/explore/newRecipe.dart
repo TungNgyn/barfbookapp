@@ -10,8 +10,8 @@ class ScreenNewRecipe extends StatelessWidget {
   final Controller controller = Get.find();
   @override
   Widget build(BuildContext context) {
-    controller.exploreRecipeList
-        .sort(((a, b) => b.created_at.compareTo(a.created_at)));
+    // controller.explorePopularProfileList
+    //     .sort(((a, b) => b.created_at.compareTo(a.created_at)));
     return Scaffold(
       appBar: AppBar(
         title: Text("Neue Rezepte"),
@@ -20,7 +20,7 @@ class ScreenNewRecipe extends StatelessWidget {
         padding: EdgeInsets.symmetric(horizontal: 15),
         child: ListView(
           children: [
-            for (Recipe recipe in controller.exploreRecipeList)
+            for (Recipe recipe in controller.exploreNewRecipeList)
               RecipeCard(controller: controller, recipe: recipe)
           ],
         ),

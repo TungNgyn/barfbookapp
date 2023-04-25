@@ -70,9 +70,9 @@ class _ScreenExploreState extends State<ScreenExplore>
               children: [
                 _searchBar(),
                 sortPopularRecipe(),
-                exploreRecipeRow(context),
+                explorePopularRecipeRow(context),
                 sortNewRecipe(),
-                exploreRecipeRow(context),
+                exploreNewRecipeRow(context),
               ],
             ),
           ),
@@ -81,18 +81,29 @@ class _ScreenExploreState extends State<ScreenExplore>
     );
   }
 
-  SingleChildScrollView exploreRecipeRow(BuildContext context) {
+  SingleChildScrollView explorePopularRecipeRow(BuildContext context) {
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: Row(children: [
-        for (var recipe in controller.exploreRecipeList)
+        for (var recipe in controller.explorePopularRecipeList)
+          RecipeCard(controller: controller, recipe: recipe)
+      ]),
+    );
+  }
+
+  SingleChildScrollView exploreNewRecipeRow(BuildContext context) {
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Row(children: [
+        for (var recipe in controller.exploreNewRecipeList)
           RecipeCard(controller: controller, recipe: recipe)
       ]),
     );
   }
 
   Row sortPopularRecipe() {
-    controller.exploreRecipeList.sort(((a, b) => b.paws.compareTo(a.paws)));
+    // controller.explorePopularProfileList
+    //     .sort(((a, b) => b.paws.compareTo(a.paws)));
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -110,8 +121,8 @@ class _ScreenExploreState extends State<ScreenExplore>
   }
 
   Row sortNewRecipe() {
-    controller.exploreRecipeList
-        .sort(((a, b) => b.created_at.compareTo(a.created_at)));
+    // controller.explorePopularProfileList
+    //     .sort(((a, b) => b.created_at.compareTo(a.created_at)));
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -228,7 +239,7 @@ class RecipeCard extends StatelessWidget {
                                 icon: CircleAvatar(
                                     backgroundColor: Colors.transparent,
                                     radius: 14,
-                                    child: recipe.userAvatar),
+                                    child: recipe.user.avatar),
                                 label: Text(
                                   recipe.user.name,
                                 )),
