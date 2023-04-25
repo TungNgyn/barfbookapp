@@ -356,7 +356,8 @@ initData() async {
     controller.userRecipeListDB = await supabase
         .from('recipe')
         .select('id, created_at, modified_at, name, description')
-        .eq('user_id', user!.id);
+        .eq('user_id', user!.id)
+        .order('created_at');
     controller.userRecipeList.clear();
     for (var recipe in controller.userRecipeListDB) {
       var recipeAvatar;
@@ -430,7 +431,7 @@ initData() async {
           .match({'id': user?.id}).single();
       final userAvatar = CachedNetworkImage(
         imageUrl:
-            'https://wokqzyqvqztmyzhhuqqh.supabase.co/storage/v1/object/public/profile/${recipe['user_id']}',
+            'https://wokqzyqvqztmyzhhuqqh.supabase.co/storage/v1/object/public/profile/${user?.id}',
         progressIndicatorBuilder: (context, url, downloadProgress) =>
             CircularProgressIndicator(value: downloadProgress.progress),
         errorWidget: (context, url, error) => Icon(Icons.error),
@@ -451,10 +452,10 @@ initData() async {
       controller.userRecipeList.add(Recipe(
           name: (recipe as Map)['name'],
           id: recipe['id'],
-          created_at: recipe['created_at'],
+          created_at: recipe['created_at'].substring(0, 10),
           paws: paws.count,
           description: recipe['description'],
-          modified_at: recipe['modified_at'],
+          modified_at: recipe['modified_at'].substring(0, 10),
           user_id: user!.id,
           userAvatar: userAvatar,
           user: Profile(
