@@ -224,6 +224,7 @@ class FeedingCard extends StatefulWidget {
 }
 
 class _FeedingCardState extends State<FeedingCard> {
+  bool editable = false;
   @override
   Widget build(BuildContext context) {
     final double ration = widget.pet.weight * widget.pet.ration / 100;
@@ -252,42 +253,90 @@ class _FeedingCardState extends State<FeedingCard> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text(
-                        "Bedarf für ",
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 26),
+                      GestureDetector(
+                        onTap: () {
+                          print("object");
+                          setState(() {
+                            editable = true;
+                          });
+                        },
+                        child: editable
+                            ? Container(
+                                width: 100,
+                                height: 50,
+                                child: TextField(
+                                  keyboardType: TextInputType.number,
+                                  controller: widget.dayController,
+                                  maxLines: 1,
+                                  onSubmitted: (value) {
+                                    setState(() {
+                                      value.isEmpty
+                                          ? widget.dayController.text = '0'
+                                          : widget.dayController.text = value;
+                                    });
+                                  },
+                                  decoration: InputDecoration(
+                                      suffixIcon: IconButton(
+                                          onPressed: () {
+                                            setState(() {
+                                              if (widget.dayController.text ==
+                                                  '') {
+                                                widget.dayController.text = '0';
+                                              }
+                                              editable = false;
+                                            });
+                                          },
+                                          icon: Icon(Icons.edit)),
+                                      border: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(12))),
+                                ),
+                              )
+                            : GestureDetector(
+                                onTap: () {
+                                  setState(() => editable = true);
+                                },
+                                child: Text(
+                                  widget.dayController.text == '1'
+                                      ? "Täglicher Bedarf"
+                                      : "Bedarf für ${widget.dayController.text} Tage",
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 26),
+                                ),
+                              ),
                       ),
-                      Container(
-                        width: 45,
-                        height: 50,
-                        child: TextField(
-                          keyboardType: TextInputType.number,
-                          textAlign: TextAlign.center,
-                          onChanged: (value) {
-                            setState(() {
-                              value.isEmpty
-                                  ? widget.dayController.text = '0'
-                                  : widget.dayController.text = value;
-                            });
-                          },
-                          onSubmitted: (value) {
-                            setState(() {
-                              value.isEmpty
-                                  ? widget.dayController.text = '0'
-                                  : widget.dayController.text = value;
-                            });
-                          },
-                          controller: widget.dayController,
-                          decoration: InputDecoration(
-                              border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(12))),
-                        ),
-                      ),
-                      Text(
-                        " Tage",
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 26),
-                      )
+                      // Container(
+                      // width: 45,
+                      // height: 50,
+                      //   child: TextField(
+                      // keyboardType: TextInputType.number,
+                      //     textAlign: TextAlign.center,
+                      //     onChanged: (value) {
+                      //       setState(() {
+                      //         value.isEmpty
+                      //             ? widget.dayController.text = '0'
+                      //             : widget.dayController.text = value;
+                      //       });
+                      //     },
+                      //     onSubmitted: (value) {
+                      //       setState(() {
+                      //         value.isEmpty
+                      //             ? widget.dayController.text = '0'
+                      //             : widget.dayController.text = value;
+                      //       });
+                      //     },
+                      //     controller: widget.dayController,
+                      //     decoration: InputDecoration(
+                      //         border: OutlineInputBorder(
+                      //             borderRadius: BorderRadius.circular(12))),
+                      //   ),
+                      // ),
+                      // Text(
+                      //   " Tage",
+                      //   style: TextStyle(
+                      //       fontWeight: FontWeight.bold, fontSize: 26),
+                      // )
                     ],
                   ),
                 ),

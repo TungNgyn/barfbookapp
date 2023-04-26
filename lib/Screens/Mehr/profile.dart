@@ -144,7 +144,7 @@ class _ScreenProfileState extends State<ScreenProfile>
                                         Wrap(
                                           children: [
                                             for (var recipe in recipeList)
-                                              RecipeCard(
+                                              BigRecipeCard(
                                                   controller: controller,
                                                   recipe: recipe)
                                           ],
@@ -197,13 +197,24 @@ class _ScreenProfileState extends State<ScreenProfile>
             .from('profile_liked_recipe')
             .select('*', FetchOptions(count: CountOption.exact))
             .eq('recipe', recipe['id']);
+
+        List<String> dateParts = recipe['created_at'].split('-');
+        int year = int.parse(dateParts[0]);
+        int month = int.parse(dateParts[1]);
+        int day = int.parse(dateParts[2].substring(0, 2));
+
+        List<String> datePartsMod = recipe['created_at'].split('-');
+        int yearMod = int.parse(datePartsMod[0]);
+        int monthMod = int.parse(datePartsMod[1]);
+        int dayMod = int.parse(datePartsMod[2].substring(0, 2));
+
         recipeList.add(Recipe(
             id: recipe['id'],
             name: recipe['name'],
             description: recipe['description'],
             paws: paws.count,
-            created_at: recipe['created_at'],
-            modified_at: recipe['modified_at'],
+            created_at: DateTime(year, month, day),
+            modified_at: DateTime(yearMod, monthMod, dayMod),
             user_id: recipe['user_id'],
             avatar: CachedNetworkImage(
               imageUrl:

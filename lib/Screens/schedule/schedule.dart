@@ -79,14 +79,23 @@ class _ScreenScheduleState extends State<ScreenSchedule> {
                                   controller: controller, recipe: recipe),
                               Positioned(
                                   right: 6,
-                                  child: IconButton(
-                                    icon: Icon(Icons.add),
-                                    onPressed: () {
-                                      setState(() {
-                                        insertSchedule(recipe);
-                                      });
-                                      Get.back();
-                                    },
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                        border: Border.all(color: Colors.grey),
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .surface,
+                                        shape: BoxShape.circle),
+                                    child: IconButton(
+                                      padding: EdgeInsets.zero,
+                                      icon: Icon(Icons.add),
+                                      onPressed: () {
+                                        setState(() {
+                                          insertSchedule(recipe);
+                                        });
+                                        Get.back();
+                                      },
+                                    ),
                                   ))
                             ],
                           ));
@@ -98,14 +107,23 @@ class _ScreenScheduleState extends State<ScreenSchedule> {
                                   controller: controller, recipe: recipe),
                               Positioned(
                                   right: 6,
-                                  child: IconButton(
-                                    icon: Icon(Icons.add),
-                                    onPressed: () {
-                                      setState(() {
-                                        insertSchedule(recipe);
-                                      });
-                                      Get.back();
-                                    },
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                        border: Border.all(color: Colors.grey),
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .surface,
+                                        shape: BoxShape.circle),
+                                    child: IconButton(
+                                      padding: EdgeInsets.zero,
+                                      icon: Icon(Icons.add),
+                                      onPressed: () {
+                                        setState(() {
+                                          insertSchedule(recipe);
+                                        });
+                                        Get.back();
+                                      },
+                                    ),
                                   ))
                             ],
                           ));
@@ -169,16 +187,20 @@ class _ScreenScheduleState extends State<ScreenSchedule> {
                                       RecipeCard(
                                           controller: controller,
                                           recipe: recipe),
-                                      CircleAvatar(
-                                        backgroundColor: Theme.of(context)
-                                            .colorScheme
-                                            .surface,
-                                        child: Positioned(
-                                            right: 5,
+                                      Positioned(
+                                          right: 5,
+                                          child: Container(
+                                            decoration: BoxDecoration(
+                                                border: Border.all(
+                                                    color: Colors.grey),
+                                                color: Theme.of(context)
+                                                    .colorScheme
+                                                    .surface,
+                                                shape: BoxShape.circle),
                                             child: IconButton(
-                                              iconSize: 32,
-                                              icon: Icon(
-                                                  Icons.remove_circle_outline),
+                                              padding: EdgeInsets.zero,
+                                              iconSize: 24,
+                                              icon: Icon(Icons.remove),
                                               onPressed: () {
                                                 setState(() {
                                                   final day = DateTime(
@@ -194,8 +216,8 @@ class _ScreenScheduleState extends State<ScreenSchedule> {
                                                 removeSchedule(
                                                     recipe.scheduleID);
                                               },
-                                            )),
-                                      ),
+                                            ),
+                                          )),
                                     ],
                                   ),
                               ],

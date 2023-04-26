@@ -9,6 +9,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -79,128 +80,114 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
                                   ScreenEditRecipe(recipe: widget.recipe));
                             },
                             icon: (Icon(Icons.edit))),
-                    IconButton(
-                        onPressed: () {
-                          Get.defaultDialog(
-                              title: "Details",
-                              textConfirm: "Profil ansehen",
-                              confirm: ElevatedButton(
-                                  onPressed: () {
-                                    Get.to(() => ScreenProfile(
-                                        profile: widget.recipe.user!));
-                                  },
-                                  child: Text("Profil anzeigen")),
-                              middleText:
-                                  "Erstellt am ${widget.recipe.created_at} \nZuletzt bearbeitet am ${widget.recipe.modified_at}\nvon ${widget.recipe.user!.name}");
-                        },
-                        icon: Icon(Icons.info)),
-                    IconButton(
-                        onPressed: () {
-                          TextEditingController _commentController =
-                              TextEditingController();
-                          Get.bottomSheet(
-                              isScrollControlled: true,
-                              Container(
-                                  decoration: BoxDecoration(
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .onPrimary,
-                                      borderRadius: BorderRadius.only(
-                                          topLeft: Radius.circular(25),
-                                          topRight: Radius.circular(25))),
-                                  height:
-                                      MediaQuery.of(context).size.height * 0.8,
-                                  child: SingleChildScrollView(
-                                    child: Padding(
-                                      padding: EdgeInsets.all(25),
-                                      child: Column(
-                                        children: [
-                                          Text(
-                                            "Kommentare",
-                                            style: TextStyle(fontSize: 31),
-                                          ),
-                                          SizedBox(height: 35),
-                                          TextField(
-                                            controller: _commentController,
-                                            maxLines: 8,
-                                            decoration: InputDecoration(
-                                              border: OutlineInputBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          12)),
-                                              hintText:
-                                                  "Schreib was dir gefällt!",
-                                            ),
-                                          ),
-                                          SizedBox(height: 5),
-                                          ElevatedButton(
-                                              onPressed: () {
-                                                setState(() {
-                                                  controller.commentList.add(Comment(
-                                                      created_at: DateTime(
-                                                          DateTime.now().year,
-                                                          DateTime.now().month,
-                                                          DateTime.now().day),
-                                                      modified_at: DateTime(
-                                                          DateTime.now().year,
-                                                          DateTime.now().month,
-                                                          DateTime.now().day),
-                                                      recipeID:
-                                                          widget.recipe.id,
-                                                      profileID: user?.id,
-                                                      comment:
-                                                          _commentController
-                                                              .text,
-                                                      profile: Profile(
-                                                          id: controller
-                                                              .userProfile[
-                                                                  'user']
-                                                              .id,
-                                                          createdAt: controller
-                                                              .userProfile[
-                                                                  'user']
-                                                              .createdAt,
-                                                          email: controller
-                                                              .userProfile[
-                                                                  'user']
-                                                              .email,
-                                                          name: controller
-                                                              .userProfile['user']
-                                                              .name,
-                                                          description: controller.userProfile['user'].description,
-                                                          avatar: controller.userProfile['user'].avatar)));
-                                                  insertComment(
-                                                      widget.recipe.id,
-                                                      _commentController.text);
-                                                });
-                                              },
-                                              child: Text("Kommentieren")),
-                                          SizedBox(height: 20),
-                                          Obx(() {
-                                            List<Widget> list = [];
-                                            if (controller
-                                                .commentList.isEmpty) {
-                                              list.add(
-                                                  Text("Keine Kommentare"));
-                                            }
+                    // IconButton(
+                    //     onPressed: () {
+                    //       TextEditingController _commentController =
+                    //           TextEditingController();
+                    //       Get.bottomSheet(
+                    //           isScrollControlled: true,
+                    //           Container(
+                    //               decoration: BoxDecoration(
+                    //                   color: Theme.of(context)
+                    //                       .colorScheme
+                    //                       .onPrimary,
+                    //                   borderRadius: BorderRadius.only(
+                    //                       topLeft: Radius.circular(25),
+                    //                       topRight: Radius.circular(25))),
+                    //               height:
+                    //                   MediaQuery.of(context).size.height * 0.8,
+                    //               child: SingleChildScrollView(
+                    //                 child: Padding(
+                    //                   padding: EdgeInsets.symmetric(
+                    //                       horizontal: 10, vertical: 15),
+                    //                   child: Column(
+                    //                     children: [
+                    //                       Text(
+                    //                         "Kommentare",
+                    //                         style: TextStyle(fontSize: 31),
+                    //                       ),
+                    //                       SizedBox(height: 35),
+                    //                       TextField(
+                    //                         controller: _commentController,
+                    //                         maxLines: 8,
+                    //                         decoration: InputDecoration(
+                    //                           border: OutlineInputBorder(
+                    //                               borderRadius:
+                    //                                   BorderRadius.circular(
+                    //                                       12)),
+                    //                           hintText:
+                    //                               "Schreib was dir gefällt!",
+                    //                         ),
+                    //                       ),
+                    //                       SizedBox(height: 5),
+                    //                       ElevatedButton(
+                    //                           onPressed: () {
+                    //                             setState(() {
+                    //                               controller.commentList.add(Comment(
+                    //                                   created_at: DateTime(
+                    //                                       DateTime.now().year,
+                    //                                       DateTime.now().month,
+                    //                                       DateTime.now().day),
+                    //                                   modified_at: DateTime(
+                    //                                       DateTime.now().year,
+                    //                                       DateTime.now().month,
+                    //                                       DateTime.now().day),
+                    //                                   recipeID:
+                    //                                       widget.recipe.id,
+                    //                                   profileID: user?.id,
+                    //                                   comment:
+                    //                                       _commentController
+                    //                                           .text,
+                    //                                   profile: Profile(
+                    //                                       id: controller
+                    //                                           .userProfile[
+                    //                                               'user']
+                    //                                           .id,
+                    //                                       createdAt: controller
+                    //                                           .userProfile[
+                    //                                               'user']
+                    //                                           .createdAt,
+                    //                                       email: controller
+                    //                                           .userProfile[
+                    //                                               'user']
+                    //                                           .email,
+                    //                                       name: controller
+                    //                                           .userProfile['user']
+                    //                                           .name,
+                    //                                       description: controller.userProfile['user'].description,
+                    //                                       avatar: controller.userProfile['user'].avatar)));
+                    //                               insertComment(
+                    //                                   widget.recipe.id,
+                    //                                   _commentController.text);
+                    //                             });
+                    //                           },
+                    //                           child: Text("Kommentieren")),
+                    //                       SizedBox(height: 20),
+                    //                       Obx(() {
+                    //                         List<Widget> list = [];
+                    //                         if (controller
+                    //                             .commentList.isEmpty) {
+                    //                           list.add(
+                    //                               Text("Keine Kommentare"));
+                    //                         }
 
-                                            for (Comment comment
-                                                in controller.commentList) {
-                                              list.insert(
-                                                  0,
-                                                  CommentCard(
-                                                      comment: comment));
-                                            }
-                                            return Column(
-                                              children: list,
-                                            );
-                                          })
-                                        ],
-                                      ),
-                                    ),
-                                  )));
-                        },
-                        icon: Icon(Icons.comment)),
+                    //                         for (Comment comment
+                    //                             in controller.commentList) {
+                    //                           list.insert(
+                    //                               0,
+                    //                               CommentCard(
+                    //                                   comment: comment));
+                    //                         }
+                    //                         return Column(
+                    //                           children: list,
+                    //                         );
+                    //                       })
+                    //                     ],
+                    //                   ),
+                    //                 ),
+                    //               )));
+                    //     },
+                    //     icon: Icon(Icons.comment)),
                   ],
                 ),
                 body:
@@ -391,9 +378,167 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          widget.recipe.name,
-                          style: TextStyle(fontSize: 31),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              widget.recipe.name,
+                              style: TextStyle(fontSize: 31),
+                            ),
+                            IconButton(
+                                onPressed: () {
+                                  Get.defaultDialog(
+                                      title: "Details",
+                                      content: Column(
+                                        children: [
+                                          Container(
+                                              height: 96,
+                                              width: 96,
+                                              child: widget.recipe.userAvatar),
+                                          Text(widget.recipe.user!.name),
+                                          Text(
+                                              'Erstellt am ${widget.recipe.created_at.day}.${widget.recipe.created_at.month}.${widget.recipe.created_at.year}'),
+                                          Text(
+                                              'Bearbeitet am ${widget.recipe.modified_at.day}.${widget.recipe.modified_at.month}.${widget.recipe.modified_at.year}')
+                                        ],
+                                      ));
+                                },
+                                icon: Icon(Icons.info)),
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            FaIcon(FontAwesomeIcons.paw),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 5),
+                              child: Text(
+                                '${widget.recipe.paws}',
+                                style: TextStyle(fontSize: 14),
+                              ),
+                            ),
+                          ],
+                        ),
+                        TextButton(
+                            onPressed: () {
+                              TextEditingController _commentController =
+                                  TextEditingController();
+                              Get.bottomSheet(
+                                  isScrollControlled: true,
+                                  Container(
+                                      decoration: BoxDecoration(
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .onPrimary,
+                                          borderRadius: BorderRadius.only(
+                                              topLeft: Radius.circular(25),
+                                              topRight: Radius.circular(25))),
+                                      height:
+                                          MediaQuery.of(context).size.height *
+                                              0.8,
+                                      child: SingleChildScrollView(
+                                        child: Padding(
+                                          padding: EdgeInsets.symmetric(
+                                              horizontal: 10, vertical: 15),
+                                          child: Column(
+                                            children: [
+                                              Text(
+                                                "Kommentare",
+                                                style: TextStyle(fontSize: 31),
+                                              ),
+                                              SizedBox(height: 35),
+                                              TextField(
+                                                controller: _commentController,
+                                                maxLines: 8,
+                                                decoration: InputDecoration(
+                                                  border: OutlineInputBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              12)),
+                                                  hintText:
+                                                      "Schreib was dir gefällt!",
+                                                ),
+                                              ),
+                                              SizedBox(height: 5),
+                                              ElevatedButton(
+                                                  onPressed: () {
+                                                    setState(() {
+                                                      controller.commentList.add(Comment(
+                                                          created_at: DateTime(
+                                                              DateTime.now()
+                                                                  .year,
+                                                              DateTime.now()
+                                                                  .month,
+                                                              DateTime.now()
+                                                                  .day),
+                                                          modified_at: DateTime(
+                                                              DateTime.now()
+                                                                  .year,
+                                                              DateTime.now()
+                                                                  .month,
+                                                              DateTime.now()
+                                                                  .day),
+                                                          recipeID:
+                                                              widget.recipe.id,
+                                                          profileID: user?.id,
+                                                          comment:
+                                                              _commentController
+                                                                  .text,
+                                                          profile: Profile(
+                                                              id: controller
+                                                                  .userProfile[
+                                                                      'user']
+                                                                  .id,
+                                                              createdAt: controller
+                                                                  .userProfile['user']
+                                                                  .createdAt,
+                                                              email: controller.userProfile['user'].email,
+                                                              name: controller.userProfile['user'].name,
+                                                              description: controller.userProfile['user'].description,
+                                                              avatar: controller.userProfile['user'].avatar)));
+                                                      insertComment(
+                                                          widget.recipe.id,
+                                                          _commentController
+                                                              .text);
+                                                    });
+                                                  },
+                                                  child: Text("Kommentieren")),
+                                              SizedBox(height: 20),
+                                              Obx(() {
+                                                List<Widget> list = [];
+                                                if (controller
+                                                    .commentList.isEmpty) {
+                                                  list.add(
+                                                      Text("Keine Kommentare"));
+                                                }
+
+                                                for (Comment comment
+                                                    in controller.commentList) {
+                                                  list.insert(
+                                                      0,
+                                                      CommentCard(
+                                                          comment: comment));
+                                                }
+                                                return Column(
+                                                  children: list,
+                                                );
+                                              })
+                                            ],
+                                          ),
+                                        ),
+                                      )));
+                            },
+                            child: Text(
+                              "${controller.commentList.length} Kommentare",
+                              style: TextStyle(fontSize: 16),
+                            )),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 10),
+                          child: Container(
+                            height: 256,
+                            width: MediaQuery.of(context).size.width,
+                            child: widget.recipe.avatar,
+                          ),
                         ),
                         Text(
                           widget.recipe.description,
@@ -401,14 +546,18 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
                             fontSize: 14,
                           ),
                         ),
-                        Text('${widget.recipe.paws} Pfoten'),
-                        Container(
-                          height: 256,
-                          width: MediaQuery.of(context).size.width,
-                          child: widget.recipe.avatar,
-                        ),
+                        ElevatedButton(
+                            onPressed: () {},
+                            child: Row(
+                              children: [
+                                Icon(widget.favorite == true
+                                    ? (Icons.favorite)
+                                    : (Icons.favorite_border)),
+                                Text("Rezept speichern"),
+                              ],
+                            )),
                         Padding(
-                          padding: const EdgeInsets.only(top: 20),
+                          padding: const EdgeInsets.only(top: 10),
                           child: Card(
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(20),
@@ -557,181 +706,75 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
                           padding: EdgeInsets.symmetric(vertical: 10),
                           child: SizedBox(
                               height: MediaQuery.of(context).size.height * 0.36,
-                              child: Card(
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(20),
-                                    side: BorderSide(
-                                      color: Colors.grey.withOpacity(0.2),
-                                      width: 1,
-                                    ),
-                                  ),
-                                  child: Container(
-                                    color:
-                                        Theme.of(context).colorScheme.surface,
-                                    child: Padding(
+                              child: Padding(
+                                padding: EdgeInsets.symmetric(horizontal: 15),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    _indicator(Colors.green, "Vegetarisch",
+                                        vegSum + fruitSum),
+                                    Padding(
                                       padding:
-                                          EdgeInsets.symmetric(horizontal: 15),
-                                      child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              _indicator(
-                                                  Colors.green,
-                                                  "Vegetarisch",
-                                                  vegSum + fruitSum),
-                                              // IconButton(
-                                              //     onPressed: () {
-                                              //       Get.defaultDialog(
-                                              //           title:
-                                              //               'Analytische Bestandteile',
-                                              //           content: Center(
-                                              //             child: Padding(
-                                              //               padding: EdgeInsets
-                                              //                   .symmetric(
-                                              //                       horizontal:
-                                              //                           20),
-                                              //               child: Column(
-                                              //                   crossAxisAlignment:
-                                              //                       CrossAxisAlignment
-                                              //                           .start,
-                                              //                   children: [
-                                              //                     Row(
-                                              //                       mainAxisAlignment:
-                                              //                           MainAxisAlignment
-                                              //                               .spaceBetween,
-                                              //                       children: [
-                                              //                         Text(
-                                              //                             'Kalorien:'),
-                                              //                         Text(
-                                              //                             '${caloriesSum.toStringAsFixed(1)}kcal')
-                                              //                       ],
-                                              //                     ),
-                                              //                     Row(
-                                              //                       mainAxisAlignment:
-                                              //                           MainAxisAlignment
-                                              //                               .spaceBetween,
-                                              //                       children: [
-                                              //                         Text(
-                                              //                             'Protein:'),
-                                              //                         Text(
-                                              //                             '${proteinSum.toStringAsFixed(1)}g')
-                                              //                       ],
-                                              //                     ),
-                                              //                     Row(
-                                              //                       mainAxisAlignment:
-                                              //                           MainAxisAlignment
-                                              //                               .spaceBetween,
-                                              //                       children: [
-                                              //                         Text(
-                                              //                             'Fett:'),
-                                              //                         Text(
-                                              //                             '${fatSum.toStringAsFixed(1)}g')
-                                              //                       ],
-                                              //                     ),
-                                              //                     Row(
-                                              //                       mainAxisAlignment:
-                                              //                           MainAxisAlignment
-                                              //                               .spaceBetween,
-                                              //                       children: [
-                                              //                         Text(
-                                              //                             'Kohlenhydrate:'),
-                                              //                         Text(
-                                              //                             '${carbohydratesSum.toStringAsFixed(1)}g')
-                                              //                       ],
-                                              //                     ),
-                                              //                     Row(
-                                              //                       mainAxisAlignment:
-                                              //                           MainAxisAlignment
-                                              //                               .spaceBetween,
-                                              //                       children: [
-                                              //                         Text(
-                                              //                             'Mineralien:'),
-                                              //                         Text(
-                                              //                             '${mineralsSum.toStringAsFixed(1)}g')
-                                              //                       ],
-                                              //                     ),
-                                              //                   ]),
-                                              //             ),
-                                              //           ));
-                                              //     },
-                                              //     icon: Icon(Icons.info))
-                                            ],
-                                          ),
-                                          Padding(
-                                            padding: EdgeInsets.symmetric(
-                                                vertical: 10),
-                                            child: SizedBox(
-                                              height: 200,
-                                              child: PieChart(PieChartData(
-                                                  pieTouchData: PieTouchData(
-                                                      touchCallback:
-                                                          (FlTouchEvent event,
-                                                              pieTouchResponse) {
-                                                    setState(() {
-                                                      if (!event
-                                                              .isInterestedForInteractions &&
-                                                          pieTouchResponse !=
-                                                              null &&
-                                                          (pieTouchResponse
+                                          EdgeInsets.symmetric(vertical: 10),
+                                      child: SizedBox(
+                                        height: 200,
+                                        child: PieChart(PieChartData(
+                                            pieTouchData: PieTouchData(
+                                                touchCallback:
+                                                    (FlTouchEvent event,
+                                                        pieTouchResponse) {
+                                              setState(() {
+                                                if (!event
+                                                        .isInterestedForInteractions &&
+                                                    pieTouchResponse != null &&
+                                                    (pieTouchResponse
+                                                            .touchedSection!
+                                                            .touchedSectionIndex !=
+                                                        -1)) {
+                                                  Get.defaultDialog(
+                                                      title: pieTouchResponse
                                                                   .touchedSection!
-                                                                  .touchedSectionIndex !=
-                                                              -1)) {
-                                                        Get.defaultDialog(
-                                                            title: pieTouchResponse
-                                                                        .touchedSection!
-                                                                        .touchedSectionIndex ==
-                                                                    0
-                                                                ? 'Fleischanteil'
-                                                                : 'Gemüseanteil',
-                                                            content: SizedBox(
-                                                                height: 200,
-                                                                width: 200,
-                                                                child: BarChart(pieTouchResponse
-                                                                            .touchedSection!
-                                                                            .touchedSectionIndex ==
-                                                                        0
-                                                                    ? meatBarData()
-                                                                    : vegBarData())));
-                                                      }
-                                                      if (!event
-                                                              .isInterestedForInteractions ||
-                                                          pieTouchResponse ==
-                                                              null ||
-                                                          pieTouchResponse
-                                                                  .touchedSection ==
-                                                              null) {
-                                                        touchedIndex = -1;
-                                                        return;
-                                                      }
-                                                      touchedIndex =
-                                                          pieTouchResponse
-                                                              .touchedSection!
-                                                              .touchedSectionIndex;
-                                                    });
-                                                  }),
-                                                  sectionsSpace: 0,
-                                                  centerSpaceRadius: 60,
-                                                  sections: showSection())),
-                                            ),
-                                          ),
-                                          _indicator(
-                                              Colors.red,
-                                              "Fleisch",
-                                              meatSum +
-                                                  rumenSum +
-                                                  boneSum +
-                                                  organSum)
-                                        ],
+                                                                  .touchedSectionIndex ==
+                                                              0
+                                                          ? 'Fleischanteil'
+                                                          : 'Gemüseanteil',
+                                                      content: SizedBox(
+                                                          height: 200,
+                                                          width: 200,
+                                                          child: BarChart(pieTouchResponse
+                                                                      .touchedSection!
+                                                                      .touchedSectionIndex ==
+                                                                  0
+                                                              ? meatBarData()
+                                                              : vegBarData())));
+                                                }
+                                                if (!event
+                                                        .isInterestedForInteractions ||
+                                                    pieTouchResponse == null ||
+                                                    pieTouchResponse
+                                                            .touchedSection ==
+                                                        null) {
+                                                  touchedIndex = -1;
+                                                  return;
+                                                }
+                                                touchedIndex = pieTouchResponse
+                                                    .touchedSection!
+                                                    .touchedSectionIndex;
+                                              });
+                                            }),
+                                            sectionsSpace: 0,
+                                            centerSpaceRadius: 60,
+                                            sections: showSection())),
                                       ),
                                     ),
-                                  ))),
+                                    _indicator(Colors.red, "Fleisch",
+                                        meatSum + rumenSum + boneSum + organSum)
+                                  ],
+                                ),
+                              )),
                         ),
                         Text(
-                          '${recipeIngredients.length} Zutaten',
+                          'Zutaten',
                           style: TextStyle(fontSize: 21),
                         ),
                         Wrap(
@@ -1408,7 +1451,7 @@ class CommentCard extends StatelessWidget {
                             padding: const EdgeInsets.all(10),
                             child: Text(
                               comment.profile.name,
-                              style: TextStyle(fontSize: 21),
+                              style: TextStyle(fontSize: 18),
                             ),
                           ),
                         ],
@@ -1419,9 +1462,14 @@ class CommentCard extends StatelessWidget {
                       children: [
                         Text(
                             '${comment.created_at.day}.${comment.created_at.month}.${comment.created_at.year}'),
-                        Text((comment.created_at != comment.modified_at)
-                            ? 'bearbeitet am ${comment.modified_at.day}.${comment.modified_at.month}.${comment.modified_at.year}'
-                            : ''),
+                        if (comment.created_at != comment.modified_at)
+                          Row(
+                            children: [
+                              Icon(Icons.edit),
+                              Text(
+                                  '${comment.modified_at.day}.${comment.modified_at.month}.${comment.modified_at.year}'),
+                            ],
+                          )
                       ],
                     )
                   ],

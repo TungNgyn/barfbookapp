@@ -131,8 +131,6 @@ initData() async {
             return Container(
               decoration: BoxDecoration(
                 shape: BoxShape.rectangle,
-                border:
-                    Border.all(color: Theme.of(context).colorScheme.primary),
                 borderRadius: BorderRadius.circular(20),
                 image: DecorationImage(
                   image: imageProvider,
@@ -159,8 +157,6 @@ initData() async {
             return Container(
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                border:
-                    Border.all(color: Theme.of(context).colorScheme.primary),
                 image: DecorationImage(
                   image: imageProvider,
                   fit: BoxFit.cover,
@@ -180,8 +176,6 @@ initData() async {
             return Container(
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                border:
-                    Border.all(color: Theme.of(context).colorScheme.primary),
                 image: DecorationImage(
                   image: imageProvider,
                   fit: BoxFit.cover,
@@ -200,13 +194,24 @@ initData() async {
       //     .from('profile_liked_recipe')
       //     .select('*', FetchOptions(count: CountOption.exact))
       //     .eq('recipe', recipe['id']);
+
+      List<String> dateParts = recipe['created_at'].split('-');
+      int year = int.parse(dateParts[0]);
+      int month = int.parse(dateParts[1]);
+      int day = int.parse(dateParts[2].substring(0, 2));
+
+      List<String> datePartsMod = recipe['created_at'].split('-');
+      int yearMod = int.parse(datePartsMod[0]);
+      int monthMod = int.parse(datePartsMod[1]);
+      int dayMod = int.parse(datePartsMod[2].substring(0, 2));
+
       controller.explorePopularRecipeList.add(Recipe(
           name: (recipe as Map)['name'],
           id: recipe['id'],
-          created_at: recipe['created_at'].substring(0, 10),
+          created_at: DateTime(year, month, day),
           paws: recipe['paws'],
           description: recipe['description'],
-          modified_at: recipe['modified_at'].substring(0, 10),
+          modified_at: DateTime(yearMod, monthMod, dayMod),
           user_id: recipe['user_id'],
           user: Profile(
               id: userdata[0]['id'],
@@ -265,8 +270,6 @@ initData() async {
             return Container(
               decoration: BoxDecoration(
                 shape: BoxShape.rectangle,
-                border:
-                    Border.all(color: Theme.of(context).colorScheme.primary),
                 borderRadius: BorderRadius.circular(20),
                 image: DecorationImage(
                   image: imageProvider,
@@ -290,8 +293,6 @@ initData() async {
             return Container(
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                border:
-                    Border.all(color: Theme.of(context).colorScheme.primary),
                 image: DecorationImage(
                   image: imageProvider,
                   fit: BoxFit.cover,
@@ -311,8 +312,6 @@ initData() async {
             return Container(
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                border:
-                    Border.all(color: Theme.of(context).colorScheme.primary),
                 image: DecorationImage(
                   image: imageProvider,
                   fit: BoxFit.cover,
@@ -331,13 +330,24 @@ initData() async {
           .from('profile_liked_recipe')
           .select('*', FetchOptions(count: CountOption.exact))
           .eq('recipe', recipe['id']);
+
+      List<String> dateParts = recipe['created_at'].split('-');
+      int year = int.parse(dateParts[0]);
+      int month = int.parse(dateParts[1]);
+      int day = int.parse(dateParts[2].substring(0, 2));
+
+      List<String> datePartsMod = recipe['created_at'].split('-');
+      int yearMod = int.parse(datePartsMod[0]);
+      int monthMod = int.parse(datePartsMod[1]);
+      int dayMod = int.parse(datePartsMod[2].substring(0, 2));
+
       controller.exploreNewRecipeList.add(Recipe(
           name: (recipe as Map)['name'],
           id: recipe['id'],
-          created_at: recipe['created_at'].substring(0, 10),
+          created_at: DateTime(year, month, day),
           paws: paws.count,
           description: recipe['description'],
-          modified_at: recipe['modified_at'].substring(0, 10),
+          modified_at: DateTime(yearMod, monthMod, dayMod),
           user_id: recipe['user_id'],
           user: Profile(
               id: userdata[0]['id'],
@@ -361,18 +371,8 @@ initData() async {
     controller.userRecipeList.clear();
     for (var recipe in controller.userRecipeListDB) {
       var recipeAvatar;
-      // try {
-      //   recipeAvatar =
-      //       await supabase.storage.from('recipe').download('${recipe['id']}');
-      // } catch (error) {
-      //   recipeAvatar = await supabase.storage
-      //       .from('recipe')
-      //       .download('defaultRecipeAvatar');
-      // }
       try {
-        recipeAvatar =
-            // await supabase.storage.from('recipe').download('${recipe['id']}');
-            CachedNetworkImage(
+        recipeAvatar = CachedNetworkImage(
           imageUrl:
               'https://wokqzyqvqztmyzhhuqqh.supabase.co/storage/v1/object/public/recipe/${recipe['id']}',
           progressIndicatorBuilder: (context, url, downloadProgress) =>
@@ -382,8 +382,6 @@ initData() async {
             return Container(
               decoration: BoxDecoration(
                 shape: BoxShape.rectangle,
-                border:
-                    Border.all(color: Theme.of(context).colorScheme.primary),
                 borderRadius: BorderRadius.circular(20),
                 image: DecorationImage(
                   image: imageProvider,
@@ -394,9 +392,6 @@ initData() async {
           },
         );
       } catch (error) {
-        // recipeAvatar = await supabase.storage
-        //     .from('recipe')
-        //     .download('defaultRecipeAvatar');
         recipeAvatar = CachedNetworkImage(
           imageUrl:
               'https://wokqzyqvqztmyzhhuqqh.supabase.co/storage/v1/object/public/recipe/defaultRecipeAvatar',
@@ -407,8 +402,6 @@ initData() async {
             return Container(
               decoration: BoxDecoration(
                 shape: BoxShape.rectangle,
-                border:
-                    Border.all(color: Theme.of(context).colorScheme.primary),
                 borderRadius: BorderRadius.circular(20),
                 image: DecorationImage(
                   image: imageProvider,
@@ -449,13 +442,23 @@ initData() async {
         },
       );
 
+      List<String> dateParts = recipe['created_at'].split('-');
+      int year = int.parse(dateParts[0]);
+      int month = int.parse(dateParts[1]);
+      int day = int.parse(dateParts[2].substring(0, 2));
+
+      List<String> datePartsMod = recipe['created_at'].split('-');
+      int yearMod = int.parse(datePartsMod[0]);
+      int monthMod = int.parse(datePartsMod[1]);
+      int dayMod = int.parse(datePartsMod[2].substring(0, 2));
+
       controller.userRecipeList.add(Recipe(
           name: (recipe as Map)['name'],
           id: recipe['id'],
-          created_at: recipe['created_at'].substring(0, 10),
+          created_at: DateTime(year, month, day),
           paws: paws.count,
           description: recipe['description'],
-          modified_at: recipe['modified_at'].substring(0, 10),
+          modified_at: DateTime(yearMod, monthMod, dayMod),
           user_id: user!.id,
           userAvatar: userAvatar,
           user: Profile(
@@ -499,8 +502,6 @@ initData() async {
             return Container(
               decoration: BoxDecoration(
                 shape: BoxShape.rectangle,
-                border:
-                    Border.all(color: Theme.of(context).colorScheme.primary),
                 borderRadius: BorderRadius.circular(20),
                 image: DecorationImage(
                   image: imageProvider,
@@ -521,8 +522,6 @@ initData() async {
             return Container(
               decoration: BoxDecoration(
                 shape: BoxShape.rectangle,
-                border:
-                    Border.all(color: Theme.of(context).colorScheme.primary),
                 borderRadius: BorderRadius.circular(20),
                 image: DecorationImage(
                   image: imageProvider,
@@ -562,13 +561,24 @@ initData() async {
           .from('profile_liked_recipe')
           .select('*', FetchOptions(count: CountOption.exact))
           .eq('recipe', recipe['id']);
+
+      List<String> dateParts = recipe['created_at'].split('-');
+      int year = int.parse(dateParts[0]);
+      int month = int.parse(dateParts[1]);
+      int day = int.parse(dateParts[2].substring(0, 2));
+
+      List<String> datePartsMod = recipe['created_at'].split('-');
+      int yearMod = int.parse(datePartsMod[0]);
+      int monthMod = int.parse(datePartsMod[1]);
+      int dayMod = int.parse(datePartsMod[2].substring(0, 2));
+
       controller.userLikedRecipe.add(Recipe(
           name: (recipe as Map)['name'],
           id: recipe['id'],
-          created_at: recipe['created_at'],
+          created_at: DateTime(year, month, day),
           paws: paws.count,
           description: recipe['description'],
-          modified_at: recipe['modified_at'],
+          modified_at: DateTime(yearMod, monthMod, dayMod),
           user_id: recipe['user_id'],
           avatar: recipeAvatar,
           user: Profile(
@@ -605,8 +615,6 @@ initData() async {
             return Container(
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                border:
-                    Border.all(color: Theme.of(context).colorScheme.primary),
                 image: DecorationImage(
                   image: imageProvider,
                   fit: BoxFit.cover,
@@ -628,8 +636,6 @@ initData() async {
             return Container(
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                border:
-                    Border.all(color: Theme.of(context).colorScheme.primary),
                 image: DecorationImage(
                   image: imageProvider,
                   fit: BoxFit.cover,
@@ -737,8 +743,6 @@ initData() async {
             return Container(
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                border:
-                    Border.all(color: Theme.of(context).colorScheme.primary),
                 image: DecorationImage(
                   image: imageProvider,
                   fit: BoxFit.cover,
@@ -758,14 +762,25 @@ initData() async {
             .select('*')
             .eq('id', userTemp['id'])
             .single();
+
+        List<String> dateParts = recipe['created_at'].split('-');
+        int year = int.parse(dateParts[0]);
+        int month = int.parse(dateParts[1]);
+        int day = int.parse(dateParts[2].substring(0, 2));
+
+        List<String> datePartsMod = recipe['created_at'].split('-');
+        int yearMod = int.parse(datePartsMod[0]);
+        int monthMod = int.parse(datePartsMod[1]);
+        int dayMod = int.parse(datePartsMod[2].substring(0, 2));
+
         kEventSource[schedule.date] = [
           Recipe(
               id: recipe['id'],
               name: recipe['name'],
               description: recipe['description'],
               paws: 0,
-              created_at: recipe['created_at'],
-              modified_at: recipe['modified_at'],
+              created_at: DateTime(year, month, day),
+              modified_at: DateTime(yearMod, monthMod, dayMod),
               user_id: recipe['user_id'],
               scheduleID: schedule.id,
               avatar: recipeAvatar,

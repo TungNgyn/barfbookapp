@@ -52,8 +52,8 @@ class Recipe {
   final String name;
   final String description;
   final int paws;
-  final created_at;
-  final modified_at;
+  final DateTime created_at;
+  final DateTime modified_at;
   final String user_id;
   final Profile? user;
   final avatar;

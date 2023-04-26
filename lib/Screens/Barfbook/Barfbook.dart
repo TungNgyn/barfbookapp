@@ -183,7 +183,7 @@ class _ScreenBarfbookState extends State<ScreenBarfbook> {
                                     List<Widget> list = [];
                                     for (Recipe recipe
                                         in controller.userLikedRecipe) {
-                                      list.add(RecipeCard(
+                                      list.add(BigRecipeCard(
                                           controller: controller,
                                           recipe: recipe));
                                     }
