@@ -5,7 +5,6 @@ import 'package:Barfbook/Screens/Mehr/profile_controller.dart';
 import 'package:Barfbook/Screens/Barfbook/pet_controller.dart';
 import 'package:Barfbook/Screens/explore/explore.dart';
 import 'package:Barfbook/controller.dart';
-import 'package:Barfbook/loading.dart';
 import 'package:Barfbook/util/Supabase/AuthController.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -165,7 +164,7 @@ class _ScreenProfileState extends State<ScreenProfile>
   Future? fetchData() async {
     try {
       final recipeDB = await supabase
-          .from('recipe')
+          .from('select_recipe')
           .select('*')
           .eq('user_id', widget.profile.id);
       for (var recipe in recipeDB) {
@@ -193,10 +192,6 @@ class _ScreenProfileState extends State<ScreenProfile>
             );
           },
         );
-        final paws = await supabase
-            .from('profile_liked_recipe')
-            .select('*', FetchOptions(count: CountOption.exact))
-            .eq('recipe', recipe['id']);
 
         List<String> dateParts = recipe['created_at'].split('-');
         int year = int.parse(dateParts[0]);
@@ -212,7 +207,7 @@ class _ScreenProfileState extends State<ScreenProfile>
             id: recipe['id'],
             name: recipe['name'],
             description: recipe['description'],
-            paws: paws.count,
+            paws: recipe['paws'],
             created_at: DateTime(year, month, day),
             modified_at: DateTime(yearMod, monthMod, dayMod),
             user_id: recipe['user_id'],
@@ -239,7 +234,6 @@ class _ScreenProfileState extends State<ScreenProfile>
             ),
             user: Profile(
                 id: userdata[0]['id'],
-                createdAt: userdata[0]['created_at'],
                 email: userdata[0]['email'],
                 name: userdata[0]['name'],
                 description: userdata[0]['description'],

@@ -17,10 +17,25 @@ class ScreenLoading extends StatefulWidget {
 }
 
 class _LoadingScreenState extends State<ScreenLoading> {
+  Future<List<dynamic>>? _future;
+  @override
+  void initState() {
+    super.initState();
+    _future = Future.wait([
+      initUser(),
+      initExplorerPopularRecipe(),
+      initExplorerNewRecipe(),
+      initUserCreatedRecipe(),
+      initFavorite(),
+      initPetList(),
+      initSchedule()
+    ]);
+  }
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-        future: initData(),
+        future: _future,
         builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
           return snapshot.connectionState == ConnectionState.done
               ? Home()
@@ -29,73 +44,87 @@ class _LoadingScreenState extends State<ScreenLoading> {
   }
 }
 
-initData() async {
+initUser() async {
+  // Find the instance of the `Controller` class created by `Get.put()` in the widget tree.
   final Controller controller = Get.find();
-  // init userdata
+
+  // Fetch user data from Supabase and update the `userProfile` property in the `Controller` class.
+  final userdata = await supabase
+      .from('profile')
+      .select("*")
+      .match({'id': user?.id}).single();
+
+  var userAvatar;
   try {
-    // final avatar =
-    //     await supabase.storage.from('profile').download('${user?.id}');
-    final userdata = await supabase
-        .from('profile')
-        .select("*")
-        .match({'id': user?.id}).single();
-    controller.userProfile = {
-      'user': Profile(
-          id: user!.id,
-          createdAt: userdata['created_at'].substring(0, 10),
-          email: userdata['email'],
-          name: userdata['name'],
-          description: userdata['description'],
-          avatar: CachedNetworkImage(
-            imageUrl:
-                'https://wokqzyqvqztmyzhhuqqh.supabase.co/storage/v1/object/public/profile/${user!.id}',
-            progressIndicatorBuilder: (context, url, downloadProgress) =>
-                CircularProgressIndicator(value: downloadProgress.progress),
-            errorWidget: (context, url, error) => Icon(Icons.error),
-            imageBuilder: (context, imageProvider) {
-              return Container(
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  border:
-                      Border.all(color: Theme.of(context).colorScheme.primary),
-                  image: DecorationImage(
-                    image: imageProvider,
-                    fit: BoxFit.cover,
-                  ),
-                ),
-              );
-            },
-          ))
-    };
+    userAvatar = CachedNetworkImage(
+      imageUrl:
+          'https://wokqzyqvqztmyzhhuqqh.supabase.co/storage/v1/object/public/profile/${user!.id}',
+      progressIndicatorBuilder: (context, url, downloadProgress) =>
+          CircularProgressIndicator(value: downloadProgress.progress),
+      errorWidget: (context, url, error) => Icon(Icons.error),
+      imageBuilder: (context, imageProvider) {
+        return Container(
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            border: Border.all(color: Theme.of(context).colorScheme.primary),
+            image: DecorationImage(
+              image: imageProvider,
+              fit: BoxFit.cover,
+            ),
+          ),
+        );
+      },
+    );
   } catch (error) {
-    final avatar =
-        await supabase.storage.from('profile').download('defaultAvatar');
-    final userdata = await supabase
-        .from('profile')
-        .select("*")
-        .match({'id': user?.id}).single();
-    controller.userProfile = {
-      'user': Profile(
-          id: user!.id,
-          createdAt: userdata['created_at'].substring(0, 10),
-          email: userdata['email'],
-          name: userdata['name'],
-          description: userdata['description'],
-          avatar: avatar)
-    };
+    // If there was an error fetching user data from Supabase, use default data instead.
+    userAvatar = CachedNetworkImage(
+      imageUrl:
+          'https://wokqzyqvqztmyzhhuqqh.supabase.co/storage/v1/object/public/profile/defaultAvatar.png',
+      progressIndicatorBuilder: (context, url, downloadProgress) =>
+          CircularProgressIndicator(value: downloadProgress.progress),
+      errorWidget: (context, url, error) => Icon(Icons.error),
+      imageBuilder: (context, imageProvider) {
+        return Container(
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            border: Border.all(color: Theme.of(context).colorScheme.primary),
+            image: DecorationImage(
+              image: imageProvider,
+              fit: BoxFit.cover,
+            ),
+          ),
+        );
+      },
+    );
   }
 
+  controller.userProfile = {
+    'user': Profile(
+        id: user!.id,
+        email: userdata['email'],
+        name: userdata['name'],
+        description: userdata['description'],
+        avatar: userAvatar)
+  };
+}
+
+initExplorerPopularRecipe() async {
+  // Find the instance of the `Controller` class created by `Get.put()` in the widget tree.
+  final Controller controller = Get.find();
   // init explore popular recipe
   try {
-    // controller.databaseRecipeList = await supabase.from('recipe').select('*');
+    // Fetch popular recipes from the database
     controller.databasePopularRecipeList =
-        await supabase.from('select_popular_recipe').select('*');
+        await supabase.from('select_recipe').select('*').order('paws');
   } catch (error) {
     print(error);
   } finally {
+    // Clear the existing popular recipe list
     controller.explorePopularRecipeList.clear();
 
+    // Iterate through the popular recipe list and create Recipe objects
     for (var recipe in controller.databasePopularRecipeList) {
+      // Try to load the recipe avatar using the recipe ID
       var recipeAvatar;
       try {
         recipeAvatar = CachedNetworkImage(
@@ -118,9 +147,7 @@ initData() async {
           },
         );
       } catch (error) {
-        // recipeAvatar = await supabase.storage
-        //     .from('recipe')
-        //     .download('defaultRecipeAvatar');
+        // If the recipe avatar can't be loaded, use the default avatar instead
         recipeAvatar = CachedNetworkImage(
           imageUrl:
               'https://wokqzyqvqztmyzhhuqqh.supabase.co/storage/v1/object/public/recipe/defaultRecipeAvatar',
@@ -142,9 +169,7 @@ initData() async {
         );
       }
 
-      // final userAvatar = await supabase.storage
-      //     .from('profile')
-      //     .download('${recipe['user_id']}');
+      // Try to load the user avatar using the user ID
       var userAvatar;
       try {
         userAvatar = CachedNetworkImage(
@@ -166,6 +191,7 @@ initData() async {
           },
         );
       } catch (error) {
+        // If the user avatar can't be loaded, use the default avatar instead
         userAvatar = CachedNetworkImage(
           imageUrl:
               'https://wokqzyqvqztmyzhhuqqh.supabase.co/storage/v1/object/public/profile/defaultAvatar.png',
@@ -190,10 +216,6 @@ initData() async {
           .from('profile')
           .select("*")
           .match({'id': recipe['user_id']});
-      // final paws = await supabase
-      //     .from('profile_liked_recipe')
-      //     .select('*', FetchOptions(count: CountOption.exact))
-      //     .eq('recipe', recipe['id']);
 
       List<String> dateParts = recipe['created_at'].split('-');
       int year = int.parse(dateParts[0]);
@@ -215,7 +237,6 @@ initData() async {
           user_id: recipe['user_id'],
           user: Profile(
               id: userdata[0]['id'],
-              createdAt: userdata[0]['created_at'].substring(0, 10),
               email: userdata[0]['email'],
               name: userdata[0]['name'],
               description: userdata[0]['description'],
@@ -224,11 +245,16 @@ initData() async {
           avatar: recipeAvatar));
     }
   }
+}
+
+initExplorerNewRecipe() async {
+  // Find the instance of the `Controller` class created by `Get.put()` in the widget tree.
+  final Controller controller = Get.find();
 
   // init explore new recipe
   try {
     controller.databaseNewRecipeList =
-        await supabase.from('recipe').select('*');
+        await supabase.from('select_recipe').select('*');
   } catch (error) {
     print(error);
   } finally {
@@ -326,10 +352,6 @@ initData() async {
           .from('profile')
           .select("*")
           .eq('id', recipe['user_id']);
-      final paws = await supabase
-          .from('profile_liked_recipe')
-          .select('*', FetchOptions(count: CountOption.exact))
-          .eq('recipe', recipe['id']);
 
       List<String> dateParts = recipe['created_at'].split('-');
       int year = int.parse(dateParts[0]);
@@ -345,13 +367,12 @@ initData() async {
           name: (recipe as Map)['name'],
           id: recipe['id'],
           created_at: DateTime(year, month, day),
-          paws: paws.count,
+          paws: recipe['paws'],
           description: recipe['description'],
           modified_at: DateTime(yearMod, monthMod, dayMod),
           user_id: recipe['user_id'],
           user: Profile(
               id: userdata[0]['id'],
-              createdAt: userdata[0]['created_at'].substring(0, 10),
               email: userdata[0]['email'],
               name: userdata[0]['name'],
               description: userdata[0]['description'],
@@ -360,12 +381,17 @@ initData() async {
           avatar: recipeAvatar));
     }
   }
+}
+
+initUserCreatedRecipe() async {
+  // Find the instance of the `Controller` class created by `Get.put()` in the widget tree.
+  final Controller controller = Get.find();
 
   // init user-created recipe
   try {
     controller.userRecipeListDB = await supabase
-        .from('recipe')
-        .select('id, created_at, modified_at, name, description')
+        .from('select_recipe')
+        .select('*')
         .eq('user_id', user!.id)
         .order('created_at');
     controller.userRecipeList.clear();
@@ -413,11 +439,6 @@ initData() async {
         );
       }
 
-      final paws = await supabase
-          .from('profile_liked_recipe')
-          .select('*', FetchOptions(count: CountOption.exact))
-          .eq('recipe', recipe['id']);
-
       final userdata = await supabase
           .from('profile')
           .select("*")
@@ -456,14 +477,13 @@ initData() async {
           name: (recipe as Map)['name'],
           id: recipe['id'],
           created_at: DateTime(year, month, day),
-          paws: paws.count,
+          paws: recipe['paws'],
           description: recipe['description'],
           modified_at: DateTime(yearMod, monthMod, dayMod),
           user_id: user!.id,
           userAvatar: userAvatar,
           user: Profile(
               id: user!.id,
-              createdAt: userdata['created_at'].substring(0, 10),
               email: userdata['email'],
               name: userdata['name'],
               description: userdata['description'],
@@ -473,6 +493,11 @@ initData() async {
   } catch (error) {
     print(error);
   }
+}
+
+initFavorite() async {
+  // Find the instance of the `Controller` class created by `Get.put()` in the widget tree.
+  final Controller controller = Get.find();
 
   // init favorites
   try {
@@ -484,7 +509,7 @@ initData() async {
 
     for (var likedRecipe in controller.userLikedRecipeXrefDB) {
       final recipe = await supabase
-          .from('recipe')
+          .from('select_recipe')
           .select('*')
           .eq('id', likedRecipe['recipe'])
           .single();
@@ -557,11 +582,6 @@ initData() async {
           .select("*")
           .match({'id': recipe['user_id']});
 
-      final paws = await supabase
-          .from('profile_liked_recipe')
-          .select('*', FetchOptions(count: CountOption.exact))
-          .eq('recipe', recipe['id']);
-
       List<String> dateParts = recipe['created_at'].split('-');
       int year = int.parse(dateParts[0]);
       int month = int.parse(dateParts[1]);
@@ -576,14 +596,13 @@ initData() async {
           name: (recipe as Map)['name'],
           id: recipe['id'],
           created_at: DateTime(year, month, day),
-          paws: paws.count,
+          paws: recipe['paws'],
           description: recipe['description'],
           modified_at: DateTime(yearMod, monthMod, dayMod),
           user_id: recipe['user_id'],
           avatar: recipeAvatar,
           user: Profile(
               id: userdata[0]['id'],
-              createdAt: userdata[0]['created_at'],
               email: userdata[0]['email'],
               name: userdata[0]['name'],
               description: userdata[0]['description'],
@@ -593,9 +612,13 @@ initData() async {
   } catch (error) {
     print(error);
   }
+}
+
+initPetList() async {
+  // Find the instance of the `Controller` class created by `Get.put()` in the widget tree.
+  final Controller controller = Get.find();
 
   //init pet list
-
   try {
     controller.userPetListDB =
         await supabase.from('pet').select('*').eq('owner', user?.id);
@@ -659,6 +682,11 @@ initData() async {
   } catch (error) {
     print(error);
   }
+}
+
+initSchedule() async {
+  // Find the instance of the `Controller` class created by `Get.put()` in the widget tree.
+  final Controller controller = Get.find();
 
   //init schedule
   try {
@@ -724,7 +752,7 @@ initData() async {
           );
         }
         var userTemp = await supabase
-            .from('recipe')
+            .from('select_recipe')
             .select('user_id')
             .eq('id', schedule.recipe)
             .single();
@@ -753,7 +781,7 @@ initData() async {
         );
 
         final recipe = await supabase
-            .from('recipe')
+            .from('select_recipe')
             .select('*')
             .eq('id', schedule.recipe)
             .single();
@@ -778,7 +806,7 @@ initData() async {
               id: recipe['id'],
               name: recipe['name'],
               description: recipe['description'],
-              paws: 0,
+              paws: recipe['paws'],
               created_at: DateTime(year, month, day),
               modified_at: DateTime(yearMod, monthMod, dayMod),
               user_id: recipe['user_id'],
@@ -786,7 +814,6 @@ initData() async {
               avatar: recipeAvatar,
               user: Profile(
                   id: user['id'],
-                  createdAt: user['created_at'],
                   email: user['email'],
                   name: user['name'],
                   description: user['description'],

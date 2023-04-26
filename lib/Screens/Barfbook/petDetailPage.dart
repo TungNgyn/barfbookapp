@@ -255,7 +255,6 @@ class _FeedingCardState extends State<FeedingCard> {
                     children: [
                       GestureDetector(
                         onTap: () {
-                          print("object");
                           setState(() {
                             editable = true;
                           });
