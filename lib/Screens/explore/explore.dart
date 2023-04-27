@@ -20,6 +20,13 @@ class _ScreenExploreState extends State<ScreenExplore>
     with AutomaticKeepAliveClientMixin<ScreenExplore> {
   final Controller controller = Get.find();
 
+  Future<void> _refreshPage() async {
+    setState(() {
+      initExplorerNewRecipe();
+      initExplorerPopularRecipe();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -48,7 +55,7 @@ class _ScreenExploreState extends State<ScreenExplore>
                     ),
                     GestureDetector(
                       onTap: () {
-                        if (controller.userProfile['user'].name != 'Gast') {
+                        if (controller.userProfile['user'].rank != 'guest') {
                           Get.to(() => ScreenProfile(
                               profile: controller.userProfile['user']));
                         }
@@ -64,16 +71,19 @@ class _ScreenExploreState extends State<ScreenExplore>
               )
             ];
           },
-          body: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 15),
-            child: ListView(
-              children: [
-                _searchBar(),
-                sortPopularRecipe(),
-                explorePopularRecipeRow(context),
-                sortNewRecipe(),
-                exploreNewRecipeRow(context),
-              ],
+          body: RefreshIndicator(
+            onRefresh: _refreshPage,
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 15),
+              child: ListView(
+                children: [
+                  _searchBar(),
+                  sortPopularRecipe(),
+                  explorePopularRecipeRow(context),
+                  sortNewRecipe(),
+                  exploreNewRecipeRow(context),
+                ],
+              ),
             ),
           ),
         ),
@@ -203,7 +213,6 @@ class RecipeCard extends StatelessWidget {
           ),
         ),
         child: Container(
-          color: Theme.of(context).colorScheme.surface,
           height: 200,
           width: 168,
           child: Column(
@@ -303,7 +312,6 @@ class BigRecipeCard extends StatelessWidget {
           ),
         ),
         child: Container(
-          color: Theme.of(context).colorScheme.surface,
           height: 150,
           width: 336,
           child: Row(

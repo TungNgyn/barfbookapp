@@ -96,7 +96,8 @@ loadRecipeUser(var id) async {
       email: user['email'],
       name: user['name'],
       description: user['description'],
-      avatar: userAvatar);
+      avatar: userAvatar,
+      rank: user['rank']);
 }
 
 loadUserAvatar(var id) {

@@ -9,7 +9,8 @@ class Profile {
       required this.email,
       required this.name,
       required this.description,
-      required this.avatar});
+      required this.avatar,
+      required this.rank});
 
   final String id;
   final DateTime? createdAt;
@@ -17,4 +18,5 @@ class Profile {
   final String name;
   final String description;
   final Widget avatar;
+  final String rank;
 }

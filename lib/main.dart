@@ -2,7 +2,6 @@
 import 'package:Barfbook/Screens/Account/Login.dart';
 import 'package:Barfbook/controller.dart';
 import 'package:Barfbook/loading.dart';
-import 'package:Barfbook/util/Supabase/AuthController.dart';
 import 'package:Barfbook/util/custom_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';

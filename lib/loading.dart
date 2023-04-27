@@ -61,7 +61,25 @@ initUser() async {
           'https://wokqzyqvqztmyzhhuqqh.supabase.co/storage/v1/object/public/profile/${user!.id}',
       progressIndicatorBuilder: (context, url, downloadProgress) =>
           CircularProgressIndicator(value: downloadProgress.progress),
-      errorWidget: (context, url, error) => Icon(Icons.error),
+      errorWidget: (context, url, error) => CachedNetworkImage(
+        imageUrl:
+            'https://wokqzyqvqztmyzhhuqqh.supabase.co/storage/v1/object/public/profile/defaultAvatar',
+        progressIndicatorBuilder: (context, url, downloadProgress) =>
+            CircularProgressIndicator(value: downloadProgress.progress),
+        errorWidget: (context, url, error) => Icon(Icons.error),
+        imageBuilder: (context, imageProvider) {
+          return Container(
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              border: Border.all(color: Theme.of(context).colorScheme.primary),
+              image: DecorationImage(
+                image: imageProvider,
+                fit: BoxFit.cover,
+              ),
+            ),
+          );
+        },
+      ),
       imageBuilder: (context, imageProvider) {
         return Container(
           decoration: BoxDecoration(
@@ -76,35 +94,16 @@ initUser() async {
       },
     );
   } catch (error) {
-    // If there was an error fetching user data from Supabase, use default data instead.
-    userAvatar = CachedNetworkImage(
-      imageUrl:
-          'https://wokqzyqvqztmyzhhuqqh.supabase.co/storage/v1/object/public/profile/defaultAvatar.png',
-      progressIndicatorBuilder: (context, url, downloadProgress) =>
-          CircularProgressIndicator(value: downloadProgress.progress),
-      errorWidget: (context, url, error) => Icon(Icons.error),
-      imageBuilder: (context, imageProvider) {
-        return Container(
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            border: Border.all(color: Theme.of(context).colorScheme.primary),
-            image: DecorationImage(
-              image: imageProvider,
-              fit: BoxFit.cover,
-            ),
-          ),
-        );
-      },
-    );
+    print(error);
   }
-
   controller.userProfile = {
     'user': Profile(
         id: user!.id,
         email: userdata['email'],
         name: userdata['name'],
         description: userdata['description'],
-        avatar: userAvatar)
+        avatar: userAvatar,
+        rank: userdata['rank'])
   };
 }
 
@@ -240,7 +239,8 @@ initExplorerPopularRecipe() async {
               email: userdata[0]['email'],
               name: userdata[0]['name'],
               description: userdata[0]['description'],
-              avatar: userAvatar),
+              avatar: userAvatar,
+              rank: userdata[0]['rank']),
           userAvatar: userAvatar,
           avatar: recipeAvatar));
     }
@@ -254,7 +254,7 @@ initExplorerNewRecipe() async {
   // init explore new recipe
   try {
     controller.databaseNewRecipeList =
-        await supabase.from('select_recipe').select('*');
+        await supabase.from('select_recipe').select('*').order('created_at');
   } catch (error) {
     print(error);
   } finally {
@@ -376,7 +376,8 @@ initExplorerNewRecipe() async {
               email: userdata[0]['email'],
               name: userdata[0]['name'],
               description: userdata[0]['description'],
-              avatar: userAvatar),
+              avatar: userAvatar,
+              rank: userdata[0]['rank']),
           userAvatar: userAvatar,
           avatar: recipeAvatar));
     }
@@ -487,7 +488,8 @@ initUserCreatedRecipe() async {
               email: userdata['email'],
               name: userdata['name'],
               description: userdata['description'],
-              avatar: userAvatar),
+              avatar: userAvatar,
+              rank: userdata['rank']),
           avatar: recipeAvatar));
     }
   } catch (error) {
@@ -606,7 +608,8 @@ initFavorite() async {
               email: userdata[0]['email'],
               name: userdata[0]['name'],
               description: userdata[0]['description'],
-              avatar: userAvatar),
+              avatar: userAvatar,
+              rank: userdata[0]['rank']),
           userAvatar: userAvatar));
     }
   } catch (error) {
@@ -796,7 +799,7 @@ initSchedule() async {
         int month = int.parse(dateParts[1]);
         int day = int.parse(dateParts[2].substring(0, 2));
 
-        List<String> datePartsMod = recipe['created_at'].split('-');
+        List<String> datePartsMod = recipe['modified_at'].split('-');
         int yearMod = int.parse(datePartsMod[0]);
         int monthMod = int.parse(datePartsMod[1]);
         int dayMod = int.parse(datePartsMod[2].substring(0, 2));
@@ -817,7 +820,8 @@ initSchedule() async {
                   email: user['email'],
                   name: user['name'],
                   description: user['description'],
-                  avatar: userAvatar),
+                  avatar: userAvatar,
+                  rank: user['rank']),
               userAvatar: userAvatar)
         ];
       }

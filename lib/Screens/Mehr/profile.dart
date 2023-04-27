@@ -129,7 +129,7 @@ class _ScreenProfileState extends State<ScreenProfile>
                                         Wrap(
                                           children: [
                                             for (var pet in petList)
-                                              PetCard(pet: pet)
+                                              BigPetCard(pet: pet)
                                           ],
                                         ),
                                       ],
@@ -237,7 +237,8 @@ class _ScreenProfileState extends State<ScreenProfile>
                 email: userdata[0]['email'],
                 name: userdata[0]['name'],
                 description: userdata[0]['description'],
-                avatar: userAvatar),
+                avatar: userAvatar,
+                rank: userdata[0]['rank']),
             userAvatar: userAvatar));
       }
     } catch (error) {

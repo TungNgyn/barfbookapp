@@ -1,5 +1,8 @@
+import 'package:Barfbook/Screens/Barfbook/Barfbook.dart';
+import 'package:Barfbook/Screens/Barfbook/Barfbook.dart';
 import 'package:Barfbook/Screens/Barfbook/barfbook_controller.dart';
 import 'package:Barfbook/Screens/Barfbook/editRecipe.dart';
+import 'package:Barfbook/Screens/Barfbook/pet_controller.dart';
 import 'package:Barfbook/Screens/Mehr/profile.dart';
 import 'package:Barfbook/Screens/Mehr/profile_controller.dart';
 import 'package:Barfbook/controller.dart';
@@ -23,7 +26,7 @@ class RecipeDetailPage extends StatefulWidget {
 }
 
 class _RecipeDetailPageState extends State<RecipeDetailPage> {
-  Future? _future;
+  Future<List<dynamic>>? _future;
   int touchedIndex = -1;
   double vegSum = 0;
   double fruitSum = 0;
@@ -51,7 +54,7 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
 
   @override
   void initState() {
-    _future = loadData();
+    _future = Future.wait([loadData(), loadComments()]);
     super.initState();
   }
 
@@ -64,22 +67,13 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
             ? Scaffold(
                 appBar: AppBar(
                   actions: [
-                    widget.recipe.user_id != user!.id
-                        ? IconButton(
-                            onPressed: () {
-                              setState(() {
-                                toggleFavorite();
-                              });
-                            },
-                            icon: (widget.favorite == true
-                                ? Icon(Icons.favorite)
-                                : Icon(Icons.favorite_border)))
-                        : IconButton(
-                            onPressed: () {
-                              Get.to(() =>
-                                  ScreenEditRecipe(recipe: widget.recipe));
-                            },
-                            icon: (Icon(Icons.edit))),
+                    if (widget.recipe.user_id == user!.id)
+                      IconButton(
+                          onPressed: () {
+                            Get.to(
+                                () => ScreenEditRecipe(recipe: widget.recipe));
+                          },
+                          icon: (Icon(Icons.edit))),
                     // IconButton(
                     //     onPressed: () {
                     //       TextEditingController _commentController =
@@ -495,7 +489,8 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
                                                               email: controller.userProfile['user'].email,
                                                               name: controller.userProfile['user'].name,
                                                               description: controller.userProfile['user'].description,
-                                                              avatar: controller.userProfile['user'].avatar)));
+                                                              avatar: controller.userProfile['user'].avatar,
+                                                              rank: controller.userProfile['user'].rank)));
                                                       insertComment(
                                                           widget.recipe.id,
                                                           _commentController
@@ -546,14 +541,39 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
                             fontSize: 14,
                           ),
                         ),
+                        if (widget.recipe.user_id != user!.id)
+                          Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 10),
+                            child: ElevatedButton(
+                                onPressed: () {
+                                  setState(() {
+                                    toggleFavorite();
+                                  });
+                                },
+                                child: Row(
+                                  children: [
+                                    Icon(widget.favorite == true
+                                        ? (Icons.favorite)
+                                        : (Icons.favorite_border)),
+                                    Text("Rezept speichern"),
+                                  ],
+                                )),
+                          ),
                         ElevatedButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              Get.defaultDialog(
+                                  title: 'Haustier auswählen',
+                                  content: Column(
+                                    children: [
+                                      for (Pet pet in controller.userPetList)
+                                        PetCard(pet: pet)
+                                    ],
+                                  ));
+                            },
                             child: Row(
                               children: [
-                                Icon(widget.favorite == true
-                                    ? (Icons.favorite)
-                                    : (Icons.favorite_border)),
-                                Text("Rezept speichern"),
+                                Icon(Icons.usb),
+                                Text("Rezept anwenden"),
                               ],
                             )),
                         Padding(
@@ -904,19 +924,29 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
       for (var map in controller.userLikedRecipeXrefDB) {
         if (map?.containsKey("recipe") ?? false) {
           var tempRecipe = await supabase
-              .from('recipe')
-              .select('id, created_at, modified_at, name, description')
+              .from('select_recipe')
+              .select('*')
               .eq('id', map['recipe']);
+
+          List<String> dateParts = tempRecipe['created_at'].split('-');
+          int year = int.parse(dateParts[0]);
+          int month = int.parse(dateParts[1]);
+          int day = int.parse(dateParts[2].substring(0, 2));
+
+          List<String> datePartsMod = tempRecipe['modified_at'].split('-');
+          int yearMod = int.parse(datePartsMod[0]);
+          int monthMod = int.parse(datePartsMod[1]);
+          int dayMod = int.parse(datePartsMod[2].substring(0, 2));
 
           controller.userLikedRecipe.clear();
           for (var recipe in tempRecipe) {
             controller.userLikedRecipe.add(Recipe(
                 name: (recipe as Map)['name'],
                 id: recipe['id'],
-                created_at: recipe['created_at'],
+                created_at: DateTime(year, month, day),
                 paws: 0,
                 description: recipe['description'],
-                modified_at: recipe['modified_at'],
+                modified_at: DateTime(yearMod, monthMod, dayMod),
                 user_id: user!.id));
           }
         }
@@ -999,11 +1029,11 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
               comment: comment['comment'],
               profile: Profile(
                   id: profile['id'],
-                  createdAt: profile['created_at'],
                   email: profile['email'],
                   name: profile['name'],
                   description: profile['description'],
-                  avatar: userAvatar)));
+                  avatar: userAvatar,
+                  rank: profile['rank'])));
         } catch (error) {
           print(error);
         }
@@ -1073,7 +1103,6 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
           weightSum += gram;
         }
       }
-      loadComments();
     } catch (error) {
       print(error);
     }

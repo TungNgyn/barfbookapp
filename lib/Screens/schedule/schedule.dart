@@ -274,7 +274,8 @@ class _ScreenScheduleState extends State<ScreenSchedule> {
                   email: recipe.user!.email,
                   name: recipe.user!.name,
                   description: recipe.user!.description,
-                  avatar: userAvatar),
+                  avatar: userAvatar,
+                  rank: recipe.user!.rank),
               userAvatar: userAvatar,
               avatar: recipeAvatar,
               scheduleID: scheduleID));

@@ -58,7 +58,7 @@ class _settingsStartState extends State<ScreenSettings>
                 children: [
                   GestureDetector(
                     onTap: () {
-                      if (controller.userProfile['user'].name != 'Gast') {
+                      if (controller.userProfile['user'].rank != 'guest') {
                         Get.to(() => ScreenProfile(
                             profile: controller.userProfile['user']));
                       }
@@ -73,13 +73,11 @@ class _settingsStartState extends State<ScreenSettings>
                     child: Column(
                       children: [
                         Text(
-                          user != null || session != null
-                              ? "${controller.userProfile['user'].name}"
-                              : "Gast",
+                          "${controller.userProfile['user'].name}",
                           style: TextStyle(
                               fontWeight: FontWeight.w200, fontSize: 24),
                         ),
-                        if (user != null || session != null)
+                        if (controller.userProfile['user'].rank != 'guest')
                           Text("${controller.userProfile['user'].email}")
                       ],
                     ),
@@ -108,7 +106,7 @@ class _settingsStartState extends State<ScreenSettings>
                                     .fontFamily),
                           ),
                         ),
-                        controller.userProfile['user'].name == 'Gast'
+                        (controller.userProfile['user'].rank == 'guest')
                             ? accountGuestSettings(context)
                             : accountSettings(context),
                         // barfbook app
@@ -553,15 +551,22 @@ class _settingsStartState extends State<ScreenSettings>
                                                 MainAxisAlignment.spaceAround,
                                             children: [
                                               ElevatedButton(
-                                                  onPressed: () {},
-                                                  child: Text('Nein')),
-                                              ElevatedButton(
-                                                  onPressed: () {},
+                                                  onPressed: () async {
+                                                    _deleteAccount().whenComplete(
+                                                        () => authController
+                                                            .signOut()
+                                                            .whenComplete(() =>
+                                                                Get.to(() =>
+                                                                    ScreenLogin())));
+                                                  },
                                                   child: Text(
                                                     'Ja',
                                                     style: TextStyle(
                                                         color: Colors.red),
-                                                  ))
+                                                  )),
+                                              ElevatedButton(
+                                                  onPressed: () {},
+                                                  child: Text('Nein')),
                                             ],
                                           ),
                                           content: Column(
@@ -1009,5 +1014,13 @@ class _settingsStartState extends State<ScreenSettings>
                 )
               ])
             ]));
+  }
+
+  Future _deleteAccount() async {
+    try {
+      await supabase.from('profile').delete().eq('id', user?.id);
+    } catch (error) {
+      print(error);
+    }
   }
 }

@@ -103,7 +103,7 @@ class _ScreenBarfbookState extends State<ScreenBarfbook> {
                                 Obx(() {
                                   List<Widget> list = [];
                                   for (Pet pet in controller.userPetList) {
-                                    list.add(PetCard(pet: pet));
+                                    list.add(BigPetCard(pet: pet));
                                   }
                                   return Wrap(children: list);
                                 }),
@@ -314,7 +314,6 @@ class PetCard extends StatelessWidget {
           ),
         ),
         child: Container(
-          color: Theme.of(context).colorScheme.surface,
           height: 224,
           width: 176,
           child: Padding(
@@ -336,6 +335,65 @@ class PetCard extends StatelessWidget {
                   style: TextStyle(overflow: TextOverflow.ellipsis),
                 ),
                 Text('${(pet.weight / 1000).toStringAsFixed(1)}kg'),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class BigPetCard extends StatelessWidget {
+  final Pet pet;
+
+  BigPetCard({required this.pet});
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        Get.to(() => ScreenPetDetailPage(pet: pet));
+      },
+      child: Card(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+          side: BorderSide(
+            color: Colors.grey.withOpacity(0.2),
+            width: 1,
+          ),
+        ),
+        child: Container(
+          height: 150,
+          width: 336,
+          child: Padding(
+            padding: const EdgeInsets.all(15),
+            child: Row(
+              children: [
+                CircleAvatar(
+                  backgroundColor: Theme.of(context).colorScheme.surface,
+                  radius: 56,
+                  child: pet.avatar,
+                ),
+                Expanded(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        pet.name,
+                        style: TextStyle(
+                            fontSize: 21, fontWeight: FontWeight.bold),
+                      ),
+                      SizedBox(height: 10),
+                      Text('${pet.age} Jahre'),
+                      Text(
+                        '${pet.breed}',
+                        style: TextStyle(overflow: TextOverflow.ellipsis),
+                      ),
+                      Text('${(pet.weight / 1000).toStringAsFixed(1)}kg'),
+                    ],
+                  ),
+                ),
               ],
             ),
           ),
