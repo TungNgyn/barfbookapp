@@ -212,7 +212,7 @@ class CustomTheme {
         onSecondaryContainer: Color(0xff101f10),
         onSecondary: Color(0xffffffff),
         error: Color(0xffba1a1a),
-        errorContainer: Color(0xffffdad6),
+        errorContainer: Color.fromARGB(255, 132, 82, 76),
         onError: Color(0xffffffff),
         inversePrimary: Color(0xff8bd88e),
         inverseSurface: Color(0xff2f312d),

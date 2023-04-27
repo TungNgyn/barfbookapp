@@ -9,7 +9,6 @@ import 'package:Barfbook/util/Supabase/AuthController.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
 class ScreenProfile extends StatefulWidget {
   ScreenProfile({required this.profile});
@@ -122,7 +121,11 @@ class _ScreenProfileState extends State<ScreenProfile>
                               ),
                             ),
                             (petList.isEmpty)
-                                ? Text("Noch keine Haustiere hinzugefügt.")
+                                ? Column(
+                                    children: [
+                                      Text("Noch keine Haustiere hinzugefügt."),
+                                    ],
+                                  )
                                 : SingleChildScrollView(
                                     child: Column(
                                       children: [
@@ -136,7 +139,11 @@ class _ScreenProfileState extends State<ScreenProfile>
                                     ),
                                   ),
                             (recipeList.isEmpty)
-                                ? Text("Noch keine Rezepte erstellt.")
+                                ? Column(
+                                    children: [
+                                      Text("Noch keine Rezepte erstellt."),
+                                    ],
+                                  )
                                 : SingleChildScrollView(
                                     child: Column(
                                       children: [
@@ -221,8 +228,6 @@ class _ScreenProfileState extends State<ScreenProfile>
                 return Container(
                   decoration: BoxDecoration(
                     shape: BoxShape.rectangle,
-                    border: Border.all(
-                        color: Theme.of(context).colorScheme.primary),
                     borderRadius: BorderRadius.circular(20),
                     image: DecorationImage(
                       image: imageProvider,

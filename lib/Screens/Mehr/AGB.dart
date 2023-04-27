@@ -7,7 +7,7 @@ class AGB extends StatelessWidget {
       appBar: AppBar(
           title: Text(
         "Allgemeine Geschäftsbedingungen",
-        style: TextStyle(fontSize: 18),
+        style: TextStyle(fontSize: 16),
       )),
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: 15),

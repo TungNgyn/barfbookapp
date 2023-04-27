@@ -14,11 +14,19 @@ class ScreenPetDetailPage extends StatefulWidget {
 
 class _ScreenPetDetailPageState extends State<ScreenPetDetailPage> {
   late String owner;
+  Future? _future;
+
+  @override
+  void initState() {
+    super.initState();
+    _future = loadOwner();
+  }
+
   TextEditingController _dayController = TextEditingController(text: '1');
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-        future: loadOwner(),
+        future: _future,
         builder: (context, snapshot) => snapshot.connectionState ==
                 ConnectionState.done
             ? Scaffold(
@@ -26,15 +34,16 @@ class _ScreenPetDetailPageState extends State<ScreenPetDetailPage> {
                 appBar: AppBar(
                   backgroundColor: Colors.transparent,
                   actions: [
-                    Padding(
-                      padding: const EdgeInsets.only(right: 10),
-                      child: IconButton(
-                        icon: Icon(Icons.create),
-                        onPressed: () {
-                          Get.to(() => ScreenEditPet(pet: widget.pet));
-                        },
-                      ),
-                    )
+                    if (user?.id == widget.pet.owner)
+                      Padding(
+                        padding: const EdgeInsets.only(right: 10),
+                        child: IconButton(
+                          icon: Icon(Icons.create),
+                          onPressed: () {
+                            Get.to(() => ScreenEditPet(pet: widget.pet));
+                          },
+                        ),
+                      )
                   ],
                 ),
                 body: GestureDetector(
@@ -50,55 +59,50 @@ class _ScreenPetDetailPageState extends State<ScreenPetDetailPage> {
                                 fit: BoxFit.cover)),
                       ),
                     ),
-                    Center(
-                      child: Column(children: [
-                        SafeArea(
-                          child: Column(
-                            children: [
-                              CircleAvatar(
-                                  backgroundColor:
-                                      Theme.of(context).colorScheme.surface,
-                                  radius: 64,
-                                  child: widget.pet.avatar),
-                              Padding(
-                                padding: EdgeInsets.only(top: 24),
-                                child: Text(
-                                  "${widget.pet.name}",
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: 21),
-                                ),
+                    Column(children: [
+                      SafeArea(
+                        child: Column(
+                          children: [
+                            CircleAvatar(
+                                backgroundColor:
+                                    Theme.of(context).colorScheme.surface,
+                                radius: 64,
+                                child: widget.pet.avatar),
+                            Padding(
+                              padding: EdgeInsets.only(top: 10),
+                              child: Text(
+                                "${widget.pet.name}",
+                                style: TextStyle(
+                                    fontWeight: FontWeight.w600, fontSize: 21),
                               ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
-                        Expanded(
-                          child: Container(
-                            color: Theme.of(context).colorScheme.surface,
-                            child: Center(
-                                child: Padding(
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: 10, vertical: 10),
-                              child: SingleChildScrollView(
-                                child: Column(
-                                  children: [
-                                    PetInfo(owner: owner, pet: widget.pet),
-                                    SizedBox(height: 30),
-                                    FeedingCard(
-                                      dayController: _dayController,
-                                      pet: widget.pet,
-                                      days: 1,
-                                      meat: 80,
-                                      vegetables: 20,
-                                    ),
-                                  ],
+                      ),
+                      Expanded(
+                        child: Container(
+                          color: Theme.of(context).colorScheme.surface,
+                          child: Center(
+                              child: Padding(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 10, vertical: 10),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: [
+                                PetInfo(owner: owner, pet: widget.pet),
+                                FeedingCard(
+                                  dayController: _dayController,
+                                  pet: widget.pet,
+                                  days: 1,
+                                  meat: 80,
+                                  vegetables: 20,
                                 ),
-                              ),
-                            )),
-                          ),
+                              ],
+                            ),
+                          )),
                         ),
-                      ]),
-                    )
+                      ),
+                    ])
                   ]),
                 ))
             : Center(child: CircularProgressIndicator()));
@@ -238,205 +242,219 @@ class _FeedingCardState extends State<FeedingCard> {
       ),
       child: Container(
         color: Theme.of(context).colorScheme.surface,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 5),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(12),
-                        topRight: Radius.circular(12))),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 10),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            editable = true;
-                          });
-                        },
-                        child: editable
-                            ? Container(
-                                width: 100,
-                                height: 50,
-                                child: TextField(
-                                  keyboardType: TextInputType.number,
-                                  controller: widget.dayController,
-                                  maxLines: 1,
-                                  onSubmitted: (value) {
-                                    setState(() {
-                                      value.isEmpty
-                                          ? widget.dayController.text = '0'
-                                          : widget.dayController.text = value;
-                                    });
-                                  },
-                                  decoration: InputDecoration(
-                                      suffixIcon: IconButton(
-                                          onPressed: () {
-                                            setState(() {
-                                              if (widget.dayController.text ==
-                                                  '') {
-                                                widget.dayController.text = '0';
-                                              }
-                                              editable = false;
-                                            });
-                                          },
-                                          icon: Icon(Icons.edit)),
-                                      border: OutlineInputBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(12))),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(12),
+                      topRight: Radius.circular(12))),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          editable = true;
+                        });
+                      },
+                      child: editable
+                          ? Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Text("Anzahl der Tage"),
+                                SizedBox(width: 10),
+                                Container(
+                                  width: 90,
+                                  height: 50,
+                                  child: TextField(
+                                    keyboardType: TextInputType.number,
+                                    controller: widget.dayController,
+                                    maxLines: 1,
+                                    onSubmitted: (value) {
+                                      setState(() {
+                                        value.isEmpty
+                                            ? widget.dayController.text = '0'
+                                            : widget.dayController.text = value;
+                                      });
+                                    },
+                                    decoration: InputDecoration(
+                                        suffixIcon: IconButton(
+                                            onPressed: () {
+                                              setState(() {
+                                                if (widget.dayController.text ==
+                                                    '') {
+                                                  widget.dayController.text =
+                                                      '0';
+                                                }
+                                                editable = false;
+                                              });
+                                            },
+                                            icon: Icon(Icons.edit)),
+                                        border: OutlineInputBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(12))),
+                                  ),
                                 ),
-                              )
-                            : GestureDetector(
+                              ],
+                            )
+                          : Container(
+                              height: 50,
+                              child: GestureDetector(
                                 onTap: () {
                                   setState(() => editable = true);
                                 },
-                                child: Text(
-                                  widget.dayController.text == '1'
-                                      ? "Täglicher Bedarf"
-                                      : "Bedarf für ${widget.dayController.text} Tage",
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 26),
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      widget.dayController.text == '1'
+                                          ? "Täglicher Bedarf"
+                                          : "Bedarf für ${widget.dayController.text} Tage",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 26),
+                                    ),
+                                    Icon(Icons.edit)
+                                  ],
                                 ),
                               ),
-                      ),
-                      // Container(
-                      // width: 45,
-                      // height: 50,
-                      //   child: TextField(
-                      // keyboardType: TextInputType.number,
-                      //     textAlign: TextAlign.center,
-                      //     onChanged: (value) {
-                      //       setState(() {
-                      //         value.isEmpty
-                      //             ? widget.dayController.text = '0'
-                      //             : widget.dayController.text = value;
-                      //       });
-                      //     },
-                      //     onSubmitted: (value) {
-                      //       setState(() {
-                      //         value.isEmpty
-                      //             ? widget.dayController.text = '0'
-                      //             : widget.dayController.text = value;
-                      //       });
-                      //     },
-                      //     controller: widget.dayController,
-                      //     decoration: InputDecoration(
-                      //         border: OutlineInputBorder(
-                      //             borderRadius: BorderRadius.circular(12))),
-                      //   ),
-                      // ),
-                      // Text(
-                      //   " Tage",
-                      //   style: TextStyle(
-                      //       fontWeight: FontWeight.bold, fontSize: 26),
-                      // )
-                    ],
-                  ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 10),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Divider(),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          'Fleisch (${widget.meat}%)',
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 21),
-                        ),
-                        Text(
-                            '${((ration / 100 * widget.meat) * int.parse(widget.dayController.text)).toStringAsFixed(2)}g',
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 21))
-                      ],
+                            ),
                     ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text('Muskelfleisch (50%)'),
-                        Text(
-                            '${(((ration / 100 * widget.meat) * 0.5) * int.parse(widget.dayController.text)).toStringAsFixed(1)}g')
-                      ],
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text('Pansen/Magen (20%)'),
-                        Text(
-                            '${(((ration / 100 * widget.meat) * 0.2) * int.parse(widget.dayController.text)).toStringAsFixed(1)}g')
-                      ],
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text('fleischige Knochen (15%)'),
-                        Text(
-                            '${(((ration / 100 * widget.meat) * 0.15) * int.parse(widget.dayController.text)).toStringAsFixed(1)}g')
-                      ],
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text('Organe (15%)'),
-                        Text(
-                            '${(((ration / 100 * widget.meat) * 0.15) * int.parse(widget.dayController.text)).toStringAsFixed(1)}g')
-                      ],
-                    ),
-                    SizedBox(height: 16),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          'Vegetarisch (${widget.vegetables}%)',
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 21),
-                        ),
-                        Text(
-                            '${((ration / 100 * widget.vegetables) * int.parse(widget.dayController.text)).toStringAsFixed(2)}g',
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 21))
-                      ],
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text('Gemüse (80%)'),
-                        Text(
-                            '${(((ration / 100 * widget.vegetables) * 0.8) * int.parse(widget.dayController.text)).toStringAsFixed(1)}g')
-                      ],
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text('Obst (20%)'),
-                        Text(
-                            '${(((ration / 100 * widget.vegetables) * 0.2) * int.parse(widget.dayController.text)).toStringAsFixed(1)}g')
-                      ],
-                    ),
-                    Divider(),
-                    Align(
-                      alignment: Alignment.bottomRight,
-                      child: Text(
-                        '${ration * int.parse(widget.dayController.text == '' ? '0' : widget.dayController.text)}g',
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 26),
-                      ),
-                    )
+                    // Container(
+                    // width: 45,
+                    // height: 50,
+                    //   child: TextField(
+                    // keyboardType: TextInputType.number,
+                    //     textAlign: TextAlign.center,
+                    //     onChanged: (value) {
+                    //       setState(() {
+                    //         value.isEmpty
+                    //             ? widget.dayController.text = '0'
+                    //             : widget.dayController.text = value;
+                    //       });
+                    //     },
+                    //     onSubmitted: (value) {
+                    //       setState(() {
+                    //         value.isEmpty
+                    //             ? widget.dayController.text = '0'
+                    //             : widget.dayController.text = value;
+                    //       });
+                    //     },
+                    //     controller: widget.dayController,
+                    //     decoration: InputDecoration(
+                    //         border: OutlineInputBorder(
+                    //             borderRadius: BorderRadius.circular(12))),
+                    //   ),
+                    // ),
+                    // Text(
+                    //   " Tage",
+                    //   style: TextStyle(
+                    //       fontWeight: FontWeight.bold, fontSize: 26),
+                    // )
                   ],
                 ),
-              )
-            ],
-          ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Divider(),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Fleisch (${widget.meat}%)',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 21),
+                      ),
+                      Text(
+                          '${((ration / 100 * widget.meat) * int.parse(widget.dayController.text)).toStringAsFixed(2)}g',
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 21))
+                    ],
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text('Muskelfleisch (50%)'),
+                      Text(
+                          '${(((ration / 100 * widget.meat) * 0.5) * int.parse(widget.dayController.text)).toStringAsFixed(1)}g')
+                    ],
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text('Pansen/Magen (20%)'),
+                      Text(
+                          '${(((ration / 100 * widget.meat) * 0.2) * int.parse(widget.dayController.text)).toStringAsFixed(1)}g')
+                    ],
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text('fleischige Knochen (15%)'),
+                      Text(
+                          '${(((ration / 100 * widget.meat) * 0.15) * int.parse(widget.dayController.text)).toStringAsFixed(1)}g')
+                    ],
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text('Organe (15%)'),
+                      Text(
+                          '${(((ration / 100 * widget.meat) * 0.15) * int.parse(widget.dayController.text)).toStringAsFixed(1)}g')
+                    ],
+                  ),
+                  SizedBox(height: 16),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Vegetarisch (${widget.vegetables}%)',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 21),
+                      ),
+                      Text(
+                          '${((ration / 100 * widget.vegetables) * int.parse(widget.dayController.text)).toStringAsFixed(2)}g',
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 21))
+                    ],
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text('Gemüse (80%)'),
+                      Text(
+                          '${(((ration / 100 * widget.vegetables) * 0.8) * int.parse(widget.dayController.text)).toStringAsFixed(1)}g')
+                    ],
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text('Obst (20%)'),
+                      Text(
+                          '${(((ration / 100 * widget.vegetables) * 0.2) * int.parse(widget.dayController.text)).toStringAsFixed(1)}g')
+                    ],
+                  ),
+                  Divider(),
+                  Align(
+                    alignment: Alignment.bottomRight,
+                    child: Text(
+                      '${ration * int.parse(widget.dayController.text == '' ? '0' : widget.dayController.text)}g',
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 26),
+                    ),
+                  )
+                ],
+              ),
+            )
+          ],
         ),
       ),
     );

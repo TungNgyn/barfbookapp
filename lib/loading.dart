@@ -181,6 +181,8 @@ initExplorerPopularRecipe() async {
             return Container(
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
+                border:
+                    Border.all(color: Theme.of(context).colorScheme.primary),
                 image: DecorationImage(
                   image: imageProvider,
                   fit: BoxFit.cover,
@@ -201,6 +203,8 @@ initExplorerPopularRecipe() async {
             return Container(
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
+                border:
+                    Border.all(color: Theme.of(context).colorScheme.primary),
                 image: DecorationImage(
                   image: imageProvider,
                   fit: BoxFit.cover,
@@ -319,6 +323,8 @@ initExplorerNewRecipe() async {
             return Container(
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
+                border:
+                    Border.all(color: Theme.of(context).colorScheme.primary),
                 image: DecorationImage(
                   image: imageProvider,
                   fit: BoxFit.cover,
@@ -338,6 +344,8 @@ initExplorerNewRecipe() async {
             return Container(
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
+                border:
+                    Border.all(color: Theme.of(context).colorScheme.primary),
                 image: DecorationImage(
                   image: imageProvider,
                   fit: BoxFit.cover,
@@ -641,6 +649,8 @@ initPetList() async {
             return Container(
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
+                border:
+                    Border.all(color: Theme.of(context).colorScheme.primary),
                 image: DecorationImage(
                   image: imageProvider,
                   fit: BoxFit.cover,
@@ -662,6 +672,8 @@ initPetList() async {
             return Container(
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
+                border:
+                    Border.all(color: Theme.of(context).colorScheme.primary),
                 image: DecorationImage(
                   image: imageProvider,
                   fit: BoxFit.cover,
@@ -720,8 +732,6 @@ initSchedule() async {
               return Container(
                 decoration: BoxDecoration(
                   shape: BoxShape.rectangle,
-                  border:
-                      Border.all(color: Theme.of(context).colorScheme.primary),
                   borderRadius: BorderRadius.circular(20),
                   image: DecorationImage(
                     image: imageProvider,
@@ -742,8 +752,6 @@ initSchedule() async {
               return Container(
                 decoration: BoxDecoration(
                   shape: BoxShape.rectangle,
-                  border:
-                      Border.all(color: Theme.of(context).colorScheme.primary),
                   borderRadius: BorderRadius.circular(20),
                   image: DecorationImage(
                     image: imageProvider,
@@ -773,6 +781,8 @@ initSchedule() async {
           imageBuilder: (context, imageProvider) {
             return Container(
               decoration: BoxDecoration(
+                border:
+                    Border.all(color: Theme.of(context).colorScheme.primary),
                 shape: BoxShape.circle,
                 image: DecorationImage(
                   image: imageProvider,

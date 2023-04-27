@@ -21,7 +21,10 @@ class ScreenNewRecipe extends StatelessWidget {
         child: ListView(
           children: [
             for (Recipe recipe in controller.exploreNewRecipeList)
-              RecipeCard(controller: controller, recipe: recipe)
+              BigRecipeCard(
+                recipe: recipe,
+                controller: controller,
+              )
           ],
         ),
       ),

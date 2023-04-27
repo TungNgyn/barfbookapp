@@ -77,7 +77,9 @@ class _ScreenBarfbookState extends State<ScreenBarfbook> {
                 onPressed: () {
                   controller.userProfile['user'].name == 'Gast'
                       ? Get.snackbar("Registrierung",
-                          "Du musst angemeldet sein, um ein Haustier hinzuzufügen.")
+                          "Du musst angemeldet sein, um ein Haustier hinzuzufügen.",
+                          backgroundColor:
+                              Theme.of(context).colorScheme.outlineVariant)
                       : Get.to(() => ScreenAddPet());
                 },
                 child: Icon(Icons.add),
@@ -120,7 +122,9 @@ class _ScreenBarfbookState extends State<ScreenBarfbook> {
                   onPressed: () {
                     controller.userProfile['user'].name == 'Gast'
                         ? Get.snackbar("Registrierung",
-                            "Du musst angemeldet sein, um ein Rezept zu erstellen.")
+                            "Du musst angemeldet sein, um ein Rezept zu erstellen.",
+                            backgroundColor:
+                                Theme.of(context).colorScheme.outlineVariant)
                         : Get.to(() => ScreenCreateRecipe());
                   },
                   child: Icon(Icons.add),
@@ -214,49 +218,55 @@ class _ScreenBarfbookState extends State<ScreenBarfbook> {
 
   Widget noRecipeCreatedCard(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(15.0),
-      child: Column(
-        children: [
-          Card(
-            elevation: 10,
-            child: Padding(
-              padding: const EdgeInsets.all(15.0),
-              child: Column(
-                children: [
-                  Image.asset(
-                    'assets/icons/recipe.png',
-                    width: MediaQuery.of(context).size.width * 0.2,
-                  ),
-                  const SizedBox(height: 10),
-                  const Text("Du hast noch kein eigenes Rezept erstellt."),
-                  const Text("Fang jetzt damit an!"),
-                ],
+      padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 20),
+      child: Card(
+        elevation: 10,
+        child: Padding(
+          padding: const EdgeInsets.all(15.0),
+          child: Column(
+            children: [
+              Image.asset(
+                'assets/icons/recipe_color.png',
+                width: MediaQuery.of(context).size.width * 0.2,
               ),
-            ),
+              const SizedBox(height: 10),
+              const Text(
+                "Du hast noch kein eigenes Rezept erstellt.",
+                textAlign: TextAlign.center,
+              ),
+              const Text(
+                "Fang jetzt damit an!",
+                textAlign: TextAlign.center,
+              ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }
 
   Widget noFavoriteRecipeCard(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(15.0),
+      padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 20),
       child: Card(
         elevation: 10,
         child: Padding(
           padding: const EdgeInsets.all(15),
           child: Column(
             children: [
-              Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: Image.asset(
-                  'assets/icons/favorite.png',
-                  width: MediaQuery.of(context).size.width * 0.2,
-                ),
+              Image.asset(
+                'assets/icons/favorite_color.png',
+                width: MediaQuery.of(context).size.width * 0.2,
               ),
-              Text('Du hast noch keine Rezepte gespeichert.'),
-              Text('Finde die besten Rezepte!'),
+              const SizedBox(height: 10),
+              const Text(
+                'Du hast noch keine Rezepte gespeichert.',
+                textAlign: TextAlign.center,
+              ),
+              const Text(
+                'Finde die besten Rezepte!',
+                textAlign: TextAlign.center,
+              ),
             ],
           ),
         ),
@@ -266,25 +276,25 @@ class _ScreenBarfbookState extends State<ScreenBarfbook> {
 
   Widget addPetCard(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(15.0),
+      padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 20),
       child: Card(
         elevation: 10,
         child: Padding(
           padding: const EdgeInsets.all(15.0),
           child: Column(
             children: [
-              Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: Image.asset(
-                  'assets/icons/petCard.png',
-                  width: MediaQuery.of(context).size.width * 0.2,
-                ),
+              Image.asset(
+                'assets/icons/petCard.png',
+                width: MediaQuery.of(context).size.width * 0.2,
               ),
-              Column(
-                children: [
-                  Text("Du hast noch keine Haustiere hinzugefügt."),
-                  Text("Trage jetzt einen ein!"),
-                ],
+              const SizedBox(height: 10),
+              const Text(
+                "Du hast noch keine Haustiere hinzugefügt.",
+                textAlign: TextAlign.center,
+              ),
+              const Text(
+                "Trage jetzt einen ein!",
+                textAlign: TextAlign.center,
               ),
             ],
           ),

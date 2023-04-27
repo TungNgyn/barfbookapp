@@ -31,103 +31,108 @@ class _LoginState extends State<ScreenLogin> {
   @override
   Widget build(BuildContext context) {
     final _media = MediaQuery.of(context).size;
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-      body: Stack(children: [
-        Opacity(
-          opacity: 0.4,
-          child: Container(
-            decoration: BoxDecoration(
-                image: DecorationImage(
-                    image: AssetImage("assets/images/splash/background.png"),
-                    fit: BoxFit.cover)),
+    return GestureDetector(
+      onTap: () {
+        FocusManager.instance.primaryFocus?.unfocus();
+      },
+      child: Scaffold(
+        resizeToAvoidBottomInset: false,
+        body: Stack(children: [
+          Opacity(
+            opacity: 0.4,
+            child: Container(
+              decoration: BoxDecoration(
+                  image: DecorationImage(
+                      image: AssetImage("assets/images/splash/background.png"),
+                      fit: BoxFit.cover)),
+            ),
           ),
-        ),
-        SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.all(20),
-            child: Column(
-              children: [
-                Center(
-                    child: Image.asset(
-                  'assets/icons/icon.png',
-                  width: MediaQuery.of(context).size.height * 0.1,
-                )),
-                SizedBox(
-                  height: 30,
-                ),
-                Text(
-                  "Willkommen",
-                  style: TextStyle(
-                    letterSpacing: 3,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 35,
+          SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                children: [
+                  Center(
+                      child: Image.asset(
+                    'assets/icons/icon.png',
+                    width: MediaQuery.of(context).size.height * 0.1,
+                  )),
+                  SizedBox(
+                    height: 30,
                   ),
-                ),
-                Text(
-                  'Anmeldung',
-                  style: TextStyle(fontWeight: FontWeight.w200, fontSize: 33),
-                ),
-                SizedBox(height: 40),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: Container(
-                    height: _media.height / 3.8,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black12,
-                          blurRadius: 20,
-                          spreadRadius: 10,
-                        ),
-                      ],
+                  Text(
+                    "Willkommen",
+                    style: TextStyle(
+                      letterSpacing: 3,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 35,
                     ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(30.0),
-                      child: Column(
-                        children: [
-                          inputText("Benutzername", _emailController, false),
-                          Divider(height: 5, color: Colors.black),
-                          inputText("Passwort", _passwordController, true),
-                          Center(
-                              child: ElevatedButton(
-                                  onPressed: () {
-                                    _isLoading ? null : _login();
-                                  },
-                                  child: Text(
-                                      _isLoading ? 'Laden..' : 'Anmelden'))),
+                  ),
+                  Text(
+                    'Anmeldung',
+                    style: TextStyle(fontWeight: FontWeight.w200, fontSize: 33),
+                  ),
+                  SizedBox(height: 40),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: Container(
+                      height: _media.height / 3.8,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black12,
+                            blurRadius: 20,
+                            spreadRadius: 10,
+                          ),
                         ],
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(30.0),
+                        child: Column(
+                          children: [
+                            inputText("Benutzername", _emailController, false),
+                            Divider(height: 5, color: Colors.black),
+                            inputText("Passwort", _passwordController, true),
+                            Center(
+                                child: ElevatedButton(
+                                    onPressed: () {
+                                      _isLoading ? null : _login();
+                                    },
+                                    child: Text(
+                                        _isLoading ? 'Laden..' : 'Anmelden'))),
+                          ],
+                        ),
                       ),
                     ),
                   ),
-                ),
-                SizedBox(
-                  height: _media.height * 0.1,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    GestureDetector(
-                        onTap: () {
-                          _isLoading ? null : _loginGuest();
-                        },
-                        child: Text("Als Gast fortfahren")),
-                    VerticalDivider(
-                      width: 10,
-                      thickness: 0.5,
-                    ),
-                    GestureDetector(
-                      onTap: () => Get.offAll(() => ScreenSignUp()),
-                      child: Text("Registrieren"),
-                    ),
-                  ],
-                ),
-              ],
+                  SizedBox(
+                    height: _media.height * 0.1,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      GestureDetector(
+                          onTap: () {
+                            _isLoading ? null : _loginGuest();
+                          },
+                          child: Text("Als Gast fortfahren")),
+                      VerticalDivider(
+                        width: 10,
+                        thickness: 0.5,
+                      ),
+                      GestureDetector(
+                        onTap: () => Get.offAll(() => ScreenSignUp()),
+                        child: Text("Registrieren"),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
-          ),
-        )
-      ]),
+          )
+        ]),
+      ),
     );
   }
 
