@@ -1,10 +1,12 @@
 import 'dart:async';
+import 'dart:io';
 import 'package:Barfbook/controller.dart';
 import 'package:Barfbook/loading.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'package:get/get.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../util/Supabase/AuthController.dart';
 import 'SignUp.dart';
@@ -149,8 +151,9 @@ class _LoginState extends State<ScreenLogin> {
                           onTap: () {
                             _isLoading
                                 ? null
-                                : _loginGuest().whenComplete(
-                                    () => Get.offAll(() => ScreenLoading()));
+                                : _loginGuest().whenComplete(() =>
+                                    _createAvatar().whenComplete(() =>
+                                        Get.offAll(() => ScreenLoading())));
                           },
                           child: Text("Als Gast fortfahren")),
                       VerticalDivider(
@@ -232,6 +235,20 @@ class _LoginState extends State<ScreenLogin> {
       setState(() {
         _isLoading = false;
       });
+    }
+  }
+
+  Future _createAvatar() async {
+    try {
+      final bytes = await rootBundle.load('assets/images/defaultAvatar.png');
+      final tempDir = await getTemporaryDirectory();
+      final file = File('${tempDir.path}/defaultAvatar.png');
+      await file.writeAsBytes(
+          bytes.buffer.asUint8List(bytes.offsetInBytes, bytes.lengthInBytes));
+
+      await supabase.storage.from('profile').upload('${user?.id}', file);
+    } catch (error) {
+      print(error);
     }
   }
 

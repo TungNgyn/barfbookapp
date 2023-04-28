@@ -2,14 +2,12 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:Barfbook/loading.dart';
+import 'package:get/get.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:flutter/services.dart'
     show FilteringTextInputFormatter, rootBundle;
-import 'package:Barfbook/Screens/Account/Login.dart';
 import 'package:Barfbook/util/Supabase/AuthController.dart';
 import 'package:flutter/material.dart';
-
-import 'package:get/get.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class ScreenTransfer extends StatefulWidget {
@@ -18,15 +16,9 @@ class ScreenTransfer extends StatefulWidget {
 }
 
 class _SignUpState extends State<ScreenTransfer> {
-  bool _isLoading = false;
-  bool _redirecting = false;
-  late final _emailController;
-  late final _usernameController;
-  late final _passwordController;
-
-  String get email => _emailController.text.trim();
-  String get username => _usernameController.text.trim();
-  String get password => _passwordController.text.trim();
+  late final TextEditingController _emailController;
+  late final TextEditingController _usernameController;
+  late final TextEditingController _passwordController;
 
   @override
   void initState() {
@@ -156,30 +148,15 @@ class _SignUpState extends State<ScreenTransfer> {
                             ),
                             Center(
                                 child: ElevatedButton(
-                                    onPressed: () {},
+                                    onPressed: () async {
+                                      _updateUser().whenComplete(() =>
+                                          Get.offAll(() => ScreenLoading()));
+                                    },
                                     child: Text("Registrieren"))),
                           ],
                         ),
                       ),
                     ),
-                  ),
-                  SizedBox(
-                    height: _media.height * 0.1,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      GestureDetector(
-                          onTap: () {}, child: Text("Als Gast fortfahren")),
-                      VerticalDivider(
-                        width: 10,
-                        thickness: 0.5,
-                      ),
-                      GestureDetector(
-                        onTap: () => Get.offAll(() => ScreenLogin()),
-                        child: Text("Anmelden"),
-                      ),
-                    ],
                   ),
                 ],
               ),
@@ -188,5 +165,31 @@ class _SignUpState extends State<ScreenTransfer> {
         ]),
       ),
     );
+  }
+
+  Future _updateUser() async {
+    try {
+      await supabase.rpc('update_profile', params: {
+        'profiledescription': 'Ich bin ein Barf-Enthusiast!',
+        'profileemail': _emailController.text,
+        'profileid': user?.id,
+        'profilename': _usernameController.text,
+      });
+      await supabase
+          .from('profile')
+          .update({'rank': 'user'}).eq('id', user?.id);
+      await supabase.auth.updateUser(
+        UserAttributes(
+          email: _emailController.text,
+          password: _passwordController.text,
+          data: {
+            'name': _usernameController.text,
+            'description': 'Ich bin ein Barf-Enthusiast!'
+          },
+        ),
+      );
+    } catch (error) {
+      print(error);
+    }
   }
 }

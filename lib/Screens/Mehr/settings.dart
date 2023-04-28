@@ -918,9 +918,7 @@ class _settingsStartState extends State<ScreenSettings>
                     setState(() {
                       isPressedLogIn = false;
                     }),
-                    authController
-                        .signOut()
-                        .then((value) => Get.off(() => ScreenTransfer()))
+                    Get.offAll(() => ScreenTransfer())
                   },
                   child: Container(
                     color: isPressedLogIn
@@ -967,11 +965,7 @@ class _settingsStartState extends State<ScreenSettings>
                       isPressedSignIn = false;
                     });
                   },
-                  onTap: () => {
-                    authController
-                        .signOut()
-                        .then((value) => Get.offAll(() => ScreenSignUp()))
-                  },
+                  onTap: () => {},
                   child: Container(
                     color: isPressedSignIn
                         ? Colors.transparent.withOpacity(0.1)

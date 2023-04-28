@@ -1414,6 +1414,7 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
 
   getPercentage(String category, int gram) {
     final percent;
+    if (gram == 0) return percent = 0;
 
     switch (category) {
       case 'Muskelfleisch':

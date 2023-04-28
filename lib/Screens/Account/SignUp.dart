@@ -5,7 +5,6 @@ import 'package:Barfbook/loading.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:flutter/services.dart'
     show FilteringTextInputFormatter, rootBundle;
-import 'package:Barfbook/home.dart';
 import 'package:Barfbook/Screens/Account/Login.dart';
 import 'package:Barfbook/util/Supabase/AuthController.dart';
 import 'package:flutter/material.dart';
@@ -160,8 +159,12 @@ class _SignUpState extends State<ScreenSignUp> {
                                     onPressed: () {
                                       GetUtils.isEmail(email)
                                           ? password.length >= 8
-                                              ? _signUp().then(
-                                                  (value) => _createAvatar())
+                                              ? _signUp()
+                                                  .then((value) =>
+                                                      _createAvatar())
+                                                  .whenComplete(() =>
+                                                      Get.offAll(() =>
+                                                          ScreenLoading()))
                                               : Get.snackbar(
                                                   "Etwas ist schief gelaufen",
                                                   "Dein Passwort ist zu kurz!")
@@ -185,8 +188,9 @@ class _SignUpState extends State<ScreenSignUp> {
                           onTap: () {
                             _isLoading
                                 ? null
-                                : _loginGuest().whenComplete(
-                                    () => Get.offAll(() => ScreenLoading()));
+                                : _loginGuest().whenComplete(() =>
+                                    _createAvatar().whenComplete(() =>
+                                        Get.offAll(() => ScreenLoading())));
                           },
                           child: Text("Als Gast fortfahren")),
                       VerticalDivider(
@@ -205,33 +209,6 @@ class _SignUpState extends State<ScreenSignUp> {
           ),
         ]),
       ),
-    );
-  }
-
-  Widget inputText(
-    String fieldName,
-    TextEditingController controller,
-    bool obSecure,
-  ) {
-    return TextField(
-      style: TextStyle(height: 1.5),
-      controller: controller,
-      onSubmitted: (value) {
-        GetUtils.isEmail(email)
-            ? password.length >= 8
-                ? _signUp().then((value) => _createAvatar())
-                : Get.snackbar(
-                    "Etwas ist schief gelaufen", "Dein Passwort ist zu kurz!")
-            : Get.snackbar("Etwas ist schief gelaufen",
-                "Deine Email hat ein falsches Format!");
-      },
-      decoration: InputDecoration(
-        labelText: fieldName,
-        labelStyle: TextStyle(
-            fontSize: 21, fontWeight: FontWeight.w400, letterSpacing: 1),
-        border: InputBorder.none,
-      ),
-      obscureText: obSecure,
     );
   }
 

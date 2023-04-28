@@ -168,7 +168,7 @@ class _ScreenEditProfileState extends State<ScreenEditProfile> {
         'profileid': widget.profile.id
       });
 
-      final UserResponse res = await supabase.auth.updateUser(
+      await supabase.auth.updateUser(
         UserAttributes(
           email: _emailController.text,
           password: _passwordController.text,
@@ -178,7 +178,6 @@ class _ScreenEditProfileState extends State<ScreenEditProfile> {
           },
         ),
       );
-      final User? updatedUser = res.user;
     } catch (error) {
       print(error);
       Get.snackbar("Fehler!", "Etwas hat nicht funktioniert");
