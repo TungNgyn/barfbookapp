@@ -5,7 +5,6 @@ import 'package:Barfbook/loading.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:flutter/services.dart'
     show FilteringTextInputFormatter, rootBundle;
-import 'package:Barfbook/home.dart';
 import 'package:Barfbook/Screens/Account/Login.dart';
 import 'package:Barfbook/util/Supabase/AuthController.dart';
 import 'package:flutter/material.dart';
@@ -13,12 +12,12 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-class ScreenSignUp extends StatefulWidget {
+class ScreenTransfer extends StatefulWidget {
   @override
   _SignUpState createState() => _SignUpState();
 }
 
-class _SignUpState extends State<ScreenSignUp> {
+class _SignUpState extends State<ScreenTransfer> {
   bool _isLoading = false;
   bool _redirecting = false;
   late final _emailController;
@@ -157,18 +156,7 @@ class _SignUpState extends State<ScreenSignUp> {
                             ),
                             Center(
                                 child: ElevatedButton(
-                                    onPressed: () {
-                                      GetUtils.isEmail(email)
-                                          ? password.length >= 8
-                                              ? _signUp().then(
-                                                  (value) => _createAvatar())
-                                              : Get.snackbar(
-                                                  "Etwas ist schief gelaufen",
-                                                  "Dein Passwort ist zu kurz!")
-                                          : Get.snackbar(
-                                              "Etwas ist schief gelaufen",
-                                              "Deine Email hat ein falsches Format!");
-                                    },
+                                    onPressed: () {},
                                     child: Text("Registrieren"))),
                           ],
                         ),
@@ -182,13 +170,7 @@ class _SignUpState extends State<ScreenSignUp> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       GestureDetector(
-                          onTap: () {
-                            _isLoading
-                                ? null
-                                : _loginGuest().whenComplete(
-                                    () => Get.offAll(() => ScreenLoading()));
-                          },
-                          child: Text("Als Gast fortfahren")),
+                          onTap: () {}, child: Text("Als Gast fortfahren")),
                       VerticalDivider(
                         width: 10,
                         thickness: 0.5,
@@ -206,96 +188,5 @@ class _SignUpState extends State<ScreenSignUp> {
         ]),
       ),
     );
-  }
-
-  Widget inputText(
-    String fieldName,
-    TextEditingController controller,
-    bool obSecure,
-  ) {
-    return TextField(
-      style: TextStyle(height: 1.5),
-      controller: controller,
-      onSubmitted: (value) {
-        GetUtils.isEmail(email)
-            ? password.length >= 8
-                ? _signUp().then((value) => _createAvatar())
-                : Get.snackbar(
-                    "Etwas ist schief gelaufen", "Dein Passwort ist zu kurz!")
-            : Get.snackbar("Etwas ist schief gelaufen",
-                "Deine Email hat ein falsches Format!");
-      },
-      decoration: InputDecoration(
-        labelText: fieldName,
-        labelStyle: TextStyle(
-            fontSize: 21, fontWeight: FontWeight.w400, letterSpacing: 1),
-        border: InputBorder.none,
-      ),
-      obscureText: obSecure,
-    );
-  }
-
-  Future<void> _signUp() async {
-    setState(() {
-      _isLoading = true;
-    });
-    try {
-      final AuthResponse response = await supabase.auth.signUp(
-          email: email,
-          password: password,
-          data: {
-            'name': username,
-            'description': "Ich bin ein BARF-Enthusiast!"
-          });
-
-      session = response.session;
-      user = response.user;
-    } catch (error) {
-      print(error);
-      Get.snackbar("Etwas ist schief gelaufen",
-          'Unerwarteter Fehler aufgetreten. Bitte kontaktiere den Support.',
-          backgroundColor: Colors.grey.withOpacity(0.5));
-    } finally {
-      setState(() {
-        _isLoading = false;
-      });
-    }
-  }
-
-  Future<void> _loginGuest() async {
-    setState(() {
-      _isLoading = true;
-    });
-    try {
-      final AuthResponse response = await supabase.auth.signUp(
-          email: "${DateTime.now().microsecondsSinceEpoch}@barfbook.app",
-          password: "BarfbookGast",
-          data: {
-            'name': '${DateTime.now().microsecondsSinceEpoch}',
-            'description': "Ich bin ein BARF-Gast."
-          });
-
-      session = response.session;
-      user = response.user;
-    } catch (error) {
-      Get.snackbar("Etwas ist schief gelaufen",
-          'Unerwarteter Fehler aufgetreten. Bitte kontaktiere den Support.',
-          backgroundColor: Colors.grey.withOpacity(0.5));
-      print(error);
-    }
-  }
-
-  Future _createAvatar() async {
-    try {
-      final bytes = await rootBundle.load('assets/images/defaultAvatar.png');
-      final tempDir = await getTemporaryDirectory();
-      final file = File('${tempDir.path}/defaultAvatar.png');
-      await file.writeAsBytes(
-          bytes.buffer.asUint8List(bytes.offsetInBytes, bytes.lengthInBytes));
-
-      await supabase.storage.from('profile').upload('${user?.id}', file);
-    } catch (error) {
-      print(error);
-    }
   }
 }

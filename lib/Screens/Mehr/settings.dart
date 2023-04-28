@@ -1,5 +1,6 @@
 import 'package:Barfbook/Screens/Account/Login.dart';
 import 'package:Barfbook/Screens/Account/SignUp.dart';
+import 'package:Barfbook/Screens/Account/TransferToAccount.dart';
 import 'package:Barfbook/Screens/Mehr/AGB.dart';
 import 'package:Barfbook/Screens/Mehr/DataPage.dart';
 import 'package:Barfbook/Screens/Mehr/aboutUsPage.dart';
@@ -8,17 +9,10 @@ import 'package:Barfbook/Screens/Mehr/editProfile.dart';
 import 'package:Barfbook/Screens/Mehr/profile.dart';
 import 'package:Barfbook/Screens/Mehr/thankPage.dart';
 import 'package:Barfbook/controller.dart';
-import 'package:Barfbook/loading.dart';
-import 'package:Barfbook/main.dart';
 import 'package:Barfbook/util/Supabase/AuthController.dart';
-import 'package:Barfbook/util/custom_theme.dart';
-import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:supabase/src/supabase_stream_builder.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
 class ScreenSettings extends StatefulWidget {
   @override
@@ -926,7 +920,7 @@ class _settingsStartState extends State<ScreenSettings>
                     }),
                     authController
                         .signOut()
-                        .then((value) => Get.off(() => ScreenLogin()))
+                        .then((value) => Get.off(() => ScreenTransfer()))
                   },
                   child: Container(
                     color: isPressedLogIn

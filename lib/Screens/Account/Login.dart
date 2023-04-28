@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:Barfbook/controller.dart';
 import 'package:Barfbook/loading.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import 'package:get/get.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -88,6 +89,10 @@ class _LoginState extends State<ScreenLogin> {
                           children: [
                             TextField(
                               keyboardType: TextInputType.emailAddress,
+                              inputFormatters: [
+                                FilteringTextInputFormatter.deny(' ')
+                              ],
+                              textInputAction: TextInputAction.next,
                               style: TextStyle(height: 1.5),
                               controller: _emailController,
                               scrollPadding: EdgeInsets.only(bottom: 50),
@@ -101,7 +106,23 @@ class _LoginState extends State<ScreenLogin> {
                               ),
                             ),
                             Divider(height: 5, color: Colors.black),
-                            inputText("Passwort", _passwordController, true),
+                            TextField(
+                              style: TextStyle(height: 1.5),
+                              controller: _passwordController,
+                              scrollPadding: EdgeInsets.only(bottom: 50),
+                              onSubmitted: (value) {
+                                _isLoading ? null : _login();
+                              },
+                              decoration: InputDecoration(
+                                labelText: 'Passwort',
+                                labelStyle: TextStyle(
+                                    fontSize: 21,
+                                    fontWeight: FontWeight.w400,
+                                    letterSpacing: 1),
+                                border: InputBorder.none,
+                              ),
+                              obscureText: true,
+                            ),
                             Center(
                                 child: ElevatedButton(
                                     onPressed: () {
@@ -148,28 +169,6 @@ class _LoginState extends State<ScreenLogin> {
           )
         ]),
       ),
-    );
-  }
-
-  Widget inputText(
-    String fieldName,
-    TextEditingController controller,
-    bool obSecure,
-  ) {
-    return TextField(
-      style: TextStyle(height: 1.5),
-      controller: controller,
-      scrollPadding: EdgeInsets.only(bottom: 50),
-      onSubmitted: (value) {
-        _isLoading ? null : _login();
-      },
-      decoration: InputDecoration(
-        labelText: fieldName,
-        labelStyle: TextStyle(
-            fontSize: 21, fontWeight: FontWeight.w400, letterSpacing: 1),
-        border: InputBorder.none,
-      ),
-      obscureText: obSecure,
     );
   }
 
