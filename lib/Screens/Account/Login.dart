@@ -1,8 +1,4 @@
 import 'dart:async';
-import 'dart:io';
-
-import 'package:path_provider/path_provider.dart';
-import 'package:flutter/services.dart' show rootBundle;
 import 'package:Barfbook/controller.dart';
 import 'package:Barfbook/loading.dart';
 import 'package:flutter/material.dart';
@@ -23,7 +19,6 @@ class _LoginState extends State<ScreenLogin> {
   bool _redirecting = false;
   late final _emailController;
   late final _passwordController;
-  late final StreamSubscription<AuthState> _authStateSubscription;
 
   String get email => _emailController.text.trim();
   String get password => _passwordController.text.trim();
@@ -91,13 +86,30 @@ class _LoginState extends State<ScreenLogin> {
                         padding: const EdgeInsets.all(30.0),
                         child: Column(
                           children: [
-                            inputText("Benutzername", _emailController, false),
+                            TextField(
+                              keyboardType: TextInputType.emailAddress,
+                              style: TextStyle(height: 1.5),
+                              controller: _emailController,
+                              scrollPadding: EdgeInsets.only(bottom: 50),
+                              decoration: InputDecoration(
+                                labelText: "Email",
+                                labelStyle: TextStyle(
+                                    fontSize: 21,
+                                    fontWeight: FontWeight.w400,
+                                    letterSpacing: 1),
+                                border: InputBorder.none,
+                              ),
+                            ),
                             Divider(height: 5, color: Colors.black),
                             inputText("Passwort", _passwordController, true),
                             Center(
                                 child: ElevatedButton(
                                     onPressed: () {
-                                      _isLoading ? null : _login();
+                                      _isLoading
+                                          ? null
+                                          : _login().whenComplete(() =>
+                                              Get.offAll(
+                                                  () => ScreenLoading()));
                                     },
                                     child: Text(
                                         _isLoading ? 'Laden..' : 'Anmelden'))),
@@ -114,7 +126,10 @@ class _LoginState extends State<ScreenLogin> {
                     children: [
                       GestureDetector(
                           onTap: () {
-                            _isLoading ? null : _loginGuest();
+                            _isLoading
+                                ? null
+                                : _loginGuest().whenComplete(
+                                    () => Get.offAll(() => ScreenLoading()));
                           },
                           child: Text("Als Gast fortfahren")),
                       VerticalDivider(
@@ -185,7 +200,10 @@ class _LoginState extends State<ScreenLogin> {
       final AuthResponse response = await supabase.auth.signUp(
           email: "${DateTime.now().microsecondsSinceEpoch}@barfbook.app",
           password: "BarfbookGast",
-          data: {'name': 'Gast', 'description': "Ich bin ein BARF-Gast."});
+          data: {
+            'name': '${DateTime.now().microsecondsSinceEpoch}',
+            'description': "Ich bin ein BARF-Gast."
+          });
 
       session = response.session;
       user = response.user;
@@ -222,14 +240,6 @@ class _LoginState extends State<ScreenLogin> {
   void initState() {
     _emailController = TextEditingController();
     _passwordController = TextEditingController();
-    _authStateSubscription = supabase.auth.onAuthStateChange.listen((data) {
-      if (_redirecting) return;
-      final session = data.session;
-      if (session != null) {
-        _redirecting = true;
-        Get.off(() => ScreenLoading());
-      }
-    });
     super.initState();
   }
 
@@ -237,7 +247,6 @@ class _LoginState extends State<ScreenLogin> {
   void dispose() {
     _emailController.dispose();
     _passwordController.dispose();
-    _authStateSubscription.cancel();
     super.dispose();
   }
 }

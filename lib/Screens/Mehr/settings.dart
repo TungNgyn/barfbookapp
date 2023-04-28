@@ -73,7 +73,7 @@ class _settingsStartState extends State<ScreenSettings>
                     child: Column(
                       children: [
                         Text(
-                          "${controller.userProfile['user'].name}",
+                          "${controller.userProfile['user'].rank == 'guest' ? 'Gast' : controller.userProfile['user'].name}",
                           style: TextStyle(
                               fontWeight: FontWeight.w200, fontSize: 24),
                         ),
@@ -926,7 +926,7 @@ class _settingsStartState extends State<ScreenSettings>
                     }),
                     authController
                         .signOut()
-                        .then((value) => Get.offAll(() => ScreenLogin()))
+                        .then((value) => Get.off(() => ScreenLogin()))
                   },
                   child: Container(
                     color: isPressedLogIn

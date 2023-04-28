@@ -44,7 +44,7 @@ class _ScreenExploreState extends State<ScreenExplore>
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          "Hallo ${controller.userProfile['user'].name}",
+                          "Hallo ${controller.userProfile['user'].rank == 'guest' ? 'Gast' : controller.userProfile['user'].name}",
                           style: TextStyle(fontSize: 31),
                         ),
                         Text(

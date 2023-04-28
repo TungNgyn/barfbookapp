@@ -34,6 +34,7 @@ class MainApp extends StatelessWidget {
     // Determine if user is already signed in by checking session and user variables from Supabase
     final session = Supabase.instance.client.auth.currentSession;
     final user = Supabase.instance.client.auth.currentUser;
+
     // Set theme mode and themes using custom theme file
     return GetMaterialApp(
       themeMode: ThemeMode.system,
