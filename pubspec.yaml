@@ -26,7 +26,10 @@ dependencies:
   intl: ^0.18.0
   cached_network_image: ^3.2.3
   flutter_cache_manager: ^3.3.0
-  url_launcher: ^6.1.10
+  drift: ^2.7.0
+  sqlite3_flutter_libs: ^0.5.0
+  path: ^1.8.3
+
 
 dev_dependencies:
   flutter_test:

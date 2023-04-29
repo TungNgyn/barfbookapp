@@ -857,7 +857,7 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
                                                       TextOverflow.ellipsis,
                                                 ),
                                                 Text(
-                                                    '${ingredient.gram} Gramm (${getPercentage(ingredient.category, ingredient.gram)}%)'),
+                                                    '${ingredient.gram} Gramm (${getPercentage(ingredient.gram)}%)'),
                                               ],
                                             ),
                                           ),
@@ -1175,7 +1175,7 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
                 sideTitles: SideTitles(
                     showTitles: true,
                     getTitlesWidget: meatTitles,
-                    reservedSize: 38))),
+                    reservedSize: 66))),
         borderData: FlBorderData(show: false),
         barGroups: meatGroups(),
         gridData: FlGridData(show: false));
@@ -1230,7 +1230,7 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
                 sideTitles: SideTitles(
                     showTitles: true,
                     getTitlesWidget: vegTitles,
-                    reservedSize: 38))),
+                    reservedSize: 66))),
         borderData: FlBorderData(show: false),
         barGroups: vegGroups(),
         gridData: FlGridData(show: false));
@@ -1240,12 +1240,22 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
     Widget text;
     switch (value.toInt()) {
       case 0:
-        text = Text(
-            '${(vegSum + fruitSum == 0 ? 0 : vegSum / (vegSum + fruitSum) * 100).toStringAsFixed(1)}%');
+        text = Column(
+          children: [
+            Image.asset('assets/icons/ingredient/vegetable.png', width: 32),
+            Text(
+                '${(vegSum + fruitSum == 0 ? 0 : vegSum / (vegSum + fruitSum) * 100).toStringAsFixed(1)}%'),
+          ],
+        );
         break;
       case 1:
-        text = Text(
-            '${(vegSum + fruitSum == 0 ? 0 : fruitSum / (vegSum + fruitSum) * 100).toStringAsFixed(1)}%');
+        text = Column(
+          children: [
+            Image.asset('assets/icons/ingredient/fruit.png', width: 32),
+            Text(
+                '${(vegSum + fruitSum == 0 ? 0 : fruitSum / (vegSum + fruitSum) * 100).toStringAsFixed(1)}%'),
+          ],
+        );
         break;
       default:
         text = Text('');
@@ -1262,20 +1272,40 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
     Widget text;
     switch (value.toInt()) {
       case 0:
-        text = Text(
-            '${(meatSum + rumenSum + boneSum + organSum == 0 ? 0 : meatSum / (meatSum + rumenSum + boneSum + organSum) * 100).toStringAsFixed(1)}%');
+        text = Column(
+          children: [
+            Image.asset('assets/icons/ingredient/meat.png', width: 32),
+            Text(
+                '${(meatSum + rumenSum + boneSum + organSum == 0 ? 0 : meatSum / (meatSum + rumenSum + boneSum + organSum) * 100).toStringAsFixed(1)}%'),
+          ],
+        );
         break;
       case 1:
-        text = Text(
-            '${(meatSum + rumenSum + boneSum + organSum == 0 ? 0 : rumenSum / (meatSum + rumenSum + boneSum + organSum) * 100).toStringAsFixed(1)}%');
+        text = Column(
+          children: [
+            Image.asset('assets/icons/ingredient/rumen.png', width: 32),
+            Text(
+                '${(meatSum + rumenSum + boneSum + organSum == 0 ? 0 : rumenSum / (meatSum + rumenSum + boneSum + organSum) * 100).toStringAsFixed(1)}%'),
+          ],
+        );
         break;
       case 2:
-        text = Text(
-            '${(meatSum + rumenSum + boneSum + organSum == 0 ? 0 : boneSum / (meatSum + rumenSum + boneSum + organSum) * 100).toStringAsFixed(1)}%');
+        text = Column(
+          children: [
+            Image.asset('assets/icons/ingredient/bone.png', width: 32),
+            Text(
+                '${(meatSum + rumenSum + boneSum + organSum == 0 ? 0 : boneSum / (meatSum + rumenSum + boneSum + organSum) * 100).toStringAsFixed(1)}%'),
+          ],
+        );
         break;
       case 3:
-        text = Text(
-            '${(meatSum + rumenSum + boneSum + organSum == 0 ? 0 : organSum / (meatSum + rumenSum + boneSum + organSum) * 100).toStringAsFixed(1)}%');
+        text = Column(
+          children: [
+            Image.asset('assets/icons/ingredient/organ.png', width: 32),
+            Text(
+                '${(meatSum + rumenSum + boneSum + organSum == 0 ? 0 : organSum / (meatSum + rumenSum + boneSum + organSum) * 100).toStringAsFixed(1)}%'),
+          ],
+        );
         break;
       default:
         text = Text('');
@@ -1412,24 +1442,9 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
     );
   }
 
-  getPercentage(String category, int gram) {
-    final percent;
-    if (gram == 0) return percent = 0;
-
-    switch (category) {
-      case 'Muskelfleisch':
-      case 'Pansen':
-      case 'Knochen':
-      case 'Innereien':
-        return percent =
-            (gram / (meatSum + rumenSum + boneSum + organSum) * 100)
-                .toStringAsFixed(1);
-      case 'Gemüse':
-      case 'Obst':
-        return percent = (gram / (vegSum + fruitSum) * 100).toStringAsFixed(1);
-      default:
-        return percent = 0;
-    }
+  getPercentage(int gram) {
+    if (gram == 0) return 0;
+    return (gram / (weightSum) * 100).toStringAsFixed(1);
   }
 }
 
