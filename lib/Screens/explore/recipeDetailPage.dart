@@ -1240,12 +1240,12 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
     Widget text;
     switch (value.toInt()) {
       case 0:
-        text =
-            Text('${(vegSum / (vegSum + fruitSum) * 100).toStringAsFixed(1)}%');
+        text = Text(
+            '${(vegSum + fruitSum == 0 ? 0 : vegSum / (vegSum + fruitSum) * 100).toStringAsFixed(1)}%');
         break;
       case 1:
         text = Text(
-            '${(fruitSum / (vegSum + fruitSum) * 100).toStringAsFixed(1)}%');
+            '${(vegSum + fruitSum == 0 ? 0 : fruitSum / (vegSum + fruitSum) * 100).toStringAsFixed(1)}%');
         break;
       default:
         text = Text('');
@@ -1263,19 +1263,19 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
     switch (value.toInt()) {
       case 0:
         text = Text(
-            '${(meatSum / (meatSum + rumenSum + boneSum + organSum) * 100).toStringAsFixed(1)}%');
+            '${(meatSum + rumenSum + boneSum + organSum == 0 ? 0 : meatSum / (meatSum + rumenSum + boneSum + organSum) * 100).toStringAsFixed(1)}%');
         break;
       case 1:
         text = Text(
-            '${(rumenSum / (meatSum + rumenSum + boneSum + organSum) * 100).toStringAsFixed(1)}%');
+            '${(meatSum + rumenSum + boneSum + organSum == 0 ? 0 : rumenSum / (meatSum + rumenSum + boneSum + organSum) * 100).toStringAsFixed(1)}%');
         break;
       case 2:
         text = Text(
-            '${(boneSum / (meatSum + rumenSum + boneSum + organSum) * 100).toStringAsFixed(1)}%');
+            '${(meatSum + rumenSum + boneSum + organSum == 0 ? 0 : boneSum / (meatSum + rumenSum + boneSum + organSum) * 100).toStringAsFixed(1)}%');
         break;
       case 3:
         text = Text(
-            '${(organSum / (meatSum + rumenSum + boneSum + organSum) * 100).toStringAsFixed(1)}%');
+            '${(meatSum + rumenSum + boneSum + organSum == 0 ? 0 : organSum / (meatSum + rumenSum + boneSum + organSum) * 100).toStringAsFixed(1)}%');
         break;
       default:
         text = Text('');
