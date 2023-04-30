@@ -1,13 +1,11 @@
-import 'package:Barfbook/Screens/Barfbook/barfbook_controller.dart';
 import 'package:Barfbook/Screens/Mehr/profile.dart';
 import 'package:Barfbook/Screens/explore/newRecipe.dart';
 import 'package:Barfbook/Screens/explore/popularRecipe.dart';
 import 'package:Barfbook/Screens/explore/recipeDetailPage.dart';
 import 'package:Barfbook/controller.dart';
 import 'package:Barfbook/loading.dart';
-import 'package:Barfbook/util/Supabase/AuthController.dart';
+import 'package:Barfbook/util/database/database.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 
@@ -53,6 +51,12 @@ class _ScreenExploreState extends State<ScreenExplore>
                         ),
                       ],
                     ),
+                    ElevatedButton(onPressed: () {}, child: Text("ADD")),
+                    ElevatedButton(
+                        onPressed: () async {
+                          print(await database.select(database.pets).get());
+                        },
+                        child: Text("TEST")),
                     GestureDetector(
                       onTap: () {
                         if (controller.userProfile['user'].rank != 'guest') {
