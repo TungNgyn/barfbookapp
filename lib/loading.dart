@@ -5,7 +5,9 @@ import 'package:Barfbook/Screens/schedule/schedule_controller.dart';
 import 'package:Barfbook/controller.dart';
 import 'package:Barfbook/home.dart';
 import 'package:Barfbook/util/Supabase/AuthController.dart';
+import 'package:Barfbook/util/database/database.dart' as db;
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:drift/drift.dart' as drift;
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -693,6 +695,23 @@ initPetList() async {
           gender: pet['gender'],
           ration: pet['ration'].toDouble(),
           avatar: avatar));
+
+      try {
+        var test = await db.database.addPet(db.PetsCompanion(
+            id: drift.Value(
+              pet['id'],
+            ),
+            owner: drift.Value(pet['owner']),
+            name: drift.Value(pet['name']),
+            breed: drift.Value(pet['breed']),
+            age: drift.Value(pet['age']),
+            weight: drift.Value(pet['weight']),
+            gender: drift.Value(pet['gender']),
+            ration: drift.Value(pet['ration'].toDouble())));
+        print(test);
+      } catch (error) {
+        print(error);
+      }
     }
   } catch (error) {
     print(error);

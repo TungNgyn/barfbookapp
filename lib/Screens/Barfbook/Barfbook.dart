@@ -88,7 +88,7 @@ class _ScreenBarfbookState extends State<ScreenBarfbook> {
                 onRefresh: _refreshPets,
                 child: CustomScrollView(slivers: [
                   SliverToBoxAdapter(
-                      child: controller.userPetListDB.isEmpty
+                      child: controller.userPetList.isEmpty
                           ? addPetCard(context)
                           : Padding(
                               padding: EdgeInsets.symmetric(horizontal: 10),
@@ -102,13 +102,8 @@ class _ScreenBarfbookState extends State<ScreenBarfbook> {
                                         fontWeight: FontWeight.bold),
                                   ),
                                 ),
-                                Obx(() {
-                                  List<Widget> list = [];
-                                  for (Pet pet in controller.userPetList) {
-                                    list.add(BigPetCard(pet: pet));
-                                  }
-                                  return Wrap(children: list);
-                                }),
+                                for (Pet pet in controller.userPetList)
+                                  BigPetCard(pet: pet)
                               ])))
                 ]),
               ),

@@ -1,3 +1,4 @@
+import 'package:Barfbook/util/Supabase/AuthController.dart';
 import 'package:drift/drift.dart';
 import 'dart:io';
 
@@ -12,7 +13,7 @@ part 'database.g.dart';
 final database = BarfbookDatabase();
 
 class Ingredients extends Table {
-  IntColumn get id => integer().autoIncrement()();
+  IntColumn get id => integer().unique()();
   TextColumn get name => text().withLength(min: 6, max: 32)();
   TextColumn get category => text().named('category')();
   TextColumn get type => text().named('type')();
@@ -23,10 +24,13 @@ class Ingredients extends Table {
   RealColumn get minerals => real()();
   RealColumn get moisture => real()();
   TextColumn get avatar => text()();
+
+  @override
+  Set<Column> get primaryKey => {id};
 }
 
 class Pets extends Table {
-  IntColumn get id => integer().autoIncrement()();
+  IntColumn get id => integer().unique()();
   TextColumn get owner => text()();
   TextColumn get name => text()();
   TextColumn get breed => text()();
@@ -34,31 +38,43 @@ class Pets extends Table {
   IntColumn get weight => integer()();
   TextColumn get gender => text()();
   RealColumn get ration => real()();
+
+  @override
+  Set<Column> get primaryKey => {id};
 }
 
 class Profiles extends Table {
-  TextColumn get id => text()();
+  TextColumn get id => text().unique()();
   DateTimeColumn get createdAt => dateTime()();
   TextColumn get email => text()();
   TextColumn get name => text()();
   TextColumn get description => text()();
   TextColumn get rank => text()();
+
+  @override
+  Set<Column> get primaryKey => {id};
 }
 
 class Recipes extends Table {
-  IntColumn get id => integer().autoIncrement()();
+  IntColumn get id => integer().unique()();
   DateTimeColumn get createdAt => dateTime()();
   TextColumn get name => text()();
   TextColumn get description => text()();
   TextColumn get userId => text()();
   DateTimeColumn get modifiedAt => dateTime()();
+
+  @override
+  Set<Column> get primaryKey => {id};
 }
 
 class Schedules extends Table {
-  IntColumn get id => integer().autoIncrement()();
+  IntColumn get id => integer().unique()();
   DateTimeColumn get date => dateTime()();
   IntColumn get recipe => integer()();
   TextColumn get userId => text()();
+
+  @override
+  Set<Column> get primaryKey => {date, recipe};
 }
 
 // this annotation tells drift to prepare a database class that uses both of the
@@ -69,6 +85,37 @@ class BarfbookDatabase extends _$BarfbookDatabase {
 
   @override
   int get schemaVersion => 1;
+
+  Future<List<Ingredient>> get allIngredientEntries =>
+      select(ingredients).get();
+  Future<List<Profile>> get allProfileEntries => select(profiles).get();
+  Future<List<Recipe>> get allRecipeEntries => select(recipes).get();
+  Future<List<Pet>> get allPetEntries => select(pets).get();
+  Future<List<Schedule>> get allScheduleEntries => select(schedules).get();
+
+  Future deletePet(id) {
+    return (delete(pets)..where((t) => t.id.equals(id))).go();
+  }
+
+  Future userPetList() {
+    return (select(pets)..where((t) => t.owner.equals(user!.id))).get();
+  }
+
+  Future<int> addPet(PetsCompanion entry) {
+    return into(pets).insertOnConflictUpdate(entry);
+  }
+
+  Future deleteProfile(id) {
+    return (delete(pets)..where((t) => t.id.equals(id))).go();
+  }
+
+  Future deleteRecipe(id) {
+    return (delete(pets)..where((t) => t.id.equals(id))).go();
+  }
+
+  Future deleteSchedule(id) {
+    return (delete(pets)..where((t) => t.id.equals(id))).go();
+  }
 }
 
 LazyDatabase _openConnection() {

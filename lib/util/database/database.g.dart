@@ -13,11 +13,9 @@ class $IngredientsTable extends Ingredients
   @override
   late final GeneratedColumn<int> id = GeneratedColumn<int>(
       'id', aliasedName, false,
-      hasAutoIncrement: true,
       type: DriftSqlType.int,
       requiredDuringInsert: false,
-      defaultConstraints:
-          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+      defaultConstraints: GeneratedColumn.constraintIsAlways('UNIQUE'));
   static const VerificationMeta _nameMeta = const VerificationMeta('name');
   @override
   late final GeneratedColumn<String> name = GeneratedColumn<String>(
@@ -529,11 +527,9 @@ class $PetsTable extends Pets with TableInfo<$PetsTable, Pet> {
   @override
   late final GeneratedColumn<int> id = GeneratedColumn<int>(
       'id', aliasedName, false,
-      hasAutoIncrement: true,
       type: DriftSqlType.int,
       requiredDuringInsert: false,
-      defaultConstraints:
-          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+      defaultConstraints: GeneratedColumn.constraintIsAlways('UNIQUE'));
   static const VerificationMeta _ownerMeta = const VerificationMeta('owner');
   @override
   late final GeneratedColumn<String> owner = GeneratedColumn<String>(
@@ -918,7 +914,9 @@ class $ProfilesTable extends Profiles with TableInfo<$ProfilesTable, Profile> {
   @override
   late final GeneratedColumn<String> id = GeneratedColumn<String>(
       'id', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
+      type: DriftSqlType.string,
+      requiredDuringInsert: true,
+      defaultConstraints: GeneratedColumn.constraintIsAlways('UNIQUE'));
   static const VerificationMeta _createdAtMeta =
       const VerificationMeta('createdAt');
   @override
@@ -999,7 +997,7 @@ class $ProfilesTable extends Profiles with TableInfo<$ProfilesTable, Profile> {
   }
 
   @override
-  Set<GeneratedColumn> get $primaryKey => const {};
+  Set<GeneratedColumn> get $primaryKey => {id};
   @override
   Profile map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
@@ -1251,11 +1249,9 @@ class $RecipesTable extends Recipes with TableInfo<$RecipesTable, Recipe> {
   @override
   late final GeneratedColumn<int> id = GeneratedColumn<int>(
       'id', aliasedName, false,
-      hasAutoIncrement: true,
       type: DriftSqlType.int,
       requiredDuringInsert: false,
-      defaultConstraints:
-          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+      defaultConstraints: GeneratedColumn.constraintIsAlways('UNIQUE'));
   static const VerificationMeta _createdAtMeta =
       const VerificationMeta('createdAt');
   @override
@@ -1578,11 +1574,9 @@ class $SchedulesTable extends Schedules
   @override
   late final GeneratedColumn<int> id = GeneratedColumn<int>(
       'id', aliasedName, false,
-      hasAutoIncrement: true,
       type: DriftSqlType.int,
-      requiredDuringInsert: false,
-      defaultConstraints:
-          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+      requiredDuringInsert: true,
+      defaultConstraints: GeneratedColumn.constraintIsAlways('UNIQUE'));
   static const VerificationMeta _dateMeta = const VerificationMeta('date');
   @override
   late final GeneratedColumn<DateTime> date = GeneratedColumn<DateTime>(
@@ -1611,6 +1605,8 @@ class $SchedulesTable extends Schedules
     final data = instance.toColumns(true);
     if (data.containsKey('id')) {
       context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
     }
     if (data.containsKey('date')) {
       context.handle(
@@ -1634,7 +1630,7 @@ class $SchedulesTable extends Schedules
   }
 
   @override
-  Set<GeneratedColumn> get $primaryKey => {id};
+  Set<GeneratedColumn> get $primaryKey => {date, recipe};
   @override
   Schedule map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
@@ -1741,18 +1737,22 @@ class SchedulesCompanion extends UpdateCompanion<Schedule> {
   final Value<DateTime> date;
   final Value<int> recipe;
   final Value<String> userId;
+  final Value<int> rowid;
   const SchedulesCompanion({
     this.id = const Value.absent(),
     this.date = const Value.absent(),
     this.recipe = const Value.absent(),
     this.userId = const Value.absent(),
+    this.rowid = const Value.absent(),
   });
   SchedulesCompanion.insert({
-    this.id = const Value.absent(),
+    required int id,
     required DateTime date,
     required int recipe,
     required String userId,
-  })  : date = Value(date),
+    this.rowid = const Value.absent(),
+  })  : id = Value(id),
+        date = Value(date),
         recipe = Value(recipe),
         userId = Value(userId);
   static Insertable<Schedule> custom({
@@ -1760,12 +1760,14 @@ class SchedulesCompanion extends UpdateCompanion<Schedule> {
     Expression<DateTime>? date,
     Expression<int>? recipe,
     Expression<String>? userId,
+    Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (date != null) 'date': date,
       if (recipe != null) 'recipe': recipe,
       if (userId != null) 'user_id': userId,
+      if (rowid != null) 'rowid': rowid,
     });
   }
 
@@ -1773,12 +1775,14 @@ class SchedulesCompanion extends UpdateCompanion<Schedule> {
       {Value<int>? id,
       Value<DateTime>? date,
       Value<int>? recipe,
-      Value<String>? userId}) {
+      Value<String>? userId,
+      Value<int>? rowid}) {
     return SchedulesCompanion(
       id: id ?? this.id,
       date: date ?? this.date,
       recipe: recipe ?? this.recipe,
       userId: userId ?? this.userId,
+      rowid: rowid ?? this.rowid,
     );
   }
 
@@ -1797,6 +1801,9 @@ class SchedulesCompanion extends UpdateCompanion<Schedule> {
     if (userId.present) {
       map['user_id'] = Variable<String>(userId.value);
     }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
     return map;
   }
 
@@ -1806,7 +1813,8 @@ class SchedulesCompanion extends UpdateCompanion<Schedule> {
           ..write('id: $id, ')
           ..write('date: $date, ')
           ..write('recipe: $recipe, ')
-          ..write('userId: $userId')
+          ..write('userId: $userId, ')
+          ..write('rowid: $rowid')
           ..write(')'))
         .toString();
   }
