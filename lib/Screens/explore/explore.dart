@@ -5,6 +5,7 @@ import 'package:Barfbook/Screens/explore/recipeDetailPage.dart';
 import 'package:Barfbook/controller.dart';
 import 'package:Barfbook/loading.dart';
 import 'package:Barfbook/Screens/Barfbook/pet_controller.dart';
+import 'package:Barfbook/util/Supabase/AuthController.dart';
 import 'package:Barfbook/util/database/database.dart' as db;
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -44,7 +45,7 @@ class _ScreenExploreState extends State<ScreenExplore>
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          "Hallo ${controller.userProfile['user'].rank == 'guest' ? 'Gast' : controller.userProfile['user'].name}",
+                          "Hallo ${userProfile.rank == 'guest' ? 'Gast' : userProfile.name}",
                           style: TextStyle(fontSize: 31),
                         ),
                         Text(
@@ -62,7 +63,7 @@ class _ScreenExploreState extends State<ScreenExplore>
                           //   print(pet);
                           // }
                           // print(await database.select(database.pets).get());
-                          var test = await db.database.userPetList();
+                          var test = await db.database.userPetList(user!.id);
                           // controller.userPetList.clear();
                           for (db.Pet pet in test) {
                             //   controller.userPetList.add(Pet(
@@ -110,15 +111,14 @@ class _ScreenExploreState extends State<ScreenExplore>
                         child: Text("TEST")),
                     GestureDetector(
                       onTap: () {
-                        if (controller.userProfile['user'].rank != 'guest') {
-                          Get.to(() => ScreenProfile(
-                              profile: controller.userProfile['user']));
+                        if (userProfile.rank != 'guest') {
+                          Get.to(() => ScreenProfile(profile: userProfile));
                         }
                       },
                       child: CircleAvatar(
                         backgroundColor: Colors.transparent,
                         radius: 32,
-                        child: controller.userProfile['user'].avatar,
+                        child: userProfile.avatar,
                       ),
                     ),
                   ],

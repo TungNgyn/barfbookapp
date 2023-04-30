@@ -13,7 +13,7 @@ part 'database.g.dart';
 final database = BarfbookDatabase();
 
 class Ingredients extends Table {
-  IntColumn get id => integer().unique()();
+  IntColumn get id => integer()();
   TextColumn get name => text().withLength(min: 6, max: 32)();
   TextColumn get category => text().named('category')();
   TextColumn get type => text().named('type')();
@@ -30,7 +30,7 @@ class Ingredients extends Table {
 }
 
 class Pets extends Table {
-  IntColumn get id => integer().unique()();
+  IntColumn get id => integer()();
   TextColumn get owner => text()();
   TextColumn get name => text()();
   TextColumn get breed => text()();
@@ -44,7 +44,7 @@ class Pets extends Table {
 }
 
 class Profiles extends Table {
-  TextColumn get id => text().unique()();
+  TextColumn get id => text()();
   DateTimeColumn get createdAt => dateTime()();
   TextColumn get email => text()();
   TextColumn get name => text()();
@@ -56,7 +56,7 @@ class Profiles extends Table {
 }
 
 class Recipes extends Table {
-  IntColumn get id => integer().unique()();
+  IntColumn get id => integer()();
   DateTimeColumn get createdAt => dateTime()();
   TextColumn get name => text()();
   TextColumn get description => text()();
@@ -68,7 +68,7 @@ class Recipes extends Table {
 }
 
 class Schedules extends Table {
-  IntColumn get id => integer().unique()();
+  IntColumn get id => integer()();
   DateTimeColumn get date => dateTime()();
   IntColumn get recipe => integer()();
   TextColumn get userId => text()();
@@ -97,12 +97,20 @@ class BarfbookDatabase extends _$BarfbookDatabase {
     return (delete(pets)..where((t) => t.id.equals(id))).go();
   }
 
-  Future userPetList() {
-    return (select(pets)..where((t) => t.owner.equals(user!.id))).get();
+  Future userPetList(id) {
+    return (select(pets)..where((t) => t.owner.equals(id))).get();
   }
 
   Future<int> addPet(PetsCompanion entry) {
     return into(pets).insertOnConflictUpdate(entry);
+  }
+
+  Future userProfile(id) {
+    return (select(profiles)..where((t) => t.id.equals(id))).get();
+  }
+
+  Future<int> addProfile(ProfilesCompanion entry) {
+    return into(profiles).insertOnConflictUpdate(entry);
   }
 
   Future deleteProfile(id) {

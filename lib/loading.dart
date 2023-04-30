@@ -10,8 +10,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:drift/drift.dart' as drift;
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
+
+late Profile userProfile;
 
 class ScreenLoading extends StatefulWidget {
   @override
@@ -48,7 +48,7 @@ class _LoadingScreenState extends State<ScreenLoading> {
 
 initUser() async {
   // Find the instance of the `Controller` class created by `Get.put()` in the widget tree.
-  final Controller controller = Get.find();
+  // final Controller controller = Get.find();
 
   // Fetch user data from Supabase and update the `userProfile` property in the `Controller` class.
   final userdata = await supabase
@@ -56,57 +56,61 @@ initUser() async {
       .select("*")
       .match({'id': user?.id}).single();
 
-  var userAvatar;
-  try {
-    userAvatar = CachedNetworkImage(
-      imageUrl:
-          'https://wokqzyqvqztmyzhhuqqh.supabase.co/storage/v1/object/public/profile/${user!.id}',
-      progressIndicatorBuilder: (context, url, downloadProgress) =>
-          CircularProgressIndicator(value: downloadProgress.progress),
-      errorWidget: (context, url, error) => CachedNetworkImage(
-        imageUrl:
-            'https://wokqzyqvqztmyzhhuqqh.supabase.co/storage/v1/object/public/profile/defaultAvatar',
-        progressIndicatorBuilder: (context, url, downloadProgress) =>
-            CircularProgressIndicator(value: downloadProgress.progress),
-        errorWidget: (context, url, error) => Icon(Icons.error),
-        imageBuilder: (context, imageProvider) {
-          return Container(
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              border: Border.all(color: Theme.of(context).colorScheme.primary),
-              image: DecorationImage(
-                image: imageProvider,
-                fit: BoxFit.cover,
-              ),
-            ),
-          );
-        },
-      ),
-      imageBuilder: (context, imageProvider) {
-        return Container(
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            border: Border.all(color: Theme.of(context).colorScheme.primary),
-            image: DecorationImage(
-              image: imageProvider,
-              fit: BoxFit.cover,
-            ),
+  var userAvatar = CachedNetworkImage(
+    imageUrl:
+        'https://wokqzyqvqztmyzhhuqqh.supabase.co/storage/v1/object/public/profile/${user!.id}',
+    progressIndicatorBuilder: (context, url, downloadProgress) =>
+        CircularProgressIndicator(value: downloadProgress.progress),
+    errorWidget: (context, url, error) =>
+        Image.asset('assets/images/defaultAvatar.png'),
+    imageBuilder: (context, imageProvider) {
+      return Container(
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          border: Border.all(color: Theme.of(context).colorScheme.primary),
+          image: DecorationImage(
+            image: imageProvider,
+            fit: BoxFit.cover,
           ),
-        );
-      },
-    );
+        ),
+      );
+    },
+  );
+
+  userProfile = Profile(
+      id: user!.id,
+      email: userdata['email'],
+      name: userdata['name'],
+      description: userdata['description'],
+      avatar: userAvatar,
+      rank: userdata['rank']);
+
+  try {
+    List<String> dateParts = userdata['created_at'].split('-');
+    int year = int.parse(dateParts[0]);
+    int month = int.parse(dateParts[1]);
+    int day = int.parse(dateParts[2].substring(0, 2));
+
+    print(await db.database.userProfile(user?.id));
+    var a = await db.database.into(db.database.profiles).insertOnConflictUpdate(
+        db.ProfilesCompanion.insert(
+            id: user!.id,
+            createdAt: DateTime(year, month, day),
+            email: userdata['email'],
+            name: userdata['name'],
+            description: userdata['description'],
+            rank: userdata['rank']));
+    // var a = await db.database.addProfile(db.ProfilesCompanion.insert(
+    //     id: user!.id,
+    //     createdAt: DateTime(year, month, day),
+    //     email: userdata['email'],
+    //     name: userdata['name'],
+    //     description: userdata['description'],
+    //     rank: userdata['rank']));
+    print(a);
   } catch (error) {
     print(error);
   }
-  controller.userProfile = {
-    'user': Profile(
-        id: user!.id,
-        email: userdata['email'],
-        name: userdata['name'],
-        description: userdata['description'],
-        avatar: userAvatar,
-        rank: userdata['rank'])
-  };
 }
 
 initExplorerPopularRecipe() async {
@@ -695,23 +699,6 @@ initPetList() async {
           gender: pet['gender'],
           ration: pet['ration'].toDouble(),
           avatar: avatar));
-
-      try {
-        var test = await db.database.addPet(db.PetsCompanion(
-            id: drift.Value(
-              pet['id'],
-            ),
-            owner: drift.Value(pet['owner']),
-            name: drift.Value(pet['name']),
-            breed: drift.Value(pet['breed']),
-            age: drift.Value(pet['age']),
-            weight: drift.Value(pet['weight']),
-            gender: drift.Value(pet['gender']),
-            ration: drift.Value(pet['ration'].toDouble())));
-        print(test);
-      } catch (error) {
-        print(error);
-      }
     }
   } catch (error) {
     print(error);
