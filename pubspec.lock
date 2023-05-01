@@ -233,6 +233,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.3.0"
+  db_viewer:
+    dependency: transitive
+    description:
+      name: db_viewer
+      sha256: "426daaaa0142facb95590da5b5b1d9a86d31c129098423c8644d3cc009bfe849"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.3"
   drift:
     dependency: "direct main"
     description:
@@ -241,6 +249,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.7.0"
+  drift_db_viewer:
+    dependency: "direct main"
+    description:
+      name: drift_db_viewer
+      sha256: d8728086823ae987c7a003cba477bc442b8ee85672ae84217171b280d9f6efd2
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.0"
   drift_dev:
     dependency: "direct dev"
     description:
@@ -833,18 +849,18 @@ packages:
     dependency: transitive
     description:
       name: sqflite
-      sha256: "500d6fec583d2c021f2d25a056d96654f910662c64f836cd2063167b8f1fa758"
+      sha256: "8453780d1f703ead201a39673deb93decf85d543f359f750e2afc4908b55533f"
       url: "https://pub.dev"
     source: hosted
-    version: "2.2.6"
+    version: "2.2.8"
   sqflite_common:
     dependency: transitive
     description:
       name: sqflite_common
-      sha256: "963dad8c4aa2f814ce7d2d5b1da2f36f31bd1a439d8f27e3dc189bb9d26bc684"
+      sha256: e77abf6ff961d69dfef41daccbb66b51e9983cdd5cb35bf30733598057401555
       url: "https://pub.dev"
     source: hosted
-    version: "2.4.3"
+    version: "2.4.5"
   sqlite3:
     dependency: transitive
     description:

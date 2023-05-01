@@ -1,4 +1,3 @@
-import 'package:Barfbook/util/Supabase/AuthController.dart';
 import 'package:drift/drift.dart';
 import 'dart:io';
 
@@ -10,13 +9,11 @@ import 'package:path/path.dart' as p;
 // first, but it's needed for drift to know about the generated code
 part 'database.g.dart';
 
-final database = BarfbookDatabase();
-
-class Ingredients extends Table {
+class Dbingredients extends Table {
   IntColumn get id => integer()();
-  TextColumn get name => text().withLength(min: 6, max: 32)();
-  TextColumn get category => text().named('category')();
-  TextColumn get type => text().named('type')();
+  TextColumn get name => text()();
+  TextColumn get category => text()();
+  TextColumn get type => text()();
   RealColumn get calories => real()();
   RealColumn get protein => real()();
   RealColumn get fat => real()();
@@ -29,7 +26,7 @@ class Ingredients extends Table {
   Set<Column> get primaryKey => {id};
 }
 
-class Pets extends Table {
+class Dbpets extends Table {
   IntColumn get id => integer()();
   TextColumn get owner => text()();
   TextColumn get name => text()();
@@ -43,7 +40,7 @@ class Pets extends Table {
   Set<Column> get primaryKey => {id};
 }
 
-class Profiles extends Table {
+class Dbprofiles extends Table {
   TextColumn get id => text()();
   DateTimeColumn get createdAt => dateTime()();
   TextColumn get email => text()();
@@ -55,7 +52,7 @@ class Profiles extends Table {
   Set<Column> get primaryKey => {id};
 }
 
-class Recipes extends Table {
+class Dbrecipes extends Table {
   IntColumn get id => integer()();
   DateTimeColumn get createdAt => dateTime()();
   TextColumn get name => text()();
@@ -67,7 +64,7 @@ class Recipes extends Table {
   Set<Column> get primaryKey => {id};
 }
 
-class Schedules extends Table {
+class Dbschedules extends Table {
   IntColumn get id => integer()();
   DateTimeColumn get date => dateTime()();
   IntColumn get recipe => integer()();
@@ -79,51 +76,13 @@ class Schedules extends Table {
 
 // this annotation tells drift to prepare a database class that uses both of the
 // tables we just defined. We'll see how to use that database class in a moment.
-@DriftDatabase(tables: [Ingredients, Pets, Profiles, Recipes, Schedules])
+@DriftDatabase(
+    tables: [Dbingredients, Dbpets, Dbprofiles, Dbrecipes, Dbschedules])
 class BarfbookDatabase extends _$BarfbookDatabase {
   BarfbookDatabase() : super(_openConnection());
 
   @override
   int get schemaVersion => 1;
-
-  Future<List<Ingredient>> get allIngredientEntries =>
-      select(ingredients).get();
-  Future<List<Profile>> get allProfileEntries => select(profiles).get();
-  Future<List<Recipe>> get allRecipeEntries => select(recipes).get();
-  Future<List<Pet>> get allPetEntries => select(pets).get();
-  Future<List<Schedule>> get allScheduleEntries => select(schedules).get();
-
-  Future deletePet(id) {
-    return (delete(pets)..where((t) => t.id.equals(id))).go();
-  }
-
-  Future userPetList(id) {
-    return (select(pets)..where((t) => t.owner.equals(id))).get();
-  }
-
-  Future<int> addPet(PetsCompanion entry) {
-    return into(pets).insertOnConflictUpdate(entry);
-  }
-
-  Future userProfile(id) {
-    return (select(profiles)..where((t) => t.id.equals(id))).get();
-  }
-
-  Future<int> addProfile(ProfilesCompanion entry) {
-    return into(profiles).insertOnConflictUpdate(entry);
-  }
-
-  Future deleteProfile(id) {
-    return (delete(pets)..where((t) => t.id.equals(id))).go();
-  }
-
-  Future deleteRecipe(id) {
-    return (delete(pets)..where((t) => t.id.equals(id))).go();
-  }
-
-  Future deleteSchedule(id) {
-    return (delete(pets)..where((t) => t.id.equals(id))).go();
-  }
 }
 
 LazyDatabase _openConnection() {

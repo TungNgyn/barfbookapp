@@ -4,10 +4,10 @@ import 'package:Barfbook/Screens/Barfbook/pet_controller.dart';
 import 'package:Barfbook/Screens/schedule/schedule_controller.dart';
 import 'package:Barfbook/controller.dart';
 import 'package:Barfbook/home.dart';
+import 'package:Barfbook/main.dart';
 import 'package:Barfbook/util/Supabase/AuthController.dart';
-import 'package:Barfbook/util/database/database.dart' as db;
+import 'package:Barfbook/util/database/database.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:drift/drift.dart' as drift;
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -91,22 +91,16 @@ initUser() async {
     int month = int.parse(dateParts[1]);
     int day = int.parse(dateParts[2].substring(0, 2));
 
-    print(await db.database.userProfile(user?.id));
-    var a = await db.database.into(db.database.profiles).insertOnConflictUpdate(
-        db.ProfilesCompanion.insert(
-            id: user!.id,
-            createdAt: DateTime(year, month, day),
-            email: userdata['email'],
-            name: userdata['name'],
-            description: userdata['description'],
-            rank: userdata['rank']));
-    // var a = await db.database.addProfile(db.ProfilesCompanion.insert(
-    //     id: user!.id,
-    //     createdAt: DateTime(year, month, day),
-    //     email: userdata['email'],
-    //     name: userdata['name'],
-    //     description: userdata['description'],
-    //     rank: userdata['rank']));
+    await database.into(database.dbprofiles).insertOnConflictUpdate(Dbprofile(
+        id: user!.id,
+        createdAt: DateTime(year, month, day),
+        email: userdata['email'],
+        name: userdata['name'],
+        description: userdata['description'],
+        rank: userdata['rank']));
+
+    var a = database.select(database.dbprofiles)
+      ..where((tbl) => tbl.id.equals(user!.id));
     print(a);
   } catch (error) {
     print(error);

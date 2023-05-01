@@ -5,9 +5,11 @@ import 'package:Barfbook/Screens/explore/recipeDetailPage.dart';
 import 'package:Barfbook/controller.dart';
 import 'package:Barfbook/loading.dart';
 import 'package:Barfbook/Screens/Barfbook/pet_controller.dart';
+import 'package:Barfbook/main.dart';
 import 'package:Barfbook/util/Supabase/AuthController.dart';
-import 'package:Barfbook/util/database/database.dart' as db;
+import 'package:Barfbook/util/admin.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:drift_db_viewer/drift_db_viewer.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
@@ -63,50 +65,51 @@ class _ScreenExploreState extends State<ScreenExplore>
                           //   print(pet);
                           // }
                           // print(await database.select(database.pets).get());
-                          var test = await db.database.userPetList(user!.id);
+                          // var test = await db.database.userPetList(user!.id);
                           // controller.userPetList.clear();
-                          for (db.Pet pet in test) {
-                            //   controller.userPetList.add(Pet(
-                            //       id: pet.id,
-                            //       owner: pet.owner,
-                            //       name: pet.name,
-                            //       breed: pet.breed,
-                            //       age: pet.age,
-                            //       weight: pet.weight,
-                            //       gender: pet.gender,
-                            //       ration: pet.ration.toDouble(),
-                            //       avatar: CachedNetworkImage(
-                            //         imageUrl:
-                            //             'https://wokqzyqvqztmyzhhuqqh.supabase.co/storage/v1/object/public/pet/${pet.id}',
-                            //         progressIndicatorBuilder:
-                            //             (context, url, downloadProgress) =>
-                            //                 CircularProgressIndicator(
-                            //                     value: downloadProgress.progress),
-                            //         errorWidget: (context, url, error) =>
-                            //             Icon(Icons.error),
-                            //         imageBuilder: (context, imageProvider) {
-                            //           return Container(
-                            //             decoration: BoxDecoration(
-                            //               shape: BoxShape.circle,
-                            //               border: Border.all(
-                            //                   color: Theme.of(context)
-                            //                       .colorScheme
-                            //                       .primary),
-                            //               image: DecorationImage(
-                            //                 image: imageProvider,
-                            //                 fit: BoxFit.cover,
-                            //               ),
-                            //             ),
-                            //           );
-                            //         },
-                            //       )));
-                            print(test);
-                          }
+                          // for (db.Pet pet in test) {
+                          //   controller.userPetList.add(Pet(
+                          //       id: pet.id,
+                          //       owner: pet.owner,
+                          //       name: pet.name,
+                          //       breed: pet.breed,
+                          //       age: pet.age,
+                          //       weight: pet.weight,
+                          //       gender: pet.gender,
+                          //       ration: pet.ration.toDouble(),
+                          //       avatar: CachedNetworkImage(
+                          //         imageUrl:
+                          //             'https://wokqzyqvqztmyzhhuqqh.supabase.co/storage/v1/object/public/pet/${pet.id}',
+                          //         progressIndicatorBuilder:
+                          //             (context, url, downloadProgress) =>
+                          //                 CircularProgressIndicator(
+                          //                     value: downloadProgress.progress),
+                          //         errorWidget: (context, url, error) =>
+                          //             Icon(Icons.error),
+                          //         imageBuilder: (context, imageProvider) {
+                          //           return Container(
+                          //             decoration: BoxDecoration(
+                          //               shape: BoxShape.circle,
+                          //               border: Border.all(
+                          //                   color: Theme.of(context)
+                          //                       .colorScheme
+                          //                       .primary),
+                          //               image: DecorationImage(
+                          //                 image: imageProvider,
+                          //                 fit: BoxFit.cover,
+                          //               ),
+                          //             ),
+                          //           );
+                          //         },
+                          //       )));
+                          //   print(test);
+                          // }
                           // controller.userPetList = test;
                           // print(test);
                           // print(controller.userPetList);
                           // await database.deletePet(7);
                           // await database.deletePet(8);
+                          Get.to(() => Admin());
                         },
                         child: Text("TEST")),
                     GestureDetector(

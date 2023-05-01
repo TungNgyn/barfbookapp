@@ -3,12 +3,12 @@
 part of 'database.dart';
 
 // ignore_for_file: type=lint
-class $IngredientsTable extends Ingredients
-    with TableInfo<$IngredientsTable, Ingredient> {
+class $DbingredientsTable extends Dbingredients
+    with TableInfo<$DbingredientsTable, Dbingredient> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
-  $IngredientsTable(this.attachedDatabase, [this._alias]);
+  $DbingredientsTable(this.attachedDatabase, [this._alias]);
   static const VerificationMeta _idMeta = const VerificationMeta('id');
   @override
   late final GeneratedColumn<int> id = GeneratedColumn<int>(
@@ -18,10 +18,7 @@ class $IngredientsTable extends Ingredients
   @override
   late final GeneratedColumn<String> name = GeneratedColumn<String>(
       'name', aliasedName, false,
-      additionalChecks:
-          GeneratedColumn.checkTextLength(minTextLength: 6, maxTextLength: 32),
-      type: DriftSqlType.string,
-      requiredDuringInsert: true);
+      type: DriftSqlType.string, requiredDuringInsert: true);
   static const VerificationMeta _categoryMeta =
       const VerificationMeta('category');
   @override
@@ -88,11 +85,11 @@ class $IngredientsTable extends Ingredients
         avatar
       ];
   @override
-  String get aliasedName => _alias ?? 'ingredients';
+  String get aliasedName => _alias ?? 'dbingredients';
   @override
-  String get actualTableName => 'ingredients';
+  String get actualTableName => 'dbingredients';
   @override
-  VerificationContext validateIntegrity(Insertable<Ingredient> instance,
+  VerificationContext validateIntegrity(Insertable<Dbingredient> instance,
       {bool isInserting = false}) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
@@ -167,9 +164,9 @@ class $IngredientsTable extends Ingredients
   @override
   Set<GeneratedColumn> get $primaryKey => {id};
   @override
-  Ingredient map(Map<String, dynamic> data, {String? tablePrefix}) {
+  Dbingredient map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return Ingredient(
+    return Dbingredient(
       id: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
       name: attachedDatabase.typeMapping
@@ -196,12 +193,12 @@ class $IngredientsTable extends Ingredients
   }
 
   @override
-  $IngredientsTable createAlias(String alias) {
-    return $IngredientsTable(attachedDatabase, alias);
+  $DbingredientsTable createAlias(String alias) {
+    return $DbingredientsTable(attachedDatabase, alias);
   }
 }
 
-class Ingredient extends DataClass implements Insertable<Ingredient> {
+class Dbingredient extends DataClass implements Insertable<Dbingredient> {
   final int id;
   final String name;
   final String category;
@@ -213,7 +210,7 @@ class Ingredient extends DataClass implements Insertable<Ingredient> {
   final double minerals;
   final double moisture;
   final String avatar;
-  const Ingredient(
+  const Dbingredient(
       {required this.id,
       required this.name,
       required this.category,
@@ -242,8 +239,8 @@ class Ingredient extends DataClass implements Insertable<Ingredient> {
     return map;
   }
 
-  IngredientsCompanion toCompanion(bool nullToAbsent) {
-    return IngredientsCompanion(
+  DbingredientsCompanion toCompanion(bool nullToAbsent) {
+    return DbingredientsCompanion(
       id: Value(id),
       name: Value(name),
       category: Value(category),
@@ -258,10 +255,10 @@ class Ingredient extends DataClass implements Insertable<Ingredient> {
     );
   }
 
-  factory Ingredient.fromJson(Map<String, dynamic> json,
+  factory Dbingredient.fromJson(Map<String, dynamic> json,
       {ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
-    return Ingredient(
+    return Dbingredient(
       id: serializer.fromJson<int>(json['id']),
       name: serializer.fromJson<String>(json['name']),
       category: serializer.fromJson<String>(json['category']),
@@ -293,7 +290,7 @@ class Ingredient extends DataClass implements Insertable<Ingredient> {
     };
   }
 
-  Ingredient copyWith(
+  Dbingredient copyWith(
           {int? id,
           String? name,
           String? category,
@@ -305,7 +302,7 @@ class Ingredient extends DataClass implements Insertable<Ingredient> {
           double? minerals,
           double? moisture,
           String? avatar}) =>
-      Ingredient(
+      Dbingredient(
         id: id ?? this.id,
         name: name ?? this.name,
         category: category ?? this.category,
@@ -320,7 +317,7 @@ class Ingredient extends DataClass implements Insertable<Ingredient> {
       );
   @override
   String toString() {
-    return (StringBuffer('Ingredient(')
+    return (StringBuffer('Dbingredient(')
           ..write('id: $id, ')
           ..write('name: $name, ')
           ..write('category: $category, ')
@@ -342,7 +339,7 @@ class Ingredient extends DataClass implements Insertable<Ingredient> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is Ingredient &&
+      (other is Dbingredient &&
           other.id == this.id &&
           other.name == this.name &&
           other.category == this.category &&
@@ -356,7 +353,7 @@ class Ingredient extends DataClass implements Insertable<Ingredient> {
           other.avatar == this.avatar);
 }
 
-class IngredientsCompanion extends UpdateCompanion<Ingredient> {
+class DbingredientsCompanion extends UpdateCompanion<Dbingredient> {
   final Value<int> id;
   final Value<String> name;
   final Value<String> category;
@@ -368,7 +365,7 @@ class IngredientsCompanion extends UpdateCompanion<Ingredient> {
   final Value<double> minerals;
   final Value<double> moisture;
   final Value<String> avatar;
-  const IngredientsCompanion({
+  const DbingredientsCompanion({
     this.id = const Value.absent(),
     this.name = const Value.absent(),
     this.category = const Value.absent(),
@@ -381,7 +378,7 @@ class IngredientsCompanion extends UpdateCompanion<Ingredient> {
     this.moisture = const Value.absent(),
     this.avatar = const Value.absent(),
   });
-  IngredientsCompanion.insert({
+  DbingredientsCompanion.insert({
     this.id = const Value.absent(),
     required String name,
     required String category,
@@ -403,7 +400,7 @@ class IngredientsCompanion extends UpdateCompanion<Ingredient> {
         minerals = Value(minerals),
         moisture = Value(moisture),
         avatar = Value(avatar);
-  static Insertable<Ingredient> custom({
+  static Insertable<Dbingredient> custom({
     Expression<int>? id,
     Expression<String>? name,
     Expression<String>? category,
@@ -431,7 +428,7 @@ class IngredientsCompanion extends UpdateCompanion<Ingredient> {
     });
   }
 
-  IngredientsCompanion copyWith(
+  DbingredientsCompanion copyWith(
       {Value<int>? id,
       Value<String>? name,
       Value<String>? category,
@@ -443,7 +440,7 @@ class IngredientsCompanion extends UpdateCompanion<Ingredient> {
       Value<double>? minerals,
       Value<double>? moisture,
       Value<String>? avatar}) {
-    return IngredientsCompanion(
+    return DbingredientsCompanion(
       id: id ?? this.id,
       name: name ?? this.name,
       category: category ?? this.category,
@@ -499,7 +496,7 @@ class IngredientsCompanion extends UpdateCompanion<Ingredient> {
 
   @override
   String toString() {
-    return (StringBuffer('IngredientsCompanion(')
+    return (StringBuffer('DbingredientsCompanion(')
           ..write('id: $id, ')
           ..write('name: $name, ')
           ..write('category: $category, ')
@@ -516,11 +513,11 @@ class IngredientsCompanion extends UpdateCompanion<Ingredient> {
   }
 }
 
-class $PetsTable extends Pets with TableInfo<$PetsTable, Pet> {
+class $DbpetsTable extends Dbpets with TableInfo<$DbpetsTable, Dbpet> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
-  $PetsTable(this.attachedDatabase, [this._alias]);
+  $DbpetsTable(this.attachedDatabase, [this._alias]);
   static const VerificationMeta _idMeta = const VerificationMeta('id');
   @override
   late final GeneratedColumn<int> id = GeneratedColumn<int>(
@@ -565,11 +562,11 @@ class $PetsTable extends Pets with TableInfo<$PetsTable, Pet> {
   List<GeneratedColumn> get $columns =>
       [id, owner, name, breed, age, weight, gender, ration];
   @override
-  String get aliasedName => _alias ?? 'pets';
+  String get aliasedName => _alias ?? 'dbpets';
   @override
-  String get actualTableName => 'pets';
+  String get actualTableName => 'dbpets';
   @override
-  VerificationContext validateIntegrity(Insertable<Pet> instance,
+  VerificationContext validateIntegrity(Insertable<Dbpet> instance,
       {bool isInserting = false}) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
@@ -624,9 +621,9 @@ class $PetsTable extends Pets with TableInfo<$PetsTable, Pet> {
   @override
   Set<GeneratedColumn> get $primaryKey => {id};
   @override
-  Pet map(Map<String, dynamic> data, {String? tablePrefix}) {
+  Dbpet map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return Pet(
+    return Dbpet(
       id: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
       owner: attachedDatabase.typeMapping
@@ -647,12 +644,12 @@ class $PetsTable extends Pets with TableInfo<$PetsTable, Pet> {
   }
 
   @override
-  $PetsTable createAlias(String alias) {
-    return $PetsTable(attachedDatabase, alias);
+  $DbpetsTable createAlias(String alias) {
+    return $DbpetsTable(attachedDatabase, alias);
   }
 }
 
-class Pet extends DataClass implements Insertable<Pet> {
+class Dbpet extends DataClass implements Insertable<Dbpet> {
   final int id;
   final String owner;
   final String name;
@@ -661,7 +658,7 @@ class Pet extends DataClass implements Insertable<Pet> {
   final int weight;
   final String gender;
   final double ration;
-  const Pet(
+  const Dbpet(
       {required this.id,
       required this.owner,
       required this.name,
@@ -684,8 +681,8 @@ class Pet extends DataClass implements Insertable<Pet> {
     return map;
   }
 
-  PetsCompanion toCompanion(bool nullToAbsent) {
-    return PetsCompanion(
+  DbpetsCompanion toCompanion(bool nullToAbsent) {
+    return DbpetsCompanion(
       id: Value(id),
       owner: Value(owner),
       name: Value(name),
@@ -697,10 +694,10 @@ class Pet extends DataClass implements Insertable<Pet> {
     );
   }
 
-  factory Pet.fromJson(Map<String, dynamic> json,
+  factory Dbpet.fromJson(Map<String, dynamic> json,
       {ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
-    return Pet(
+    return Dbpet(
       id: serializer.fromJson<int>(json['id']),
       owner: serializer.fromJson<String>(json['owner']),
       name: serializer.fromJson<String>(json['name']),
@@ -726,7 +723,7 @@ class Pet extends DataClass implements Insertable<Pet> {
     };
   }
 
-  Pet copyWith(
+  Dbpet copyWith(
           {int? id,
           String? owner,
           String? name,
@@ -735,7 +732,7 @@ class Pet extends DataClass implements Insertable<Pet> {
           int? weight,
           String? gender,
           double? ration}) =>
-      Pet(
+      Dbpet(
         id: id ?? this.id,
         owner: owner ?? this.owner,
         name: name ?? this.name,
@@ -747,7 +744,7 @@ class Pet extends DataClass implements Insertable<Pet> {
       );
   @override
   String toString() {
-    return (StringBuffer('Pet(')
+    return (StringBuffer('Dbpet(')
           ..write('id: $id, ')
           ..write('owner: $owner, ')
           ..write('name: $name, ')
@@ -766,7 +763,7 @@ class Pet extends DataClass implements Insertable<Pet> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is Pet &&
+      (other is Dbpet &&
           other.id == this.id &&
           other.owner == this.owner &&
           other.name == this.name &&
@@ -777,7 +774,7 @@ class Pet extends DataClass implements Insertable<Pet> {
           other.ration == this.ration);
 }
 
-class PetsCompanion extends UpdateCompanion<Pet> {
+class DbpetsCompanion extends UpdateCompanion<Dbpet> {
   final Value<int> id;
   final Value<String> owner;
   final Value<String> name;
@@ -786,7 +783,7 @@ class PetsCompanion extends UpdateCompanion<Pet> {
   final Value<int> weight;
   final Value<String> gender;
   final Value<double> ration;
-  const PetsCompanion({
+  const DbpetsCompanion({
     this.id = const Value.absent(),
     this.owner = const Value.absent(),
     this.name = const Value.absent(),
@@ -796,7 +793,7 @@ class PetsCompanion extends UpdateCompanion<Pet> {
     this.gender = const Value.absent(),
     this.ration = const Value.absent(),
   });
-  PetsCompanion.insert({
+  DbpetsCompanion.insert({
     this.id = const Value.absent(),
     required String owner,
     required String name,
@@ -812,7 +809,7 @@ class PetsCompanion extends UpdateCompanion<Pet> {
         weight = Value(weight),
         gender = Value(gender),
         ration = Value(ration);
-  static Insertable<Pet> custom({
+  static Insertable<Dbpet> custom({
     Expression<int>? id,
     Expression<String>? owner,
     Expression<String>? name,
@@ -834,7 +831,7 @@ class PetsCompanion extends UpdateCompanion<Pet> {
     });
   }
 
-  PetsCompanion copyWith(
+  DbpetsCompanion copyWith(
       {Value<int>? id,
       Value<String>? owner,
       Value<String>? name,
@@ -843,7 +840,7 @@ class PetsCompanion extends UpdateCompanion<Pet> {
       Value<int>? weight,
       Value<String>? gender,
       Value<double>? ration}) {
-    return PetsCompanion(
+    return DbpetsCompanion(
       id: id ?? this.id,
       owner: owner ?? this.owner,
       name: name ?? this.name,
@@ -887,7 +884,7 @@ class PetsCompanion extends UpdateCompanion<Pet> {
 
   @override
   String toString() {
-    return (StringBuffer('PetsCompanion(')
+    return (StringBuffer('DbpetsCompanion(')
           ..write('id: $id, ')
           ..write('owner: $owner, ')
           ..write('name: $name, ')
@@ -901,18 +898,17 @@ class PetsCompanion extends UpdateCompanion<Pet> {
   }
 }
 
-class $ProfilesTable extends Profiles with TableInfo<$ProfilesTable, Profile> {
+class $DbprofilesTable extends Dbprofiles
+    with TableInfo<$DbprofilesTable, Dbprofile> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
-  $ProfilesTable(this.attachedDatabase, [this._alias]);
+  $DbprofilesTable(this.attachedDatabase, [this._alias]);
   static const VerificationMeta _idMeta = const VerificationMeta('id');
   @override
   late final GeneratedColumn<String> id = GeneratedColumn<String>(
       'id', aliasedName, false,
-      type: DriftSqlType.string,
-      requiredDuringInsert: true,
-      defaultConstraints: GeneratedColumn.constraintIsAlways('PRIMARY KEY'));
+      type: DriftSqlType.string, requiredDuringInsert: true);
   static const VerificationMeta _createdAtMeta =
       const VerificationMeta('createdAt');
   @override
@@ -944,11 +940,11 @@ class $ProfilesTable extends Profiles with TableInfo<$ProfilesTable, Profile> {
   List<GeneratedColumn> get $columns =>
       [id, createdAt, email, name, description, rank];
   @override
-  String get aliasedName => _alias ?? 'profiles';
+  String get aliasedName => _alias ?? 'dbprofiles';
   @override
-  String get actualTableName => 'profiles';
+  String get actualTableName => 'dbprofiles';
   @override
-  VerificationContext validateIntegrity(Insertable<Profile> instance,
+  VerificationContext validateIntegrity(Insertable<Dbprofile> instance,
       {bool isInserting = false}) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
@@ -995,9 +991,9 @@ class $ProfilesTable extends Profiles with TableInfo<$ProfilesTable, Profile> {
   @override
   Set<GeneratedColumn> get $primaryKey => {id};
   @override
-  Profile map(Map<String, dynamic> data, {String? tablePrefix}) {
+  Dbprofile map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return Profile(
+    return Dbprofile(
       id: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}id'])!,
       createdAt: attachedDatabase.typeMapping
@@ -1014,19 +1010,19 @@ class $ProfilesTable extends Profiles with TableInfo<$ProfilesTable, Profile> {
   }
 
   @override
-  $ProfilesTable createAlias(String alias) {
-    return $ProfilesTable(attachedDatabase, alias);
+  $DbprofilesTable createAlias(String alias) {
+    return $DbprofilesTable(attachedDatabase, alias);
   }
 }
 
-class Profile extends DataClass implements Insertable<Profile> {
+class Dbprofile extends DataClass implements Insertable<Dbprofile> {
   final String id;
   final DateTime createdAt;
   final String email;
   final String name;
   final String description;
   final String rank;
-  const Profile(
+  const Dbprofile(
       {required this.id,
       required this.createdAt,
       required this.email,
@@ -1045,8 +1041,8 @@ class Profile extends DataClass implements Insertable<Profile> {
     return map;
   }
 
-  ProfilesCompanion toCompanion(bool nullToAbsent) {
-    return ProfilesCompanion(
+  DbprofilesCompanion toCompanion(bool nullToAbsent) {
+    return DbprofilesCompanion(
       id: Value(id),
       createdAt: Value(createdAt),
       email: Value(email),
@@ -1056,10 +1052,10 @@ class Profile extends DataClass implements Insertable<Profile> {
     );
   }
 
-  factory Profile.fromJson(Map<String, dynamic> json,
+  factory Dbprofile.fromJson(Map<String, dynamic> json,
       {ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
-    return Profile(
+    return Dbprofile(
       id: serializer.fromJson<String>(json['id']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
       email: serializer.fromJson<String>(json['email']),
@@ -1081,14 +1077,14 @@ class Profile extends DataClass implements Insertable<Profile> {
     };
   }
 
-  Profile copyWith(
+  Dbprofile copyWith(
           {String? id,
           DateTime? createdAt,
           String? email,
           String? name,
           String? description,
           String? rank}) =>
-      Profile(
+      Dbprofile(
         id: id ?? this.id,
         createdAt: createdAt ?? this.createdAt,
         email: email ?? this.email,
@@ -1098,7 +1094,7 @@ class Profile extends DataClass implements Insertable<Profile> {
       );
   @override
   String toString() {
-    return (StringBuffer('Profile(')
+    return (StringBuffer('Dbprofile(')
           ..write('id: $id, ')
           ..write('createdAt: $createdAt, ')
           ..write('email: $email, ')
@@ -1115,7 +1111,7 @@ class Profile extends DataClass implements Insertable<Profile> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is Profile &&
+      (other is Dbprofile &&
           other.id == this.id &&
           other.createdAt == this.createdAt &&
           other.email == this.email &&
@@ -1124,7 +1120,7 @@ class Profile extends DataClass implements Insertable<Profile> {
           other.rank == this.rank);
 }
 
-class ProfilesCompanion extends UpdateCompanion<Profile> {
+class DbprofilesCompanion extends UpdateCompanion<Dbprofile> {
   final Value<String> id;
   final Value<DateTime> createdAt;
   final Value<String> email;
@@ -1132,7 +1128,7 @@ class ProfilesCompanion extends UpdateCompanion<Profile> {
   final Value<String> description;
   final Value<String> rank;
   final Value<int> rowid;
-  const ProfilesCompanion({
+  const DbprofilesCompanion({
     this.id = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.email = const Value.absent(),
@@ -1141,7 +1137,7 @@ class ProfilesCompanion extends UpdateCompanion<Profile> {
     this.rank = const Value.absent(),
     this.rowid = const Value.absent(),
   });
-  ProfilesCompanion.insert({
+  DbprofilesCompanion.insert({
     required String id,
     required DateTime createdAt,
     required String email,
@@ -1155,7 +1151,7 @@ class ProfilesCompanion extends UpdateCompanion<Profile> {
         name = Value(name),
         description = Value(description),
         rank = Value(rank);
-  static Insertable<Profile> custom({
+  static Insertable<Dbprofile> custom({
     Expression<String>? id,
     Expression<DateTime>? createdAt,
     Expression<String>? email,
@@ -1175,7 +1171,7 @@ class ProfilesCompanion extends UpdateCompanion<Profile> {
     });
   }
 
-  ProfilesCompanion copyWith(
+  DbprofilesCompanion copyWith(
       {Value<String>? id,
       Value<DateTime>? createdAt,
       Value<String>? email,
@@ -1183,7 +1179,7 @@ class ProfilesCompanion extends UpdateCompanion<Profile> {
       Value<String>? description,
       Value<String>? rank,
       Value<int>? rowid}) {
-    return ProfilesCompanion(
+    return DbprofilesCompanion(
       id: id ?? this.id,
       createdAt: createdAt ?? this.createdAt,
       email: email ?? this.email,
@@ -1223,7 +1219,7 @@ class ProfilesCompanion extends UpdateCompanion<Profile> {
 
   @override
   String toString() {
-    return (StringBuffer('ProfilesCompanion(')
+    return (StringBuffer('DbprofilesCompanion(')
           ..write('id: $id, ')
           ..write('createdAt: $createdAt, ')
           ..write('email: $email, ')
@@ -1236,11 +1232,12 @@ class ProfilesCompanion extends UpdateCompanion<Profile> {
   }
 }
 
-class $RecipesTable extends Recipes with TableInfo<$RecipesTable, Recipe> {
+class $DbrecipesTable extends Dbrecipes
+    with TableInfo<$DbrecipesTable, Dbrecipe> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
-  $RecipesTable(this.attachedDatabase, [this._alias]);
+  $DbrecipesTable(this.attachedDatabase, [this._alias]);
   static const VerificationMeta _idMeta = const VerificationMeta('id');
   @override
   late final GeneratedColumn<int> id = GeneratedColumn<int>(
@@ -1278,11 +1275,11 @@ class $RecipesTable extends Recipes with TableInfo<$RecipesTable, Recipe> {
   List<GeneratedColumn> get $columns =>
       [id, createdAt, name, description, userId, modifiedAt];
   @override
-  String get aliasedName => _alias ?? 'recipes';
+  String get aliasedName => _alias ?? 'dbrecipes';
   @override
-  String get actualTableName => 'recipes';
+  String get actualTableName => 'dbrecipes';
   @override
-  VerificationContext validateIntegrity(Insertable<Recipe> instance,
+  VerificationContext validateIntegrity(Insertable<Dbrecipe> instance,
       {bool isInserting = false}) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
@@ -1329,9 +1326,9 @@ class $RecipesTable extends Recipes with TableInfo<$RecipesTable, Recipe> {
   @override
   Set<GeneratedColumn> get $primaryKey => {id};
   @override
-  Recipe map(Map<String, dynamic> data, {String? tablePrefix}) {
+  Dbrecipe map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return Recipe(
+    return Dbrecipe(
       id: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
       createdAt: attachedDatabase.typeMapping
@@ -1348,19 +1345,19 @@ class $RecipesTable extends Recipes with TableInfo<$RecipesTable, Recipe> {
   }
 
   @override
-  $RecipesTable createAlias(String alias) {
-    return $RecipesTable(attachedDatabase, alias);
+  $DbrecipesTable createAlias(String alias) {
+    return $DbrecipesTable(attachedDatabase, alias);
   }
 }
 
-class Recipe extends DataClass implements Insertable<Recipe> {
+class Dbrecipe extends DataClass implements Insertable<Dbrecipe> {
   final int id;
   final DateTime createdAt;
   final String name;
   final String description;
   final String userId;
   final DateTime modifiedAt;
-  const Recipe(
+  const Dbrecipe(
       {required this.id,
       required this.createdAt,
       required this.name,
@@ -1379,8 +1376,8 @@ class Recipe extends DataClass implements Insertable<Recipe> {
     return map;
   }
 
-  RecipesCompanion toCompanion(bool nullToAbsent) {
-    return RecipesCompanion(
+  DbrecipesCompanion toCompanion(bool nullToAbsent) {
+    return DbrecipesCompanion(
       id: Value(id),
       createdAt: Value(createdAt),
       name: Value(name),
@@ -1390,10 +1387,10 @@ class Recipe extends DataClass implements Insertable<Recipe> {
     );
   }
 
-  factory Recipe.fromJson(Map<String, dynamic> json,
+  factory Dbrecipe.fromJson(Map<String, dynamic> json,
       {ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
-    return Recipe(
+    return Dbrecipe(
       id: serializer.fromJson<int>(json['id']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
       name: serializer.fromJson<String>(json['name']),
@@ -1415,14 +1412,14 @@ class Recipe extends DataClass implements Insertable<Recipe> {
     };
   }
 
-  Recipe copyWith(
+  Dbrecipe copyWith(
           {int? id,
           DateTime? createdAt,
           String? name,
           String? description,
           String? userId,
           DateTime? modifiedAt}) =>
-      Recipe(
+      Dbrecipe(
         id: id ?? this.id,
         createdAt: createdAt ?? this.createdAt,
         name: name ?? this.name,
@@ -1432,7 +1429,7 @@ class Recipe extends DataClass implements Insertable<Recipe> {
       );
   @override
   String toString() {
-    return (StringBuffer('Recipe(')
+    return (StringBuffer('Dbrecipe(')
           ..write('id: $id, ')
           ..write('createdAt: $createdAt, ')
           ..write('name: $name, ')
@@ -1449,7 +1446,7 @@ class Recipe extends DataClass implements Insertable<Recipe> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is Recipe &&
+      (other is Dbrecipe &&
           other.id == this.id &&
           other.createdAt == this.createdAt &&
           other.name == this.name &&
@@ -1458,14 +1455,14 @@ class Recipe extends DataClass implements Insertable<Recipe> {
           other.modifiedAt == this.modifiedAt);
 }
 
-class RecipesCompanion extends UpdateCompanion<Recipe> {
+class DbrecipesCompanion extends UpdateCompanion<Dbrecipe> {
   final Value<int> id;
   final Value<DateTime> createdAt;
   final Value<String> name;
   final Value<String> description;
   final Value<String> userId;
   final Value<DateTime> modifiedAt;
-  const RecipesCompanion({
+  const DbrecipesCompanion({
     this.id = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.name = const Value.absent(),
@@ -1473,7 +1470,7 @@ class RecipesCompanion extends UpdateCompanion<Recipe> {
     this.userId = const Value.absent(),
     this.modifiedAt = const Value.absent(),
   });
-  RecipesCompanion.insert({
+  DbrecipesCompanion.insert({
     this.id = const Value.absent(),
     required DateTime createdAt,
     required String name,
@@ -1485,7 +1482,7 @@ class RecipesCompanion extends UpdateCompanion<Recipe> {
         description = Value(description),
         userId = Value(userId),
         modifiedAt = Value(modifiedAt);
-  static Insertable<Recipe> custom({
+  static Insertable<Dbrecipe> custom({
     Expression<int>? id,
     Expression<DateTime>? createdAt,
     Expression<String>? name,
@@ -1503,14 +1500,14 @@ class RecipesCompanion extends UpdateCompanion<Recipe> {
     });
   }
 
-  RecipesCompanion copyWith(
+  DbrecipesCompanion copyWith(
       {Value<int>? id,
       Value<DateTime>? createdAt,
       Value<String>? name,
       Value<String>? description,
       Value<String>? userId,
       Value<DateTime>? modifiedAt}) {
-    return RecipesCompanion(
+    return DbrecipesCompanion(
       id: id ?? this.id,
       createdAt: createdAt ?? this.createdAt,
       name: name ?? this.name,
@@ -1546,7 +1543,7 @@ class RecipesCompanion extends UpdateCompanion<Recipe> {
 
   @override
   String toString() {
-    return (StringBuffer('RecipesCompanion(')
+    return (StringBuffer('DbrecipesCompanion(')
           ..write('id: $id, ')
           ..write('createdAt: $createdAt, ')
           ..write('name: $name, ')
@@ -1558,12 +1555,12 @@ class RecipesCompanion extends UpdateCompanion<Recipe> {
   }
 }
 
-class $SchedulesTable extends Schedules
-    with TableInfo<$SchedulesTable, Schedule> {
+class $DbschedulesTable extends Dbschedules
+    with TableInfo<$DbschedulesTable, Dbschedule> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
-  $SchedulesTable(this.attachedDatabase, [this._alias]);
+  $DbschedulesTable(this.attachedDatabase, [this._alias]);
   static const VerificationMeta _idMeta = const VerificationMeta('id');
   @override
   late final GeneratedColumn<int> id = GeneratedColumn<int>(
@@ -1587,11 +1584,11 @@ class $SchedulesTable extends Schedules
   @override
   List<GeneratedColumn> get $columns => [id, date, recipe, userId];
   @override
-  String get aliasedName => _alias ?? 'schedules';
+  String get aliasedName => _alias ?? 'dbschedules';
   @override
-  String get actualTableName => 'schedules';
+  String get actualTableName => 'dbschedules';
   @override
-  VerificationContext validateIntegrity(Insertable<Schedule> instance,
+  VerificationContext validateIntegrity(Insertable<Dbschedule> instance,
       {bool isInserting = false}) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
@@ -1624,9 +1621,9 @@ class $SchedulesTable extends Schedules
   @override
   Set<GeneratedColumn> get $primaryKey => {date, recipe};
   @override
-  Schedule map(Map<String, dynamic> data, {String? tablePrefix}) {
+  Dbschedule map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return Schedule(
+    return Dbschedule(
       id: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
       date: attachedDatabase.typeMapping
@@ -1639,17 +1636,17 @@ class $SchedulesTable extends Schedules
   }
 
   @override
-  $SchedulesTable createAlias(String alias) {
-    return $SchedulesTable(attachedDatabase, alias);
+  $DbschedulesTable createAlias(String alias) {
+    return $DbschedulesTable(attachedDatabase, alias);
   }
 }
 
-class Schedule extends DataClass implements Insertable<Schedule> {
+class Dbschedule extends DataClass implements Insertable<Dbschedule> {
   final int id;
   final DateTime date;
   final int recipe;
   final String userId;
-  const Schedule(
+  const Dbschedule(
       {required this.id,
       required this.date,
       required this.recipe,
@@ -1664,8 +1661,8 @@ class Schedule extends DataClass implements Insertable<Schedule> {
     return map;
   }
 
-  SchedulesCompanion toCompanion(bool nullToAbsent) {
-    return SchedulesCompanion(
+  DbschedulesCompanion toCompanion(bool nullToAbsent) {
+    return DbschedulesCompanion(
       id: Value(id),
       date: Value(date),
       recipe: Value(recipe),
@@ -1673,10 +1670,10 @@ class Schedule extends DataClass implements Insertable<Schedule> {
     );
   }
 
-  factory Schedule.fromJson(Map<String, dynamic> json,
+  factory Dbschedule.fromJson(Map<String, dynamic> json,
       {ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
-    return Schedule(
+    return Dbschedule(
       id: serializer.fromJson<int>(json['id']),
       date: serializer.fromJson<DateTime>(json['date']),
       recipe: serializer.fromJson<int>(json['recipe']),
@@ -1694,8 +1691,8 @@ class Schedule extends DataClass implements Insertable<Schedule> {
     };
   }
 
-  Schedule copyWith({int? id, DateTime? date, int? recipe, String? userId}) =>
-      Schedule(
+  Dbschedule copyWith({int? id, DateTime? date, int? recipe, String? userId}) =>
+      Dbschedule(
         id: id ?? this.id,
         date: date ?? this.date,
         recipe: recipe ?? this.recipe,
@@ -1703,7 +1700,7 @@ class Schedule extends DataClass implements Insertable<Schedule> {
       );
   @override
   String toString() {
-    return (StringBuffer('Schedule(')
+    return (StringBuffer('Dbschedule(')
           ..write('id: $id, ')
           ..write('date: $date, ')
           ..write('recipe: $recipe, ')
@@ -1717,27 +1714,27 @@ class Schedule extends DataClass implements Insertable<Schedule> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is Schedule &&
+      (other is Dbschedule &&
           other.id == this.id &&
           other.date == this.date &&
           other.recipe == this.recipe &&
           other.userId == this.userId);
 }
 
-class SchedulesCompanion extends UpdateCompanion<Schedule> {
+class DbschedulesCompanion extends UpdateCompanion<Dbschedule> {
   final Value<int> id;
   final Value<DateTime> date;
   final Value<int> recipe;
   final Value<String> userId;
   final Value<int> rowid;
-  const SchedulesCompanion({
+  const DbschedulesCompanion({
     this.id = const Value.absent(),
     this.date = const Value.absent(),
     this.recipe = const Value.absent(),
     this.userId = const Value.absent(),
     this.rowid = const Value.absent(),
   });
-  SchedulesCompanion.insert({
+  DbschedulesCompanion.insert({
     required int id,
     required DateTime date,
     required int recipe,
@@ -1747,7 +1744,7 @@ class SchedulesCompanion extends UpdateCompanion<Schedule> {
         date = Value(date),
         recipe = Value(recipe),
         userId = Value(userId);
-  static Insertable<Schedule> custom({
+  static Insertable<Dbschedule> custom({
     Expression<int>? id,
     Expression<DateTime>? date,
     Expression<int>? recipe,
@@ -1763,13 +1760,13 @@ class SchedulesCompanion extends UpdateCompanion<Schedule> {
     });
   }
 
-  SchedulesCompanion copyWith(
+  DbschedulesCompanion copyWith(
       {Value<int>? id,
       Value<DateTime>? date,
       Value<int>? recipe,
       Value<String>? userId,
       Value<int>? rowid}) {
-    return SchedulesCompanion(
+    return DbschedulesCompanion(
       id: id ?? this.id,
       date: date ?? this.date,
       recipe: recipe ?? this.recipe,
@@ -1801,7 +1798,7 @@ class SchedulesCompanion extends UpdateCompanion<Schedule> {
 
   @override
   String toString() {
-    return (StringBuffer('SchedulesCompanion(')
+    return (StringBuffer('DbschedulesCompanion(')
           ..write('id: $id, ')
           ..write('date: $date, ')
           ..write('recipe: $recipe, ')
@@ -1814,15 +1811,15 @@ class SchedulesCompanion extends UpdateCompanion<Schedule> {
 
 abstract class _$BarfbookDatabase extends GeneratedDatabase {
   _$BarfbookDatabase(QueryExecutor e) : super(e);
-  late final $IngredientsTable ingredients = $IngredientsTable(this);
-  late final $PetsTable pets = $PetsTable(this);
-  late final $ProfilesTable profiles = $ProfilesTable(this);
-  late final $RecipesTable recipes = $RecipesTable(this);
-  late final $SchedulesTable schedules = $SchedulesTable(this);
+  late final $DbingredientsTable dbingredients = $DbingredientsTable(this);
+  late final $DbpetsTable dbpets = $DbpetsTable(this);
+  late final $DbprofilesTable dbprofiles = $DbprofilesTable(this);
+  late final $DbrecipesTable dbrecipes = $DbrecipesTable(this);
+  late final $DbschedulesTable dbschedules = $DbschedulesTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
   @override
   List<DatabaseSchemaEntity> get allSchemaEntities =>
-      [ingredients, pets, profiles, recipes, schedules];
+      [dbingredients, dbpets, dbprofiles, dbrecipes, dbschedules];
 }
