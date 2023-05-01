@@ -9,7 +9,7 @@ import 'package:path/path.dart' as p;
 // first, but it's needed for drift to know about the generated code
 part 'database.g.dart';
 
-class Dbingredients extends Table {
+class Ingredients extends Table {
   IntColumn get id => integer()();
   TextColumn get name => text()();
   TextColumn get category => text()();
@@ -17,16 +17,17 @@ class Dbingredients extends Table {
   RealColumn get calories => real()();
   RealColumn get protein => real()();
   RealColumn get fat => real()();
-  RealColumn get farbohydrates => real()();
+  RealColumn get carbohydrates => real()();
   RealColumn get minerals => real()();
   RealColumn get moisture => real()();
   TextColumn get avatar => text()();
+  IntColumn get gram => integer()();
 
   @override
   Set<Column> get primaryKey => {id};
 }
 
-class Dbpets extends Table {
+class Pets extends Table {
   IntColumn get id => integer()();
   TextColumn get owner => text()();
   TextColumn get name => text()();
@@ -40,7 +41,7 @@ class Dbpets extends Table {
   Set<Column> get primaryKey => {id};
 }
 
-class Dbprofiles extends Table {
+class Profiles extends Table {
   TextColumn get id => text()();
   DateTimeColumn get createdAt => dateTime()();
   TextColumn get email => text()();
@@ -52,19 +53,20 @@ class Dbprofiles extends Table {
   Set<Column> get primaryKey => {id};
 }
 
-class Dbrecipes extends Table {
+class Recipes extends Table {
   IntColumn get id => integer()();
   DateTimeColumn get createdAt => dateTime()();
   TextColumn get name => text()();
   TextColumn get description => text()();
   TextColumn get userId => text()();
+  IntColumn get paws => integer()();
   DateTimeColumn get modifiedAt => dateTime()();
 
   @override
   Set<Column> get primaryKey => {id};
 }
 
-class Dbschedules extends Table {
+class Schedules extends Table {
   IntColumn get id => integer()();
   DateTimeColumn get date => dateTime()();
   IntColumn get recipe => integer()();
@@ -76,8 +78,7 @@ class Dbschedules extends Table {
 
 // this annotation tells drift to prepare a database class that uses both of the
 // tables we just defined. We'll see how to use that database class in a moment.
-@DriftDatabase(
-    tables: [Dbingredients, Dbpets, Dbprofiles, Dbrecipes, Dbschedules])
+@DriftDatabase(tables: [Ingredients, Pets, Profiles, Recipes, Schedules])
 class BarfbookDatabase extends _$BarfbookDatabase {
   BarfbookDatabase() : super(_openConnection());
 

@@ -1,6 +1,8 @@
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:Barfbook/util/database/database.dart';
+import 'package:Barfbook/util/widgets/avatar_controller.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:Barfbook/Screens/Mehr/profile_controller.dart';
@@ -37,7 +39,7 @@ class _ScreenEditProfileState extends State<ScreenEditProfile> {
   PlatformFile? avatarFile;
 
   _loadAvatar() async {
-    avatar = widget.profile.avatar;
+    avatar = getUserAvatar(widget.profile.id);
   }
 
   @override

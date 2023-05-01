@@ -5,6 +5,8 @@ import 'package:Barfbook/Screens/explore/explore.dart';
 import 'package:Barfbook/controller.dart';
 import 'package:Barfbook/home.dart';
 import 'package:Barfbook/loading.dart';
+import 'package:Barfbook/util/database/database.dart';
+import 'package:Barfbook/util/widgets/avatar_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -75,7 +77,7 @@ class _ScreenBarfbookState extends State<ScreenBarfbook> {
                   FloatingActionButtonLocation.centerFloat,
               floatingActionButton: FloatingActionButton(
                 onPressed: () {
-                  controller.userProfile['user'].name == 'Gast'
+                  userProfile.name == 'Gast'
                       ? Get.snackbar("Registrierung",
                           "Du musst angemeldet sein, um ein Haustier hinzuzufügen.",
                           backgroundColor:
@@ -115,7 +117,7 @@ class _ScreenBarfbookState extends State<ScreenBarfbook> {
                     FloatingActionButtonLocation.centerFloat,
                 floatingActionButton: FloatingActionButton(
                   onPressed: () {
-                    controller.userProfile['user'].name == 'Gast'
+                    userProfile.name == 'Gast'
                         ? Get.snackbar("Registrierung",
                             "Du musst angemeldet sein, um ein Rezept zu erstellen.",
                             backgroundColor:
@@ -128,7 +130,7 @@ class _ScreenBarfbookState extends State<ScreenBarfbook> {
                   onRefresh: _refreshRecipe,
                   child: CustomScrollView(slivers: [
                     SliverToBoxAdapter(
-                      child: controller.userRecipeListDB.isEmpty
+                      child: controller.userRecipeList.isEmpty
                           ? noRecipeCreatedCard(context)
                           : Padding(
                               padding: EdgeInsets.symmetric(horizontal: 10),
@@ -328,7 +330,7 @@ class PetCard extends StatelessWidget {
                 CircleAvatar(
                   backgroundColor: Theme.of(context).colorScheme.surface,
                   radius: 56,
-                  child: pet.avatar,
+                  child: getDogAvatar(pet.id),
                 ),
                 Text(
                   pet.name,
@@ -378,7 +380,7 @@ class BigPetCard extends StatelessWidget {
                 CircleAvatar(
                   backgroundColor: Theme.of(context).colorScheme.surface,
                   radius: 56,
-                  child: pet.avatar,
+                  child: getDogAvatar(pet.id),
                 ),
                 Expanded(
                   child: Column(

@@ -9,6 +9,8 @@ import 'package:Barfbook/Screens/explore/recipeDetailPage.dart';
 import 'package:Barfbook/Screens/schedule/schedule_controller.dart';
 import 'package:Barfbook/controller.dart';
 import 'package:Barfbook/util/Supabase/AuthController.dart';
+import 'package:Barfbook/util/database/database.dart';
+import 'package:Barfbook/util/widgets/avatar_controller.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -246,39 +248,29 @@ class _ScreenScheduleState extends State<ScreenSchedule> {
     }
   }
 
-  void insertSchedule(var recipe) async {
+  void insertSchedule(Recipe recipe) async {
     try {
       final scheduleID = await supabase.rpc('insert_schedule', params: {
         'datevalue': _selectedDay!.toIso8601String(),
         'uservalue': user!.id,
         'recipevalue': recipe.id
       });
-      final userAvatar = loadUserAvatar(recipe.user_id);
-      final recipeAvatar = loadRecipeAvatar(recipe.id);
+      final userAvatar = getUserAvatar(recipe.userId);
+      final recipeAvatar = getRecipeAvatar(recipe.id);
       final day =
           DateTime(_selectedDay!.year, _selectedDay!.month, _selectedDay!.day);
       addValueToMap(
           kEventSource,
           day,
           Recipe(
-              id: recipe.id,
-              name: recipe.name,
-              description: recipe.description,
-              paws: recipe.paws,
-              created_at: recipe.created_at,
-              modified_at: recipe.modified_at,
-              user_id: recipe.user_id,
-              user: Profile(
-                  id: recipe.user!.id,
-                  createdAt: recipe.user!.createdAt,
-                  email: recipe.user!.email,
-                  name: recipe.user!.name,
-                  description: recipe.user!.description,
-                  avatar: userAvatar,
-                  rank: recipe.user!.rank),
-              userAvatar: userAvatar,
-              avatar: recipeAvatar,
-              scheduleID: scheduleID));
+            id: recipe.id,
+            name: recipe.name,
+            description: recipe.description,
+            paws: recipe.paws,
+            createdAt: recipe.createdAt,
+            modifiedAt: recipe.modifiedAt,
+            userId: recipe.userId,
+          ));
 
       kEvents = LinkedHashMap<DateTime, List>(
         equals: isSameDay,

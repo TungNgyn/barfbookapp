@@ -9,7 +9,9 @@ import 'package:Barfbook/Screens/Mehr/editProfile.dart';
 import 'package:Barfbook/Screens/Mehr/profile.dart';
 import 'package:Barfbook/Screens/Mehr/thankPage.dart';
 import 'package:Barfbook/controller.dart';
+import 'package:Barfbook/loading.dart';
 import 'package:Barfbook/util/Supabase/AuthController.dart';
+import 'package:Barfbook/util/widgets/avatar_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
@@ -52,27 +54,26 @@ class _settingsStartState extends State<ScreenSettings>
                 children: [
                   GestureDetector(
                     onTap: () {
-                      if (controller.userProfile['user'].rank != 'guest') {
-                        Get.to(() => ScreenProfile(
-                            profile: controller.userProfile['user']));
+                      if (userProfile.rank != 'guest') {
+                        Get.to(() => ScreenProfile(profile: userProfile));
                       }
                     },
                     child: CircleAvatar(
                         backgroundColor: Theme.of(context).colorScheme.surface,
                         radius: 64,
-                        child: controller.userProfile['user'].avatar),
+                        child: getUserAvatar(userProfile.id)),
                   ),
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 15),
                     child: Column(
                       children: [
                         Text(
-                          "${controller.userProfile['user'].rank == 'guest' ? 'Gast' : controller.userProfile['user'].name}",
+                          "${userProfile.rank == 'guest' ? 'Gast' : userProfile.name}",
                           style: TextStyle(
                               fontWeight: FontWeight.w200, fontSize: 24),
                         ),
-                        if (controller.userProfile['user'].rank != 'guest')
-                          Text("${controller.userProfile['user'].email}")
+                        if (userProfile.rank != 'guest')
+                          Text("${userProfile.email}")
                       ],
                     ),
                   ),
@@ -100,7 +101,7 @@ class _settingsStartState extends State<ScreenSettings>
                                     .fontFamily),
                           ),
                         ),
-                        (controller.userProfile['user'].rank == 'guest')
+                        (userProfile.rank == 'guest')
                             ? accountGuestSettings(context)
                             : accountSettings(context),
                         // barfbook app
@@ -676,8 +677,7 @@ class _settingsStartState extends State<ScreenSettings>
                     isPressedProfile = false;
                   });
                   Get.to(
-                    () =>
-                        ScreenProfile(profile: controller.userProfile['user']),
+                    () => ScreenProfile(profile: userProfile),
                   );
                 },
                 child: Container(
@@ -729,8 +729,7 @@ class _settingsStartState extends State<ScreenSettings>
                 },
                 onTap: () => {
                   Get.to(
-                    () => ScreenEditProfile(
-                        profile: controller.userProfile['user']),
+                    () => ScreenEditProfile(profile: userProfile),
                   ),
                   setState(() {
                     isPressedProfileEdit = false;

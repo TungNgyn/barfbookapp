@@ -1,4 +1,5 @@
 import 'package:Barfbook/controller.dart';
+import 'package:Barfbook/loading.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -6,13 +7,9 @@ import 'package:url_launcher/url_launcher.dart';
 class ContactPage extends StatelessWidget {
   final Controller controller = Get.find();
   late TextEditingController _nameController = TextEditingController(
-      text: controller.userProfile['user'].name == 'Gast'
-          ? ''
-          : controller.userProfile['user'].name);
+      text: userProfile.name == 'Gast' ? '' : userProfile.name);
   late TextEditingController _emailController = TextEditingController(
-      text: controller.userProfile['user'].name == 'Gast'
-          ? ''
-          : controller.userProfile['user'].email);
+      text: userProfile.name == 'Gast' ? '' : userProfile.email);
   TextEditingController _messageController = TextEditingController();
 
   @override
@@ -53,7 +50,7 @@ class ContactPage extends StatelessWidget {
                           borderRadius: BorderRadius.circular(12)))),
               ElevatedButton(
                   onPressed: () async {
-                    sendEmail().whenComplete(() => Get.back());
+                    // sendEmail().whenComplete(() => Get.back());
                   },
                   child: Text("Abschicken"))
             ],
@@ -70,24 +67,24 @@ class ContactPage extends StatelessWidget {
         .join('&');
   }
 
-  Future sendEmail() async {
-    try {
-      final Uri params = Uri(
-          scheme: 'mailto',
-          path: 'dev.tung@proton.me',
-          query: encodeQueryParameters(<String, String>{
-            'subject': 'Barfbook Nachricht',
-            'body':
-                'id: ${controller.userProfile['user'].id} \nuser: ${_nameController.text} \nemail: ${_emailController.text} \nmessage: ${_messageController.text}'
-          }));
+  // Future sendEmail() async {
+  //   try {
+  //     final Uri params = Uri(
+  //         scheme: 'mailto',
+  //         path: 'dev.tung@proton.me',
+  //         query: encodeQueryParameters(<String, String>{
+  //           'subject': 'Barfbook Nachricht',
+  //           'body':
+  //               'id: ${userProfile.id} \nuser: ${_nameController.text} \nemail: ${_emailController.text} \nmessage: ${_messageController.text}'
+  //         }));
 
-      if (await canLaunchUrl(params)) {
-        await launchUrl(params);
-      } else {
-        throw 'Could not launch $params';
-      }
-    } catch (error) {
-      print(error);
-    }
-  }
+  //     if (await canLaunchUrl(params)) {
+  //       await launchUrl(params);
+  //     } else {
+  //       throw 'Could not launch $params';
+  //     }
+  //   } catch (error) {
+  //     print(error);
+  //   }
+  // }
 }

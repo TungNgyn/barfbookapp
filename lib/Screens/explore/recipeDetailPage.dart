@@ -8,6 +8,8 @@ import 'package:Barfbook/Screens/Mehr/profile_controller.dart';
 import 'package:Barfbook/controller.dart';
 import 'package:Barfbook/loading.dart';
 import 'package:Barfbook/util/Supabase/AuthController.dart';
+import 'package:Barfbook/util/database/database.dart';
+import 'package:Barfbook/util/widgets/avatar_controller.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
@@ -67,7 +69,7 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
             ? Scaffold(
                 appBar: AppBar(
                   actions: [
-                    if (widget.recipe.user_id == user!.id)
+                    if (widget.recipe.userId == user!.id)
                       IconButton(
                           onPressed: () {
                             Get.to(
@@ -148,8 +150,8 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
                     //                                       name: controller
                     //                                           .userProfile['user']
                     //                                           .name,
-                    //                                       description: controller.userProfile['user'].description,
-                    //                                       avatar: controller.userProfile['user'].avatar)));
+                    //                                       description: userProfile.description,
+                    //                                       avatar: userProfile.avatar)));
                     //                               insertComment(
                     //                                   widget.recipe.id,
                     //                                   _commentController.text);
@@ -327,10 +329,10 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
                     //                                               createdAt: controller
                     //                                                   .userProfile['user']
                     //                                                   .createdAt,
-                    //                                               email: controller.userProfile['user'].email,
-                    //                                               name: controller.userProfile['user'].name,
-                    //                                               description: controller.userProfile['user'].description,
-                    //                                               avatar: controller.userProfile['user'].avatar)));
+                    //                                               email: userProfile.email,
+                    //                                               name: userProfile.name,
+                    //                                               description: userProfile.description,
+                    //                                               avatar: userProfile.avatar)));
                     //                                       insertComment(
                     //                                           widget.recipe.id,
                     //                                           _commentController
@@ -388,12 +390,13 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
                                           Container(
                                               height: 96,
                                               width: 96,
-                                              child: widget.recipe.userAvatar),
-                                          Text(widget.recipe.user!.name),
-                                          Text(
-                                              'Erstellt am ${widget.recipe.created_at.day}.${widget.recipe.created_at.month}.${widget.recipe.created_at.year}'),
-                                          Text(
-                                              'Bearbeitet am ${widget.recipe.modified_at.day}.${widget.recipe.modified_at.month}.${widget.recipe.modified_at.year}')
+                                              child: getRecipeAvatar(
+                                                  widget.recipe.id)),
+                                          // Text(widget.recipe.user!.name),
+                                          // Text(
+                                          //     'Erstellt am ${widget.recipe.created_at.day}.${widget.recipe.created_at.month}.${widget.recipe.created_at.year}'),
+                                          // Text(
+                                          //     'Bearbeitet am ${widget.recipe.modified_at.day}.${widget.recipe.modified_at.month}.${widget.recipe.modified_at.year}')
                                         ],
                                       ));
                                 },
@@ -479,18 +482,17 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
                                                               _commentController
                                                                   .text,
                                                           profile: Profile(
-                                                              id: controller
-                                                                  .userProfile[
-                                                                      'user']
+                                                              id: userProfile
                                                                   .id,
-                                                              createdAt: controller
-                                                                  .userProfile['user']
+                                                              createdAt: userProfile
                                                                   .createdAt,
-                                                              email: controller.userProfile['user'].email,
-                                                              name: controller.userProfile['user'].name,
-                                                              description: controller.userProfile['user'].description,
-                                                              avatar: controller.userProfile['user'].avatar,
-                                                              rank: controller.userProfile['user'].rank)));
+                                                              email: userProfile
+                                                                  .email,
+                                                              name: userProfile
+                                                                  .name,
+                                                              description:
+                                                                  userProfile.description,
+                                                              rank: userProfile.rank)));
                                                       insertComment(
                                                           widget.recipe.id,
                                                           _commentController
@@ -532,7 +534,7 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
                           child: Container(
                             height: 256,
                             width: MediaQuery.of(context).size.width,
-                            child: widget.recipe.avatar,
+                            child: getRecipeAvatar(widget.recipe.id),
                           ),
                         ),
                         Text(
@@ -541,7 +543,7 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
                             fontSize: 14,
                           ),
                         ),
-                        if (widget.recipe.user_id != user!.id)
+                        if (widget.recipe.userId != user!.id)
                           Padding(
                             padding: const EdgeInsets.symmetric(vertical: 10),
                             child: ElevatedButton(
@@ -916,12 +918,12 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
 
   updateLikedRecipe() async {
     try {
-      controller.userLikedRecipeXrefDB = await supabase
+      controller.userLikedRecipe = await supabase
           .from('profile_liked_recipe')
           .select('profile, recipe')
           .eq('profile', user!.id);
 
-      for (var map in controller.userLikedRecipeXrefDB) {
+      for (var map in controller.userLikedRecipe) {
         if (map?.containsKey("recipe") ?? false) {
           var tempRecipe = await supabase
               .from('select_recipe')
@@ -939,15 +941,15 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
           int dayMod = int.parse(datePartsMod[2].substring(0, 2));
 
           controller.userLikedRecipe.clear();
-          for (var recipe in tempRecipe) {
+          for (Recipe recipe in tempRecipe) {
             controller.userLikedRecipe.add(Recipe(
-                name: (recipe as Map)['name'],
-                id: recipe['id'],
-                created_at: DateTime(year, month, day),
-                paws: 0,
-                description: recipe['description'],
-                modified_at: DateTime(yearMod, monthMod, dayMod),
-                user_id: user!.id));
+                name: recipe.name,
+                id: recipe.id,
+                createdAt: DateTime(year, month, day),
+                paws: recipe.paws,
+                description: recipe.description,
+                modifiedAt: DateTime(yearMod, monthMod, dayMod),
+                userId: user!.id));
           }
         }
       }
@@ -1029,10 +1031,10 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
               comment: comment['comment'],
               profile: Profile(
                   id: profile['id'],
+                  createdAt: createdTime,
                   email: profile['email'],
                   name: profile['name'],
                   description: profile['description'],
-                  avatar: userAvatar,
                   rank: profile['rank'])));
         } catch (error) {
           print(error);
@@ -1491,7 +1493,7 @@ class CommentCard extends StatelessWidget {
                           CircleAvatar(
                               backgroundColor: Colors.transparent,
                               radius: 32,
-                              child: comment.profile.avatar),
+                              child: getUserAvatar(comment.profile.id)),
                           Padding(
                             padding: const EdgeInsets.all(10),
                             child: Text(

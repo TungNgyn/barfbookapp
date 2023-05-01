@@ -1,6 +1,8 @@
 import 'package:Barfbook/Screens/Barfbook/editPet.dart';
 import 'package:Barfbook/Screens/Barfbook/pet_controller.dart';
 import 'package:Barfbook/util/Supabase/AuthController.dart';
+import 'package:Barfbook/util/database/database.dart';
+import 'package:Barfbook/util/widgets/avatar_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -67,7 +69,7 @@ class _ScreenPetDetailPageState extends State<ScreenPetDetailPage> {
                                 backgroundColor:
                                     Theme.of(context).colorScheme.surface,
                                 radius: 64,
-                                child: widget.pet.avatar),
+                                child: getDogAvatar(widget.pet.id)),
                             Padding(
                               padding: EdgeInsets.only(top: 10),
                               child: Text(

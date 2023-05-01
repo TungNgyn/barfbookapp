@@ -1,6 +1,7 @@
 import 'dart:collection';
 import 'dart:io';
 
+import 'package:Barfbook/util/database/database.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
@@ -216,7 +217,7 @@ class _newRecipeState extends State<ScreenCreateRecipe> {
                                                 children: [
                                                   IconButton(
                                                       onPressed: () {
-                                                        setState(() {
+                                            setState(() {
                                                           avatarFilePath =
                                                               'assets/images/defaultRecipeAvatar.png';
                                                           avatar = Image.asset(
@@ -448,7 +449,7 @@ class _newRecipeState extends State<ScreenCreateRecipe> {
                                                                           minerals: suggestion['minerals']
                                                                               .toDouble(),
                                                                           moisture: suggestion['moisture']
-                                                                              .toDouble(),
+                                                                              .toDouble(),gram: 0,
                                                                           avatar:
                                                                               suggestion['avatar']));
                                                                       if (!ingredientList
@@ -706,7 +707,7 @@ class _newRecipeState extends State<ScreenCreateRecipe> {
                                                                                       }
                                                                                       weightSum.remove(ingredient.gram);
                                                                                       //update new value
-                                                                                      ingredient.gram = int.parse(_recipeGramController.value.text);
+                                                                                      // ingredient.gram = int.parse(_recipeGramController.value.text);
                                                                                       caloriesSum.add(ingredient.calories.toDouble() / 100 * double.parse(_recipeGramController.value.text));
                                                                                       proteinSum.add(ingredient.protein.toDouble() / 100 * double.parse(_recipeGramController.value.text));
 

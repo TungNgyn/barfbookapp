@@ -2,6 +2,8 @@ import 'dart:io';
 
 import 'package:Barfbook/Screens/Barfbook/pet_controller.dart';
 import 'package:Barfbook/util/Supabase/AuthController.dart';
+import 'package:Barfbook/util/database/database.dart';
+import 'package:Barfbook/util/widgets/avatar_controller.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -38,7 +40,7 @@ class _ScreenEditPetState extends State<ScreenEditPet> {
   PlatformFile? avatarFile;
 
   _loadAvatar() async {
-    avatar = widget.pet.avatar;
+    avatar = getDogAvatar(widget.pet.id);
   }
 
   @override
@@ -139,20 +141,20 @@ class _ScreenEditPetState extends State<ScreenEditPet> {
                                 fontWeight: FontWeight.bold, fontSize: 16)),
                       ),
                       SizedBox(height: 8),
-                      DropdownButtonFormField(
-                          value: widget.pet.gender,
-                          decoration: InputDecoration(
-                              border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(12))),
-                          items: ['Rüde', 'Hündin', 'keine Angabe']
-                              .map((e) =>
-                                  DropdownMenuItem(value: e, child: Text(e)))
-                              .toList(),
-                          onChanged: (String? newValue) {
-                            setState(() {
-                              _genderController = newValue!;
-                            });
-                          }),
+                      // DropdownButtonFormField(
+                      //     value: widget.pet.gender,
+                      //     decoration: InputDecoration(
+                      //         border: OutlineInputBorder(
+                      //             borderRadius: BorderRadius.circular(12))),
+                      //     items: ['Rüde', 'Hündin', 'keine Angabe']
+                      //         .map((e) =>
+                      //             DropdownMenuItem(value: e, child: Text(e)))
+                      //         .toList(),
+                      //     onChanged: (String? newValue) {
+                      //       setState(() {
+                      //         _genderController = newValue!;
+                      //       });
+                      //     }),
                       SizedBox(height: 24),
                       Padding(
                         padding: EdgeInsets.only(left: 20),

@@ -6,6 +6,8 @@ import 'package:Barfbook/Screens/Barfbook/barfbook_controller.dart';
 import 'package:Barfbook/controller.dart';
 import 'package:Barfbook/home.dart';
 import 'package:Barfbook/util/Supabase/AuthController.dart';
+import 'package:Barfbook/util/database/database.dart';
+import 'package:Barfbook/util/widgets/avatar_controller.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
@@ -173,7 +175,8 @@ class _editRecipeState extends State<ScreenEditRecipe> {
                                             child: Container(
                                               width: 256,
                                               height: 256,
-                                              child: widget.recipe.avatar,
+                                              child: getRecipeAvatar(
+                                                  widget.recipe.id),
                                             ),
                                           ),
                                           Divider(),
@@ -228,7 +231,7 @@ class _editRecipeState extends State<ScreenEditRecipe> {
                                 height: 256,
                                 decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(20)),
-                                child: widget.recipe.avatar,
+                                child: getRecipeAvatar(widget.recipe.id),
                               ),
                             ),
                             Row(
@@ -402,17 +405,28 @@ class _editRecipeState extends State<ScreenEditRecipe> {
                                                                         recipeIngredients.add(Ingredient(
                                                                             id: suggestion[
                                                                                 'id'],
-                                                                            name:
-                                                                                suggestion['name'],
-                                                                            type: suggestion['type'],
-                                                                            category: suggestion['category'],
-                                                                            calories: suggestion['calories'].toDouble(),
-                                                                            protein: suggestion['protein'].toDouble(),
-                                                                            fat: suggestion['fat'].toDouble(),
-                                                                            carbohydrates: suggestion['carbohydrates'].toDouble(),
-                                                                            minerals: suggestion['minerals'].toDouble(),
-                                                                            moisture: suggestion['moisture'].toDouble(),
-                                                                            avatar: suggestion['avatar']));
+                                                                            name: suggestion[
+                                                                                'name'],
+                                                                            type: suggestion[
+                                                                                'type'],
+                                                                            category: suggestion[
+                                                                                'category'],
+                                                                            calories: suggestion['calories']
+                                                                                .toDouble(),
+                                                                            protein: suggestion['protein']
+                                                                                .toDouble(),
+                                                                            fat: suggestion['fat']
+                                                                                .toDouble(),
+                                                                            carbohydrates: suggestion['carbohydrates']
+                                                                                .toDouble(),
+                                                                            minerals: suggestion['minerals']
+                                                                                .toDouble(),
+                                                                            moisture: suggestion['moisture']
+                                                                                .toDouble(),
+                                                                            gram:
+                                                                                0,
+                                                                            avatar:
+                                                                                suggestion['avatar']));
                                                                         if (!ingredientList
                                                                             .contains(suggestion['avatar'])) {
                                                                           ingredientList
@@ -664,7 +678,7 @@ class _editRecipeState extends State<ScreenEditRecipe> {
                                                                                         }
                                                                                         weightSum.remove(ingredient.gram);
                                                                                         //update new value
-                                                                                        ingredient.gram = int.parse(value);
+                                                                                        // ingredient.gram = int.parse(value);
                                                                                         caloriesSum.add(ingredient.calories.toDouble() / 100 * double.parse(_recipeGramController.value.text));
                                                                                         proteinSum.add(ingredient.protein.toDouble() / 100 * double.parse(_recipeGramController.value.text));
 

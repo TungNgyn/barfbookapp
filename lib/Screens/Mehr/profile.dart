@@ -6,6 +6,8 @@ import 'package:Barfbook/Screens/Barfbook/pet_controller.dart';
 import 'package:Barfbook/Screens/explore/explore.dart';
 import 'package:Barfbook/controller.dart';
 import 'package:Barfbook/util/Supabase/AuthController.dart';
+import 'package:Barfbook/util/database/database.dart';
+import 'package:Barfbook/util/widgets/avatar_controller.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -67,7 +69,8 @@ class _ScreenProfileState extends State<ScreenProfile>
                             CircleAvatar(
                                 backgroundColor: Colors.transparent,
                                 radius: 64,
-                                child: Container(child: widget.profile.avatar)),
+                                child: Container(
+                                    child: getUserAvatar(widget.profile.id))),
                             Padding(
                               padding: EdgeInsets.only(top: 16),
                               child: Text(
@@ -174,77 +177,16 @@ class _ScreenProfileState extends State<ScreenProfile>
           .from('select_recipe')
           .select('*')
           .eq('user_id', widget.profile.id);
-      for (var recipe in recipeDB) {
-        List userdata = await supabase
-            .from('profile')
-            .select("*")
-            .match({'id': recipe['user_id']});
-        final userAvatar = CachedNetworkImage(
-          imageUrl:
-              'https://wokqzyqvqztmyzhhuqqh.supabase.co/storage/v1/object/public/profile/${recipe['user_id']}',
-          progressIndicatorBuilder: (context, url, downloadProgress) =>
-              CircularProgressIndicator(value: downloadProgress.progress),
-          errorWidget: (context, url, error) => Icon(Icons.error),
-          imageBuilder: (context, imageProvider) {
-            return Container(
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                border:
-                    Border.all(color: Theme.of(context).colorScheme.primary),
-                image: DecorationImage(
-                  image: imageProvider,
-                  fit: BoxFit.cover,
-                ),
-              ),
-            );
-          },
-        );
-
-        List<String> dateParts = recipe['created_at'].split('-');
-        int year = int.parse(dateParts[0]);
-        int month = int.parse(dateParts[1]);
-        int day = int.parse(dateParts[2].substring(0, 2));
-
-        List<String> datePartsMod = recipe['created_at'].split('-');
-        int yearMod = int.parse(datePartsMod[0]);
-        int monthMod = int.parse(datePartsMod[1]);
-        int dayMod = int.parse(datePartsMod[2].substring(0, 2));
-
+      for (Recipe recipe in recipeDB) {
         recipeList.add(Recipe(
-            id: recipe['id'],
-            name: recipe['name'],
-            description: recipe['description'],
-            paws: recipe['paws'],
-            created_at: DateTime(year, month, day),
-            modified_at: DateTime(yearMod, monthMod, dayMod),
-            user_id: recipe['user_id'],
-            avatar: CachedNetworkImage(
-              imageUrl:
-                  'https://wokqzyqvqztmyzhhuqqh.supabase.co/storage/v1/object/public/recipe/${recipe['id']}',
-              progressIndicatorBuilder: (context, url, downloadProgress) =>
-                  CircularProgressIndicator(value: downloadProgress.progress),
-              errorWidget: (context, url, error) => Icon(Icons.error),
-              imageBuilder: (context, imageProvider) {
-                return Container(
-                  decoration: BoxDecoration(
-                    shape: BoxShape.rectangle,
-                    borderRadius: BorderRadius.circular(20),
-                    image: DecorationImage(
-                      image: imageProvider,
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                );
-              },
-            ),
-            user: Profile(
-                id: userdata[0]['id'],
-                email: userdata[0]['email'],
-                name: userdata[0]['name'],
-                description: userdata[0]['description'],
-                avatar: userAvatar,
-                rank: userdata[0]['rank']),
-            userAvatar: userAvatar));
+          id: recipe.id,
+          name: recipe.name,
+          description: recipe.description,
+          paws: recipe.paws,
+          createdAt: recipe.createdAt,
+          modifiedAt: recipe.modifiedAt,
+          userId: recipe.userId,
+        ));
       }
     } catch (error) {
       print(error);
@@ -253,37 +195,16 @@ class _ScreenProfileState extends State<ScreenProfile>
       final petDB =
           await supabase.from('pet').select('*').eq('owner', widget.profile.id);
       for (var pet in petDB) {
-        // final avatar =
-        //     await supabase.storage.from('pet').download('${pet['id']}');
-        final avatar = CachedNetworkImage(
-          imageUrl:
-              'https://wokqzyqvqztmyzhhuqqh.supabase.co/storage/v1/object/public/pet/${pet['id']}',
-          progressIndicatorBuilder: (context, url, downloadProgress) =>
-              CircularProgressIndicator(value: downloadProgress.progress),
-          errorWidget: (context, url, error) => Icon(Icons.error),
-          imageBuilder: (context, imageProvider) {
-            return Container(
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                border:
-                    Border.all(color: Theme.of(context).colorScheme.primary),
-                image: DecorationImage(
-                  image: imageProvider,
-                  fit: BoxFit.cover,
-                ),
-              ),
-            );
-          },
-        );
         petList.add(Pet(
-            owner: pet['owner'],
-            name: pet['name'],
-            breed: pet['breed'],
-            age: pet['age'],
-            weight: pet['weight'],
-            gender: pet['gender'],
-            ration: pet['ration'].toDouble(),
-            avatar: avatar));
+          id: 0,
+          owner: pet['owner'],
+          name: pet['name'],
+          breed: pet['breed'],
+          age: pet['age'],
+          weight: pet['weight'],
+          gender: pet['gender'],
+          ration: pet['ration'].toDouble(),
+        ));
       }
     } catch (error) {
       print(error);

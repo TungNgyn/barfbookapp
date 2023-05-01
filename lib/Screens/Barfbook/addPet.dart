@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:Barfbook/Screens/Barfbook/pet_controller.dart';
 import 'package:Barfbook/util/Supabase/AuthController.dart';
+import 'package:Barfbook/util/database/database.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
@@ -446,14 +447,15 @@ class _ScreenAddPetState extends State<ScreenAddPet> {
 
   _addPet() async {
     Pet pet = Pet(
-        owner: user!.id,
-        name: _nameController.text,
-        breed: _breedController.text,
-        age: int.parse(_ageController.text),
-        weight: int.parse(_weightController.text),
-        ration: double.parse(_rationController.toStringAsFixed(1)),
-        gender: _genderController,
-        avatar: '');
+      id: 0,
+      owner: user!.id,
+      name: _nameController.text,
+      breed: _breedController.text,
+      age: int.parse(_ageController.text),
+      weight: int.parse(_weightController.text),
+      ration: double.parse(_rationController.toStringAsFixed(1)),
+      gender: _genderController,
+    );
     print(pet.name);
     try {
       await supabase.from('pet').insert({

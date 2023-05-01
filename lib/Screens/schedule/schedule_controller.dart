@@ -15,11 +15,11 @@ int getHashCode(DateTime key) {
 var kEvents;
 final kEventSource = <DateTime, List>{};
 
-class Schedule {
-  final int id;
-  final String user;
-  final int recipe;
-  final DateTime date;
+// class Schedule {
+//   final int id;
+//   final String user;
+//   final int recipe;
+//   final DateTime date;
 
-  const Schedule(this.id, this.user, this.recipe, this.date);
-}
+//   const Schedule(this.id, this.user, this.recipe, this.date);
+// }

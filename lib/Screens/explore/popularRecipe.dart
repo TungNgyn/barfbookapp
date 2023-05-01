@@ -3,6 +3,7 @@ import 'package:Barfbook/Screens/Mehr/profile.dart';
 import 'package:Barfbook/Screens/explore/explore.dart';
 import 'package:Barfbook/Screens/explore/recipeDetailPage.dart';
 import 'package:Barfbook/controller.dart';
+import 'package:Barfbook/util/database/database.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

@@ -28,7 +28,7 @@ class Admin extends StatelessWidget {
                   child: Text("Table View")),
               ElevatedButton(
                   onPressed: () async {
-                    Dbprofile a = await (database.select(database.dbprofiles)
+                    Profile a = await (database.select(database.profiles)
                           ..where((tbl) => tbl.id.equals(user!.id)))
                         .getSingle();
                     print(a.id);

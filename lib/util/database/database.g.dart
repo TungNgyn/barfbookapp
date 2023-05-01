@@ -3,12 +3,12 @@
 part of 'database.dart';
 
 // ignore_for_file: type=lint
-class $DbingredientsTable extends Dbingredients
-    with TableInfo<$DbingredientsTable, Dbingredient> {
+class $IngredientsTable extends Ingredients
+    with TableInfo<$IngredientsTable, Ingredient> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
-  $DbingredientsTable(this.attachedDatabase, [this._alias]);
+  $IngredientsTable(this.attachedDatabase, [this._alias]);
   static const VerificationMeta _idMeta = const VerificationMeta('id');
   @override
   late final GeneratedColumn<int> id = GeneratedColumn<int>(
@@ -47,11 +47,11 @@ class $DbingredientsTable extends Dbingredients
   late final GeneratedColumn<double> fat = GeneratedColumn<double>(
       'fat', aliasedName, false,
       type: DriftSqlType.double, requiredDuringInsert: true);
-  static const VerificationMeta _farbohydratesMeta =
-      const VerificationMeta('farbohydrates');
+  static const VerificationMeta _carbohydratesMeta =
+      const VerificationMeta('carbohydrates');
   @override
-  late final GeneratedColumn<double> farbohydrates = GeneratedColumn<double>(
-      'farbohydrates', aliasedName, false,
+  late final GeneratedColumn<double> carbohydrates = GeneratedColumn<double>(
+      'carbohydrates', aliasedName, false,
       type: DriftSqlType.double, requiredDuringInsert: true);
   static const VerificationMeta _mineralsMeta =
       const VerificationMeta('minerals');
@@ -70,6 +70,11 @@ class $DbingredientsTable extends Dbingredients
   late final GeneratedColumn<String> avatar = GeneratedColumn<String>(
       'avatar', aliasedName, false,
       type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _gramMeta = const VerificationMeta('gram');
+  @override
+  late final GeneratedColumn<int> gram = GeneratedColumn<int>(
+      'gram', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: true);
   @override
   List<GeneratedColumn> get $columns => [
         id,
@@ -79,17 +84,18 @@ class $DbingredientsTable extends Dbingredients
         calories,
         protein,
         fat,
-        farbohydrates,
+        carbohydrates,
         minerals,
         moisture,
-        avatar
+        avatar,
+        gram
       ];
   @override
-  String get aliasedName => _alias ?? 'dbingredients';
+  String get aliasedName => _alias ?? 'ingredients';
   @override
-  String get actualTableName => 'dbingredients';
+  String get actualTableName => 'ingredients';
   @override
-  VerificationContext validateIntegrity(Insertable<Dbingredient> instance,
+  VerificationContext validateIntegrity(Insertable<Ingredient> instance,
       {bool isInserting = false}) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
@@ -132,13 +138,13 @@ class $DbingredientsTable extends Dbingredients
     } else if (isInserting) {
       context.missing(_fatMeta);
     }
-    if (data.containsKey('farbohydrates')) {
+    if (data.containsKey('carbohydrates')) {
       context.handle(
-          _farbohydratesMeta,
-          farbohydrates.isAcceptableOrUnknown(
-              data['farbohydrates']!, _farbohydratesMeta));
+          _carbohydratesMeta,
+          carbohydrates.isAcceptableOrUnknown(
+              data['carbohydrates']!, _carbohydratesMeta));
     } else if (isInserting) {
-      context.missing(_farbohydratesMeta);
+      context.missing(_carbohydratesMeta);
     }
     if (data.containsKey('minerals')) {
       context.handle(_mineralsMeta,
@@ -158,15 +164,21 @@ class $DbingredientsTable extends Dbingredients
     } else if (isInserting) {
       context.missing(_avatarMeta);
     }
+    if (data.containsKey('gram')) {
+      context.handle(
+          _gramMeta, gram.isAcceptableOrUnknown(data['gram']!, _gramMeta));
+    } else if (isInserting) {
+      context.missing(_gramMeta);
+    }
     return context;
   }
 
   @override
   Set<GeneratedColumn> get $primaryKey => {id};
   @override
-  Dbingredient map(Map<String, dynamic> data, {String? tablePrefix}) {
+  Ingredient map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return Dbingredient(
+    return Ingredient(
       id: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
       name: attachedDatabase.typeMapping
@@ -181,24 +193,26 @@ class $DbingredientsTable extends Dbingredients
           .read(DriftSqlType.double, data['${effectivePrefix}protein'])!,
       fat: attachedDatabase.typeMapping
           .read(DriftSqlType.double, data['${effectivePrefix}fat'])!,
-      farbohydrates: attachedDatabase.typeMapping
-          .read(DriftSqlType.double, data['${effectivePrefix}farbohydrates'])!,
+      carbohydrates: attachedDatabase.typeMapping
+          .read(DriftSqlType.double, data['${effectivePrefix}carbohydrates'])!,
       minerals: attachedDatabase.typeMapping
           .read(DriftSqlType.double, data['${effectivePrefix}minerals'])!,
       moisture: attachedDatabase.typeMapping
           .read(DriftSqlType.double, data['${effectivePrefix}moisture'])!,
       avatar: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}avatar'])!,
+      gram: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}gram'])!,
     );
   }
 
   @override
-  $DbingredientsTable createAlias(String alias) {
-    return $DbingredientsTable(attachedDatabase, alias);
+  $IngredientsTable createAlias(String alias) {
+    return $IngredientsTable(attachedDatabase, alias);
   }
 }
 
-class Dbingredient extends DataClass implements Insertable<Dbingredient> {
+class Ingredient extends DataClass implements Insertable<Ingredient> {
   final int id;
   final String name;
   final String category;
@@ -206,11 +220,12 @@ class Dbingredient extends DataClass implements Insertable<Dbingredient> {
   final double calories;
   final double protein;
   final double fat;
-  final double farbohydrates;
+  final double carbohydrates;
   final double minerals;
   final double moisture;
   final String avatar;
-  const Dbingredient(
+  final int gram;
+  const Ingredient(
       {required this.id,
       required this.name,
       required this.category,
@@ -218,10 +233,11 @@ class Dbingredient extends DataClass implements Insertable<Dbingredient> {
       required this.calories,
       required this.protein,
       required this.fat,
-      required this.farbohydrates,
+      required this.carbohydrates,
       required this.minerals,
       required this.moisture,
-      required this.avatar});
+      required this.avatar,
+      required this.gram});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -232,15 +248,16 @@ class Dbingredient extends DataClass implements Insertable<Dbingredient> {
     map['calories'] = Variable<double>(calories);
     map['protein'] = Variable<double>(protein);
     map['fat'] = Variable<double>(fat);
-    map['farbohydrates'] = Variable<double>(farbohydrates);
+    map['carbohydrates'] = Variable<double>(carbohydrates);
     map['minerals'] = Variable<double>(minerals);
     map['moisture'] = Variable<double>(moisture);
     map['avatar'] = Variable<String>(avatar);
+    map['gram'] = Variable<int>(gram);
     return map;
   }
 
-  DbingredientsCompanion toCompanion(bool nullToAbsent) {
-    return DbingredientsCompanion(
+  IngredientsCompanion toCompanion(bool nullToAbsent) {
+    return IngredientsCompanion(
       id: Value(id),
       name: Value(name),
       category: Value(category),
@@ -248,17 +265,18 @@ class Dbingredient extends DataClass implements Insertable<Dbingredient> {
       calories: Value(calories),
       protein: Value(protein),
       fat: Value(fat),
-      farbohydrates: Value(farbohydrates),
+      carbohydrates: Value(carbohydrates),
       minerals: Value(minerals),
       moisture: Value(moisture),
       avatar: Value(avatar),
+      gram: Value(gram),
     );
   }
 
-  factory Dbingredient.fromJson(Map<String, dynamic> json,
+  factory Ingredient.fromJson(Map<String, dynamic> json,
       {ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
-    return Dbingredient(
+    return Ingredient(
       id: serializer.fromJson<int>(json['id']),
       name: serializer.fromJson<String>(json['name']),
       category: serializer.fromJson<String>(json['category']),
@@ -266,10 +284,11 @@ class Dbingredient extends DataClass implements Insertable<Dbingredient> {
       calories: serializer.fromJson<double>(json['calories']),
       protein: serializer.fromJson<double>(json['protein']),
       fat: serializer.fromJson<double>(json['fat']),
-      farbohydrates: serializer.fromJson<double>(json['farbohydrates']),
+      carbohydrates: serializer.fromJson<double>(json['carbohydrates']),
       minerals: serializer.fromJson<double>(json['minerals']),
       moisture: serializer.fromJson<double>(json['moisture']),
       avatar: serializer.fromJson<String>(json['avatar']),
+      gram: serializer.fromJson<int>(json['gram']),
     );
   }
   @override
@@ -283,14 +302,15 @@ class Dbingredient extends DataClass implements Insertable<Dbingredient> {
       'calories': serializer.toJson<double>(calories),
       'protein': serializer.toJson<double>(protein),
       'fat': serializer.toJson<double>(fat),
-      'farbohydrates': serializer.toJson<double>(farbohydrates),
+      'carbohydrates': serializer.toJson<double>(carbohydrates),
       'minerals': serializer.toJson<double>(minerals),
       'moisture': serializer.toJson<double>(moisture),
       'avatar': serializer.toJson<String>(avatar),
+      'gram': serializer.toJson<int>(gram),
     };
   }
 
-  Dbingredient copyWith(
+  Ingredient copyWith(
           {int? id,
           String? name,
           String? category,
@@ -298,11 +318,12 @@ class Dbingredient extends DataClass implements Insertable<Dbingredient> {
           double? calories,
           double? protein,
           double? fat,
-          double? farbohydrates,
+          double? carbohydrates,
           double? minerals,
           double? moisture,
-          String? avatar}) =>
-      Dbingredient(
+          String? avatar,
+          int? gram}) =>
+      Ingredient(
         id: id ?? this.id,
         name: name ?? this.name,
         category: category ?? this.category,
@@ -310,14 +331,15 @@ class Dbingredient extends DataClass implements Insertable<Dbingredient> {
         calories: calories ?? this.calories,
         protein: protein ?? this.protein,
         fat: fat ?? this.fat,
-        farbohydrates: farbohydrates ?? this.farbohydrates,
+        carbohydrates: carbohydrates ?? this.carbohydrates,
         minerals: minerals ?? this.minerals,
         moisture: moisture ?? this.moisture,
         avatar: avatar ?? this.avatar,
+        gram: gram ?? this.gram,
       );
   @override
   String toString() {
-    return (StringBuffer('Dbingredient(')
+    return (StringBuffer('Ingredient(')
           ..write('id: $id, ')
           ..write('name: $name, ')
           ..write('category: $category, ')
@@ -325,21 +347,22 @@ class Dbingredient extends DataClass implements Insertable<Dbingredient> {
           ..write('calories: $calories, ')
           ..write('protein: $protein, ')
           ..write('fat: $fat, ')
-          ..write('farbohydrates: $farbohydrates, ')
+          ..write('carbohydrates: $carbohydrates, ')
           ..write('minerals: $minerals, ')
           ..write('moisture: $moisture, ')
-          ..write('avatar: $avatar')
+          ..write('avatar: $avatar, ')
+          ..write('gram: $gram')
           ..write(')'))
         .toString();
   }
 
   @override
   int get hashCode => Object.hash(id, name, category, type, calories, protein,
-      fat, farbohydrates, minerals, moisture, avatar);
+      fat, carbohydrates, minerals, moisture, avatar, gram);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is Dbingredient &&
+      (other is Ingredient &&
           other.id == this.id &&
           other.name == this.name &&
           other.category == this.category &&
@@ -347,13 +370,14 @@ class Dbingredient extends DataClass implements Insertable<Dbingredient> {
           other.calories == this.calories &&
           other.protein == this.protein &&
           other.fat == this.fat &&
-          other.farbohydrates == this.farbohydrates &&
+          other.carbohydrates == this.carbohydrates &&
           other.minerals == this.minerals &&
           other.moisture == this.moisture &&
-          other.avatar == this.avatar);
+          other.avatar == this.avatar &&
+          other.gram == this.gram);
 }
 
-class DbingredientsCompanion extends UpdateCompanion<Dbingredient> {
+class IngredientsCompanion extends UpdateCompanion<Ingredient> {
   final Value<int> id;
   final Value<String> name;
   final Value<String> category;
@@ -361,11 +385,12 @@ class DbingredientsCompanion extends UpdateCompanion<Dbingredient> {
   final Value<double> calories;
   final Value<double> protein;
   final Value<double> fat;
-  final Value<double> farbohydrates;
+  final Value<double> carbohydrates;
   final Value<double> minerals;
   final Value<double> moisture;
   final Value<String> avatar;
-  const DbingredientsCompanion({
+  final Value<int> gram;
+  const IngredientsCompanion({
     this.id = const Value.absent(),
     this.name = const Value.absent(),
     this.category = const Value.absent(),
@@ -373,12 +398,13 @@ class DbingredientsCompanion extends UpdateCompanion<Dbingredient> {
     this.calories = const Value.absent(),
     this.protein = const Value.absent(),
     this.fat = const Value.absent(),
-    this.farbohydrates = const Value.absent(),
+    this.carbohydrates = const Value.absent(),
     this.minerals = const Value.absent(),
     this.moisture = const Value.absent(),
     this.avatar = const Value.absent(),
+    this.gram = const Value.absent(),
   });
-  DbingredientsCompanion.insert({
+  IngredientsCompanion.insert({
     this.id = const Value.absent(),
     required String name,
     required String category,
@@ -386,21 +412,23 @@ class DbingredientsCompanion extends UpdateCompanion<Dbingredient> {
     required double calories,
     required double protein,
     required double fat,
-    required double farbohydrates,
+    required double carbohydrates,
     required double minerals,
     required double moisture,
     required String avatar,
+    required int gram,
   })  : name = Value(name),
         category = Value(category),
         type = Value(type),
         calories = Value(calories),
         protein = Value(protein),
         fat = Value(fat),
-        farbohydrates = Value(farbohydrates),
+        carbohydrates = Value(carbohydrates),
         minerals = Value(minerals),
         moisture = Value(moisture),
-        avatar = Value(avatar);
-  static Insertable<Dbingredient> custom({
+        avatar = Value(avatar),
+        gram = Value(gram);
+  static Insertable<Ingredient> custom({
     Expression<int>? id,
     Expression<String>? name,
     Expression<String>? category,
@@ -408,10 +436,11 @@ class DbingredientsCompanion extends UpdateCompanion<Dbingredient> {
     Expression<double>? calories,
     Expression<double>? protein,
     Expression<double>? fat,
-    Expression<double>? farbohydrates,
+    Expression<double>? carbohydrates,
     Expression<double>? minerals,
     Expression<double>? moisture,
     Expression<String>? avatar,
+    Expression<int>? gram,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
@@ -421,14 +450,15 @@ class DbingredientsCompanion extends UpdateCompanion<Dbingredient> {
       if (calories != null) 'calories': calories,
       if (protein != null) 'protein': protein,
       if (fat != null) 'fat': fat,
-      if (farbohydrates != null) 'farbohydrates': farbohydrates,
+      if (carbohydrates != null) 'carbohydrates': carbohydrates,
       if (minerals != null) 'minerals': minerals,
       if (moisture != null) 'moisture': moisture,
       if (avatar != null) 'avatar': avatar,
+      if (gram != null) 'gram': gram,
     });
   }
 
-  DbingredientsCompanion copyWith(
+  IngredientsCompanion copyWith(
       {Value<int>? id,
       Value<String>? name,
       Value<String>? category,
@@ -436,11 +466,12 @@ class DbingredientsCompanion extends UpdateCompanion<Dbingredient> {
       Value<double>? calories,
       Value<double>? protein,
       Value<double>? fat,
-      Value<double>? farbohydrates,
+      Value<double>? carbohydrates,
       Value<double>? minerals,
       Value<double>? moisture,
-      Value<String>? avatar}) {
-    return DbingredientsCompanion(
+      Value<String>? avatar,
+      Value<int>? gram}) {
+    return IngredientsCompanion(
       id: id ?? this.id,
       name: name ?? this.name,
       category: category ?? this.category,
@@ -448,10 +479,11 @@ class DbingredientsCompanion extends UpdateCompanion<Dbingredient> {
       calories: calories ?? this.calories,
       protein: protein ?? this.protein,
       fat: fat ?? this.fat,
-      farbohydrates: farbohydrates ?? this.farbohydrates,
+      carbohydrates: carbohydrates ?? this.carbohydrates,
       minerals: minerals ?? this.minerals,
       moisture: moisture ?? this.moisture,
       avatar: avatar ?? this.avatar,
+      gram: gram ?? this.gram,
     );
   }
 
@@ -479,8 +511,8 @@ class DbingredientsCompanion extends UpdateCompanion<Dbingredient> {
     if (fat.present) {
       map['fat'] = Variable<double>(fat.value);
     }
-    if (farbohydrates.present) {
-      map['farbohydrates'] = Variable<double>(farbohydrates.value);
+    if (carbohydrates.present) {
+      map['carbohydrates'] = Variable<double>(carbohydrates.value);
     }
     if (minerals.present) {
       map['minerals'] = Variable<double>(minerals.value);
@@ -491,12 +523,15 @@ class DbingredientsCompanion extends UpdateCompanion<Dbingredient> {
     if (avatar.present) {
       map['avatar'] = Variable<String>(avatar.value);
     }
+    if (gram.present) {
+      map['gram'] = Variable<int>(gram.value);
+    }
     return map;
   }
 
   @override
   String toString() {
-    return (StringBuffer('DbingredientsCompanion(')
+    return (StringBuffer('IngredientsCompanion(')
           ..write('id: $id, ')
           ..write('name: $name, ')
           ..write('category: $category, ')
@@ -504,20 +539,21 @@ class DbingredientsCompanion extends UpdateCompanion<Dbingredient> {
           ..write('calories: $calories, ')
           ..write('protein: $protein, ')
           ..write('fat: $fat, ')
-          ..write('farbohydrates: $farbohydrates, ')
+          ..write('carbohydrates: $carbohydrates, ')
           ..write('minerals: $minerals, ')
           ..write('moisture: $moisture, ')
-          ..write('avatar: $avatar')
+          ..write('avatar: $avatar, ')
+          ..write('gram: $gram')
           ..write(')'))
         .toString();
   }
 }
 
-class $DbpetsTable extends Dbpets with TableInfo<$DbpetsTable, Dbpet> {
+class $PetsTable extends Pets with TableInfo<$PetsTable, Pet> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
-  $DbpetsTable(this.attachedDatabase, [this._alias]);
+  $PetsTable(this.attachedDatabase, [this._alias]);
   static const VerificationMeta _idMeta = const VerificationMeta('id');
   @override
   late final GeneratedColumn<int> id = GeneratedColumn<int>(
@@ -562,11 +598,11 @@ class $DbpetsTable extends Dbpets with TableInfo<$DbpetsTable, Dbpet> {
   List<GeneratedColumn> get $columns =>
       [id, owner, name, breed, age, weight, gender, ration];
   @override
-  String get aliasedName => _alias ?? 'dbpets';
+  String get aliasedName => _alias ?? 'pets';
   @override
-  String get actualTableName => 'dbpets';
+  String get actualTableName => 'pets';
   @override
-  VerificationContext validateIntegrity(Insertable<Dbpet> instance,
+  VerificationContext validateIntegrity(Insertable<Pet> instance,
       {bool isInserting = false}) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
@@ -621,9 +657,9 @@ class $DbpetsTable extends Dbpets with TableInfo<$DbpetsTable, Dbpet> {
   @override
   Set<GeneratedColumn> get $primaryKey => {id};
   @override
-  Dbpet map(Map<String, dynamic> data, {String? tablePrefix}) {
+  Pet map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return Dbpet(
+    return Pet(
       id: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
       owner: attachedDatabase.typeMapping
@@ -644,12 +680,12 @@ class $DbpetsTable extends Dbpets with TableInfo<$DbpetsTable, Dbpet> {
   }
 
   @override
-  $DbpetsTable createAlias(String alias) {
-    return $DbpetsTable(attachedDatabase, alias);
+  $PetsTable createAlias(String alias) {
+    return $PetsTable(attachedDatabase, alias);
   }
 }
 
-class Dbpet extends DataClass implements Insertable<Dbpet> {
+class Pet extends DataClass implements Insertable<Pet> {
   final int id;
   final String owner;
   final String name;
@@ -658,7 +694,7 @@ class Dbpet extends DataClass implements Insertable<Dbpet> {
   final int weight;
   final String gender;
   final double ration;
-  const Dbpet(
+  const Pet(
       {required this.id,
       required this.owner,
       required this.name,
@@ -681,8 +717,8 @@ class Dbpet extends DataClass implements Insertable<Dbpet> {
     return map;
   }
 
-  DbpetsCompanion toCompanion(bool nullToAbsent) {
-    return DbpetsCompanion(
+  PetsCompanion toCompanion(bool nullToAbsent) {
+    return PetsCompanion(
       id: Value(id),
       owner: Value(owner),
       name: Value(name),
@@ -694,10 +730,10 @@ class Dbpet extends DataClass implements Insertable<Dbpet> {
     );
   }
 
-  factory Dbpet.fromJson(Map<String, dynamic> json,
+  factory Pet.fromJson(Map<String, dynamic> json,
       {ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
-    return Dbpet(
+    return Pet(
       id: serializer.fromJson<int>(json['id']),
       owner: serializer.fromJson<String>(json['owner']),
       name: serializer.fromJson<String>(json['name']),
@@ -723,7 +759,7 @@ class Dbpet extends DataClass implements Insertable<Dbpet> {
     };
   }
 
-  Dbpet copyWith(
+  Pet copyWith(
           {int? id,
           String? owner,
           String? name,
@@ -732,7 +768,7 @@ class Dbpet extends DataClass implements Insertable<Dbpet> {
           int? weight,
           String? gender,
           double? ration}) =>
-      Dbpet(
+      Pet(
         id: id ?? this.id,
         owner: owner ?? this.owner,
         name: name ?? this.name,
@@ -744,7 +780,7 @@ class Dbpet extends DataClass implements Insertable<Dbpet> {
       );
   @override
   String toString() {
-    return (StringBuffer('Dbpet(')
+    return (StringBuffer('Pet(')
           ..write('id: $id, ')
           ..write('owner: $owner, ')
           ..write('name: $name, ')
@@ -763,7 +799,7 @@ class Dbpet extends DataClass implements Insertable<Dbpet> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is Dbpet &&
+      (other is Pet &&
           other.id == this.id &&
           other.owner == this.owner &&
           other.name == this.name &&
@@ -774,7 +810,7 @@ class Dbpet extends DataClass implements Insertable<Dbpet> {
           other.ration == this.ration);
 }
 
-class DbpetsCompanion extends UpdateCompanion<Dbpet> {
+class PetsCompanion extends UpdateCompanion<Pet> {
   final Value<int> id;
   final Value<String> owner;
   final Value<String> name;
@@ -783,7 +819,7 @@ class DbpetsCompanion extends UpdateCompanion<Dbpet> {
   final Value<int> weight;
   final Value<String> gender;
   final Value<double> ration;
-  const DbpetsCompanion({
+  const PetsCompanion({
     this.id = const Value.absent(),
     this.owner = const Value.absent(),
     this.name = const Value.absent(),
@@ -793,7 +829,7 @@ class DbpetsCompanion extends UpdateCompanion<Dbpet> {
     this.gender = const Value.absent(),
     this.ration = const Value.absent(),
   });
-  DbpetsCompanion.insert({
+  PetsCompanion.insert({
     this.id = const Value.absent(),
     required String owner,
     required String name,
@@ -809,7 +845,7 @@ class DbpetsCompanion extends UpdateCompanion<Dbpet> {
         weight = Value(weight),
         gender = Value(gender),
         ration = Value(ration);
-  static Insertable<Dbpet> custom({
+  static Insertable<Pet> custom({
     Expression<int>? id,
     Expression<String>? owner,
     Expression<String>? name,
@@ -831,7 +867,7 @@ class DbpetsCompanion extends UpdateCompanion<Dbpet> {
     });
   }
 
-  DbpetsCompanion copyWith(
+  PetsCompanion copyWith(
       {Value<int>? id,
       Value<String>? owner,
       Value<String>? name,
@@ -840,7 +876,7 @@ class DbpetsCompanion extends UpdateCompanion<Dbpet> {
       Value<int>? weight,
       Value<String>? gender,
       Value<double>? ration}) {
-    return DbpetsCompanion(
+    return PetsCompanion(
       id: id ?? this.id,
       owner: owner ?? this.owner,
       name: name ?? this.name,
@@ -884,7 +920,7 @@ class DbpetsCompanion extends UpdateCompanion<Dbpet> {
 
   @override
   String toString() {
-    return (StringBuffer('DbpetsCompanion(')
+    return (StringBuffer('PetsCompanion(')
           ..write('id: $id, ')
           ..write('owner: $owner, ')
           ..write('name: $name, ')
@@ -898,12 +934,11 @@ class DbpetsCompanion extends UpdateCompanion<Dbpet> {
   }
 }
 
-class $DbprofilesTable extends Dbprofiles
-    with TableInfo<$DbprofilesTable, Dbprofile> {
+class $ProfilesTable extends Profiles with TableInfo<$ProfilesTable, Profile> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
-  $DbprofilesTable(this.attachedDatabase, [this._alias]);
+  $ProfilesTable(this.attachedDatabase, [this._alias]);
   static const VerificationMeta _idMeta = const VerificationMeta('id');
   @override
   late final GeneratedColumn<String> id = GeneratedColumn<String>(
@@ -940,11 +975,11 @@ class $DbprofilesTable extends Dbprofiles
   List<GeneratedColumn> get $columns =>
       [id, createdAt, email, name, description, rank];
   @override
-  String get aliasedName => _alias ?? 'dbprofiles';
+  String get aliasedName => _alias ?? 'profiles';
   @override
-  String get actualTableName => 'dbprofiles';
+  String get actualTableName => 'profiles';
   @override
-  VerificationContext validateIntegrity(Insertable<Dbprofile> instance,
+  VerificationContext validateIntegrity(Insertable<Profile> instance,
       {bool isInserting = false}) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
@@ -991,9 +1026,9 @@ class $DbprofilesTable extends Dbprofiles
   @override
   Set<GeneratedColumn> get $primaryKey => {id};
   @override
-  Dbprofile map(Map<String, dynamic> data, {String? tablePrefix}) {
+  Profile map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return Dbprofile(
+    return Profile(
       id: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}id'])!,
       createdAt: attachedDatabase.typeMapping
@@ -1010,19 +1045,19 @@ class $DbprofilesTable extends Dbprofiles
   }
 
   @override
-  $DbprofilesTable createAlias(String alias) {
-    return $DbprofilesTable(attachedDatabase, alias);
+  $ProfilesTable createAlias(String alias) {
+    return $ProfilesTable(attachedDatabase, alias);
   }
 }
 
-class Dbprofile extends DataClass implements Insertable<Dbprofile> {
+class Profile extends DataClass implements Insertable<Profile> {
   final String id;
   final DateTime createdAt;
   final String email;
   final String name;
   final String description;
   final String rank;
-  const Dbprofile(
+  const Profile(
       {required this.id,
       required this.createdAt,
       required this.email,
@@ -1041,8 +1076,8 @@ class Dbprofile extends DataClass implements Insertable<Dbprofile> {
     return map;
   }
 
-  DbprofilesCompanion toCompanion(bool nullToAbsent) {
-    return DbprofilesCompanion(
+  ProfilesCompanion toCompanion(bool nullToAbsent) {
+    return ProfilesCompanion(
       id: Value(id),
       createdAt: Value(createdAt),
       email: Value(email),
@@ -1052,10 +1087,10 @@ class Dbprofile extends DataClass implements Insertable<Dbprofile> {
     );
   }
 
-  factory Dbprofile.fromJson(Map<String, dynamic> json,
+  factory Profile.fromJson(Map<String, dynamic> json,
       {ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
-    return Dbprofile(
+    return Profile(
       id: serializer.fromJson<String>(json['id']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
       email: serializer.fromJson<String>(json['email']),
@@ -1077,14 +1112,14 @@ class Dbprofile extends DataClass implements Insertable<Dbprofile> {
     };
   }
 
-  Dbprofile copyWith(
+  Profile copyWith(
           {String? id,
           DateTime? createdAt,
           String? email,
           String? name,
           String? description,
           String? rank}) =>
-      Dbprofile(
+      Profile(
         id: id ?? this.id,
         createdAt: createdAt ?? this.createdAt,
         email: email ?? this.email,
@@ -1094,7 +1129,7 @@ class Dbprofile extends DataClass implements Insertable<Dbprofile> {
       );
   @override
   String toString() {
-    return (StringBuffer('Dbprofile(')
+    return (StringBuffer('Profile(')
           ..write('id: $id, ')
           ..write('createdAt: $createdAt, ')
           ..write('email: $email, ')
@@ -1111,7 +1146,7 @@ class Dbprofile extends DataClass implements Insertable<Dbprofile> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is Dbprofile &&
+      (other is Profile &&
           other.id == this.id &&
           other.createdAt == this.createdAt &&
           other.email == this.email &&
@@ -1120,7 +1155,7 @@ class Dbprofile extends DataClass implements Insertable<Dbprofile> {
           other.rank == this.rank);
 }
 
-class DbprofilesCompanion extends UpdateCompanion<Dbprofile> {
+class ProfilesCompanion extends UpdateCompanion<Profile> {
   final Value<String> id;
   final Value<DateTime> createdAt;
   final Value<String> email;
@@ -1128,7 +1163,7 @@ class DbprofilesCompanion extends UpdateCompanion<Dbprofile> {
   final Value<String> description;
   final Value<String> rank;
   final Value<int> rowid;
-  const DbprofilesCompanion({
+  const ProfilesCompanion({
     this.id = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.email = const Value.absent(),
@@ -1137,7 +1172,7 @@ class DbprofilesCompanion extends UpdateCompanion<Dbprofile> {
     this.rank = const Value.absent(),
     this.rowid = const Value.absent(),
   });
-  DbprofilesCompanion.insert({
+  ProfilesCompanion.insert({
     required String id,
     required DateTime createdAt,
     required String email,
@@ -1151,7 +1186,7 @@ class DbprofilesCompanion extends UpdateCompanion<Dbprofile> {
         name = Value(name),
         description = Value(description),
         rank = Value(rank);
-  static Insertable<Dbprofile> custom({
+  static Insertable<Profile> custom({
     Expression<String>? id,
     Expression<DateTime>? createdAt,
     Expression<String>? email,
@@ -1171,7 +1206,7 @@ class DbprofilesCompanion extends UpdateCompanion<Dbprofile> {
     });
   }
 
-  DbprofilesCompanion copyWith(
+  ProfilesCompanion copyWith(
       {Value<String>? id,
       Value<DateTime>? createdAt,
       Value<String>? email,
@@ -1179,7 +1214,7 @@ class DbprofilesCompanion extends UpdateCompanion<Dbprofile> {
       Value<String>? description,
       Value<String>? rank,
       Value<int>? rowid}) {
-    return DbprofilesCompanion(
+    return ProfilesCompanion(
       id: id ?? this.id,
       createdAt: createdAt ?? this.createdAt,
       email: email ?? this.email,
@@ -1219,7 +1254,7 @@ class DbprofilesCompanion extends UpdateCompanion<Dbprofile> {
 
   @override
   String toString() {
-    return (StringBuffer('DbprofilesCompanion(')
+    return (StringBuffer('ProfilesCompanion(')
           ..write('id: $id, ')
           ..write('createdAt: $createdAt, ')
           ..write('email: $email, ')
@@ -1232,12 +1267,11 @@ class DbprofilesCompanion extends UpdateCompanion<Dbprofile> {
   }
 }
 
-class $DbrecipesTable extends Dbrecipes
-    with TableInfo<$DbrecipesTable, Dbrecipe> {
+class $RecipesTable extends Recipes with TableInfo<$RecipesTable, Recipe> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
-  $DbrecipesTable(this.attachedDatabase, [this._alias]);
+  $RecipesTable(this.attachedDatabase, [this._alias]);
   static const VerificationMeta _idMeta = const VerificationMeta('id');
   @override
   late final GeneratedColumn<int> id = GeneratedColumn<int>(
@@ -1265,6 +1299,11 @@ class $DbrecipesTable extends Dbrecipes
   late final GeneratedColumn<String> userId = GeneratedColumn<String>(
       'user_id', aliasedName, false,
       type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _pawsMeta = const VerificationMeta('paws');
+  @override
+  late final GeneratedColumn<int> paws = GeneratedColumn<int>(
+      'paws', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: true);
   static const VerificationMeta _modifiedAtMeta =
       const VerificationMeta('modifiedAt');
   @override
@@ -1273,13 +1312,13 @@ class $DbrecipesTable extends Dbrecipes
       type: DriftSqlType.dateTime, requiredDuringInsert: true);
   @override
   List<GeneratedColumn> get $columns =>
-      [id, createdAt, name, description, userId, modifiedAt];
+      [id, createdAt, name, description, userId, paws, modifiedAt];
   @override
-  String get aliasedName => _alias ?? 'dbrecipes';
+  String get aliasedName => _alias ?? 'recipes';
   @override
-  String get actualTableName => 'dbrecipes';
+  String get actualTableName => 'recipes';
   @override
-  VerificationContext validateIntegrity(Insertable<Dbrecipe> instance,
+  VerificationContext validateIntegrity(Insertable<Recipe> instance,
       {bool isInserting = false}) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
@@ -1312,6 +1351,12 @@ class $DbrecipesTable extends Dbrecipes
     } else if (isInserting) {
       context.missing(_userIdMeta);
     }
+    if (data.containsKey('paws')) {
+      context.handle(
+          _pawsMeta, paws.isAcceptableOrUnknown(data['paws']!, _pawsMeta));
+    } else if (isInserting) {
+      context.missing(_pawsMeta);
+    }
     if (data.containsKey('modified_at')) {
       context.handle(
           _modifiedAtMeta,
@@ -1326,9 +1371,9 @@ class $DbrecipesTable extends Dbrecipes
   @override
   Set<GeneratedColumn> get $primaryKey => {id};
   @override
-  Dbrecipe map(Map<String, dynamic> data, {String? tablePrefix}) {
+  Recipe map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return Dbrecipe(
+    return Recipe(
       id: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
       createdAt: attachedDatabase.typeMapping
@@ -1339,30 +1384,34 @@ class $DbrecipesTable extends Dbrecipes
           .read(DriftSqlType.string, data['${effectivePrefix}description'])!,
       userId: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}user_id'])!,
+      paws: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}paws'])!,
       modifiedAt: attachedDatabase.typeMapping
           .read(DriftSqlType.dateTime, data['${effectivePrefix}modified_at'])!,
     );
   }
 
   @override
-  $DbrecipesTable createAlias(String alias) {
-    return $DbrecipesTable(attachedDatabase, alias);
+  $RecipesTable createAlias(String alias) {
+    return $RecipesTable(attachedDatabase, alias);
   }
 }
 
-class Dbrecipe extends DataClass implements Insertable<Dbrecipe> {
+class Recipe extends DataClass implements Insertable<Recipe> {
   final int id;
   final DateTime createdAt;
   final String name;
   final String description;
   final String userId;
+  final int paws;
   final DateTime modifiedAt;
-  const Dbrecipe(
+  const Recipe(
       {required this.id,
       required this.createdAt,
       required this.name,
       required this.description,
       required this.userId,
+      required this.paws,
       required this.modifiedAt});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -1372,30 +1421,33 @@ class Dbrecipe extends DataClass implements Insertable<Dbrecipe> {
     map['name'] = Variable<String>(name);
     map['description'] = Variable<String>(description);
     map['user_id'] = Variable<String>(userId);
+    map['paws'] = Variable<int>(paws);
     map['modified_at'] = Variable<DateTime>(modifiedAt);
     return map;
   }
 
-  DbrecipesCompanion toCompanion(bool nullToAbsent) {
-    return DbrecipesCompanion(
+  RecipesCompanion toCompanion(bool nullToAbsent) {
+    return RecipesCompanion(
       id: Value(id),
       createdAt: Value(createdAt),
       name: Value(name),
       description: Value(description),
       userId: Value(userId),
+      paws: Value(paws),
       modifiedAt: Value(modifiedAt),
     );
   }
 
-  factory Dbrecipe.fromJson(Map<String, dynamic> json,
+  factory Recipe.fromJson(Map<String, dynamic> json,
       {ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
-    return Dbrecipe(
+    return Recipe(
       id: serializer.fromJson<int>(json['id']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
       name: serializer.fromJson<String>(json['name']),
       description: serializer.fromJson<String>(json['description']),
       userId: serializer.fromJson<String>(json['userId']),
+      paws: serializer.fromJson<int>(json['paws']),
       modifiedAt: serializer.fromJson<DateTime>(json['modifiedAt']),
     );
   }
@@ -1408,33 +1460,37 @@ class Dbrecipe extends DataClass implements Insertable<Dbrecipe> {
       'name': serializer.toJson<String>(name),
       'description': serializer.toJson<String>(description),
       'userId': serializer.toJson<String>(userId),
+      'paws': serializer.toJson<int>(paws),
       'modifiedAt': serializer.toJson<DateTime>(modifiedAt),
     };
   }
 
-  Dbrecipe copyWith(
+  Recipe copyWith(
           {int? id,
           DateTime? createdAt,
           String? name,
           String? description,
           String? userId,
+          int? paws,
           DateTime? modifiedAt}) =>
-      Dbrecipe(
+      Recipe(
         id: id ?? this.id,
         createdAt: createdAt ?? this.createdAt,
         name: name ?? this.name,
         description: description ?? this.description,
         userId: userId ?? this.userId,
+        paws: paws ?? this.paws,
         modifiedAt: modifiedAt ?? this.modifiedAt,
       );
   @override
   String toString() {
-    return (StringBuffer('Dbrecipe(')
+    return (StringBuffer('Recipe(')
           ..write('id: $id, ')
           ..write('createdAt: $createdAt, ')
           ..write('name: $name, ')
           ..write('description: $description, ')
           ..write('userId: $userId, ')
+          ..write('paws: $paws, ')
           ..write('modifiedAt: $modifiedAt')
           ..write(')'))
         .toString();
@@ -1442,52 +1498,58 @@ class Dbrecipe extends DataClass implements Insertable<Dbrecipe> {
 
   @override
   int get hashCode =>
-      Object.hash(id, createdAt, name, description, userId, modifiedAt);
+      Object.hash(id, createdAt, name, description, userId, paws, modifiedAt);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is Dbrecipe &&
+      (other is Recipe &&
           other.id == this.id &&
           other.createdAt == this.createdAt &&
           other.name == this.name &&
           other.description == this.description &&
           other.userId == this.userId &&
+          other.paws == this.paws &&
           other.modifiedAt == this.modifiedAt);
 }
 
-class DbrecipesCompanion extends UpdateCompanion<Dbrecipe> {
+class RecipesCompanion extends UpdateCompanion<Recipe> {
   final Value<int> id;
   final Value<DateTime> createdAt;
   final Value<String> name;
   final Value<String> description;
   final Value<String> userId;
+  final Value<int> paws;
   final Value<DateTime> modifiedAt;
-  const DbrecipesCompanion({
+  const RecipesCompanion({
     this.id = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.name = const Value.absent(),
     this.description = const Value.absent(),
     this.userId = const Value.absent(),
+    this.paws = const Value.absent(),
     this.modifiedAt = const Value.absent(),
   });
-  DbrecipesCompanion.insert({
+  RecipesCompanion.insert({
     this.id = const Value.absent(),
     required DateTime createdAt,
     required String name,
     required String description,
     required String userId,
+    required int paws,
     required DateTime modifiedAt,
   })  : createdAt = Value(createdAt),
         name = Value(name),
         description = Value(description),
         userId = Value(userId),
+        paws = Value(paws),
         modifiedAt = Value(modifiedAt);
-  static Insertable<Dbrecipe> custom({
+  static Insertable<Recipe> custom({
     Expression<int>? id,
     Expression<DateTime>? createdAt,
     Expression<String>? name,
     Expression<String>? description,
     Expression<String>? userId,
+    Expression<int>? paws,
     Expression<DateTime>? modifiedAt,
   }) {
     return RawValuesInsertable({
@@ -1496,23 +1558,26 @@ class DbrecipesCompanion extends UpdateCompanion<Dbrecipe> {
       if (name != null) 'name': name,
       if (description != null) 'description': description,
       if (userId != null) 'user_id': userId,
+      if (paws != null) 'paws': paws,
       if (modifiedAt != null) 'modified_at': modifiedAt,
     });
   }
 
-  DbrecipesCompanion copyWith(
+  RecipesCompanion copyWith(
       {Value<int>? id,
       Value<DateTime>? createdAt,
       Value<String>? name,
       Value<String>? description,
       Value<String>? userId,
+      Value<int>? paws,
       Value<DateTime>? modifiedAt}) {
-    return DbrecipesCompanion(
+    return RecipesCompanion(
       id: id ?? this.id,
       createdAt: createdAt ?? this.createdAt,
       name: name ?? this.name,
       description: description ?? this.description,
       userId: userId ?? this.userId,
+      paws: paws ?? this.paws,
       modifiedAt: modifiedAt ?? this.modifiedAt,
     );
   }
@@ -1535,6 +1600,9 @@ class DbrecipesCompanion extends UpdateCompanion<Dbrecipe> {
     if (userId.present) {
       map['user_id'] = Variable<String>(userId.value);
     }
+    if (paws.present) {
+      map['paws'] = Variable<int>(paws.value);
+    }
     if (modifiedAt.present) {
       map['modified_at'] = Variable<DateTime>(modifiedAt.value);
     }
@@ -1543,24 +1611,25 @@ class DbrecipesCompanion extends UpdateCompanion<Dbrecipe> {
 
   @override
   String toString() {
-    return (StringBuffer('DbrecipesCompanion(')
+    return (StringBuffer('RecipesCompanion(')
           ..write('id: $id, ')
           ..write('createdAt: $createdAt, ')
           ..write('name: $name, ')
           ..write('description: $description, ')
           ..write('userId: $userId, ')
+          ..write('paws: $paws, ')
           ..write('modifiedAt: $modifiedAt')
           ..write(')'))
         .toString();
   }
 }
 
-class $DbschedulesTable extends Dbschedules
-    with TableInfo<$DbschedulesTable, Dbschedule> {
+class $SchedulesTable extends Schedules
+    with TableInfo<$SchedulesTable, Schedule> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
-  $DbschedulesTable(this.attachedDatabase, [this._alias]);
+  $SchedulesTable(this.attachedDatabase, [this._alias]);
   static const VerificationMeta _idMeta = const VerificationMeta('id');
   @override
   late final GeneratedColumn<int> id = GeneratedColumn<int>(
@@ -1584,11 +1653,11 @@ class $DbschedulesTable extends Dbschedules
   @override
   List<GeneratedColumn> get $columns => [id, date, recipe, userId];
   @override
-  String get aliasedName => _alias ?? 'dbschedules';
+  String get aliasedName => _alias ?? 'schedules';
   @override
-  String get actualTableName => 'dbschedules';
+  String get actualTableName => 'schedules';
   @override
-  VerificationContext validateIntegrity(Insertable<Dbschedule> instance,
+  VerificationContext validateIntegrity(Insertable<Schedule> instance,
       {bool isInserting = false}) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
@@ -1621,9 +1690,9 @@ class $DbschedulesTable extends Dbschedules
   @override
   Set<GeneratedColumn> get $primaryKey => {date, recipe};
   @override
-  Dbschedule map(Map<String, dynamic> data, {String? tablePrefix}) {
+  Schedule map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return Dbschedule(
+    return Schedule(
       id: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
       date: attachedDatabase.typeMapping
@@ -1636,17 +1705,17 @@ class $DbschedulesTable extends Dbschedules
   }
 
   @override
-  $DbschedulesTable createAlias(String alias) {
-    return $DbschedulesTable(attachedDatabase, alias);
+  $SchedulesTable createAlias(String alias) {
+    return $SchedulesTable(attachedDatabase, alias);
   }
 }
 
-class Dbschedule extends DataClass implements Insertable<Dbschedule> {
+class Schedule extends DataClass implements Insertable<Schedule> {
   final int id;
   final DateTime date;
   final int recipe;
   final String userId;
-  const Dbschedule(
+  const Schedule(
       {required this.id,
       required this.date,
       required this.recipe,
@@ -1661,8 +1730,8 @@ class Dbschedule extends DataClass implements Insertable<Dbschedule> {
     return map;
   }
 
-  DbschedulesCompanion toCompanion(bool nullToAbsent) {
-    return DbschedulesCompanion(
+  SchedulesCompanion toCompanion(bool nullToAbsent) {
+    return SchedulesCompanion(
       id: Value(id),
       date: Value(date),
       recipe: Value(recipe),
@@ -1670,10 +1739,10 @@ class Dbschedule extends DataClass implements Insertable<Dbschedule> {
     );
   }
 
-  factory Dbschedule.fromJson(Map<String, dynamic> json,
+  factory Schedule.fromJson(Map<String, dynamic> json,
       {ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
-    return Dbschedule(
+    return Schedule(
       id: serializer.fromJson<int>(json['id']),
       date: serializer.fromJson<DateTime>(json['date']),
       recipe: serializer.fromJson<int>(json['recipe']),
@@ -1691,8 +1760,8 @@ class Dbschedule extends DataClass implements Insertable<Dbschedule> {
     };
   }
 
-  Dbschedule copyWith({int? id, DateTime? date, int? recipe, String? userId}) =>
-      Dbschedule(
+  Schedule copyWith({int? id, DateTime? date, int? recipe, String? userId}) =>
+      Schedule(
         id: id ?? this.id,
         date: date ?? this.date,
         recipe: recipe ?? this.recipe,
@@ -1700,7 +1769,7 @@ class Dbschedule extends DataClass implements Insertable<Dbschedule> {
       );
   @override
   String toString() {
-    return (StringBuffer('Dbschedule(')
+    return (StringBuffer('Schedule(')
           ..write('id: $id, ')
           ..write('date: $date, ')
           ..write('recipe: $recipe, ')
@@ -1714,27 +1783,27 @@ class Dbschedule extends DataClass implements Insertable<Dbschedule> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is Dbschedule &&
+      (other is Schedule &&
           other.id == this.id &&
           other.date == this.date &&
           other.recipe == this.recipe &&
           other.userId == this.userId);
 }
 
-class DbschedulesCompanion extends UpdateCompanion<Dbschedule> {
+class SchedulesCompanion extends UpdateCompanion<Schedule> {
   final Value<int> id;
   final Value<DateTime> date;
   final Value<int> recipe;
   final Value<String> userId;
   final Value<int> rowid;
-  const DbschedulesCompanion({
+  const SchedulesCompanion({
     this.id = const Value.absent(),
     this.date = const Value.absent(),
     this.recipe = const Value.absent(),
     this.userId = const Value.absent(),
     this.rowid = const Value.absent(),
   });
-  DbschedulesCompanion.insert({
+  SchedulesCompanion.insert({
     required int id,
     required DateTime date,
     required int recipe,
@@ -1744,7 +1813,7 @@ class DbschedulesCompanion extends UpdateCompanion<Dbschedule> {
         date = Value(date),
         recipe = Value(recipe),
         userId = Value(userId);
-  static Insertable<Dbschedule> custom({
+  static Insertable<Schedule> custom({
     Expression<int>? id,
     Expression<DateTime>? date,
     Expression<int>? recipe,
@@ -1760,13 +1829,13 @@ class DbschedulesCompanion extends UpdateCompanion<Dbschedule> {
     });
   }
 
-  DbschedulesCompanion copyWith(
+  SchedulesCompanion copyWith(
       {Value<int>? id,
       Value<DateTime>? date,
       Value<int>? recipe,
       Value<String>? userId,
       Value<int>? rowid}) {
-    return DbschedulesCompanion(
+    return SchedulesCompanion(
       id: id ?? this.id,
       date: date ?? this.date,
       recipe: recipe ?? this.recipe,
@@ -1798,7 +1867,7 @@ class DbschedulesCompanion extends UpdateCompanion<Dbschedule> {
 
   @override
   String toString() {
-    return (StringBuffer('DbschedulesCompanion(')
+    return (StringBuffer('SchedulesCompanion(')
           ..write('id: $id, ')
           ..write('date: $date, ')
           ..write('recipe: $recipe, ')
@@ -1811,15 +1880,15 @@ class DbschedulesCompanion extends UpdateCompanion<Dbschedule> {
 
 abstract class _$BarfbookDatabase extends GeneratedDatabase {
   _$BarfbookDatabase(QueryExecutor e) : super(e);
-  late final $DbingredientsTable dbingredients = $DbingredientsTable(this);
-  late final $DbpetsTable dbpets = $DbpetsTable(this);
-  late final $DbprofilesTable dbprofiles = $DbprofilesTable(this);
-  late final $DbrecipesTable dbrecipes = $DbrecipesTable(this);
-  late final $DbschedulesTable dbschedules = $DbschedulesTable(this);
+  late final $IngredientsTable ingredients = $IngredientsTable(this);
+  late final $PetsTable pets = $PetsTable(this);
+  late final $ProfilesTable profiles = $ProfilesTable(this);
+  late final $RecipesTable recipes = $RecipesTable(this);
+  late final $SchedulesTable schedules = $SchedulesTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
   @override
   List<DatabaseSchemaEntity> get allSchemaEntities =>
-      [dbingredients, dbpets, dbprofiles, dbrecipes, dbschedules];
+      [ingredients, pets, profiles, recipes, schedules];
 }

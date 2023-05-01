@@ -8,6 +8,8 @@ import 'package:Barfbook/Screens/Barfbook/pet_controller.dart';
 import 'package:Barfbook/main.dart';
 import 'package:Barfbook/util/Supabase/AuthController.dart';
 import 'package:Barfbook/util/admin.dart';
+import 'package:Barfbook/util/database/database.dart';
+import 'package:Barfbook/util/widgets/avatar_controller.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:drift_db_viewer/drift_db_viewer.dart';
 import 'package:flutter/material.dart';
@@ -56,62 +58,12 @@ class _ScreenExploreState extends State<ScreenExplore>
                         ),
                       ],
                     ),
-                    ElevatedButton(
-                        onPressed: () async {
-                          // print(await database.select(database.pets).get());
-                          // print(await database.allPetEntries);
-                          // for (var pet
-                          //     in await database.select(database.pets).get()) {
-                          //   print(pet);
-                          // }
-                          // print(await database.select(database.pets).get());
-                          // var test = await db.database.userPetList(user!.id);
-                          // controller.userPetList.clear();
-                          // for (db.Pet pet in test) {
-                          //   controller.userPetList.add(Pet(
-                          //       id: pet.id,
-                          //       owner: pet.owner,
-                          //       name: pet.name,
-                          //       breed: pet.breed,
-                          //       age: pet.age,
-                          //       weight: pet.weight,
-                          //       gender: pet.gender,
-                          //       ration: pet.ration.toDouble(),
-                          //       avatar: CachedNetworkImage(
-                          //         imageUrl:
-                          //             'https://wokqzyqvqztmyzhhuqqh.supabase.co/storage/v1/object/public/pet/${pet.id}',
-                          //         progressIndicatorBuilder:
-                          //             (context, url, downloadProgress) =>
-                          //                 CircularProgressIndicator(
-                          //                     value: downloadProgress.progress),
-                          //         errorWidget: (context, url, error) =>
-                          //             Icon(Icons.error),
-                          //         imageBuilder: (context, imageProvider) {
-                          //           return Container(
-                          //             decoration: BoxDecoration(
-                          //               shape: BoxShape.circle,
-                          //               border: Border.all(
-                          //                   color: Theme.of(context)
-                          //                       .colorScheme
-                          //                       .primary),
-                          //               image: DecorationImage(
-                          //                 image: imageProvider,
-                          //                 fit: BoxFit.cover,
-                          //               ),
-                          //             ),
-                          //           );
-                          //         },
-                          //       )));
-                          //   print(test);
-                          // }
-                          // controller.userPetList = test;
-                          // print(test);
-                          // print(controller.userPetList);
-                          // await database.deletePet(7);
-                          // await database.deletePet(8);
-                          Get.to(() => Admin());
-                        },
-                        child: Text("TEST")),
+                    if (userProfile.rank == 'admin')
+                      ElevatedButton(
+                          onPressed: () async {
+                            Get.to(() => Admin());
+                          },
+                          child: Text("TEST")),
                     GestureDetector(
                       onTap: () {
                         if (userProfile.rank != 'guest') {
@@ -121,7 +73,7 @@ class _ScreenExploreState extends State<ScreenExplore>
                       child: CircleAvatar(
                         backgroundColor: Colors.transparent,
                         radius: 32,
-                        child: userProfile.avatar,
+                        child: getUserAvatar(userProfile.id),
                       ),
                     ),
                   ],
@@ -239,13 +191,13 @@ class RecipeCard extends StatelessWidget {
   });
 
   final Controller controller;
-  final recipe;
+  final Recipe recipe;
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        for (var map in controller.userLikedRecipeXrefDB) {
+        for (var map in controller.userLikedRecipe) {
           if (map?.containsKey("recipe") ?? false) {
             if (map['recipe'] == recipe.id) {
               Get.to(() => RecipeDetailPage(
@@ -272,12 +224,12 @@ class RecipeCard extends StatelessWidget {
         ),
         child: Container(
           height: 200,
-          width: 168,
+          width: 568,
           child: Column(
             children: [
               Padding(
                 padding: const EdgeInsets.only(top: 10, right: 10, left: 10),
-                child: Container(height: 96, child: recipe.avatar),
+                child: Container(height: 96, child: getRecipeAvatar(recipe.id)),
               ),
               Expanded(
                 child: Padding(
@@ -300,15 +252,17 @@ class RecipeCard extends StatelessWidget {
                           children: [
                             TextButton.icon(
                                 onPressed: () {
-                                  Get.to(() =>
-                                      ScreenProfile(profile: recipe.user));
+                                  // Get.to(() =>
+                                  //     ScreenProfile(profile: recipe.user));
                                 },
                                 icon: CircleAvatar(
                                     backgroundColor: Colors.transparent,
                                     radius: 14,
-                                    child: recipe.user.avatar),
+                                    child: getUserAvatar(recipe.userId)),
                                 label: Text(
-                                  recipe.user.name,
+                                  '${getRecipeUserProfile(recipe.userId)}',
+                                  style: TextStyle(
+                                      overflow: TextOverflow.ellipsis),
                                 )),
                             FaIcon(
                               FontAwesomeIcons.paw,
@@ -344,7 +298,7 @@ class BigRecipeCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        for (var map in controller.userLikedRecipeXrefDB) {
+        for (var map in controller.userLikedRecipe) {
           if (map?.containsKey("recipe") ?? false) {
             if (map['recipe'] == recipe.id) {
               Get.to(() => RecipeDetailPage(
