@@ -67,7 +67,8 @@ class _ScreenExploreState extends State<ScreenExplore>
                     GestureDetector(
                       onTap: () {
                         if (userProfile.rank != 'guest') {
-                          Get.to(() => ScreenProfile(profile: userProfile));
+                          Get.to(
+                              () => ScreenProfile(profileId: userProfile.id));
                         }
                       },
                       child: CircleAvatar(
@@ -278,8 +279,8 @@ class _RecipeCardState extends State<RecipeCard> {
                                     children: [
                                       TextButton.icon(
                                           onPressed: () {
-                                            // Get.to(() =>
-                                            //     ScreenProfile(profile: recipe.user));
+                                            Get.to(() => ScreenProfile(
+                                                profileId: profile!.id));
                                           },
                                           icon: CircleAvatar(
                                               backgroundColor:
@@ -408,8 +409,8 @@ class _BigRecipeCardState extends State<BigRecipeCard> {
                                     children: [
                                       TextButton.icon(
                                           onPressed: () {
-                                            // Get.to(() => ScreenProfile(
-                                            //     profile: widget.recipe.user));
+                                            Get.to(() => ScreenProfile(
+                                                profileId: profile!.id));
                                           },
                                           icon: CircleAvatar(
                                               backgroundColor:

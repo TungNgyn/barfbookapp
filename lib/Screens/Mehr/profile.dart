@@ -5,6 +5,8 @@ import 'package:Barfbook/Screens/Mehr/profile_controller.dart';
 import 'package:Barfbook/Screens/Barfbook/pet_controller.dart';
 import 'package:Barfbook/Screens/explore/explore.dart';
 import 'package:Barfbook/controller.dart';
+import 'package:Barfbook/loading.dart';
+import 'package:Barfbook/main.dart';
 import 'package:Barfbook/util/Supabase/AuthController.dart';
 import 'package:Barfbook/util/database/database.dart';
 import 'package:Barfbook/util/widgets/avatar_controller.dart';
@@ -13,8 +15,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class ScreenProfile extends StatefulWidget {
-  ScreenProfile({required this.profile});
-  final Profile profile;
+  ScreenProfile({required this.profileId});
+  final String profileId;
 
   @override
   State<ScreenProfile> createState() => _ScreenProfileState();
@@ -24,6 +26,7 @@ class _ScreenProfileState extends State<ScreenProfile>
     with TickerProviderStateMixin {
   final Controller controller = Get.find();
   TabController? tabController;
+  Profile? profile;
   Future? futureData;
   int selectedIndex = 0;
   List recipeList = [];
@@ -47,13 +50,13 @@ class _ScreenProfileState extends State<ScreenProfile>
                 appBar: AppBar(
                   backgroundColor: Colors.transparent,
                   actions: [
-                    if (widget.profile.id == user?.id)
+                    if (widget.profileId == user?.id)
                       Padding(
                         padding: const EdgeInsets.only(right: 10),
                         child: IconButton(
                             onPressed: () {
-                              Get.to(() =>
-                                  ScreenEditProfile(profile: widget.profile));
+                              Get.to(
+                                  () => ScreenEditProfile(profile: profile!));
                             },
                             icon: Icon(Icons.edit)),
                       )
@@ -70,11 +73,11 @@ class _ScreenProfileState extends State<ScreenProfile>
                                 backgroundColor: Colors.transparent,
                                 radius: 64,
                                 child: Container(
-                                    child: getUserAvatar(widget.profile.id))),
+                                    child: getUserAvatar(widget.profileId))),
                             Padding(
                               padding: EdgeInsets.only(top: 16),
                               child: Text(
-                                "${widget.profile.name}",
+                                "${profile!.name}",
                                 style: TextStyle(
                                     fontWeight: FontWeight.w600, fontSize: 31),
                               ),
@@ -117,7 +120,7 @@ class _ScreenProfileState extends State<ScreenProfile>
                                   ),
                                   SizedBox(height: 20),
                                   Text(
-                                    widget.profile.description,
+                                    profile!.description,
                                     style: TextStyle(fontSize: 18),
                                   )
                                 ],
@@ -173,39 +176,51 @@ class _ScreenProfileState extends State<ScreenProfile>
 
   Future? fetchData() async {
     try {
+      profile = await (database.select(database.profiles)
+            ..where((tbl) => tbl.id.equals(widget.profileId)))
+          .getSingle();
+    } catch (error) {
+      print(error);
+    }
+    try {
       final recipeDB = await supabase
           .from('select_recipe')
           .select('*')
-          .eq('user_id', widget.profile.id);
-      for (Recipe recipe in recipeDB) {
-        recipeList.add(Recipe(
-          id: recipe.id,
-          name: recipe.name,
-          description: recipe.description,
-          paws: recipe.paws,
-          createdAt: recipe.createdAt,
-          modifiedAt: recipe.modifiedAt,
-          userId: recipe.userId,
-        ));
+          .eq('user_id', widget.profileId);
+      for (final recipe in recipeDB) {
+        await database.into(database.recipes).insertOnConflictUpdate(Recipe(
+            id: recipe['id'],
+            createdAt: getDateTime(recipe['created_at']),
+            name: recipe['name'],
+            description: recipe['description'],
+            userId: recipe['user_id'],
+            paws: recipe['paws'],
+            modifiedAt: getDateTime(recipe['modified_at'])));
       }
+      recipeList = await (database.select(database.recipes)
+            ..where((tbl) => tbl.userId.equals(widget.profileId)))
+          .get();
     } catch (error) {
       print(error);
     }
     try {
       final petDB =
-          await supabase.from('pet').select('*').eq('owner', widget.profile.id);
+          await supabase.from('pet').select('*').eq('owner', widget.profileId);
       for (var pet in petDB) {
-        petList.add(Pet(
-          id: 0,
-          owner: pet['owner'],
-          name: pet['name'],
-          breed: pet['breed'],
-          age: pet['age'],
-          weight: pet['weight'],
-          gender: pet['gender'],
-          ration: pet['ration'].toDouble(),
-        ));
+        await database.into(database.pets).insertOnConflictUpdate(Pet(
+              id: pet['id'],
+              owner: widget.profileId,
+              name: pet['name'],
+              breed: pet['breed'],
+              age: pet['age'],
+              weight: pet['weight'],
+              gender: pet['gender'],
+              ration: pet['ration'].toDouble(),
+            ));
       }
+      petList = await (database.select(database.pets)
+            ..where((tbl) => tbl.owner.equals(widget.profileId)))
+          .get();
     } catch (error) {
       print(error);
     }

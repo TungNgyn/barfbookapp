@@ -55,7 +55,7 @@ class _settingsStartState extends State<ScreenSettings>
                   GestureDetector(
                     onTap: () {
                       if (userProfile.rank != 'guest') {
-                        Get.to(() => ScreenProfile(profile: userProfile));
+                        Get.to(() => ScreenProfile(profileId: userProfile.id));
                       }
                     },
                     child: CircleAvatar(
@@ -677,7 +677,7 @@ class _settingsStartState extends State<ScreenSettings>
                     isPressedProfile = false;
                   });
                   Get.to(
-                    () => ScreenProfile(profile: userProfile),
+                    () => ScreenProfile(profileId: userProfile.id),
                   );
                 },
                 child: Container(
