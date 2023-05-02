@@ -183,7 +183,7 @@ class _ScreenExploreState extends State<ScreenExplore>
   }
 }
 
-class RecipeCard extends StatelessWidget {
+class RecipeCard extends StatefulWidget {
   const RecipeCard({
     super.key,
     required this.controller,
@@ -194,97 +194,126 @@ class RecipeCard extends StatelessWidget {
   final Recipe recipe;
 
   @override
+  State<RecipeCard> createState() => _RecipeCardState();
+}
+
+class _RecipeCardState extends State<RecipeCard> {
+  Profile? profile;
+  Future? _future;
+
+  @override
+  void initState() {
+    _future =
+        getRecipeUserProfile(widget.recipe.userId).then((value) => setState(() {
+              profile = value;
+            }));
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        for (var map in controller.userLikedRecipe) {
-          if (map?.containsKey("recipe") ?? false) {
-            if (map['recipe'] == recipe.id) {
-              Get.to(() => RecipeDetailPage(
-                    recipe: recipe,
-                    favorite: true,
-                  ));
-              return;
-            }
-          }
-        }
-        Get.to(() => RecipeDetailPage(
-              recipe: recipe,
-              favorite: false,
-            ));
-        return;
-      },
-      child: Card(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
-          side: BorderSide(
-            color: Colors.grey.withOpacity(0.2),
-            width: 1,
-          ),
-        ),
-        child: Container(
-          height: 200,
-          width: 568,
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(top: 10, right: 10, left: 10),
-                child: Container(height: 96, child: getRecipeAvatar(recipe.id)),
-              ),
-              Expanded(
-                child: Padding(
-                    padding: EdgeInsets.only(
-                        left: 15, right: 15, bottom: 10, top: 5),
+    return FutureBuilder(
+        future: _future,
+        builder: (context, snapshot) => snapshot.connectionState ==
+                ConnectionState.done
+            ? GestureDetector(
+                onTap: () {
+                  for (var map in widget.controller.userLikedRecipe) {
+                    if (map?.containsKey("recipe") ?? false) {
+                      if (map['recipe'] == widget.recipe.id) {
+                        Get.to(() => RecipeDetailPage(
+                              recipe: widget.recipe,
+                              favorite: true,
+                            ));
+                        return;
+                      }
+                    }
+                  }
+                  Get.to(() => RecipeDetailPage(
+                        recipe: widget.recipe,
+                        favorite: false,
+                      ));
+                  return;
+                },
+                child: Card(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                    side: BorderSide(
+                      color: Colors.grey.withOpacity(0.2),
+                      width: 1,
+                    ),
+                  ),
+                  child: Container(
+                    height: 200,
+                    width: 168,
                     child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          recipe.name,
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                            fontSize: 18,
-                          ),
+                        Padding(
+                          padding: const EdgeInsets.only(
+                              top: 10, right: 10, left: 10),
+                          child: Container(
+                              height: 96,
+                              child: getRecipeAvatar(widget.recipe.id)),
                         ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            TextButton.icon(
-                                onPressed: () {
-                                  // Get.to(() =>
-                                  //     ScreenProfile(profile: recipe.user));
-                                },
-                                icon: CircleAvatar(
-                                    backgroundColor: Colors.transparent,
-                                    radius: 14,
-                                    child: getUserAvatar(recipe.userId)),
-                                label: Text(
-                                  '${getRecipeUserProfile(recipe.userId)}',
-                                  style: TextStyle(
-                                      overflow: TextOverflow.ellipsis),
-                                )),
-                            FaIcon(
-                              FontAwesomeIcons.paw,
-                            ),
-                            Text(
-                              '${recipe.paws}',
-                              style: TextStyle(fontSize: 16),
-                            ),
-                          ],
+                        Expanded(
+                          child: Padding(
+                              padding: EdgeInsets.only(
+                                  left: 15, right: 15, bottom: 10, top: 5),
+                              child: Column(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    widget.recipe.name,
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(
+                                      fontSize: 18,
+                                    ),
+                                  ),
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      TextButton.icon(
+                                          onPressed: () {
+                                            // Get.to(() =>
+                                            //     ScreenProfile(profile: recipe.user));
+                                          },
+                                          icon: CircleAvatar(
+                                              backgroundColor:
+                                                  Colors.transparent,
+                                              radius: 14,
+                                              child:
+                                                  getUserAvatar(profile!.id)),
+                                          label: profile == null
+                                              ? CircularProgressIndicator()
+                                              : Text(profile!.name)),
+                                      FaIcon(
+                                        FontAwesomeIcons.paw,
+                                      ),
+                                      Text(
+                                        '${widget.recipe.paws}',
+                                        style: TextStyle(fontSize: 16),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              )),
                         ),
                       ],
-                    )),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
+                    ),
+                  ),
+                ),
+              )
+            : Center(
+                child: CircularProgressIndicator(),
+              ));
   }
 }
 
-class BigRecipeCard extends StatelessWidget {
+class BigRecipeCard extends StatefulWidget {
   const BigRecipeCard({
     super.key,
     required this.controller,
@@ -295,97 +324,127 @@ class BigRecipeCard extends StatelessWidget {
   final recipe;
 
   @override
+  State<BigRecipeCard> createState() => _BigRecipeCardState();
+}
+
+class _BigRecipeCardState extends State<BigRecipeCard> {
+  Profile? profile;
+  Future? _future;
+  @override
+  void initState() {
+    _future =
+        getRecipeUserProfile(widget.recipe.userId).then((value) => setState(() {
+              profile = value;
+            }));
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        for (var map in controller.userLikedRecipe) {
-          if (map?.containsKey("recipe") ?? false) {
-            if (map['recipe'] == recipe.id) {
-              Get.to(() => RecipeDetailPage(
-                    recipe: recipe,
-                    favorite: true,
-                  ));
-              return;
-            }
-          }
-        }
-        Get.to(() => RecipeDetailPage(
-              recipe: recipe,
-              favorite: false,
-            ));
-        return;
-      },
-      child: Card(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
-          side: BorderSide(
-            color: Colors.grey.withOpacity(0.2),
-            width: 1,
-          ),
-        ),
-        child: Container(
-          height: 150,
-          width: 336,
-          child: Row(
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(top: 10, right: 10, left: 10),
-                child: Container(height: 128, width: 128, child: recipe.avatar),
-              ),
-              Expanded(
-                child: Padding(
-                    padding: EdgeInsets.only(
-                        left: 15, right: 15, bottom: 10, top: 5),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      crossAxisAlignment: CrossAxisAlignment.start,
+    return FutureBuilder(
+        future: _future,
+        builder: (context, snapshot) => snapshot.connectionState ==
+                ConnectionState.done
+            ? GestureDetector(
+                onTap: () {
+                  for (var map in widget.controller.userLikedRecipe) {
+                    if (map?.containsKey("recipe") ?? false) {
+                      if (map['recipe'] == widget.recipe.id) {
+                        Get.to(() => RecipeDetailPage(
+                              recipe: widget.recipe,
+                              favorite: true,
+                            ));
+                        return;
+                      }
+                    }
+                  }
+                  Get.to(() => RecipeDetailPage(
+                        recipe: widget.recipe,
+                        favorite: false,
+                      ));
+                  return;
+                },
+                child: Card(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                    side: BorderSide(
+                      color: Colors.grey.withOpacity(0.2),
+                      width: 1,
+                    ),
+                  ),
+                  child: Container(
+                    height: 150,
+                    width: 336,
+                    child: Row(
                       children: [
-                        Text(
-                          recipe.name,
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                            fontSize: 18,
-                          ),
+                        Padding(
+                          padding: const EdgeInsets.only(
+                              top: 10, right: 10, left: 10),
+                          child: Container(
+                              height: 128,
+                              width: 128,
+                              child: getRecipeAvatar(widget.recipe.id)),
                         ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            TextButton.icon(
-                                onPressed: () {
-                                  Get.to(() =>
-                                      ScreenProfile(profile: recipe.user));
-                                },
-                                icon: CircleAvatar(
-                                    backgroundColor: Colors.transparent,
-                                    radius: 14,
-                                    child: recipe.userAvatar),
-                                label: Text(
-                                  recipe.user.name,
-                                )),
-                            Row(
-                              children: [
-                                FaIcon(
-                                  FontAwesomeIcons.paw,
-                                ),
-                                Padding(
-                                  padding: EdgeInsets.symmetric(horizontal: 10),
-                                  child: Text(
-                                    '${recipe.paws}',
-                                    style: TextStyle(fontSize: 16),
+                        Expanded(
+                          child: Padding(
+                              padding: EdgeInsets.only(
+                                  left: 15, right: 15, bottom: 10, top: 5),
+                              child: Column(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceAround,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    widget.recipe.name,
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(
+                                      fontSize: 18,
+                                    ),
                                   ),
-                                ),
-                              ],
-                            ),
-                          ],
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      TextButton.icon(
+                                          onPressed: () {
+                                            // Get.to(() => ScreenProfile(
+                                            //     profile: widget.recipe.user));
+                                          },
+                                          icon: CircleAvatar(
+                                              backgroundColor:
+                                                  Colors.transparent,
+                                              radius: 14,
+                                              child:
+                                                  getUserAvatar(profile!.id)),
+                                          label: Text(profile!.name)),
+                                      Row(
+                                        children: [
+                                          FaIcon(
+                                            FontAwesomeIcons.paw,
+                                          ),
+                                          Padding(
+                                            padding: EdgeInsets.symmetric(
+                                                horizontal: 10),
+                                            child: Text(
+                                              '${widget.recipe.paws}',
+                                              style: TextStyle(fontSize: 16),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              )),
                         ),
                       ],
-                    )),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
+                    ),
+                  ),
+                ),
+              )
+            : Center(
+                child: CircularProgressIndicator(),
+              ));
   }
 }

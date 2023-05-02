@@ -26,12 +26,10 @@ getUserAvatar(String id) {
   );
 }
 
-getRecipeUserProfile(String id) {
-  final a = (database.select(database.profiles)
+Future<Profile> getRecipeUserProfile(String id) async {
+  final a = await (database.select(database.profiles)
         ..where((tbl) => tbl.id.equals(id)))
-      .map((row) => row.name)
       .getSingle();
-  print(a);
   return a;
 }
 
@@ -61,7 +59,7 @@ getRecipeAvatar(int id) {
 getDogAvatar(int id) {
   return CachedNetworkImage(
     imageUrl:
-        'https://wokqzyqvqztmyzhhuqqh.supabase.co/storage/v1/object/public/dog/$id',
+        'https://wokqzyqvqztmyzhhuqqh.supabase.co/storage/v1/object/public/pet/$id',
     progressIndicatorBuilder: (context, url, downloadProgress) =>
         CircularProgressIndicator(value: downloadProgress.progress),
     errorWidget: (context, url, error) =>

@@ -1878,6 +1878,933 @@ class SchedulesCompanion extends UpdateCompanion<Schedule> {
   }
 }
 
+class $LikedRecipesTable extends LikedRecipes
+    with TableInfo<$LikedRecipesTable, LikedRecipe> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $LikedRecipesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _profileMeta =
+      const VerificationMeta('profile');
+  @override
+  late final GeneratedColumn<String> profile = GeneratedColumn<String>(
+      'profile', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _recipeMeta = const VerificationMeta('recipe');
+  @override
+  late final GeneratedColumn<int> recipe = GeneratedColumn<int>(
+      'recipe', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: true);
+  @override
+  List<GeneratedColumn> get $columns => [profile, recipe];
+  @override
+  String get aliasedName => _alias ?? 'liked_recipes';
+  @override
+  String get actualTableName => 'liked_recipes';
+  @override
+  VerificationContext validateIntegrity(Insertable<LikedRecipe> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('profile')) {
+      context.handle(_profileMeta,
+          profile.isAcceptableOrUnknown(data['profile']!, _profileMeta));
+    } else if (isInserting) {
+      context.missing(_profileMeta);
+    }
+    if (data.containsKey('recipe')) {
+      context.handle(_recipeMeta,
+          recipe.isAcceptableOrUnknown(data['recipe']!, _recipeMeta));
+    } else if (isInserting) {
+      context.missing(_recipeMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {profile, recipe};
+  @override
+  LikedRecipe map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return LikedRecipe(
+      profile: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}profile'])!,
+      recipe: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}recipe'])!,
+    );
+  }
+
+  @override
+  $LikedRecipesTable createAlias(String alias) {
+    return $LikedRecipesTable(attachedDatabase, alias);
+  }
+}
+
+class LikedRecipe extends DataClass implements Insertable<LikedRecipe> {
+  final String profile;
+  final int recipe;
+  const LikedRecipe({required this.profile, required this.recipe});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['profile'] = Variable<String>(profile);
+    map['recipe'] = Variable<int>(recipe);
+    return map;
+  }
+
+  LikedRecipesCompanion toCompanion(bool nullToAbsent) {
+    return LikedRecipesCompanion(
+      profile: Value(profile),
+      recipe: Value(recipe),
+    );
+  }
+
+  factory LikedRecipe.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return LikedRecipe(
+      profile: serializer.fromJson<String>(json['profile']),
+      recipe: serializer.fromJson<int>(json['recipe']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'profile': serializer.toJson<String>(profile),
+      'recipe': serializer.toJson<int>(recipe),
+    };
+  }
+
+  LikedRecipe copyWith({String? profile, int? recipe}) => LikedRecipe(
+        profile: profile ?? this.profile,
+        recipe: recipe ?? this.recipe,
+      );
+  @override
+  String toString() {
+    return (StringBuffer('LikedRecipe(')
+          ..write('profile: $profile, ')
+          ..write('recipe: $recipe')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(profile, recipe);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is LikedRecipe &&
+          other.profile == this.profile &&
+          other.recipe == this.recipe);
+}
+
+class LikedRecipesCompanion extends UpdateCompanion<LikedRecipe> {
+  final Value<String> profile;
+  final Value<int> recipe;
+  final Value<int> rowid;
+  const LikedRecipesCompanion({
+    this.profile = const Value.absent(),
+    this.recipe = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  LikedRecipesCompanion.insert({
+    required String profile,
+    required int recipe,
+    this.rowid = const Value.absent(),
+  })  : profile = Value(profile),
+        recipe = Value(recipe);
+  static Insertable<LikedRecipe> custom({
+    Expression<String>? profile,
+    Expression<int>? recipe,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (profile != null) 'profile': profile,
+      if (recipe != null) 'recipe': recipe,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  LikedRecipesCompanion copyWith(
+      {Value<String>? profile, Value<int>? recipe, Value<int>? rowid}) {
+    return LikedRecipesCompanion(
+      profile: profile ?? this.profile,
+      recipe: recipe ?? this.recipe,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (profile.present) {
+      map['profile'] = Variable<String>(profile.value);
+    }
+    if (recipe.present) {
+      map['recipe'] = Variable<int>(recipe.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('LikedRecipesCompanion(')
+          ..write('profile: $profile, ')
+          ..write('recipe: $recipe, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $DogsTable extends Dogs with TableInfo<$DogsTable, Dog> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $DogsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+      'id', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: false);
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+      'name', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _avatarMeta = const VerificationMeta('avatar');
+  @override
+  late final GeneratedColumn<String> avatar = GeneratedColumn<String>(
+      'avatar', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  @override
+  List<GeneratedColumn> get $columns => [id, name, avatar];
+  @override
+  String get aliasedName => _alias ?? 'dogs';
+  @override
+  String get actualTableName => 'dogs';
+  @override
+  VerificationContext validateIntegrity(Insertable<Dog> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+          _nameMeta, name.isAcceptableOrUnknown(data['name']!, _nameMeta));
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('avatar')) {
+      context.handle(_avatarMeta,
+          avatar.isAcceptableOrUnknown(data['avatar']!, _avatarMeta));
+    } else if (isInserting) {
+      context.missing(_avatarMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  Dog map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return Dog(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      name: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}name'])!,
+      avatar: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}avatar'])!,
+    );
+  }
+
+  @override
+  $DogsTable createAlias(String alias) {
+    return $DogsTable(attachedDatabase, alias);
+  }
+}
+
+class Dog extends DataClass implements Insertable<Dog> {
+  final int id;
+  final String name;
+  final String avatar;
+  const Dog({required this.id, required this.name, required this.avatar});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['name'] = Variable<String>(name);
+    map['avatar'] = Variable<String>(avatar);
+    return map;
+  }
+
+  DogsCompanion toCompanion(bool nullToAbsent) {
+    return DogsCompanion(
+      id: Value(id),
+      name: Value(name),
+      avatar: Value(avatar),
+    );
+  }
+
+  factory Dog.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return Dog(
+      id: serializer.fromJson<int>(json['id']),
+      name: serializer.fromJson<String>(json['name']),
+      avatar: serializer.fromJson<String>(json['avatar']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'name': serializer.toJson<String>(name),
+      'avatar': serializer.toJson<String>(avatar),
+    };
+  }
+
+  Dog copyWith({int? id, String? name, String? avatar}) => Dog(
+        id: id ?? this.id,
+        name: name ?? this.name,
+        avatar: avatar ?? this.avatar,
+      );
+  @override
+  String toString() {
+    return (StringBuffer('Dog(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('avatar: $avatar')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, name, avatar);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is Dog &&
+          other.id == this.id &&
+          other.name == this.name &&
+          other.avatar == this.avatar);
+}
+
+class DogsCompanion extends UpdateCompanion<Dog> {
+  final Value<int> id;
+  final Value<String> name;
+  final Value<String> avatar;
+  const DogsCompanion({
+    this.id = const Value.absent(),
+    this.name = const Value.absent(),
+    this.avatar = const Value.absent(),
+  });
+  DogsCompanion.insert({
+    this.id = const Value.absent(),
+    required String name,
+    required String avatar,
+  })  : name = Value(name),
+        avatar = Value(avatar);
+  static Insertable<Dog> custom({
+    Expression<int>? id,
+    Expression<String>? name,
+    Expression<String>? avatar,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (name != null) 'name': name,
+      if (avatar != null) 'avatar': avatar,
+    });
+  }
+
+  DogsCompanion copyWith(
+      {Value<int>? id, Value<String>? name, Value<String>? avatar}) {
+    return DogsCompanion(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      avatar: avatar ?? this.avatar,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (avatar.present) {
+      map['avatar'] = Variable<String>(avatar.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('DogsCompanion(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('avatar: $avatar')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $RecipeCommentsTable extends RecipeComments
+    with TableInfo<$RecipeCommentsTable, RecipeComment> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $RecipeCommentsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+      'id', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: false);
+  static const VerificationMeta _createdAtMeta =
+      const VerificationMeta('createdAt');
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+      'created_at', aliasedName, false,
+      type: DriftSqlType.dateTime, requiredDuringInsert: true);
+  static const VerificationMeta _recipeMeta = const VerificationMeta('recipe');
+  @override
+  late final GeneratedColumn<int> recipe = GeneratedColumn<int>(
+      'recipe', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: true);
+  static const VerificationMeta _modifiedAtMeta =
+      const VerificationMeta('modifiedAt');
+  @override
+  late final GeneratedColumn<DateTime> modifiedAt = GeneratedColumn<DateTime>(
+      'modified_at', aliasedName, false,
+      type: DriftSqlType.dateTime, requiredDuringInsert: true);
+  static const VerificationMeta _profileMeta =
+      const VerificationMeta('profile');
+  @override
+  late final GeneratedColumn<String> profile = GeneratedColumn<String>(
+      'profile', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _commentMeta =
+      const VerificationMeta('comment');
+  @override
+  late final GeneratedColumn<String> comment = GeneratedColumn<String>(
+      'comment', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  @override
+  List<GeneratedColumn> get $columns =>
+      [id, createdAt, recipe, modifiedAt, profile, comment];
+  @override
+  String get aliasedName => _alias ?? 'recipe_comments';
+  @override
+  String get actualTableName => 'recipe_comments';
+  @override
+  VerificationContext validateIntegrity(Insertable<RecipeComment> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(_createdAtMeta,
+          createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta));
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('recipe')) {
+      context.handle(_recipeMeta,
+          recipe.isAcceptableOrUnknown(data['recipe']!, _recipeMeta));
+    } else if (isInserting) {
+      context.missing(_recipeMeta);
+    }
+    if (data.containsKey('modified_at')) {
+      context.handle(
+          _modifiedAtMeta,
+          modifiedAt.isAcceptableOrUnknown(
+              data['modified_at']!, _modifiedAtMeta));
+    } else if (isInserting) {
+      context.missing(_modifiedAtMeta);
+    }
+    if (data.containsKey('profile')) {
+      context.handle(_profileMeta,
+          profile.isAcceptableOrUnknown(data['profile']!, _profileMeta));
+    } else if (isInserting) {
+      context.missing(_profileMeta);
+    }
+    if (data.containsKey('comment')) {
+      context.handle(_commentMeta,
+          comment.isAcceptableOrUnknown(data['comment']!, _commentMeta));
+    } else if (isInserting) {
+      context.missing(_commentMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  RecipeComment map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return RecipeComment(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      createdAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}created_at'])!,
+      recipe: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}recipe'])!,
+      modifiedAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}modified_at'])!,
+      profile: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}profile'])!,
+      comment: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}comment'])!,
+    );
+  }
+
+  @override
+  $RecipeCommentsTable createAlias(String alias) {
+    return $RecipeCommentsTable(attachedDatabase, alias);
+  }
+}
+
+class RecipeComment extends DataClass implements Insertable<RecipeComment> {
+  final int id;
+  final DateTime createdAt;
+  final int recipe;
+  final DateTime modifiedAt;
+  final String profile;
+  final String comment;
+  const RecipeComment(
+      {required this.id,
+      required this.createdAt,
+      required this.recipe,
+      required this.modifiedAt,
+      required this.profile,
+      required this.comment});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['recipe'] = Variable<int>(recipe);
+    map['modified_at'] = Variable<DateTime>(modifiedAt);
+    map['profile'] = Variable<String>(profile);
+    map['comment'] = Variable<String>(comment);
+    return map;
+  }
+
+  RecipeCommentsCompanion toCompanion(bool nullToAbsent) {
+    return RecipeCommentsCompanion(
+      id: Value(id),
+      createdAt: Value(createdAt),
+      recipe: Value(recipe),
+      modifiedAt: Value(modifiedAt),
+      profile: Value(profile),
+      comment: Value(comment),
+    );
+  }
+
+  factory RecipeComment.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return RecipeComment(
+      id: serializer.fromJson<int>(json['id']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      recipe: serializer.fromJson<int>(json['recipe']),
+      modifiedAt: serializer.fromJson<DateTime>(json['modifiedAt']),
+      profile: serializer.fromJson<String>(json['profile']),
+      comment: serializer.fromJson<String>(json['comment']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'recipe': serializer.toJson<int>(recipe),
+      'modifiedAt': serializer.toJson<DateTime>(modifiedAt),
+      'profile': serializer.toJson<String>(profile),
+      'comment': serializer.toJson<String>(comment),
+    };
+  }
+
+  RecipeComment copyWith(
+          {int? id,
+          DateTime? createdAt,
+          int? recipe,
+          DateTime? modifiedAt,
+          String? profile,
+          String? comment}) =>
+      RecipeComment(
+        id: id ?? this.id,
+        createdAt: createdAt ?? this.createdAt,
+        recipe: recipe ?? this.recipe,
+        modifiedAt: modifiedAt ?? this.modifiedAt,
+        profile: profile ?? this.profile,
+        comment: comment ?? this.comment,
+      );
+  @override
+  String toString() {
+    return (StringBuffer('RecipeComment(')
+          ..write('id: $id, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('recipe: $recipe, ')
+          ..write('modifiedAt: $modifiedAt, ')
+          ..write('profile: $profile, ')
+          ..write('comment: $comment')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(id, createdAt, recipe, modifiedAt, profile, comment);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is RecipeComment &&
+          other.id == this.id &&
+          other.createdAt == this.createdAt &&
+          other.recipe == this.recipe &&
+          other.modifiedAt == this.modifiedAt &&
+          other.profile == this.profile &&
+          other.comment == this.comment);
+}
+
+class RecipeCommentsCompanion extends UpdateCompanion<RecipeComment> {
+  final Value<int> id;
+  final Value<DateTime> createdAt;
+  final Value<int> recipe;
+  final Value<DateTime> modifiedAt;
+  final Value<String> profile;
+  final Value<String> comment;
+  const RecipeCommentsCompanion({
+    this.id = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.recipe = const Value.absent(),
+    this.modifiedAt = const Value.absent(),
+    this.profile = const Value.absent(),
+    this.comment = const Value.absent(),
+  });
+  RecipeCommentsCompanion.insert({
+    this.id = const Value.absent(),
+    required DateTime createdAt,
+    required int recipe,
+    required DateTime modifiedAt,
+    required String profile,
+    required String comment,
+  })  : createdAt = Value(createdAt),
+        recipe = Value(recipe),
+        modifiedAt = Value(modifiedAt),
+        profile = Value(profile),
+        comment = Value(comment);
+  static Insertable<RecipeComment> custom({
+    Expression<int>? id,
+    Expression<DateTime>? createdAt,
+    Expression<int>? recipe,
+    Expression<DateTime>? modifiedAt,
+    Expression<String>? profile,
+    Expression<String>? comment,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (createdAt != null) 'created_at': createdAt,
+      if (recipe != null) 'recipe': recipe,
+      if (modifiedAt != null) 'modified_at': modifiedAt,
+      if (profile != null) 'profile': profile,
+      if (comment != null) 'comment': comment,
+    });
+  }
+
+  RecipeCommentsCompanion copyWith(
+      {Value<int>? id,
+      Value<DateTime>? createdAt,
+      Value<int>? recipe,
+      Value<DateTime>? modifiedAt,
+      Value<String>? profile,
+      Value<String>? comment}) {
+    return RecipeCommentsCompanion(
+      id: id ?? this.id,
+      createdAt: createdAt ?? this.createdAt,
+      recipe: recipe ?? this.recipe,
+      modifiedAt: modifiedAt ?? this.modifiedAt,
+      profile: profile ?? this.profile,
+      comment: comment ?? this.comment,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (recipe.present) {
+      map['recipe'] = Variable<int>(recipe.value);
+    }
+    if (modifiedAt.present) {
+      map['modified_at'] = Variable<DateTime>(modifiedAt.value);
+    }
+    if (profile.present) {
+      map['profile'] = Variable<String>(profile.value);
+    }
+    if (comment.present) {
+      map['comment'] = Variable<String>(comment.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('RecipeCommentsCompanion(')
+          ..write('id: $id, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('recipe: $recipe, ')
+          ..write('modifiedAt: $modifiedAt, ')
+          ..write('profile: $profile, ')
+          ..write('comment: $comment')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $RecipeIngredientsTable extends RecipeIngredients
+    with TableInfo<$RecipeIngredientsTable, RecipeIngredient> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $RecipeIngredientsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _recipeMeta = const VerificationMeta('recipe');
+  @override
+  late final GeneratedColumn<int> recipe = GeneratedColumn<int>(
+      'recipe', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: true);
+  static const VerificationMeta _ingredientMeta =
+      const VerificationMeta('ingredient');
+  @override
+  late final GeneratedColumn<String> ingredient = GeneratedColumn<String>(
+      'ingredient', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _gramMeta = const VerificationMeta('gram');
+  @override
+  late final GeneratedColumn<int> gram = GeneratedColumn<int>(
+      'gram', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: true);
+  @override
+  List<GeneratedColumn> get $columns => [recipe, ingredient, gram];
+  @override
+  String get aliasedName => _alias ?? 'recipe_ingredients';
+  @override
+  String get actualTableName => 'recipe_ingredients';
+  @override
+  VerificationContext validateIntegrity(Insertable<RecipeIngredient> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('recipe')) {
+      context.handle(_recipeMeta,
+          recipe.isAcceptableOrUnknown(data['recipe']!, _recipeMeta));
+    } else if (isInserting) {
+      context.missing(_recipeMeta);
+    }
+    if (data.containsKey('ingredient')) {
+      context.handle(
+          _ingredientMeta,
+          ingredient.isAcceptableOrUnknown(
+              data['ingredient']!, _ingredientMeta));
+    } else if (isInserting) {
+      context.missing(_ingredientMeta);
+    }
+    if (data.containsKey('gram')) {
+      context.handle(
+          _gramMeta, gram.isAcceptableOrUnknown(data['gram']!, _gramMeta));
+    } else if (isInserting) {
+      context.missing(_gramMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {recipe, ingredient};
+  @override
+  RecipeIngredient map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return RecipeIngredient(
+      recipe: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}recipe'])!,
+      ingredient: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}ingredient'])!,
+      gram: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}gram'])!,
+    );
+  }
+
+  @override
+  $RecipeIngredientsTable createAlias(String alias) {
+    return $RecipeIngredientsTable(attachedDatabase, alias);
+  }
+}
+
+class RecipeIngredient extends DataClass
+    implements Insertable<RecipeIngredient> {
+  final int recipe;
+  final String ingredient;
+  final int gram;
+  const RecipeIngredient(
+      {required this.recipe, required this.ingredient, required this.gram});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['recipe'] = Variable<int>(recipe);
+    map['ingredient'] = Variable<String>(ingredient);
+    map['gram'] = Variable<int>(gram);
+    return map;
+  }
+
+  RecipeIngredientsCompanion toCompanion(bool nullToAbsent) {
+    return RecipeIngredientsCompanion(
+      recipe: Value(recipe),
+      ingredient: Value(ingredient),
+      gram: Value(gram),
+    );
+  }
+
+  factory RecipeIngredient.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return RecipeIngredient(
+      recipe: serializer.fromJson<int>(json['recipe']),
+      ingredient: serializer.fromJson<String>(json['ingredient']),
+      gram: serializer.fromJson<int>(json['gram']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'recipe': serializer.toJson<int>(recipe),
+      'ingredient': serializer.toJson<String>(ingredient),
+      'gram': serializer.toJson<int>(gram),
+    };
+  }
+
+  RecipeIngredient copyWith({int? recipe, String? ingredient, int? gram}) =>
+      RecipeIngredient(
+        recipe: recipe ?? this.recipe,
+        ingredient: ingredient ?? this.ingredient,
+        gram: gram ?? this.gram,
+      );
+  @override
+  String toString() {
+    return (StringBuffer('RecipeIngredient(')
+          ..write('recipe: $recipe, ')
+          ..write('ingredient: $ingredient, ')
+          ..write('gram: $gram')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(recipe, ingredient, gram);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is RecipeIngredient &&
+          other.recipe == this.recipe &&
+          other.ingredient == this.ingredient &&
+          other.gram == this.gram);
+}
+
+class RecipeIngredientsCompanion extends UpdateCompanion<RecipeIngredient> {
+  final Value<int> recipe;
+  final Value<String> ingredient;
+  final Value<int> gram;
+  final Value<int> rowid;
+  const RecipeIngredientsCompanion({
+    this.recipe = const Value.absent(),
+    this.ingredient = const Value.absent(),
+    this.gram = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  RecipeIngredientsCompanion.insert({
+    required int recipe,
+    required String ingredient,
+    required int gram,
+    this.rowid = const Value.absent(),
+  })  : recipe = Value(recipe),
+        ingredient = Value(ingredient),
+        gram = Value(gram);
+  static Insertable<RecipeIngredient> custom({
+    Expression<int>? recipe,
+    Expression<String>? ingredient,
+    Expression<int>? gram,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (recipe != null) 'recipe': recipe,
+      if (ingredient != null) 'ingredient': ingredient,
+      if (gram != null) 'gram': gram,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  RecipeIngredientsCompanion copyWith(
+      {Value<int>? recipe,
+      Value<String>? ingredient,
+      Value<int>? gram,
+      Value<int>? rowid}) {
+    return RecipeIngredientsCompanion(
+      recipe: recipe ?? this.recipe,
+      ingredient: ingredient ?? this.ingredient,
+      gram: gram ?? this.gram,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (recipe.present) {
+      map['recipe'] = Variable<int>(recipe.value);
+    }
+    if (ingredient.present) {
+      map['ingredient'] = Variable<String>(ingredient.value);
+    }
+    if (gram.present) {
+      map['gram'] = Variable<int>(gram.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('RecipeIngredientsCompanion(')
+          ..write('recipe: $recipe, ')
+          ..write('ingredient: $ingredient, ')
+          ..write('gram: $gram, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$BarfbookDatabase extends GeneratedDatabase {
   _$BarfbookDatabase(QueryExecutor e) : super(e);
   late final $IngredientsTable ingredients = $IngredientsTable(this);
@@ -1885,10 +2812,24 @@ abstract class _$BarfbookDatabase extends GeneratedDatabase {
   late final $ProfilesTable profiles = $ProfilesTable(this);
   late final $RecipesTable recipes = $RecipesTable(this);
   late final $SchedulesTable schedules = $SchedulesTable(this);
+  late final $LikedRecipesTable likedRecipes = $LikedRecipesTable(this);
+  late final $DogsTable dogs = $DogsTable(this);
+  late final $RecipeCommentsTable recipeComments = $RecipeCommentsTable(this);
+  late final $RecipeIngredientsTable recipeIngredients =
+      $RecipeIngredientsTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
   @override
-  List<DatabaseSchemaEntity> get allSchemaEntities =>
-      [ingredients, pets, profiles, recipes, schedules];
+  List<DatabaseSchemaEntity> get allSchemaEntities => [
+        ingredients,
+        pets,
+        profiles,
+        recipes,
+        schedules,
+        likedRecipes,
+        dogs,
+        recipeComments,
+        recipeIngredients
+      ];
 }

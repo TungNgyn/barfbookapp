@@ -145,16 +145,10 @@ class _ScreenBarfbookState extends State<ScreenBarfbook> {
                                           fontWeight: FontWeight.bold),
                                     ),
                                   ),
-                                  Obx(() {
-                                    List<Widget> list = [];
-                                    for (Recipe recipe
-                                        in controller.userRecipeList) {
-                                      list.add(BigRecipeCard(
-                                          controller: controller,
-                                          recipe: recipe));
-                                    }
-                                    return Wrap(children: list);
-                                  }),
+                                  for (Recipe recipe
+                                      in controller.userRecipeList)
+                                    BigRecipeCard(
+                                        controller: controller, recipe: recipe)
                                 ],
                               ),
                             ),
@@ -189,19 +183,10 @@ class _ScreenBarfbookState extends State<ScreenBarfbook> {
                                         fontWeight: FontWeight.bold),
                                   ),
                                 ),
-                                Padding(
-                                    padding:
-                                        EdgeInsets.symmetric(horizontal: 20),
-                                    child: Obx(() {
-                                      List<Widget> list = [];
-                                      for (Recipe recipe
-                                          in controller.userLikedRecipe) {
-                                        list.add(BigRecipeCard(
-                                            controller: controller,
-                                            recipe: recipe));
-                                      }
-                                      return Wrap(children: list);
-                                    })),
+                                for (Recipe recipe
+                                    in controller.userLikedRecipe)
+                                  BigRecipeCard(
+                                      controller: controller, recipe: recipe),
                               ],
                             ),
                     ),

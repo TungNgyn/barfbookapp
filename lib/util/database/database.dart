@@ -41,6 +41,15 @@ class Pets extends Table {
   Set<Column> get primaryKey => {id};
 }
 
+class Dogs extends Table {
+  IntColumn get id => integer()();
+  TextColumn get name => text()();
+  TextColumn get avatar => text()();
+
+  @override
+  Set<Column> get primaryKey => {id};
+}
+
 class Profiles extends Table {
   TextColumn get id => text()();
   DateTimeColumn get createdAt => dateTime()();
@@ -66,6 +75,35 @@ class Recipes extends Table {
   Set<Column> get primaryKey => {id};
 }
 
+class LikedRecipes extends Table {
+  TextColumn get profile => text()();
+  IntColumn get recipe => integer()();
+
+  @override
+  Set<Column> get primaryKey => {profile, recipe};
+}
+
+class RecipeComments extends Table {
+  IntColumn get id => integer()();
+  DateTimeColumn get createdAt => dateTime()();
+  IntColumn get recipe => integer()();
+  DateTimeColumn get modifiedAt => dateTime()();
+  TextColumn get profile => text()();
+  TextColumn get comment => text()();
+
+  @override
+  Set<Column> get primaryKey => {id};
+}
+
+class RecipeIngredients extends Table {
+  IntColumn get recipe => integer()();
+  TextColumn get ingredient => text()();
+  IntColumn get gram => integer()();
+
+  @override
+  Set<Column> get primaryKey => {recipe, ingredient};
+}
+
 class Schedules extends Table {
   IntColumn get id => integer()();
   DateTimeColumn get date => dateTime()();
@@ -78,7 +116,17 @@ class Schedules extends Table {
 
 // this annotation tells drift to prepare a database class that uses both of the
 // tables we just defined. We'll see how to use that database class in a moment.
-@DriftDatabase(tables: [Ingredients, Pets, Profiles, Recipes, Schedules])
+@DriftDatabase(tables: [
+  Ingredients,
+  Pets,
+  Profiles,
+  Recipes,
+  Schedules,
+  LikedRecipes,
+  Dogs,
+  RecipeComments,
+  RecipeIngredients
+])
 class BarfbookDatabase extends _$BarfbookDatabase {
   BarfbookDatabase() : super(_openConnection());
 
