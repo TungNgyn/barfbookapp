@@ -18,4 +18,6 @@ class Controller extends GetxController {
   List scheduleRecipeList = [].obs;
 
   List userPetList = [].obs;
+
+  List ingredients = [];
 }

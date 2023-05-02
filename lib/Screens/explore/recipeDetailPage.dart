@@ -7,6 +7,7 @@ import 'package:Barfbook/Screens/Mehr/profile.dart';
 import 'package:Barfbook/Screens/Mehr/profile_controller.dart';
 import 'package:Barfbook/controller.dart';
 import 'package:Barfbook/loading.dart';
+import 'package:Barfbook/main.dart';
 import 'package:Barfbook/util/Supabase/AuthController.dart';
 import 'package:Barfbook/util/database/database.dart';
 import 'package:Barfbook/util/widgets/avatar_controller.dart';
@@ -118,11 +119,8 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
                             FaIcon(FontAwesomeIcons.paw),
                             Padding(
                               padding:
-                                  const EdgeInsets.symmetric(horizontal: 5),
-                              child: Text(
-                                '${widget.recipe.paws}',
-                                style: TextStyle(fontSize: 14),
-                              ),
+                                  const EdgeInsets.symmetric(horizontal: 8),
+                              child: Text('${widget.recipe.paws} Pfoten'),
                             ),
                           ],
                         ),
@@ -237,7 +235,7 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
                             },
                             child: Text(
                               "${controller.commentList.length} Kommentare",
-                              style: TextStyle(fontSize: 16),
+                              style: TextStyle(fontSize: 14),
                             )),
                         Padding(
                           padding: const EdgeInsets.symmetric(vertical: 10),
@@ -249,45 +247,48 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
                         ),
                         Text(
                           widget.recipe.description,
-                          style: TextStyle(
-                            fontSize: 14,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 8),
+                          child: Column(
+                            children: [
+                              if (widget.recipe.userId != user!.id)
+                                ElevatedButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        toggleFavorite();
+                                      });
+                                    },
+                                    child: Row(
+                                      children: [
+                                        Icon(widget.favorite == true
+                                            ? (Icons.favorite)
+                                            : (Icons.favorite_border)),
+                                        Text("Rezept speichern"),
+                                      ],
+                                    )),
+                              SizedBox(height: 8),
+                              ElevatedButton(
+                                  onPressed: () {
+                                    Get.defaultDialog(
+                                        title: 'Haustier auswählen',
+                                        content: Column(
+                                          children: [
+                                            for (Pet pet
+                                                in controller.userPetList)
+                                              PetCard(pet: pet)
+                                          ],
+                                        ));
+                                  },
+                                  child: Row(
+                                    children: [
+                                      Icon(Icons.usb),
+                                      Text("Rezept anwenden"),
+                                    ],
+                                  )),
+                            ],
                           ),
                         ),
-                        if (widget.recipe.userId != user!.id)
-                          Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 10),
-                            child: ElevatedButton(
-                                onPressed: () {
-                                  setState(() {
-                                    toggleFavorite();
-                                  });
-                                },
-                                child: Row(
-                                  children: [
-                                    Icon(widget.favorite == true
-                                        ? (Icons.favorite)
-                                        : (Icons.favorite_border)),
-                                    Text("Rezept speichern"),
-                                  ],
-                                )),
-                          ),
-                        ElevatedButton(
-                            onPressed: () {
-                              Get.defaultDialog(
-                                  title: 'Haustier auswählen',
-                                  content: Column(
-                                    children: [
-                                      for (Pet pet in controller.userPetList)
-                                        PetCard(pet: pet)
-                                    ],
-                                  ));
-                            },
-                            child: Row(
-                              children: [
-                                Icon(Icons.usb),
-                                Text("Rezept anwenden"),
-                              ],
-                            )),
                         Padding(
                           padding: const EdgeInsets.only(top: 10),
                           child: Card(
@@ -759,62 +760,69 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
     // load ingredient
     recipeIngredients.clear();
     try {
-      final recipeIngredientsList = await supabase
-          .from('recipe_ingredient')
-          .select('*')
-          .eq('recipe', widget.recipe.id);
-      for (var recipeIngredient in recipeIngredientsList) {
-        final gram = recipeIngredient['grams'];
-        final ingredientsList = await supabase
-            .from('ingredient')
-            .select('*')
-            .eq('id', recipeIngredient['ingredient']);
-        for (var ingredient in ingredientsList) {
-          recipeIngredients.add(Ingredient(
-              id: ingredient['id'],
-              name: ingredient['name'],
-              type: ingredient['type'],
-              category: ingredient['category'],
-              calories: ingredient['calories'].toDouble(),
-              protein: ingredient['protein'].toDouble(),
-              fat: ingredient['fat'].toDouble(),
-              carbohydrates: ingredient['carbohydrates'].toDouble(),
-              minerals: ingredient['minerals'].toDouble(),
-              moisture: ingredient['moisture'].toDouble(),
-              avatar: ingredient['avatar'],
-              gram: gram));
-          caloriesSum += (ingredient['calories'].toDouble() / 100 * gram);
-          proteinSum += (ingredient['protein'].toDouble() / 100 * gram);
-          fatSum += (ingredient['fat'].toDouble() / 100 * gram);
-          carbohydratesSum +=
-              (ingredient['carbohydrates'].toDouble() / 100 * gram);
-          mineralsSum += (ingredient['minerals'].toDouble() / 100 * gram);
-          moistureSum += (ingredient['moisture'].toDouble() / 100 * gram);
-          switch (ingredient['category']) {
-            case 'Muskelfleisch':
-              meatSum += gram;
-              break;
-            case 'Pansen':
-              rumenSum += gram;
-              break;
-            case 'Knochen':
-              boneSum += gram;
-              break;
-            case 'Innereien':
-              organSum += gram;
-              break;
-            case 'Gemüse':
-              vegSum += gram;
-              break;
-            case 'Obst':
-              fruitSum += gram;
-              break;
-            default:
-              throw Error();
-          }
-          weightSum += gram;
+      final recipeData = await (database.select(database.recipes)
+            ..where((tbl) => tbl.id.equals(widget.recipe.id)))
+          .getSingle();
+      print(recipeData);
+      final recipeIngredientList =
+          await (database.select(database.recipeIngredients)
+                ..where((tbl) => tbl.recipe.equals(recipeData.id)))
+              .get();
+      print(recipeIngredientList);
+      for (RecipeIngredient recipeIngredient in recipeIngredientList) {
+        Ingredient tempIngredient = await (database.select(database.ingredients)
+              ..where((tbl) => tbl.id.equals(recipeIngredient.ingredient)))
+            .getSingle();
+        recipeIngredients.add(Ingredient(
+            id: tempIngredient.id,
+            name: tempIngredient.name,
+            category: tempIngredient.category,
+            type: tempIngredient.type,
+            calories: tempIngredient.calories,
+            protein: tempIngredient.protein,
+            fat: tempIngredient.fat,
+            carbohydrates: tempIngredient.carbohydrates,
+            minerals: tempIngredient.minerals,
+            moisture: tempIngredient.moisture,
+            avatar: tempIngredient.avatar,
+            gram: recipeIngredient.gram));
+        caloriesSum +=
+            (tempIngredient.calories.toDouble() / 100 * recipeIngredient.gram);
+        proteinSum +=
+            (tempIngredient.protein.toDouble() / 100 * recipeIngredient.gram);
+        fatSum += (tempIngredient.fat.toDouble() / 100 * recipeIngredient.gram);
+        carbohydratesSum += (tempIngredient.carbohydrates.toDouble() /
+            100 *
+            recipeIngredient.gram);
+        mineralsSum +=
+            (tempIngredient.minerals.toDouble() / 100 * recipeIngredient.gram);
+        moistureSum +=
+            (tempIngredient.moisture.toDouble() / 100 * recipeIngredient.gram);
+        switch (tempIngredient.category) {
+          case 'Muskelfleisch':
+            meatSum += recipeIngredient.gram;
+            break;
+          case 'Pansen':
+            rumenSum += recipeIngredient.gram;
+            break;
+          case 'Knochen':
+            boneSum += recipeIngredient.gram;
+            break;
+          case 'Innereien':
+            organSum += recipeIngredient.gram;
+            break;
+          case 'Gemüse':
+            vegSum += recipeIngredient.gram;
+            break;
+          case 'Obst':
+            fruitSum += recipeIngredient.gram;
+            break;
+          default:
+            throw Error();
         }
+        weightSum += recipeIngredient.gram;
       }
+      // }
     } catch (error) {
       print(error);
     }

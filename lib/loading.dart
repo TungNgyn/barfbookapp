@@ -31,7 +31,8 @@ class _LoadingScreenState extends State<ScreenLoading> {
       initUserCreatedRecipe(),
       initFavorite(),
       initPetList(),
-      initSchedule()
+      initSchedule(),
+      initIngredients()
     ]);
   }
 
@@ -106,6 +107,18 @@ initExplorerPopularRecipe() async {
           userId: recipe['user_id'],
           paws: recipe['paws'],
           modifiedAt: getDateTime(recipe['modified_at'])));
+
+      final ingredientlist = await supabase
+          .from('recipe_ingredient')
+          .select('*')
+          .eq('recipe', recipe['id']);
+      for (var ingredient in ingredientlist) {
+        await database.into(database.recipeIngredients).insertOnConflictUpdate(
+            RecipeIngredient(
+                recipe: ingredient['recipe'],
+                ingredient: ingredient['ingredient'],
+                gram: ingredient['grams']));
+      }
     }
     controller.explorePopularRecipeList =
         await (database.select(database.recipes)
@@ -153,8 +166,19 @@ initExplorerNewRecipe() async {
           userId: recipe['user_id'],
           paws: recipe['paws'],
           modifiedAt: getDateTime(recipe['modified_at'])));
-    }
 
+      final ingredientlist = await supabase
+          .from('recipe_ingredient')
+          .select('*')
+          .eq('recipe', recipe['id']);
+      for (var ingredient in ingredientlist) {
+        await database.into(database.recipeIngredients).insertOnConflictUpdate(
+            RecipeIngredient(
+                recipe: ingredient['recipe'],
+                ingredient: ingredient['ingredient'],
+                gram: ingredient['grams']));
+      }
+    }
     controller.exploreNewRecipeList = await (database.select(database.recipes)
           ..orderBy([(t) => OrderingTerm.desc(t.createdAt)])
           ..limit(5))
@@ -207,6 +231,18 @@ initUserCreatedRecipe() async {
           description: recipe['description'],
           modifiedAt: getDateTime(recipe['modified_at']),
           userId: recipe['user_id']));
+
+      final ingredientlist = await supabase
+          .from('recipe_ingredient')
+          .select('*')
+          .eq('recipe', recipe['id']);
+      for (var ingredient in ingredientlist) {
+        await database.into(database.recipeIngredients).insertOnConflictUpdate(
+            RecipeIngredient(
+                recipe: ingredient['recipe'],
+                ingredient: ingredient['ingredient'],
+                gram: ingredient['grams']));
+      }
     }
     controller.userRecipeList = await (database.select(database.recipes)
           ..where((tbl) => tbl.userId.equals(user!.id)))
@@ -255,6 +291,18 @@ initFavorite() async {
           description: recipe['description'],
           modifiedAt: getDateTime(recipe['modified_at']),
           userId: recipe['user_id']));
+
+      final ingredientlist = await supabase
+          .from('recipe_ingredient')
+          .select('*')
+          .eq('recipe', recipe['id']);
+      for (var ingredient in ingredientlist) {
+        await database.into(database.recipeIngredients).insertOnConflictUpdate(
+            RecipeIngredient(
+                recipe: ingredient['recipe'],
+                ingredient: ingredient['ingredient'],
+                gram: ingredient['grams']));
+      }
 
       await database.into(database.likedRecipes).insertOnConflictUpdate(
           LikedRecipe(profile: recipe['user_id'], recipe: recipe['id']));
@@ -353,6 +401,35 @@ initSchedule() async {
     } catch (error) {
       print(error);
     }
+  } catch (error) {
+    print(error);
+  }
+}
+
+initIngredients() async {
+  // Find the instance of the `Controller` class created by `Get.put()` in the widget tree.
+  final Controller controller = Get.find();
+
+  try {
+    // Fetch user data from Supabase and update the `userProfile` property in the `Controller` class.
+    final ingredientlist = await supabase.from('ingredient').select('*');
+    for (var ingredient in ingredientlist) {
+      await database.into(database.ingredients).insertOnConflictUpdate(
+          Ingredient(
+              id: ingredient['id'],
+              name: ingredient['name'],
+              category: ingredient['category'],
+              type: ingredient['type'],
+              calories: ingredient['calories'].toDouble(),
+              protein: ingredient['protein'].toDouble(),
+              fat: ingredient['fat'].toDouble(),
+              carbohydrates: ingredient['carbohydrates'].toDouble(),
+              minerals: ingredient['minerals'].toDouble(),
+              moisture: ingredient['moisture'].toDouble(),
+              avatar: ingredient['avatar'],
+              gram: 0));
+    }
+    controller.ingredients = await database.select(database.ingredients).get();
   } catch (error) {
     print(error);
   }

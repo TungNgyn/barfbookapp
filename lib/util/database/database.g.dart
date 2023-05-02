@@ -2596,9 +2596,9 @@ class $RecipeIngredientsTable extends RecipeIngredients
   static const VerificationMeta _ingredientMeta =
       const VerificationMeta('ingredient');
   @override
-  late final GeneratedColumn<String> ingredient = GeneratedColumn<String>(
+  late final GeneratedColumn<int> ingredient = GeneratedColumn<int>(
       'ingredient', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
+      type: DriftSqlType.int, requiredDuringInsert: true);
   static const VerificationMeta _gramMeta = const VerificationMeta('gram');
   @override
   late final GeneratedColumn<int> gram = GeneratedColumn<int>(
@@ -2647,7 +2647,7 @@ class $RecipeIngredientsTable extends RecipeIngredients
       recipe: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}recipe'])!,
       ingredient: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}ingredient'])!,
+          .read(DriftSqlType.int, data['${effectivePrefix}ingredient'])!,
       gram: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}gram'])!,
     );
@@ -2662,7 +2662,7 @@ class $RecipeIngredientsTable extends RecipeIngredients
 class RecipeIngredient extends DataClass
     implements Insertable<RecipeIngredient> {
   final int recipe;
-  final String ingredient;
+  final int ingredient;
   final int gram;
   const RecipeIngredient(
       {required this.recipe, required this.ingredient, required this.gram});
@@ -2670,7 +2670,7 @@ class RecipeIngredient extends DataClass
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['recipe'] = Variable<int>(recipe);
-    map['ingredient'] = Variable<String>(ingredient);
+    map['ingredient'] = Variable<int>(ingredient);
     map['gram'] = Variable<int>(gram);
     return map;
   }
@@ -2688,7 +2688,7 @@ class RecipeIngredient extends DataClass
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return RecipeIngredient(
       recipe: serializer.fromJson<int>(json['recipe']),
-      ingredient: serializer.fromJson<String>(json['ingredient']),
+      ingredient: serializer.fromJson<int>(json['ingredient']),
       gram: serializer.fromJson<int>(json['gram']),
     );
   }
@@ -2697,12 +2697,12 @@ class RecipeIngredient extends DataClass
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'recipe': serializer.toJson<int>(recipe),
-      'ingredient': serializer.toJson<String>(ingredient),
+      'ingredient': serializer.toJson<int>(ingredient),
       'gram': serializer.toJson<int>(gram),
     };
   }
 
-  RecipeIngredient copyWith({int? recipe, String? ingredient, int? gram}) =>
+  RecipeIngredient copyWith({int? recipe, int? ingredient, int? gram}) =>
       RecipeIngredient(
         recipe: recipe ?? this.recipe,
         ingredient: ingredient ?? this.ingredient,
@@ -2731,7 +2731,7 @@ class RecipeIngredient extends DataClass
 
 class RecipeIngredientsCompanion extends UpdateCompanion<RecipeIngredient> {
   final Value<int> recipe;
-  final Value<String> ingredient;
+  final Value<int> ingredient;
   final Value<int> gram;
   final Value<int> rowid;
   const RecipeIngredientsCompanion({
@@ -2742,7 +2742,7 @@ class RecipeIngredientsCompanion extends UpdateCompanion<RecipeIngredient> {
   });
   RecipeIngredientsCompanion.insert({
     required int recipe,
-    required String ingredient,
+    required int ingredient,
     required int gram,
     this.rowid = const Value.absent(),
   })  : recipe = Value(recipe),
@@ -2750,7 +2750,7 @@ class RecipeIngredientsCompanion extends UpdateCompanion<RecipeIngredient> {
         gram = Value(gram);
   static Insertable<RecipeIngredient> custom({
     Expression<int>? recipe,
-    Expression<String>? ingredient,
+    Expression<int>? ingredient,
     Expression<int>? gram,
     Expression<int>? rowid,
   }) {
@@ -2764,7 +2764,7 @@ class RecipeIngredientsCompanion extends UpdateCompanion<RecipeIngredient> {
 
   RecipeIngredientsCompanion copyWith(
       {Value<int>? recipe,
-      Value<String>? ingredient,
+      Value<int>? ingredient,
       Value<int>? gram,
       Value<int>? rowid}) {
     return RecipeIngredientsCompanion(
@@ -2782,7 +2782,7 @@ class RecipeIngredientsCompanion extends UpdateCompanion<RecipeIngredient> {
       map['recipe'] = Variable<int>(recipe.value);
     }
     if (ingredient.present) {
-      map['ingredient'] = Variable<String>(ingredient.value);
+      map['ingredient'] = Variable<int>(ingredient.value);
     }
     if (gram.present) {
       map['gram'] = Variable<int>(gram.value);

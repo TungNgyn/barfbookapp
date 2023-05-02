@@ -97,7 +97,7 @@ class RecipeComments extends Table {
 
 class RecipeIngredients extends Table {
   IntColumn get recipe => integer()();
-  TextColumn get ingredient => text()();
+  IntColumn get ingredient => integer()();
   IntColumn get gram => integer()();
 
   @override

@@ -219,17 +219,6 @@ class _RecipeCardState extends State<RecipeCard> {
                 ConnectionState.done
             ? GestureDetector(
                 onTap: () {
-                  for (var map in widget.controller.userLikedRecipe) {
-                    if (map?.containsKey("recipe") ?? false) {
-                      if (map['recipe'] == widget.recipe.id) {
-                        Get.to(() => RecipeDetailPage(
-                              recipe: widget.recipe,
-                              favorite: true,
-                            ));
-                        return;
-                      }
-                    }
-                  }
                   Get.to(() => RecipeDetailPage(
                         recipe: widget.recipe,
                         favorite: false,
@@ -237,6 +226,7 @@ class _RecipeCardState extends State<RecipeCard> {
                   return;
                 },
                 child: Card(
+                  elevation: 4,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20),
                     side: BorderSide(
@@ -245,15 +235,15 @@ class _RecipeCardState extends State<RecipeCard> {
                     ),
                   ),
                   child: Container(
-                    height: 200,
-                    width: 168,
+                    height: 250,
+                    width: 200,
                     child: Column(
                       children: [
                         Padding(
                           padding: const EdgeInsets.only(
                               top: 10, right: 10, left: 10),
                           child: Container(
-                              height: 96,
+                              height: 150,
                               child: getRecipeAvatar(widget.recipe.id)),
                         ),
                         Expanded(
@@ -267,7 +257,7 @@ class _RecipeCardState extends State<RecipeCard> {
                                 children: [
                                   Text(
                                     widget.recipe.name,
-                                    maxLines: 2,
+                                    maxLines: 1,
                                     overflow: TextOverflow.ellipsis,
                                     style: TextStyle(
                                       fontSize: 18,
@@ -348,17 +338,6 @@ class _BigRecipeCardState extends State<BigRecipeCard> {
                 ConnectionState.done
             ? GestureDetector(
                 onTap: () {
-                  for (var map in widget.controller.userLikedRecipe) {
-                    if (map?.containsKey("recipe") ?? false) {
-                      if (map['recipe'] == widget.recipe.id) {
-                        Get.to(() => RecipeDetailPage(
-                              recipe: widget.recipe,
-                              favorite: true,
-                            ));
-                        return;
-                      }
-                    }
-                  }
                   Get.to(() => RecipeDetailPage(
                         recipe: widget.recipe,
                         favorite: false,
