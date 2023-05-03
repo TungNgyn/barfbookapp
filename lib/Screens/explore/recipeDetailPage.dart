@@ -763,12 +763,10 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
       final recipeData = await (database.select(database.recipes)
             ..where((tbl) => tbl.id.equals(widget.recipe.id)))
           .getSingle();
-      print(recipeData);
       final recipeIngredientList =
           await (database.select(database.recipeIngredients)
                 ..where((tbl) => tbl.recipe.equals(recipeData.id)))
               .get();
-      print(recipeIngredientList);
       for (RecipeIngredient recipeIngredient in recipeIngredientList) {
         Ingredient tempIngredient = await (database.select(database.ingredients)
               ..where((tbl) => tbl.id.equals(recipeIngredient.ingredient)))

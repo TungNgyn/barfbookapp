@@ -409,7 +409,6 @@ initSchedule() async {
 initIngredients() async {
   // Find the instance of the `Controller` class created by `Get.put()` in the widget tree.
   final Controller controller = Get.find();
-
   try {
     // Fetch user data from Supabase and update the `userProfile` property in the `Controller` class.
     final ingredientlist = await supabase.from('ingredient').select('*');
