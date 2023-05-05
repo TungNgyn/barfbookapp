@@ -5,6 +5,7 @@ import 'package:Barfbook/Screens/Barfbook/Barfbook.dart';
 import 'package:Barfbook/Screens/Barfbook/barfbook_controller.dart';
 import 'package:Barfbook/controller.dart';
 import 'package:Barfbook/home.dart';
+import 'package:Barfbook/main.dart';
 import 'package:Barfbook/util/Supabase/AuthController.dart';
 import 'package:Barfbook/util/database/database.dart';
 import 'package:Barfbook/util/widgets/avatar_controller.dart';
@@ -1071,63 +1072,66 @@ class _editRecipeState extends State<ScreenEditRecipe> {
 
   loadData() async {
     // load ingredient
-    recipeIngredients.clear();
     try {
-      final recipeIngredientsList = await supabase
-          .from('recipe_ingredient')
-          .select('*')
-          .eq('recipe', widget.recipe.id);
-      for (var recipeIngredient in recipeIngredientsList) {
-        final gram = recipeIngredient['grams'].toDouble();
-        final ingredientsList = await supabase
-            .from('ingredient')
-            .select('*')
-            .eq('id', recipeIngredient['ingredient']);
-        for (var ingredient in ingredientsList) {
-          recipeIngredients.add(Ingredient(
-              id: ingredient['id'],
-              name: ingredient['name'],
-              type: ingredient['type'],
-              category: ingredient['category'],
-              calories: ingredient['calories'].toDouble(),
-              protein: ingredient['protein'].toDouble(),
-              fat: ingredient['fat'].toDouble(),
-              carbohydrates: ingredient['carbohydrates'].toDouble(),
-              minerals: ingredient['minerals'].toDouble(),
-              moisture: ingredient['moisture'].toDouble(),
-              avatar: ingredient['avatar'],
-              gram: gram));
-          caloriesSum.add(ingredient['calories'].toDouble() / 100 * gram);
-          proteinSum.add(ingredient['protein'].toDouble() / 100 * gram);
-          fatSum.add(ingredient['fat'].toDouble() / 100 * gram);
-          carbohydratesSum
-              .add(ingredient['carbohydrates'].toDouble() / 100 * gram);
-          mineralsSum.add(ingredient['minerals'].toDouble() / 100 * gram);
-          moistureSum.add(ingredient['moisture'].toDouble() / 100 * gram);
-          switch (ingredient['category']) {
-            case 'Muskelfleisch':
-              meatSum.add(gram);
-              break;
-            case 'Pansen':
-              rumenSum.add(gram);
-              break;
-            case 'Knochen':
-              boneSum.add(gram);
-              break;
-            case 'Innereien':
-              organSum.add(gram);
-              break;
-            case 'Gemüse':
-              vegSum.add(gram);
-              break;
-            case 'Obst':
-              fruitSum.add(gram);
-              break;
-            default:
-              throw Error();
-          }
-          weightSum.add(gram);
+      final recipeData = await (database.select(database.recipes)
+            ..where((tbl) => tbl.id.equals(widget.recipe.id)))
+          .getSingle();
+      final recipeIngredientList =
+          await (database.select(database.recipeIngredients)
+                ..where((tbl) => tbl.recipe.equals(recipeData.id)))
+              .get();
+      for (RecipeIngredient recipeIngredient in recipeIngredientList) {
+        Ingredient tempIngredient = await (database.select(database.ingredients)
+              ..where((tbl) => tbl.id.equals(recipeIngredient.ingredient)))
+            .getSingle();
+        recipeIngredients.add(Ingredient(
+            id: tempIngredient.id,
+            name: tempIngredient.name,
+            category: tempIngredient.category,
+            type: tempIngredient.type,
+            calories: tempIngredient.calories,
+            protein: tempIngredient.protein,
+            fat: tempIngredient.fat,
+            carbohydrates: tempIngredient.carbohydrates,
+            minerals: tempIngredient.minerals,
+            moisture: tempIngredient.moisture,
+            avatar: tempIngredient.avatar,
+            gram: recipeIngredient.gram));
+        caloriesSum.add(
+            (tempIngredient.calories.toDouble() / 100 * recipeIngredient.gram));
+        proteinSum.add(
+            tempIngredient.protein.toDouble() / 100 * recipeIngredient.gram);
+        fatSum.add(tempIngredient.fat.toDouble() / 100 * recipeIngredient.gram);
+        carbohydratesSum.add(tempIngredient.carbohydrates.toDouble() /
+            100 *
+            recipeIngredient.gram);
+        mineralsSum.add(
+            tempIngredient.minerals.toDouble() / 100 * recipeIngredient.gram);
+        moistureSum.add(
+            tempIngredient.moisture.toDouble() / 100 * recipeIngredient.gram);
+        switch (tempIngredient.category) {
+          case 'Muskelfleisch':
+            meatSum.add(recipeIngredient.gram.toDouble());
+            break;
+          case 'Pansen':
+            rumenSum.add(recipeIngredient.gram.toDouble());
+            break;
+          case 'Knochen':
+            boneSum.add(recipeIngredient.gram.toDouble());
+            break;
+          case 'Innereien':
+            organSum.add(recipeIngredient.gram.toDouble());
+            break;
+          case 'Gemüse':
+            vegSum.add(recipeIngredient.gram.toDouble());
+            break;
+          case 'Obst':
+            fruitSum.add(recipeIngredient.gram.toDouble());
+            break;
+          default:
+            throw Error();
         }
+        weightSum.add(recipeIngredient.gram.toDouble());
       }
     } catch (error) {
       print(error);
@@ -1214,7 +1218,7 @@ class _editRecipeState extends State<ScreenEditRecipe> {
                 sideTitles: SideTitles(
                     showTitles: true,
                     getTitlesWidget: meatTitles,
-                    reservedSize: 38))),
+                    reservedSize: 66))),
         borderData: FlBorderData(show: false),
         barGroups: meatGroups(),
         gridData: FlGridData(show: false));
@@ -1269,7 +1273,7 @@ class _editRecipeState extends State<ScreenEditRecipe> {
                 sideTitles: SideTitles(
                     showTitles: true,
                     getTitlesWidget: vegTitles,
-                    reservedSize: 38))),
+                    reservedSize: 66))),
         borderData: FlBorderData(show: false),
         barGroups: vegGroups(),
         gridData: FlGridData(show: false));
@@ -1279,12 +1283,22 @@ class _editRecipeState extends State<ScreenEditRecipe> {
     Widget text;
     switch (value.toInt()) {
       case 0:
-        text = Text(
-            '${(vegSum.fold<double>(0, (p, c) => p + c) / (vegSum.fold<double>(0, (p, c) => p + c) + fruitSum.fold<double>(0, (p, c) => p + c)) * 100).toStringAsFixed(1)}%');
+        text = Column(
+          children: [
+            Image.asset('assets/icons/ingredient/vegetable.png', width: 32),
+            Text(
+                '${(vegSum.fold<double>(0, (p, c) => p + c) / (vegSum.fold<double>(0, (p, c) => p + c) + fruitSum.fold<double>(0, (p, c) => p + c)) * 100).toStringAsFixed(1)}%'),
+          ],
+        );
         break;
       case 1:
-        text = Text(
-            '${(fruitSum.fold<double>(0, (p, c) => p + c) / (vegSum.fold<double>(0, (p, c) => p + c) + fruitSum.fold<double>(0, (p, c) => p + c)) * 100).toStringAsFixed(1)}%');
+        text = Column(
+          children: [
+            Image.asset('assets/icons/ingredient/fruit.png', width: 32),
+            Text(
+                '${(fruitSum.fold<double>(0, (p, c) => p + c) / (vegSum.fold<double>(0, (p, c) => p + c) + fruitSum.fold<double>(0, (p, c) => p + c)) * 100).toStringAsFixed(1)}%'),
+          ],
+        );
         break;
       default:
         text = Text('');
@@ -1301,20 +1315,40 @@ class _editRecipeState extends State<ScreenEditRecipe> {
     Widget text;
     switch (value.toInt()) {
       case 0:
-        text = Text(
-            '${(meatSum.fold<double>(0, (p, c) => p + c) / (meatSum.fold<double>(0, (p, c) => p + c) + rumenSum.fold<double>(0, (p, c) => p + c) + boneSum.fold<double>(0, (p, c) => p + c) + organSum.fold<double>(0, (p, c) => p + c)) * 100).toStringAsFixed(1)}%');
+        text = Column(
+          children: [
+            Image.asset('assets/icons/ingredient/meat.png', width: 32),
+            Text(
+                '${(meatSum.fold<double>(0, (p, c) => p + c) / (meatSum.fold<double>(0, (p, c) => p + c) + rumenSum.fold<double>(0, (p, c) => p + c) + boneSum.fold<double>(0, (p, c) => p + c) + organSum.fold<double>(0, (p, c) => p + c)) * 100).toStringAsFixed(1)}%'),
+          ],
+        );
         break;
       case 1:
-        text = Text(
-            '${(rumenSum.fold<double>(0, (p, c) => p + c) / (meatSum.fold<double>(0, (p, c) => p + c) + rumenSum.fold<double>(0, (p, c) => p + c) + boneSum.fold<double>(0, (p, c) => p + c) + organSum.fold<double>(0, (p, c) => p + c)) * 100).toStringAsFixed(1)}%');
+        text = Column(
+          children: [
+            Image.asset('assets/icons/ingredient/rumen.png', width: 32),
+            Text(
+                '${(rumenSum.fold<double>(0, (p, c) => p + c) / (meatSum.fold<double>(0, (p, c) => p + c) + rumenSum.fold<double>(0, (p, c) => p + c) + boneSum.fold<double>(0, (p, c) => p + c) + organSum.fold<double>(0, (p, c) => p + c)) * 100).toStringAsFixed(1)}%'),
+          ],
+        );
         break;
       case 2:
-        text = Text(
-            '${(boneSum.fold<double>(0, (p, c) => p + c) / (meatSum.fold<double>(0, (p, c) => p + c) + rumenSum.fold<double>(0, (p, c) => p + c) + boneSum.fold<double>(0, (p, c) => p + c) + organSum.fold<double>(0, (p, c) => p + c)) * 100).toStringAsFixed(1)}%');
+        text = Column(
+          children: [
+            Image.asset('assets/icons/ingredient/bone.png', width: 32),
+            Text(
+                '${(boneSum.fold<double>(0, (p, c) => p + c) / (meatSum.fold<double>(0, (p, c) => p + c) + rumenSum.fold<double>(0, (p, c) => p + c) + boneSum.fold<double>(0, (p, c) => p + c) + organSum.fold<double>(0, (p, c) => p + c)) * 100).toStringAsFixed(1)}%'),
+          ],
+        );
         break;
       case 3:
-        text = Text(
-            '${(organSum.fold<double>(0, (p, c) => p + c) / (meatSum.fold<double>(0, (p, c) => p + c) + rumenSum.fold<double>(0, (p, c) => p + c) + boneSum.fold<double>(0, (p, c) => p + c) + organSum.fold<double>(0, (p, c) => p + c)) * 100).toStringAsFixed(1)}%');
+        text = Column(
+          children: [
+            Image.asset('assets/icons/ingredient/organ.png', width: 32),
+            Text(
+                '${(organSum.fold<double>(0, (p, c) => p + c) / (meatSum.fold<double>(0, (p, c) => p + c) + rumenSum.fold<double>(0, (p, c) => p + c) + boneSum.fold<double>(0, (p, c) => p + c) + organSum.fold<double>(0, (p, c) => p + c)) * 100).toStringAsFixed(1)}%'),
+          ],
+        );
         break;
       default:
         text = Text('');
