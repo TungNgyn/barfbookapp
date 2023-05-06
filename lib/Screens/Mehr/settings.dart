@@ -2,7 +2,6 @@ import 'package:Barfbook/Screens/Account/Login.dart';
 import 'package:Barfbook/Screens/Account/SignUp.dart';
 import 'package:Barfbook/Screens/Account/TransferToAccount.dart';
 import 'package:Barfbook/Screens/Mehr/AGB.dart';
-import 'package:Barfbook/Screens/Mehr/AboPage.dart';
 import 'package:Barfbook/Screens/Mehr/DataPage.dart';
 import 'package:Barfbook/Screens/Mehr/aboutUsPage.dart';
 import 'package:Barfbook/Screens/Mehr/contactPage.dart';
@@ -784,9 +783,7 @@ class _settingsStartState extends State<ScreenSettings>
                   });
                 },
                 onTap: () => {
-                  Navigator.of(context).push(PageRouteBuilder(
-                      opaque: false,
-                      pageBuilder: (BuildContext context, _, __) => AboPage())),
+                  print("Money"),
                   setState(() {
                     isPressedAbo = false;
                   })
