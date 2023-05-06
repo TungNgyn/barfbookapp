@@ -9,11 +9,12 @@ import 'package:Barfbook/main.dart';
 import 'package:Barfbook/util/Supabase/AuthController.dart';
 import 'package:Barfbook/util/database/database.dart';
 import 'package:Barfbook/util/widgets/avatar_controller.dart';
+import 'package:drift/drift.dart' hide Column;
 import 'package:file_picker/file_picker.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:get/get.dart';
+import 'package:get/get.dart' hide Value;
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -1140,16 +1141,30 @@ class _editRecipeState extends State<ScreenEditRecipe> {
 
   Future<dynamic> _updateRecipe() async {
     try {
+      await (database.update(database.recipes)
+            ..where((tbl) => tbl.id.equals(widget.recipe.id)))
+          .write(RecipesCompanion(
+              name: Value(_recipeNameController.text),
+              description: Value(_recipeDescriptionController.text),
+              modifiedAt: Value(DateTime.now())));
       await supabase.rpc('update_recipe', params: {
         'recipename': _recipeNameController.text,
         'recipedescription': _recipeDescriptionController.text,
         'recipeid': widget.recipe.id
       });
+      database
+          .delete(database.recipeIngredients)
+          .where((tbl) => tbl.recipe.equals(widget.recipe.id));
       await supabase
           .from('recipe_ingredient')
           .delete()
           .eq('recipe', widget.recipe.id);
+
       for (Ingredient ingredient in recipeIngredients) {
+        database.into(database.recipeIngredients).insert(RecipeIngredient(
+            recipe: widget.recipe.id,
+            ingredient: ingredient.id,
+            gram: ingredient.gram));
         await supabase.rpc('insert_ingredients', params: {
           'recipeid': widget.recipe.id,
           'ingredientid': ingredient.id,
@@ -1523,6 +1538,9 @@ class _editRecipeState extends State<ScreenEditRecipe> {
 
   Future deleteRecipe() async {
     try {
+      database
+          .delete(database.recipes)
+          .where((tbl) => tbl.id.equals(widget.recipe.id));
       await supabase.from('recipe').delete().eq('id', widget.recipe.id);
     } catch (error) {
       print(error);
