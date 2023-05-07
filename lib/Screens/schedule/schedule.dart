@@ -8,12 +8,14 @@ import 'package:Barfbook/Screens/explore/explore.dart';
 import 'package:Barfbook/Screens/explore/recipeDetailPage.dart';
 import 'package:Barfbook/Screens/schedule/schedule_controller.dart';
 import 'package:Barfbook/controller.dart';
+import 'package:Barfbook/main.dart';
 import 'package:Barfbook/util/Supabase/AuthController.dart';
 import 'package:Barfbook/util/database/database.dart';
 import 'package:Barfbook/util/widgets/avatar_controller.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:drift/drift.dart' hide Column;
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:get/get.dart' hide Value;
 import 'package:table_calendar/table_calendar.dart';
 
 class ScreenSchedule extends StatefulWidget {
@@ -250,6 +252,11 @@ class _ScreenScheduleState extends State<ScreenSchedule> {
 
   void insertSchedule(Recipe recipe) async {
     try {
+      await database.into(database.schedules).insert(SchedulesCompanion(
+            date: Value(_selectedDay!),
+            recipe: Value(recipe.id),
+            userId: Value(user!.id),
+          ));
       final scheduleID = await supabase.rpc('insert_schedule', params: {
         'datevalue': _selectedDay!.toIso8601String(),
         'uservalue': user!.id,
@@ -285,6 +292,9 @@ class _ScreenScheduleState extends State<ScreenSchedule> {
 
   void removeSchedule(var schedule) async {
     try {
+      database
+          .delete(database.schedules)
+          .where((tbl) => tbl.id.equals(schedule));
       await supabase.from('schedule').delete().eq('id', schedule);
     } catch (error) {
       print(error);
