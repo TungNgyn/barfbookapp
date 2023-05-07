@@ -1,13 +1,15 @@
 import 'dart:io';
 
 import 'package:Barfbook/Screens/Barfbook/pet_controller.dart';
+import 'package:Barfbook/main.dart';
 import 'package:Barfbook/util/Supabase/AuthController.dart';
 import 'package:Barfbook/util/database/database.dart';
 import 'package:Barfbook/util/widgets/avatar_controller.dart';
+import 'package:drift/drift.dart' hide Column;
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:get/get.dart';
+import 'package:get/get.dart' hide Value;
 import 'package:path_provider/path_provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -266,6 +268,15 @@ class _ScreenEditPetState extends State<ScreenEditPet> {
             fileOptions:
                 const FileOptions(cacheControl: '3600', upsert: false));
       }
+      await (database.update(database.pets)
+            ..where((tbl) => tbl.id.equals(widget.pet.id)))
+          .write(PetsCompanion(
+              name: Value(_nameController.text),
+              breed: Value(_breedController.text),
+              age: Value(int.parse(_ageController.text)),
+              weight: Value(int.parse(_weightController.value.text)),
+              gender: Value(_genderController),
+              ration: Value(_rationController.value)));
       await supabase.rpc('update_pet', params: {
         'petname': _nameController.text,
         'petbreed': _breedController.text,
@@ -283,6 +294,9 @@ class _ScreenEditPetState extends State<ScreenEditPet> {
 
   Future deletePet() async {
     try {
+      database
+          .delete(database.pets)
+          .where((tbl) => tbl.id.equals(widget.pet.id));
       await supabase.from('pet').delete().eq('id', widget.pet.id);
     } catch (error) {
       print(error);
